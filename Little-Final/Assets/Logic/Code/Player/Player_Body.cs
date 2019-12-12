@@ -495,7 +495,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		if (_flags[Flag.Colliding])
 		{
 			_colTimer.Play();
-			//_colTimer.GottaCount = true;
 		}
 	}
 
