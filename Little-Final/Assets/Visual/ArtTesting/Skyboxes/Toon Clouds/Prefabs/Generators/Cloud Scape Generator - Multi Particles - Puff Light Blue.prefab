@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &100070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 400070}
+  - component: {fileID: 11400000}
+  m_Layer: 0
+  m_Name: Cloud Scape Generator - Multi Particles - Puff Light Blue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &400070
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100070}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 378.45728, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d550417bf97aa8149b4c4281b33dde7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cloudMeshes:
+  - {fileID: 100000, guid: eeebccd64b383ef4bbce79dcb0ae2a07, type: 3}
+  - {fileID: 100000, guid: a9caf502a178e564d8dc3685485c243d, type: 3}
+  - {fileID: 100000, guid: 71eca694b3e56444b9fa7161011c658f, type: 3}
+  - {fileID: 100000, guid: 57ae37d73b7772b47858d9b119421542, type: 3}
+  - {fileID: 100000, guid: 110c44ffcee97ac48addb506cea24ef3, type: 3}
+  - {fileID: 100000, guid: 1dc00d0e5665fb040a73f74511709db1, type: 3}
+  - {fileID: 100000, guid: 37f8dc520c604e2458de3edbc3527079, type: 3}
+  - {fileID: 100000, guid: 7e4c4c6d2db82c544b10a1fd1083c902, type: 3}
+  - {fileID: 100000, guid: c39e860c2007af647844e3343106c3c0, type: 3}
+  - {fileID: 100000, guid: 7e808755531d86a4fa389afbfbfd9705, type: 3}
+  targetParticleSystem: {fileID: 0}
+  areaScale: 750
+  areaHeight: 165
+  cloudAmount: 35
+  fixedScale: 1
+  maxScale: 2
+  minScale: 1
+  multipleParticleSystems: 1
+  _scaleMultiplier: 0

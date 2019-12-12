@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: StylizedWater
+  m_Shader: {fileID: 4800000, guid: 4a91c9577c91733478297518e0cb57ed, type: 3}
+  m_ShaderKeywords: _SECONDARYFOAMALWAYSVISIBLE_ON _SHADOWS_ON
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _DistortionTexture:
+        m_Texture: {fileID: 2800000, guid: a67d2228caf588945b19a42fbd3c3967, type: 3}
+        m_Scale: {x: 0, y: 0}
+        m_Offset: {x: 0, y: 0}
+    - _FoamTexture:
+        m_Texture: {fileID: 2800000, guid: a24ddeee41b659a42b3e031e47a80ae2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ReflectionTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterDistortionTex:
+        m_Texture: {fileID: 2800000, guid: a67d2228caf588945b19a42fbd3c3967, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_2516:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_5673:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _FresnelExp: 3.2592592
+    - _GradientPosition1: 2.3328786
+    - _GradientPosition2: 2.5
+    - _LightColorIntensity: 0.56
+    - _MainFoamIntensity: 30
+    - _MainFoamOpacity: 1
+    - _MainFoamScale: 0.2
+    - _MainFoamSpeed: 0.1
+    - _Opacity: 0.532
+    - _OpacityDepth: 2.9
+    - _RealTimeReflection: 1
+    - _ReflectionsIntensity: 0.062
+    - _RefractionIntensity: 1.71
+    - _Roughness: 0.822
+    - _SecondaryFoamAlwaysVisible: 0
+    - _SecondaryFoamIntensity: 500
+    - _SecondaryFoamOpacity: 0
+    - _SecondaryFoamScale: 10
+    - _ShadowIntensity: 1
+    - _Shadows: 1
+    - _ShadowsIntensity: 1
+    - _SpecularIntensity: 0.092
+    - _TurbulenceDistortionIntesity: 0.73
+    - _TurbulenceScale: 15.53
+    - _VertexOffset: 0
+    - _WaveDistortionIntensity: 0.3
+    - _WavesAmplitude: 1
+    - _WavesDirection: 77
+    - _WavesIntensity: 1.97
+    - _WavesSpeed: 2
+    m_Colors:
+    - _DepthGradient1: {r: 0.6450694, g: 0.8702201, b: 0.9056604, a: 1}
+    - _DepthGradient2: {r: 0.51072496, g: 0.30536705, b: 0.53773564, a: 1}
+    - _DepthGradient3: {r: 0.01446245, g: 0.20004666, b: 0.23432007, a: 1}
+    - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FresnelColor: {r: 0, g: 1, b: 1, a: 1}
+    - _ShadowColor: {r: 0.009191178, g: 0.033871744, b: 0.125, a: 1}
