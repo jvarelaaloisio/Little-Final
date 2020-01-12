@@ -107,7 +107,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 				if (_flags[Flag.InCoyoteTime])
 				{
 					_coyoteTimer.Stop();
-					//_coyoteTimer.GottaCount = false;
 					_flags[Flag.InCoyoteTime] = false;
 				}
 				Glide(false);
@@ -115,7 +114,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 			else if (!_flags[Flag.InCoyoteTime] && !_flags[Flag.IsInTheAir])
 			{
 				_coyoteTimer.Play();
-				//_coyoteTimer.GottaCount = true;
 				_flags[Flag.InCoyoteTime] = true;
 			}
 		}
@@ -326,7 +324,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 				//Event
 				BodyEvents?.Invoke(BodyEvent.JUMP);
 				_jumpTimer.Play();
-				//_jumpTimer.GottaCount = true;
 
 				//Sound
 				PlaySound(0);
@@ -364,7 +361,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		if (_flags[Flag.PlayerHoldingClimb] && _flags[Flag.ClimbCollision])
 		{
 			_climbTimer.Stop();
-			//_climbTimer.GottaCount = false;
 			if (_flags[Flag.Climbing]) return;
 			_flags[Flag.Climbing] = true;
 			_RB.isKinematic = true;
@@ -378,7 +374,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 			if (!_climbTimer.Counting)
 			{
 				_climbTimer.Play();
-				//_climbTimer.GottaCount = true;
 			}
 		}
 	}
