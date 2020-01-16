@@ -52,7 +52,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	#region Private
 	UpdateManager _uManager;
 	Rigidbody _RB;
-	Player_Animator _AnimControl;
 	AudioManager _audioManager;
 	Timer _colTimer, _coyoteTimer, _jumpTimer, _climbTimer;
 
@@ -205,7 +204,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		}
 		if (_uManager != null) _uManager.AddFixedItem(this);
 		_RB = GetComponent<Rigidbody>();
-		_AnimControl = GetComponent<Player_Animator>();
 
 		SetupFlags();
 		InitializeTimers();
