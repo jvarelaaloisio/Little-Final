@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClimbCollider : MonoBehaviour
+public class Player_FrontCollider : MonoBehaviour
 {
 	#region Variables
 

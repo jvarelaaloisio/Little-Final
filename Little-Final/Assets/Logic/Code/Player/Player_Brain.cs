@@ -199,7 +199,7 @@ public class Player_Brain : GenericFunctions, IUpdateable
 		{
 			if (_itemPicked == null)
 			{
-				_itemPicked = GetComponentInChildren<ClimbCollider>().PickableItem;
+				_itemPicked = GetComponentInChildren<Player_FrontCollider>().PickableItem;
 				if (_itemPicked != null)
 				{
 					_itemPicked.Pick(transform);
