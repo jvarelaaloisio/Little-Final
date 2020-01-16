@@ -16,7 +16,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 
 	#region Public
 	public event BodyEvents BodyEvents;
-    public Transform lastClimbable;
+	public Transform lastClimbable;
 	#endregion
 
 	#region Serialized
@@ -249,33 +249,33 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		switch (ID)
 		{
 			case "Collider Timer":
-			{
-				_flags[Flag.Colliding] = false;
-				break;
-			}
+				{
+					_flags[Flag.Colliding] = false;
+					break;
+				}
 			case "Coyote Timer":
-			{
-				_flags[Flag.IsInTheAir] = true;
-				_flags[Flag.InCoyoteTime] = false;
+				{
+					_flags[Flag.IsInTheAir] = true;
+					_flags[Flag.InCoyoteTime] = false;
 
-				//Event
-				BodyEvents(BodyEvent.JUMP);
-				break;
-			}
+					//Event
+					BodyEvents(BodyEvent.JUMP);
+					break;
+				}
 			case "In the Air Timer":
-			{
-				_flags[Flag.IsInTheAir] = true;
-				break;
-			}
+				{
+					_flags[Flag.IsInTheAir] = true;
+					break;
+				}
 			case "Climb Off Timer":
-			{
-				_flags[Flag.Climbing] = false;
-				_RB.isKinematic = false;
+				{
+					_flags[Flag.Climbing] = false;
+					_RB.isKinematic = false;
 
-				//Event
-				BodyEvents?.Invoke(BodyEvent.JUMP);
-				break;
-			}
+					//Event
+					BodyEvents?.Invoke(BodyEvent.JUMP);
+					break;
+				}
 		}
 	}
 
@@ -368,7 +368,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 			//Event
 			BodyEvents?.Invoke(BodyEvent.CLIMB);
 		}
-		//-----------------------------------------------------------ACA--------------------------
 		else if (_flags[Flag.Climbing])
 		{
 			if (!_climbTimer.Counting)
@@ -442,11 +441,12 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		_RB.velocity = NewVel;
 	}
 
-    public void Climb(Vector2 Input)
-    {
-        if (!_flags[Flag.Climbing]) return;
-        transform.forward = lastClimbable.forward;
-        transform.position += (transform.right * Input.x + transform.up * Input.y) * _climbSpeed * Time.deltaTime;
+	public void Climb(Vector2 Input)
+	{
+		if (!_flags[Flag.Climbing]) return;
+		if (lastClimbable) transform.forward = lastClimbable.forward;
+		else if (Input.y > 0) Input.y = 0;
+		transform.position += (transform.right * Input.x + transform.up * Input.y) * _climbSpeed * Time.deltaTime;
 	}
 
 	/// <summary>
@@ -465,7 +465,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	}
 	public void Push(Vector3 direction, float force)
 	{
-        Glide(false); 
+		Glide(false);
 		_RB.AddForce(direction.normalized * force, ForceMode.Impulse);
 	}
 	#endregion
