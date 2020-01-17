@@ -262,6 +262,7 @@ public class Player_Brain : GenericFunctions, IUpdateable
 	/// <param name="typeOfEvent"></param>
 	void BodyEventHandler(BodyEvent typeOfEvent)
 	{
+		print(typeOfEvent);
 		switch (typeOfEvent)
 		{
 			case BodyEvent.LAND:

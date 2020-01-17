@@ -110,7 +110,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 				}
 				Glide(false);
 			}
-			else if (!_flags[Flag.InCoyoteTime] && !_flags[Flag.IsInTheAir])
+			else if (!_flags[Flag.InCoyoteTime] && !_flags[Flag.IsInTheAir] && !_flags[Flag.Climbing])
 			{
 				_coyoteTimer.Play();
 				_flags[Flag.InCoyoteTime] = true;
@@ -124,6 +124,14 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 			_flags[Flag.ClimbCollision] = value;
 		}
 	}
+	public bool CollidingWithClimbableTopSolid
+	{
+		set
+		{
+			_flags[Flag.ClimbTopSolidCollision] = value;
+		}
+	}
+
 	public bool CollidingWithPickable
 	{
 		get
@@ -168,6 +176,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		Gliding,
 		Colliding,
 		ClimbCollision,
+		ClimbTopSolidCollision,
 		ColCounting,
 		WeirdColCounting,
 		Climbing,
@@ -247,33 +256,33 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		switch (ID)
 		{
 			case "Collider Timer":
-				{
-					_flags[Flag.Colliding] = false;
-					break;
-				}
+			{
+				_flags[Flag.Colliding] = false;
+				break;
+			}
 			case "Coyote Timer":
-				{
-					_flags[Flag.IsInTheAir] = true;
-					_flags[Flag.InCoyoteTime] = false;
+			{
+				_flags[Flag.IsInTheAir] = true;
+				_flags[Flag.InCoyoteTime] = false;
 
-					//Event
-					BodyEvents(BodyEvent.JUMP);
-					break;
-				}
+				//Event
+				BodyEvents(BodyEvent.JUMP);
+				break;
+			}
 			case "In the Air Timer":
-				{
-					_flags[Flag.IsInTheAir] = true;
-					break;
-				}
+			{
+				_flags[Flag.IsInTheAir] = true;
+				break;
+			}
 			case "Climb Off Timer":
-				{
-					_flags[Flag.Climbing] = false;
-					_RB.isKinematic = false;
+			{
+				_flags[Flag.Climbing] = false;
+				_RB.isKinematic = false;
 
-					//Event
-					BodyEvents?.Invoke(BodyEvent.JUMP);
-					break;
-				}
+				//Event
+				BodyEvents?.Invoke(BodyEvent.JUMP);
+				break;
+			}
 		}
 	}
 
@@ -319,6 +328,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 				_RB.velocity = newVel;
 				_RB.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
 
+				_flags[Flag.IsInTheAir] = true;
 				//Event
 				BodyEvents?.Invoke(BodyEvent.JUMP);
 				_jumpTimer.Play();
@@ -381,14 +391,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	/// <param name="HoldingButton"></param>
 	void Glide(bool HoldingButton)
 	{
-		//if (HoldingButton)
-		//{
-		//	if (_RB.velocity.y < 0 && _flags[Flag.IsInTheAir] && !_flags[Flag.Gliding])
-		//	{
-		//		_RB.drag = _glidingDrag;
-		//		_flags[Flag.Gliding] = true;
-		//	}
-		//}
 		if (HoldingButton && _RB.velocity.y < 0 && _flags[Flag.IsInTheAir])
 		{
 			if (!_flags[Flag.Gliding])
@@ -443,7 +445,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	{
 		if (!_flags[Flag.Climbing]) return;
 		if (lastClimbable) transform.forward = lastClimbable.forward;
-		else if (Input.y > 0) Input.y = 0;
+		if (_flags[Flag.ClimbTopSolidCollision] && Input.y > 0) Input.y = 0;
 		transform.position += (transform.right * Input.x + transform.up * Input.y) * _climbSpeed * Time.deltaTime;
 	}
 

@@ -7,7 +7,7 @@ public class Player_FrontCollider : MonoBehaviour
 	#region Variables
 
 	#region Constant
-	const int CLIMB_LAYER = 12, PICKABLE_LAYER = 16;
+	const int CLIMB_LAYER = 12, CLIMB_TOP_SOLID_LAYER = 18, PICKABLE_LAYER = 16;
 	#endregion
 
 	#region Public
@@ -54,6 +54,13 @@ public class Player_FrontCollider : MonoBehaviour
 			}
 		}
 	}
+	private void OnTriggerStay(Collider other)
+	{
+		if(other.gameObject.layer == CLIMB_TOP_SOLID_LAYER)
+		{
+			_body.CollidingWithClimbableTopSolid = true;
+		}
+	}
 	private void OnTriggerExit(Collider other)
 	{
 		switch (other.gameObject.layer)
@@ -66,6 +73,11 @@ public class Player_FrontCollider : MonoBehaviour
 					_body.lastClimbable = null;
 					lastClimbable = null;
 				}
+				break;
+			}
+			case CLIMB_TOP_SOLID_LAYER:
+			{
+				_body.CollidingWithClimbableTopSolid = false;
 				break;
 			}
 			case PICKABLE_LAYER:
