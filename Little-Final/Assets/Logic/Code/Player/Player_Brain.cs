@@ -180,9 +180,8 @@ public class Player_Brain : GenericFunctions, IUpdateable
 	void ControlHorMovement()
 	{
 		_movInput = input.ReadHorInput();
-		if (_movInput == Vector2.zero) return;
 		_body.Walk(_movInput);
-		UpdateForward();
+		//UpdateForward();
 	}
 
 	/// <summary>

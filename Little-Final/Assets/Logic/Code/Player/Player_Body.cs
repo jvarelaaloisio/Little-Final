@@ -9,10 +9,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 {
 	#region Variables
 
-	#region Constants
-	[SerializeField]
 	const int CLIMBABLE_TOP_LAYER = 15;
-	#endregion
 
 	#region Public
 	public event BodyEvents BodyEvents;
@@ -31,7 +28,8 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		_lowJumpMultiplier = 3,
 		_coyoteTime = .25f,
 		_glidingDrag = 10,
-		_climbSpeed = 1;
+		_climbSpeed = 1,
+		_rotationSpeed = 10;
 
 	[Header("Audio")]
 	[SerializeField]
@@ -50,15 +48,14 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	#endregion
 
 	#region Private
-	UpdateManager _uManager;
-	Rigidbody _RB;
-	AudioManager _audioManager;
+	UpdateManager updateManager;
+	Rigidbody rb;
+	AudioManager audioManager;
 	Timer _colTimer, _coyoteTimer, _jumpTimer, _climbTimer;
-
 
 	ContactPoint lastContact;
 	Vector3 _collisionAngles;
-	float JumpingAccelerationFactor => _flags[Flag.IsInTheAir] ? _jumpingAcceleration : 1;
+	float JumpingAccelerationFactor => flags[Flag.IN_THE_AIR] ? _jumpingAcceleration : 1;
 	#endregion
 
 	#region Getters
@@ -73,7 +70,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	{
 		get
 		{
-			return _RB.velocity;
+			return rb.velocity;
 		}
 	}
 
@@ -81,7 +78,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	{
 		get
 		{
-			return _flags[Flag.IsInTheAir];
+			return flags[Flag.IN_THE_AIR];
 		}
 	}
 	#endregion
@@ -91,29 +88,29 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	{
 		get
 		{
-			return _flags[Flag.IsInTheAir];
+			return flags[Flag.IN_THE_AIR];
 		}
 		set
 		{
 			if (!value)
 			{
-				if (_flags[Flag.IsInTheAir])
+				if (flags[Flag.IN_THE_AIR])
 				{
 					//Event
 					BodyEvents?.Invoke(BodyEvent.LAND);
-					_flags[Flag.IsInTheAir] = false;
+					flags[Flag.IN_THE_AIR] = false;
 				}
-				if (_flags[Flag.InCoyoteTime])
+				if (flags[Flag.IN_COYOTE_TIME])
 				{
 					_coyoteTimer.Stop();
-					_flags[Flag.InCoyoteTime] = false;
+					flags[Flag.IN_COYOTE_TIME] = false;
 				}
 				Glide(false);
 			}
-			else if (!_flags[Flag.InCoyoteTime] && !_flags[Flag.IsInTheAir] && !_flags[Flag.Climbing])
+			else if (!flags[Flag.IN_COYOTE_TIME] && !flags[Flag.IN_THE_AIR] && !flags[Flag.CLIMBING])
 			{
 				_coyoteTimer.Play();
-				_flags[Flag.InCoyoteTime] = true;
+				flags[Flag.IN_COYOTE_TIME] = true;
 			}
 		}
 	}
@@ -121,14 +118,14 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	{
 		set
 		{
-			_flags[Flag.ClimbCollision] = value;
+			flags[Flag.TOUCHING_CLIMBABLE] = value;
 		}
 	}
 	public bool CollidingWithClimbableTopSolid
 	{
 		set
 		{
-			_flags[Flag.ClimbTopSolidCollision] = value;
+			flags[Flag.TOUCHING_CLIMBABLE_TOP_SOLID] = value;
 		}
 	}
 
@@ -136,32 +133,32 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	{
 		get
 		{
-			return _flags[Flag.PickableCollision];
+			return flags[Flag.TOUCHING_PICKABLE];
 		}
 		set
 		{
-			_flags[Flag.PickableCollision] = value;
+			flags[Flag.TOUCHING_PICKABLE] = value;
 		}
 	}
 	public bool InputClimb
 	{
 		set
 		{
-			_flags[Flag.PlayerHoldingClimb] = value;
+			flags[Flag.CLIMB_REQUEST] = value;
 		}
 	}
 	public bool InputJump
 	{
 		set
 		{
-			_flags[Flag.JumpInput] = true;
+			flags[Flag.JUMP_REQUEST] = true;
 		}
 	}
 	public bool InputGlide
 	{
 		set
 		{
-			_flags[Flag.GlideInput] = value;
+			flags[Flag.GLIDE_REQUEST] = value;
 		}
 	}
 	#endregion
@@ -169,21 +166,22 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	#region Flags
 	enum Flag
 	{
-		IsInTheAir,
-		JumpInput,
-		GlideInput,
-		PlayerHoldingClimb,
-		Gliding,
-		Colliding,
-		ClimbCollision,
-		ClimbTopSolidCollision,
-		ColCounting,
-		WeirdColCounting,
-		Climbing,
-		InCoyoteTime,
-		PickableCollision
+		IN_THE_AIR,
+		JUMP_REQUEST,
+		GLIDE_REQUEST,
+		CLIMB_REQUEST,
+		GLIDING,
+		CLIMBING,
+		COLLIDING,
+		TOUCHING_PICKABLE,
+		TOUCHING_CLIMBABLE,
+		TOUCHING_CLIMBABLE_TOP_SOLID,
+		COL_COUNTING,
+		WEIRD_COL_COUNTING,
+		IN_COYOTE_TIME
 	}
-	Dictionary<Flag, bool> _flags = new Dictionary<Flag, bool>();
+
+	private readonly Dictionary<Flag, bool> flags = new Dictionary<Flag, bool>();
 
 	#endregion
 
@@ -202,17 +200,17 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	#region Unity
 	void Start()
 	{
-		_audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+		audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
 		try
 		{
-			_uManager = GameObject.FindObjectOfType<UpdateManager>();
+			updateManager = GameObject.FindObjectOfType<UpdateManager>();
 		}
 		catch (NullReferenceException)
 		{
 			print(this.name + "update manager not found");
 		}
-		if (_uManager != null) _uManager.AddFixedItem(this);
-		_RB = GetComponent<Rigidbody>();
+		if (updateManager != null) updateManager.AddFixedItem(this);
+		rb = GetComponent<Rigidbody>();
 
 		SetupFlags();
 		InitializeTimers();
@@ -233,7 +231,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	{
 		foreach (var flag in (Flag[])Enum.GetValues(typeof(Flag)))
 		{
-			_flags.Add(flag, false);
+			flags.Add(flag, false);
 		}
 	}
 
@@ -257,13 +255,13 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		{
 			case "Collider Timer":
 			{
-				_flags[Flag.Colliding] = false;
+				flags[Flag.COLLIDING] = false;
 				break;
 			}
 			case "Coyote Timer":
 			{
-				_flags[Flag.IsInTheAir] = true;
-				_flags[Flag.InCoyoteTime] = false;
+				flags[Flag.IN_THE_AIR] = true;
+				flags[Flag.IN_COYOTE_TIME] = false;
 
 				//Event
 				BodyEvents(BodyEvent.JUMP);
@@ -271,13 +269,13 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 			}
 			case "In the Air Timer":
 			{
-				_flags[Flag.IsInTheAir] = true;
+				flags[Flag.IN_THE_AIR] = true;
 				break;
 			}
 			case "Climb Off Timer":
 			{
-				_flags[Flag.Climbing] = false;
-				_RB.isKinematic = false;
+				flags[Flag.CLIMBING] = false;
+				rb.isKinematic = false;
 
 				//Event
 				BodyEvents?.Invoke(BodyEvent.JUMP);
@@ -304,11 +302,8 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		bool _conditionA = (_collisionAngles.y > _yMinAngle && _collisionAngles.y < _yMaxAngle);
 		bool _conditionB = (_collisionAngles.x > _xMinAngle && _collisionAngles.x < _xMaxAngle);
 
-		//Decide
-		if (!_flags[Flag.Colliding])
-		{
-			return true;
-		}
+		//Decide return
+		if (!flags[Flag.COLLIDING]) return true;
 		return !(_conditionA && _conditionB);
 	}
 
@@ -317,18 +312,18 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	/// </summary>
 	void ControlJump()
 	{
-		if (_flags[Flag.JumpInput])
+		if (flags[Flag.JUMP_REQUEST])
 		{
-			_flags[Flag.JumpInput] = false;
-			if (DecideIfJump())
+			flags[Flag.JUMP_REQUEST] = false;
+			if (!flags[Flag.IN_THE_AIR])
 			{
 				//Physics
-				Vector3 newVel = _RB.velocity;
+				Vector3 newVel = rb.velocity;
 				newVel.y = 0;
-				_RB.velocity = newVel;
-				_RB.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+				rb.velocity = newVel;
+				rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
 
-				_flags[Flag.IsInTheAir] = true;
+				flags[Flag.IN_THE_AIR] = true;
 				//Event
 				BodyEvents?.Invoke(BodyEvent.JUMP);
 				_jumpTimer.Play();
@@ -339,18 +334,8 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		}
 		else
 		{
-			Glide(_flags[Flag.GlideInput]);
+			Glide(flags[Flag.GLIDE_REQUEST]);
 		}
-	}
-
-	/// <summary>
-	/// Decides if the player can Jump
-	/// </summary>
-	/// <param name="HoldingButton">If the player is holding the button or just pressed it</param>
-	/// <returns></returns>
-	bool DecideIfJump()
-	{
-		return _flags[Flag.IsInTheAir] ? false : true;
 	}
 
 	/// <summary>
@@ -358,25 +343,25 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	/// </summary>
 	void AccelerateFall()
 	{
-		if (_RB.velocity.y < .5 && _RB.velocity.y > -15)
+		if (rb.velocity.y < .5 && rb.velocity.y > -15)
 		{
-			_RB.velocity += Vector3.up * Physics2D.gravity.y * (_FallMultiplier - 1) * Time.deltaTime;
+			rb.velocity += Vector3.up * Physics2D.gravity.y * (_FallMultiplier - 1) * Time.deltaTime;
 		}
 	}
 
 	void ControlClimb()
 	{
-		if (_flags[Flag.PlayerHoldingClimb] && _flags[Flag.ClimbCollision])
+		if (flags[Flag.CLIMB_REQUEST] && flags[Flag.TOUCHING_CLIMBABLE])
 		{
 			_climbTimer.Stop();
-			if (_flags[Flag.Climbing]) return;
-			_flags[Flag.Climbing] = true;
-			_RB.isKinematic = true;
+			if (flags[Flag.CLIMBING]) return;
+			flags[Flag.CLIMBING] = true;
+			rb.isKinematic = true;
 
 			//Event
 			BodyEvents?.Invoke(BodyEvent.CLIMB);
 		}
-		else if (_flags[Flag.Climbing])
+		else if (flags[Flag.CLIMBING])
 		{
 			if (!_climbTimer.Counting)
 			{
@@ -391,18 +376,18 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	/// <param name="HoldingButton"></param>
 	void Glide(bool HoldingButton)
 	{
-		if (HoldingButton && _RB.velocity.y < 0 && _flags[Flag.IsInTheAir])
+		if (HoldingButton && rb.velocity.y < 0 && flags[Flag.IN_THE_AIR])
 		{
-			if (!_flags[Flag.Gliding])
+			if (!flags[Flag.GLIDING])
 			{
-				_RB.drag = _glidingDrag;
-				_flags[Flag.Gliding] = true;
+				rb.drag = _glidingDrag;
+				flags[Flag.GLIDING] = true;
 			}
 		}
 		else
 		{
-			_RB.drag = 0;
-			_flags[Flag.Gliding] = false;
+			rb.drag = 0;
+			flags[Flag.GLIDING] = false;
 		}
 	}
 
@@ -410,12 +395,12 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	{
 		try
 		{
-			_audioManager.PlayCharacterSound(_soundEffects[Index]);
+			audioManager.PlayCharacterSound(_soundEffects[Index]);
 
 		}
 		catch (NullReferenceException)
 		{
-			print("(PBODY) AudioManager not found");
+			print("PBODY: AudioManager not found");
 		}
 	}
 
@@ -431,21 +416,28 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		Vector3 NewVel;
 		if (DecideIfWalk(Input))
 		{
-			NewVel = (transform.forward * Input.y + transform.right * Input.x) * Speed * JumpingAccelerationFactor + Vector3.up * _RB.velocity.y;
-			_RB.velocity = NewVel;
+			if (Input.y == 0) NewVel = transform.right * Input.x * Speed * JumpingAccelerationFactor;
+			else
+			{
+				NewVel = transform.forward * Input.y * Speed * JumpingAccelerationFactor;
+				int rotationDirection = Input.y > 0 ? 1 : -1;
+				transform.Rotate(transform.up * Input.x * _rotationSpeed * rotationDirection);
+			}
+			NewVel += Vector3.up * rb.velocity.y;
+			rb.velocity = NewVel;
 		}
 		else
 		{
-			NewVel = Vector3.zero + Vector3.up * _RB.velocity.y;
+			//NewVel = Vector3.zero + Vector3.up * rb.velocity.y;
 		}
-		_RB.velocity = NewVel;
+		//rb.velocity = NewVel;
 	}
 
 	public void Climb(Vector2 Input)
 	{
-		if (!_flags[Flag.Climbing]) return;
+		if (!flags[Flag.CLIMBING]) return;
 		if (lastClimbable) transform.forward = lastClimbable.forward;
-		if (_flags[Flag.ClimbTopSolidCollision] && Input.y > 0) Input.y = 0;
+		if (flags[Flag.TOUCHING_CLIMBABLE_TOP_SOLID] && Input.y > 0) Input.y = 0;
 		transform.position += (transform.right * Input.x + transform.up * Input.y) * _climbSpeed * Time.deltaTime;
 	}
 
@@ -454,19 +446,19 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	/// </summary>
 	public void StopJump()
 	{
-		_RB.velocity += Vector3.up * Physics2D.gravity.y * (_lowJumpMultiplier - 1) * Time.deltaTime;
+		rb.velocity += Vector3.up * Physics2D.gravity.y * (_lowJumpMultiplier - 1) * Time.deltaTime;
 	}
 
 	public void PushPlayer()
 	{
-		_RB.isKinematic = false;
-		_RB.AddForce(Vector3.up * _jumpForce + transform.forward, ForceMode.Impulse);
+		rb.isKinematic = false;
+		rb.AddForce(Vector3.up * _jumpForce + transform.forward, ForceMode.Impulse);
 
 	}
 	public void Push(Vector3 direction, float force)
 	{
 		Glide(false);
-		_RB.AddForce(direction.normalized * force, ForceMode.Impulse);
+		rb.AddForce(direction.normalized * force, ForceMode.Impulse);
 	}
 	#endregion
 
@@ -481,13 +473,13 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 
 	private void OnCollisionStay(Collision collision)
 	{
-		_flags[Flag.Colliding] = true;
+		flags[Flag.COLLIDING] = true;
 		lastContact = collision.contacts[0];
 	}
 
 	private void OnCollisionExit(Collision collision)
 	{
-		if (_flags[Flag.Colliding])
+		if (flags[Flag.COLLIDING])
 		{
 			_colTimer.Play();
 		}
