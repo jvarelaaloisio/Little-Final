@@ -76,14 +76,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 			return _RB.velocity;
 		}
 	}
-
-	public bool IsInTheAir
-	{
-		get
-		{
-			return _flags[Flag.IsInTheAir];
-		}
-	}
 	#endregion
 
 	#region Setters
@@ -256,33 +248,33 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		switch (ID)
 		{
 			case "Collider Timer":
-			{
-				_flags[Flag.Colliding] = false;
-				break;
-			}
+				{
+					_flags[Flag.Colliding] = false;
+					break;
+				}
 			case "Coyote Timer":
-			{
-				_flags[Flag.IsInTheAir] = true;
-				_flags[Flag.InCoyoteTime] = false;
+				{
+					_flags[Flag.IsInTheAir] = true;
+					_flags[Flag.InCoyoteTime] = false;
 
-				//Event
-				BodyEvents(BodyEvent.JUMP);
-				break;
-			}
+					//Event
+					BodyEvents(BodyEvent.JUMP);
+					break;
+				}
 			case "In the Air Timer":
-			{
-				_flags[Flag.IsInTheAir] = true;
-				break;
-			}
+				{
+					_flags[Flag.IsInTheAir] = true;
+					break;
+				}
 			case "Climb Off Timer":
-			{
-				_flags[Flag.Climbing] = false;
-				_RB.isKinematic = false;
+				{
+					_flags[Flag.Climbing] = false;
+					_RB.isKinematic = false;
 
-				//Event
-				BodyEvents?.Invoke(BodyEvent.JUMP);
-				break;
-			}
+					//Event
+					BodyEvents?.Invoke(BodyEvent.JUMP);
+					break;
+				}
 		}
 	}
 

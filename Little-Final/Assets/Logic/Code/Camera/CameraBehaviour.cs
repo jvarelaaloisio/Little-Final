@@ -297,7 +297,7 @@ public class CameraBehaviour : GenericFunctions, IUpdateable
 	{
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawSphere(cameraTransform.position, .5f);
-		Gizmos.DrawSphere(transform.position, .3f);
+		//Gizmos.DrawSphere(transform.position, .3f);
 	}
 	#endregion
 }

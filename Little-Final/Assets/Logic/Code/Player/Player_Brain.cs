@@ -323,7 +323,7 @@ public class Player_Brain : GenericFunctions, IUpdateable
 		{
 			case AnimationEvent.HIT_FINISHED:
 				{
-					if (_body.IsInTheAir) state = PlayerState.JUMPING;
+					if (_body.PlayerInTheAir) state = PlayerState.JUMPING;
 					else state = PlayerState.WALKING;
 					break;
 				}
