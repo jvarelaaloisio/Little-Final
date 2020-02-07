@@ -5,11 +5,11 @@ using UnityEngine;
 public class TestMovementPlayer : MonoBehaviour
 {
 	public CapsuleCollider landCollider;
-	public Transform myHead;
 	Animator myAnimator;
 	TestJump script;
 	public float turnSpeed = 2,
-		jumpForce = 10;
+		jumpForce = 3.5f,
+		runSpeed = 10;
 	Vector3 targetDirection;
 	Vector2 input;
 	private void Start()
@@ -38,13 +38,14 @@ public class TestMovementPlayer : MonoBehaviour
 		targetDirection = input.x * right + input.y * forward;
 		if (input != Vector2.zero && targetDirection.magnitude > .1f)
 		{
-			float differenceRotation = Vector3.Angle(transform.forward, targetDirection.normalized);
-			float dot = Vector3.Dot(transform.right, targetDirection.normalized);
-			Debug.DrawRay(transform.position, targetDirection.normalized, dot > 0 ? Color.green : Color.red);
-			//float dirMulti = input.x >= 0 ? 1 : -1;
-			var asdf = dot < 0 ? -1 : 1;
-			transform.Rotate(transform.up, differenceRotation * asdf * turnSpeed * Time.deltaTime);
-			//transform.LookAt(-Camera.main.transform.position);
+			targetDirection.Normalize();
+			float differenceRotation = Vector3.Angle(transform.forward, targetDirection);
+			float dot = Vector3.Dot(transform.right, targetDirection);
+			Debug.DrawRay(transform.position, targetDirection, dot > 0 ? Color.green : Color.red);
+			var leastTravelDirection = dot < 0 ? -1 : 1;
+			transform.Rotate(transform.up, differenceRotation * leastTravelDirection * turnSpeed * Time.deltaTime);
+
+			GetComponent<Rigidbody>().velocity = targetDirection * speed * runSpeed;
 		}
 	}
 
