@@ -1,14 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class TestJump : StateMachineBehaviour
 {
-	public CapsuleCollider landCollider;
+	[HideInInspector]
+	public Collider landCollider;
 	//OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		if (stateInfo.IsName("Falling")) landCollider.enabled = true;
+		if (!landCollider)
+		{
+			Debug_Console.print("no landCollider Available");
+			try
+			{
+				landCollider = animator.GetComponent<TestMovementPlayer>().landCollider;
+			}
+			catch (NullReferenceException)
+			{
+				Debug_Console.print("no testMovement on player");
+				return;
+			}
+		}
+		landCollider.enabled = true;
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
