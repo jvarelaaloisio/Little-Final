@@ -23,7 +23,7 @@ public class Player_FeetCollider : MonoBehaviour
 
 	private void OnTriggerStay(Collider other)
 	{
-		Body.PlayerInTheAir = false;
+		//Body.PlayerInTheAir = false;
 	}
 
 	private void OnTriggerExit(Collider other)

@@ -263,10 +263,10 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 				flags[Flag.IN_THE_AIR] = true;
 				flags[Flag.IN_COYOTE_TIME] = false;
 
-				//Event
-				BodyEvents(BodyEvent.JUMP);
-				break;
-			}
+					//Event
+					BodyEvents(BodyEvent.JUMP);
+					break;
+				}
 			case "In the Air Timer":
 			{
 				flags[Flag.IN_THE_AIR] = true;
@@ -277,10 +277,10 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 				flags[Flag.CLIMBING] = false;
 				rb.isKinematic = false;
 
-				//Event
-				BodyEvents?.Invoke(BodyEvent.JUMP);
-				break;
-			}
+					//Event
+					BodyEvents?.Invoke(BodyEvent.JUMP);
+					break;
+				}
 		}
 	}
 
