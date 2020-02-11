@@ -9,7 +9,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 {
 	#region Variables
 
-	const int CLIMBABLE_TOP_LAYER = 15;
+	public Layer_SO climbableTopLayer;
 
 	#region Public
 	public event BodyEvents BodyEvents;
@@ -20,22 +20,11 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	[Header("Movement")]
 	[SerializeField]
 	float Speed = 4;
-	[SerializeField]
-	float _crouchSpeedMultiplier = 1,
-		_jumpForce = 6.5f,
-		_jumpingAcceleration = 1,
-		_FallMultiplier = 1,
-		_lowJumpMultiplier = 3,
-		_coyoteTime = .25f,
-		_glidingDrag = 10,
-		_climbSpeed = 1,
-		_rotationSpeed = 10;
 
 	[Header("Audio")]
 	[SerializeField]
 	AudioClip[] _soundEffects = null;
 
-	[Header("Debug")]
 	[SerializeField]
 	float _xMinAngle = 5;
 	[SerializeField]
@@ -49,13 +38,15 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 
 	#region Private
 	UpdateManager updateManager;
-	Rigidbody rb;
 	AudioManager audioManager;
+
+	Player_Properties_SO properties;
+	Rigidbody rb;
 	Timer _colTimer, _coyoteTimer, _jumpTimer, _climbTimer;
 
 	ContactPoint lastContact;
 	Vector3 _collisionAngles;
-	float JumpingAccelerationFactor => flags[Flag.IN_THE_AIR] ? _jumpingAcceleration : 1;
+	float JumpingAccelerationFactor => flags[Flag.IN_THE_AIR] ? properties.JumpSpeed : 1;
 	#endregion
 
 	#region Getters
@@ -161,6 +152,13 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 			flags[Flag.GLIDE_REQUEST] = value;
 		}
 	}
+	public float flash
+	{
+		set
+		{
+			Speed *= value;
+		}
+	}
 	#endregion
 
 	#region Flags
@@ -185,15 +183,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 
 	#endregion
 
-	#region Debug
-	public float flash
-	{
-		set
-		{
-			Speed *= value;
-		}
-	}
-	#endregion
 
 	#endregion
 
@@ -204,12 +193,20 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		try
 		{
 			updateManager = GameObject.FindObjectOfType<UpdateManager>();
+			updateManager.AddFixedItem(this);
 		}
 		catch (NullReferenceException)
 		{
 			print(this.name + "update manager not found");
 		}
-		if (updateManager != null) updateManager.AddFixedItem(this);
+		try
+		{
+			properties = GameObject.FindObjectOfType<GameManager>().PlayerProperties;
+		}
+		catch (NullReferenceException)
+		{
+			print(this.name + "no gameManager/playerProperties found");
+		}
 		rb = GetComponent<Rigidbody>();
 
 		SetupFlags();
@@ -241,7 +238,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	void InitializeTimers()
 	{
 		_colTimer = SetupTimer(_colTimeToOff, "Collider Timer");
-		_coyoteTimer = SetupTimer(_coyoteTime, "Coyote Timer");
+		_coyoteTimer = SetupTimer(properties.CoyoteTime, "Coyote Timer");
 		_jumpTimer = SetupTimer(_inTheAirTimeToOff, "In the Air Timer");
 		_climbTimer = SetupTimer(climbTimeToOff, "Climb Off Timer");
 	}
@@ -254,28 +251,28 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		switch (ID)
 		{
 			case "Collider Timer":
-			{
-				flags[Flag.COLLIDING] = false;
-				break;
-			}
+				{
+					flags[Flag.COLLIDING] = false;
+					break;
+				}
 			case "Coyote Timer":
-			{
-				flags[Flag.IN_THE_AIR] = true;
-				flags[Flag.IN_COYOTE_TIME] = false;
+				{
+					flags[Flag.IN_THE_AIR] = true;
+					flags[Flag.IN_COYOTE_TIME] = false;
 
 					//Event
 					BodyEvents(BodyEvent.JUMP);
 					break;
 				}
 			case "In the Air Timer":
-			{
-				flags[Flag.IN_THE_AIR] = true;
-				break;
-			}
+				{
+					flags[Flag.IN_THE_AIR] = true;
+					break;
+				}
 			case "Climb Off Timer":
-			{
-				flags[Flag.CLIMBING] = false;
-				rb.isKinematic = false;
+				{
+					flags[Flag.CLIMBING] = false;
+					rb.isKinematic = false;
 
 					//Event
 					BodyEvents?.Invoke(BodyEvent.JUMP);
@@ -321,7 +318,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 				Vector3 newVel = rb.velocity;
 				newVel.y = 0;
 				rb.velocity = newVel;
-				rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+				rb.AddForce(Vector3.up * properties.JumpForce, ForceMode.Impulse);
 
 				flags[Flag.IN_THE_AIR] = true;
 				//Event
@@ -345,7 +342,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	{
 		if (rb.velocity.y < .5 && rb.velocity.y > -15)
 		{
-			rb.velocity += Vector3.up * Physics2D.gravity.y * (_FallMultiplier - 1) * Time.deltaTime;
+			rb.velocity += Vector3.up * Physics2D.gravity.y * (properties.FallMultiplier - 1) * Time.deltaTime;
 		}
 	}
 
@@ -380,7 +377,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		{
 			if (!flags[Flag.GLIDING])
 			{
-				rb.drag = _glidingDrag;
+				rb.drag = properties.GlidingDrag;
 				flags[Flag.GLIDING] = true;
 			}
 		}
@@ -421,7 +418,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 			{
 				NewVel = transform.forward * Input.y * Speed * JumpingAccelerationFactor;
 				int rotationDirection = Input.y > 0 ? 1 : -1;
-				transform.Rotate(transform.up * Input.x * _rotationSpeed * rotationDirection);
+				transform.Rotate(transform.up * Input.x * properties.TurnSpeed * rotationDirection);
 			}
 			NewVel += Vector3.up * rb.velocity.y;
 			rb.velocity = NewVel;
@@ -438,7 +435,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		if (!flags[Flag.CLIMBING]) return;
 		if (lastClimbable) transform.forward = lastClimbable.forward;
 		if (flags[Flag.TOUCHING_CLIMBABLE_TOP_SOLID] && Input.y > 0) Input.y = 0;
-		transform.position += (transform.right * Input.x + transform.up * Input.y) * _climbSpeed * Time.deltaTime;
+		transform.position += (transform.right * Input.x + transform.up * Input.y) * properties.ClimbSpeed * Time.deltaTime;
 	}
 
 	/// <summary>
@@ -446,13 +443,13 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	/// </summary>
 	public void StopJump()
 	{
-		rb.velocity += Vector3.up * Physics2D.gravity.y * (_lowJumpMultiplier - 1) * Time.deltaTime;
+		rb.velocity += Vector3.up * Physics2D.gravity.y * (properties.LowJumpMultiplier - 1) * Time.deltaTime;
 	}
 
 	public void PushPlayer()
 	{
 		rb.isKinematic = false;
-		rb.AddForce(Vector3.up * _jumpForce + transform.forward, ForceMode.Impulse);
+		rb.AddForce(Vector3.up * properties.JumpForce + transform.forward, ForceMode.Impulse);
 
 	}
 	public void Push(Vector3 direction, float force)
@@ -465,7 +462,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	#region Collisions
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject.layer == CLIMBABLE_TOP_LAYER)
+		if (other.gameObject.layer == climbableTopLayer.Layer)
 		{
 			BodyEvents(BodyEvent.TRIGGER);
 		}
