@@ -40,7 +40,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	UpdateManager updateManager;
 	AudioManager audioManager;
 
-	Player_Properties_SO properties;
+	PlayerProperties properties;
 	Rigidbody rb;
 	Timer _colTimer, _coyoteTimer, _jumpTimer, _climbTimer;
 
@@ -407,18 +407,18 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	/// <summary>
 	/// Sets the Velocity for the Player
 	/// </summary>
-	/// <param name="Input"></param>
-	public void Walk(Vector2 Input)
+	/// <param name="input"></param>
+	public void Walk(Vector2 input)
 	{
 		Vector3 NewVel;
-		if (DecideIfWalk(Input))
+		if (DecideIfWalk(input))
 		{
-			if (Input.y == 0) NewVel = transform.right * Input.x * Speed * JumpingAccelerationFactor;
+			if (input.y == 0) NewVel = transform.right * input.x * Speed * JumpingAccelerationFactor;
 			else
 			{
-				NewVel = transform.forward * Input.y * Speed * JumpingAccelerationFactor;
-				int rotationDirection = Input.y > 0 ? 1 : -1;
-				transform.Rotate(transform.up * Input.x * properties.TurnSpeed * rotationDirection);
+				NewVel = transform.forward * input.y * Speed * JumpingAccelerationFactor;
+				int rotationDirection = input.y > 0 ? 1 : -1;
+				transform.Rotate(transform.up * input.x * properties.TurnSpeed * rotationDirection);
 			}
 			NewVel += Vector3.up * rb.velocity.y;
 			rb.velocity = NewVel;

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class TestMovementPlayer : MonoBehaviour
 {
 	public CapsuleCollider landCollider;
@@ -27,9 +26,11 @@ public class TestMovementPlayer : MonoBehaviour
 			myAnimator.SetTrigger("Jump");
 			//this.GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 		}
-		float speed = Mathf.Abs(input.x) + Mathf.Abs(input.y);
-		myAnimator.SetFloat("SpeedY", speed);
 
+		float speed = Mathf.Abs(input.x) + Mathf.Abs(input.y);
+		//Animator
+		myAnimator.SetFloat("SpeedY", speed);
+		//direction
 		var forward = Camera.main.transform.TransformDirection(Vector3.forward);
 		forward.y = 0;
 

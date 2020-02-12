@@ -9,7 +9,7 @@ namespace UnityStandardAssets.ImageEffects
     public class BlurOptimized : PostEffectsBase
     {
 
-        [Range(0, 2)]
+        [UnityEngine.Range(0, 2)]
         public int downsample = 1;
 
         public enum BlurType {
@@ -17,10 +17,10 @@ namespace UnityStandardAssets.ImageEffects
             SgxGauss = 1,
         }
 
-        [Range(0.0f, 10.0f)]
+        [UnityEngine.Range(0.0f, 10.0f)]
         public float blurSize = 3.0f;
 
-        [Range(1, 4)]
+        [UnityEngine.Range(1, 4)]
         public int blurIterations = 2;
 
         public BlurType blurType= BlurType.StandardGauss;

@@ -17,7 +17,7 @@ public class CameraBehaviour : GenericFunctions, IUpdateable
 	[SerializeField]
 	float YaxisMinAngle = -35, YaxisMaxAngle = 45;
 	[SerializeField]
-	[Range(0f, 20f)]
+	[UnityEngine.Range(0f, 20f)]
 	float sensitivityX = 2.5f,
 		sensitivityY = 5f,
 		joySensitivityRatio = 5,
@@ -241,15 +241,11 @@ public class CameraBehaviour : GenericFunctions, IUpdateable
 	}
 	void RotateSmoothly()
 	{
-		//if (_rotationTimer.CurrentTime >= rotationTime - 0.1f && _flags[Flag.IS_CAMERA_INPUT]) _rotationTimer.GottaCount = true;
 		float xRotObjective = Mathf.LerpAngle(YaxisMinAngle, YaxisMaxAngle, YAngleController);
-		//float xRot = Mathf.LerpAngle(transform.eulerAngles.x, xRotObjective, _rotationTimer.CurrentTime / rotationTime);
-		//float yRot = Mathf.LerpAngle(transform.eulerAngles.y, XAngleController, _rotationTimer.CurrentTime / rotationTime);
-		float pivot = SmoothFormula(_rotationTimer.CurrentTime, rotationTime);
-		float xRot = Mathf.LerpAngle(_initialPosCamera.x, xRotObjective, pivot);
-		float yRot = Mathf.LerpAngle(_initialPosCamera.y, XAngleController, pivot);
-		//print("xRotObj: " + xRotObjective + "; xRot: " + xRot + "; yRot: " + yRot);
-		transform.eulerAngles = new Vector3(xRot, yRot, transform.rotation.z);
+		//float pivot = SmoothFormula(_rotationTimer.CurrentTime, rotationTime);
+		//float xRot = Mathf.LerpAngle(_initialPosCamera.x, xRotObjective, pivot);
+		//float yRot = Mathf.LerpAngle(_initialPosCamera.y, XAngleController, pivot);
+		//transform.eulerAngles = new Vector3(xRot, yRot, transform.rotation.z);
 	}
 
 	Vector3 GetDistanceFromPlayer(Vector3 originalPosition, float sphereRadius)

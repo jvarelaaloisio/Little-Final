@@ -21,13 +21,13 @@ namespace UnityStandardAssets.ImageEffects
         public TiltShiftMode mode = TiltShiftMode.TiltShiftMode;
         public TiltShiftQuality quality = TiltShiftQuality.Normal;
 
-        [Range(0.0f, 15.0f)]
+        [UnityEngine.Range(0.0f, 15.0f)]
         public float blurArea = 1.0f;
 
-        [Range(0.0f, 25.0f)]
+        [UnityEngine.Range(0.0f, 25.0f)]
         public float maxBlurSize = 5.0f;
 
-        [Range(0, 1)]
+        [UnityEngine.Range(0, 1)]
         public int downsample = 0;
 
         public Shader tiltShiftShader = null;

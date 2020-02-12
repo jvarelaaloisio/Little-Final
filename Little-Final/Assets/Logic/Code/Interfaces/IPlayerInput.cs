@@ -5,7 +5,7 @@ public interface IPlayerInput
 	/// Returns the input in the hor axis
 	/// </summary>
 	/// <returns></returns>
-	Vector2 ReadHorInput();
+	Vector2 ReadWalkInput();
 	/// <summary>
 	/// Returns true if the player is pressing the climb button
 	/// </summary>

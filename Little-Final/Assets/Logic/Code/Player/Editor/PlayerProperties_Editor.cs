@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 
-[CustomEditor(typeof(Player_Properties_SO), true)]
-public class Player_Properties_Editor : Editor
+[CustomEditor(typeof(PlayerProperties), true)]
+public class PlayerProperties_Editor : Editor
 {
 	SerializedProperty jumpForce,
 		jumpSpeed,

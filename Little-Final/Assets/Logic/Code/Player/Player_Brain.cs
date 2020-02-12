@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Player_Body))]
 [RequireComponent(typeof(Damage_Handler))]
+[RequireComponent(typeof(Animator))]
 public class Player_Brain : GenericFunctions, IUpdateable
 {
 	#region Variables
@@ -17,7 +18,7 @@ public class Player_Brain : GenericFunctions, IUpdateable
 	#region Serialized
 	Vector3 origin;
 	[SerializeField]
-	[Range(0, 5)]
+	[UnityEngine.Range(0, 5)]
 	float cameraFollowTime = 0.5f;
 	[SerializeField]
 	float throwForce = 8;
@@ -25,18 +26,19 @@ public class Player_Brain : GenericFunctions, IUpdateable
 
 	#region Private
 
-	#region Other Objects
-	GameManager _manager;
-	UpdateManager _uManager;
-	Player_Animator _animControl;
-	Player_Body _body;
-	Damage_Handler _damageHandler;
+	GameManager gameManager;
+	UpdateManager updateManager;
+	Player_Animator myAnimator;
+	Player_Body myBody;
+	Damage_Handler myDamageHandler;
 	IPickable _itemPicked;
-	#endregion
+
+	PlayerProperties properties;
 
 	Timer _followCameraTimer;
 	IPlayerInput input;
-	Vector2 _movInput;
+	Vector2 walkInput;
+	Vector3 targetDirection;
 
 	#region Flags
 	enum Flag
@@ -61,8 +63,8 @@ public class Player_Brain : GenericFunctions, IUpdateable
 		origin.y += 2;
 		try
 		{
-			_uManager = GameObject.FindObjectOfType<UpdateManager>();
-			_uManager.AddItem(this);
+			updateManager = GameObject.FindObjectOfType<UpdateManager>();
+			updateManager.AddItem(this);
 		}
 		catch (NullReferenceException)
 		{
@@ -70,7 +72,7 @@ public class Player_Brain : GenericFunctions, IUpdateable
 		}
 		try
 		{
-			_manager = GameObject.FindObjectOfType<GameManager>();
+			gameManager = GameObject.FindObjectOfType<GameManager>();
 		}
 		catch (NullReferenceException)
 		{
@@ -82,42 +84,42 @@ public class Player_Brain : GenericFunctions, IUpdateable
 	}
 	public void OnUpdate()
 	{
-		_animControl.ChangeState(state);
+		myAnimator.ChangeState(state);
 		switch (state)
 		{
 			case PlayerState.WALKING:
-				{
-					ReadWalkingStateInput();
-					ReadPickInput();
-					break;
-				}
+			{
+				ReadWalkingStateInput();
+				ReadPickInput();
+				break;
+			}
 			case PlayerState.JUMPING:
-				{
-					ReadJumpingStateInput();
-					ReadPickInput();
-					break;
-				}
+			{
+				ReadJumpingStateInput();
+				ReadPickInput();
+				break;
+			}
 			case PlayerState.CLIMBING:
-				{
-					ReadClimbingStateInput();
-					ReadClimbInput();
-					break;
-				}
+			{
+				ReadClimbingStateInput();
+				ReadClimbInput();
+				break;
+			}
 			case PlayerState.CLIMBING_TO_TOP:
-				{
+			{
 
-					break;
-				}
+				break;
+			}
 			case PlayerState.GOT_HIT:
-				{
-					break;
-				}
+			{
+				break;
+			}
 			case PlayerState.DEAD:
-				{
-					//SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-					transform.position = origin;
-					break;
-				}
+			{
+				//SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+				transform.position = origin;
+				break;
+			}
 		}
 	}
 	#endregion
@@ -125,7 +127,7 @@ public class Player_Brain : GenericFunctions, IUpdateable
 	#region Public
 	public Vector3 GivePostion()
 	{
-		return _body.Position;
+		return myBody.Position;
 	}
 	#endregion
 
@@ -148,27 +150,20 @@ public class Player_Brain : GenericFunctions, IUpdateable
 	/// </summary>
 	void InitializeVariables()
 	{
-		_body = GetComponent<Player_Body>();
-		_damageHandler = GetComponent<Damage_Handler>();
-		try
-		{
-			_animControl = GetComponentInChildren<Player_Animator>();
-		}
-		catch (NullReferenceException)
-		{
-			print(this.name + "anim script not found");
-		}
+		myBody = GetComponent<Player_Body>();
+		myDamageHandler = GetComponent<Damage_Handler>();
+		myAnimator = GetComponent<Player_Animator>();
 		input = gameObject.AddComponent<DesktopInput>();
-		_followCameraTimer = SetupTimer(cameraFollowTime, "Follow Camera Timer");
+		properties = gameManager.PlayerProperties;
 	}
 	/// <summary>
 	/// Setups the event handlers for the body events
 	/// </summary>
 	void SetupHandlers()
 	{
-		_body.BodyEvents += BodyEventHandler;
-		_damageHandler.LifeChangedEvent += LifeChangedHandler;
-		_animControl.AnimationEvents += AnimationEventHandler;
+		myBody.BodyEvents += BodyEventHandler;
+		myDamageHandler.LifeChangedEvent += LifeChangedHandler;
+		myAnimator.AnimationEvents += AnimationEventHandler;
 	}
 	#endregion
 
@@ -179,9 +174,11 @@ public class Player_Brain : GenericFunctions, IUpdateable
 	/// </summary>
 	void ControlHorMovement()
 	{
-		_movInput = input.ReadHorInput();
-		_body.Walk(_movInput);
-		//UpdateForward();
+		walkInput = input.ReadWalkInput();
+		UpdateTargetDirection();
+
+		myBody.Walk(walkInput);
+		UpdateForward();
 	}
 
 	/// <summary>
@@ -189,7 +186,7 @@ public class Player_Brain : GenericFunctions, IUpdateable
 	/// </summary>
 	void ReadClimbInput()
 	{
-		_body.InputClimb = input.ReadClimbInput();
+		myBody.InputClimb = input.ReadClimbInput();
 	}
 
 	void ReadPickInput()
@@ -224,10 +221,10 @@ public class Player_Brain : GenericFunctions, IUpdateable
 	{
 		ControlHorMovement();
 		//REVISAR
-		if (_movInput != Vector2.zero) FollowCameraRotation();
+		if (walkInput != Vector2.zero) FollowCameraRotation();
 
 		//Jump
-		if (input.ReadJumpInput()) _body.InputJump = true;
+		if (input.ReadJumpInput()) myBody.InputJump = true;
 		ReadClimbInput();
 	}
 
@@ -238,18 +235,29 @@ public class Player_Brain : GenericFunctions, IUpdateable
 	{
 		ControlHorMovement();
 
-		if (_movInput != Vector2.zero) FollowCameraRotation();
+		if (walkInput != Vector2.zero) FollowCameraRotation();
 		bool jumpInput = input.ReadJumpInput();
-		_body.InputGlide = jumpInput;
-		if (!jumpInput && _body.Velocity.y > 0) _body.StopJump();
+		myBody.InputGlide = jumpInput;
+		if (!jumpInput && myBody.Velocity.y > 0) myBody.StopJump();
 
 		ReadClimbInput();
 	}
 
 	void ReadClimbingStateInput()
 	{
-		_movInput = input.ReadHorInput();
-		_body.Climb(_movInput);
+		walkInput = input.ReadWalkInput();
+		myBody.Climb(walkInput);
+	}
+
+	void UpdateTargetDirection()
+	{
+		//direction
+		var forward = Camera.main.transform.TransformDirection(Vector3.forward);
+		forward.y = 0;
+
+		var right = Camera.main.transform.TransformDirection(Vector3.right);
+
+		targetDirection = walkInput.x * right + walkInput.y * forward;
 	}
 
 	#endregion
@@ -265,29 +273,29 @@ public class Player_Brain : GenericFunctions, IUpdateable
 		switch (typeOfEvent)
 		{
 			case BodyEvent.LAND:
-				{
-					state = PlayerState.WALKING;
-					break;
-				}
+			{
+				state = PlayerState.WALKING;
+				break;
+			}
 			case BodyEvent.JUMP:
-				{
-					state = PlayerState.JUMPING;
-					break;
-				}
+			{
+				state = PlayerState.JUMPING;
+				break;
+			}
 			case BodyEvent.CLIMB:
-				{
-					state = PlayerState.CLIMBING;
-					break;
-				}
+			{
+				state = PlayerState.CLIMBING;
+				break;
+			}
 			case BodyEvent.TRIGGER:
+			{
+				if (state == PlayerState.CLIMBING)
 				{
-					if (state == PlayerState.CLIMBING)
-					{
-						_body.PushPlayer();
-						state = PlayerState.CLIMBING_TO_TOP;
-					}
-					break;
+					myBody.PushPlayer();
+					state = PlayerState.CLIMBING_TO_TOP;
 				}
+				break;
+			}
 		}
 	}
 
@@ -321,16 +329,16 @@ public class Player_Brain : GenericFunctions, IUpdateable
 		switch (typeOfEvent)
 		{
 			case AnimationEvent.HIT_FINISHED:
-				{
-					if (_body.PlayerInTheAir) state = PlayerState.JUMPING;
-					else state = PlayerState.WALKING;
-					break;
-				}
+			{
+				if (myBody.PlayerInTheAir) state = PlayerState.JUMPING;
+				else state = PlayerState.WALKING;
+				break;
+			}
 			case AnimationEvent.CLIMB_FINISHED:
-				{
-					state = PlayerState.CLIMBING_TO_TOP;
-					break;
-				}
+			{
+				state = PlayerState.CLIMBING_TO_TOP;
+				break;
+			}
 		}
 	}
 	#endregion
@@ -341,7 +349,7 @@ public class Player_Brain : GenericFunctions, IUpdateable
 	void Die()
 	{
 		if (GodMode || state == PlayerState.DEAD) return;
-		_manager.PlayerIsDead(false);
+		gameManager.PlayerIsDead(false);
 	}
 
 	/// <summary>
@@ -355,8 +363,15 @@ public class Player_Brain : GenericFunctions, IUpdateable
 
 	void UpdateForward()
 	{
-		float pivot = SmoothFormula(_followCameraTimer.CurrentTime, cameraFollowTime);
-		if (_followCameraTimer.Counting) transform.eulerAngles = new Vector3(0, Mathf.LerpAngle(transform.eulerAngles.y, _manager.GiveCamera().eulerAngles.y, pivot), 0);
+		if (walkInput != Vector2.zero && targetDirection.magnitude > .1f)
+		{
+			targetDirection.Normalize();
+			float differenceRotation = Vector3.Angle(transform.forward, targetDirection);
+
+			float dot = Vector3.Dot(transform.right, targetDirection);
+			var leastTravelDirection = dot < 0 ? -1 : 1;
+			transform.Rotate(transform.up, differenceRotation * leastTravelDirection * properties.TurnSpeed * Time.deltaTime);
+		}
 	}
 	#endregion
 

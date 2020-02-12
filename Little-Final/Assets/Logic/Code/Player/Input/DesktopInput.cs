@@ -5,7 +5,7 @@ using UnityEngine;
 public class DesktopInput : MonoBehaviour, IPlayerInput
 {
 	#region Public
-	public Vector2 ReadHorInput()
+	public Vector2 ReadWalkInput()
 	{
 		return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 	}

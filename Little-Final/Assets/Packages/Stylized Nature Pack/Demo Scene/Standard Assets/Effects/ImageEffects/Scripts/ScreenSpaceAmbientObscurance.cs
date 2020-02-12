@@ -7,15 +7,15 @@ namespace UnityStandardAssets.ImageEffects
     [RequireComponent (typeof(Camera))]
     [AddComponentMenu ("Image Effects/Rendering/Screen Space Ambient Obscurance")]
     class ScreenSpaceAmbientObscurance : PostEffectsBase {
-        [Range (0,3)]
+        [UnityEngine.Range(0,3)]
         public float intensity = 0.5f;
-        [Range (0.1f,3)]
+        [UnityEngine.Range(0.1f,3)]
         public float radius = 0.2f;
-        [Range (0,3)]
+        [UnityEngine.Range(0,3)]
         public int blurIterations = 1;
-        [Range (0,5)]
+        [UnityEngine.Range(0,5)]
         public float blurFilterDistance = 1.25f;
-        [Range (0,1)]
+        [UnityEngine.Range(0,1)]
         public int downsample = 0;
 
         public Texture2D rand = null;

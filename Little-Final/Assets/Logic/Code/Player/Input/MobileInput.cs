@@ -58,7 +58,7 @@ public class MobileInput : MonoBehaviour, IPlayerInput, IUpdateable
 	#endregion
 
 	#region Public
-	public Vector2 ReadHorInput()
+	public Vector2 ReadWalkInput()
 	{
 		throw new System.NotImplementedException();
 	}

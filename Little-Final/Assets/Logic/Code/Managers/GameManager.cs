@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour, IUpdateable
 	[SerializeField]
 	Transform player;
 	[SerializeField]
-	Player_Properties_SO playerProperties;
+	PlayerProperties playerProperties;
 	[SerializeField]
 	[Range(0, 1f)]
 	float timeScale = 1;
@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour, IUpdateable
 			return _playerIsAlive;
 		}
 	}
-	public Player_Properties_SO PlayerProperties
+	public PlayerProperties PlayerProperties
 	{
 		get
 		{
