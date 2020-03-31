@@ -10,10 +10,12 @@ public class GameParameters : ScriptableObject
 	{
 		get
 		{
+			//tomo la primer instancia que haya en la carpeta Resources
 			if (!instance)
 			{
 				instance = Resources.FindObjectsOfTypeAll<GameParameters>()[0];
 			}
+			//si no encuentro un asset, creo uno vacío
 			if (!instance)
 			{
 				instance = CreateInstance<GameParameters>();

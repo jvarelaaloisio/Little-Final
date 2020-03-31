@@ -8,7 +8,6 @@ public class asdfJump : StateMachineBehaviour
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		animator.applyRootMotion = false;
-		animator.GetComponent<Rigidbody>().AddForce(Vector3.up * 3, ForceMode.Impulse);
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

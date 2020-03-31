@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 public class TestMovementPlayer : MonoBehaviour
 {
+	public PlayerProperties playerProperties;
 	public CapsuleCollider landCollider;
 	Animator myAnimator;
 	TestJump script;
 	public float turnSpeed = 2,
-		jumpForce = 3.5f,
 		runSpeed = 10;
 	Vector3 targetDirection;
 	Vector2 input;
+
 	private void Start()
 	{
+		playerProperties = GameParameters.Instance.PlayerProperties;
 		myAnimator = GetComponent<Animator>();
 		script = myAnimator.GetBehaviour<TestJump>();
 		script.landCollider = landCollider;
@@ -24,7 +26,8 @@ public class TestMovementPlayer : MonoBehaviour
 		if (Input.GetButtonDown("Jump"))
 		{
 			myAnimator.SetTrigger("Jump");
-			//this.GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+			print("jump");
+			this.GetComponent<Rigidbody>().AddForce(Vector3.up * playerProperties.JumpForce, ForceMode.Impulse);
 		}
 
 		float speed = Mathf.Abs(input.x) + Mathf.Abs(input.y);
