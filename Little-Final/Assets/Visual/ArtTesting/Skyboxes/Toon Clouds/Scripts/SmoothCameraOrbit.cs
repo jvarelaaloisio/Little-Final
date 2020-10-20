@@ -78,60 +78,60 @@ public class SmoothCameraOrbit : MonoBehaviour
     void LateUpdate()
     {
         // If Control and Alt and Middle button? ZOOM!
-        if (Input.GetMouseButton(2) && Input.GetKey(KeyCode.LeftAlt) && Input.GetKey(KeyCode.LeftControl))
+        if (UnityEngine.Input.GetMouseButton(2) && UnityEngine.Input.GetKey(KeyCode.LeftAlt) && UnityEngine.Input.GetKey(KeyCode.LeftControl))
         {
-            desiredDistance -= Input.GetAxis("Mouse Y") * Time.deltaTime * zoomRate*0.125f * Mathf.Abs(desiredDistance);
+			desiredDistance -= UnityEngine.Input.GetAxis("Mouse Y") * Time.deltaTime * zoomRate * 0.125f * Mathf.Abs(desiredDistance);
         }
         // If middle mouse and left alt are selected? ORBIT
-        else if (Input.GetMouseButton(0) )
+        else if (UnityEngine.Input.GetMouseButton(0) )
         {
-            xDeg += Input.GetAxis("Mouse X") * xSpeed * 0.02f;
-            yDeg -= Input.GetAxis("Mouse Y") * ySpeed * 0.02f;
-			            //Clamp the vertical axis for the orbit
-            yDeg = ClampAngle(yDeg, yMinLimit, yMaxLimit);
-            // set camera rotation
-            desiredRotation = Quaternion.Euler(yDeg, xDeg, 0);
-            currentRotation = transform.rotation;
-           	rotation = Quaternion.Lerp(currentRotation, desiredRotation, Time.deltaTime * zoomDampening);
-        	transform.rotation = rotation;
+			xDeg += UnityEngine.Input.GetAxis("Mouse X") * xSpeed * 0.02f;
+			yDeg -= UnityEngine.Input.GetAxis("Mouse Y") * ySpeed * 0.02f;
+			//Clamp the vertical axis for the orbit
+			yDeg = ClampAngle(yDeg, yMinLimit, yMaxLimit);
+			// set camera rotation
+			desiredRotation = Quaternion.Euler(yDeg, xDeg, 0);
+			currentRotation = transform.rotation;
+			rotation = Quaternion.Lerp(currentRotation, desiredRotation, Time.deltaTime * zoomDampening);
+			transform.rotation = rotation;
 			///////// Reset idle timers
-			idleTimer=0;
-            idleSmooth=0;
+			idleTimer = 0;
+			idleSmooth = 0;
        
 		}else{
-		    //////// Smooth idle rotation
-			idleTimer+=Time.deltaTime;
+			//////// Smooth idle rotation
+			idleTimer += Time.deltaTime;
 			if(idleTimer > autoRotate && autoRotate > 0){
-				idleSmooth+=(Time.deltaTime+idleSmooth)*0.005f;
+				idleSmooth += (Time.deltaTime + idleSmooth) *0.005f;
 				idleSmooth = Mathf.Clamp(idleSmooth, 0, 1);
 				xDeg += xSpeed * 0.001f * idleSmooth;
 			}
 			///////// Smooth idle rotation ends
-			
+
 			///////// Smooth exit
-            //Clamp the vertical axis for the orbit
-            yDeg = ClampAngle(yDeg, yMinLimit, yMaxLimit);
-            // set camera rotation
-            desiredRotation = Quaternion.Euler(yDeg, xDeg, 0);
-            currentRotation = transform.rotation;
-           	rotation = Quaternion.Lerp(currentRotation, desiredRotation, Time.deltaTime * zoomDampening*2);
-        	transform.rotation = rotation;
+			//Clamp the vertical axis for the orbit
+			yDeg = ClampAngle(yDeg, yMinLimit, yMaxLimit);
+			// set camera rotation
+			desiredRotation = Quaternion.Euler(yDeg, xDeg, 0);
+			currentRotation = transform.rotation;
+			rotation = Quaternion.Lerp(currentRotation, desiredRotation, Time.deltaTime * zoomDampening * 2);
+			transform.rotation = rotation;
 			///////// Smooth exit ends
 		}
-		
-			///////// Middle click disabled
-//         otherwise if middle mouse is selected, we pan by way of transforming the target in screenspace
-//        else if (Input.GetMouseButton(2))
-//        {
-//            grab the rotation of the camera so we can move in a psuedo local XY space
-//            target.rotation = transform.rotation;
-//            target.Translate(Vector3.right * -Input.GetAxis("Mouse X") * panSpeed);
-//            target.Translate(transform.up * -Input.GetAxis("Mouse Y") * panSpeed, Space.World);
-//        }
 
-        //Orbit Position
-        // affect the desired Zoom distance if we roll the scrollwheel
-        desiredDistance -= Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * zoomRate * Mathf.Abs(desiredDistance);
+		///////// Middle click disabled
+		//         otherwise if middle mouse is selected, we pan by way of transforming the target in screenspace
+		//        else if (Input.GetMouseButton(2))
+		//        {
+		//            grab the rotation of the camera so we can move in a psuedo local XY space
+		//            target.rotation = transform.rotation;
+		//            target.Translate(Vector3.right * -Input.GetAxis("Mouse X") * panSpeed);
+		//            target.Translate(transform.up * -Input.GetAxis("Mouse Y") * panSpeed, Space.World);
+		//        }
+
+		//Orbit Position
+		// affect the desired Zoom distance if we roll the scrollwheel
+		desiredDistance -= UnityEngine.Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * zoomRate * Mathf.Abs(desiredDistance);
         //clamp the zoom min/max
         desiredDistance = Mathf.Clamp(desiredDistance, minDistance, maxDistance);
         // For smoothing of the zoom, lerp distance

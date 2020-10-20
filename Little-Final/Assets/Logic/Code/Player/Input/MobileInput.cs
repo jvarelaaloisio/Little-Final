@@ -58,7 +58,7 @@ public class MobileInput : MonoBehaviour, IPlayerInput, IUpdateable
 	#endregion
 
 	#region Public
-	public Vector2 ReadWalkInput()
+	public Vector2 ReadHorInput()
 	{
 		throw new System.NotImplementedException();
 	}
@@ -71,6 +71,10 @@ public class MobileInput : MonoBehaviour, IPlayerInput, IUpdateable
 	{
 		throw new System.NotImplementedException();
 	}
+	public bool ReadLongJumpInput()
+	{
+		throw new NotImplementedException();
+	}
 
 	public bool ReadPickInput()
 	{
@@ -81,6 +85,12 @@ public class MobileInput : MonoBehaviour, IPlayerInput, IUpdateable
 	{
 		throw new NotImplementedException();
 	}
+
+	public bool ReadGlideInput()
+	{
+		throw new NotImplementedException();
+	}
+
 
 
 	#endregion

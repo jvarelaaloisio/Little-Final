@@ -28,8 +28,8 @@ public class Debug_Console : MonoBehaviour, IUpdateable
 	UpdateManager _uManager;
 	GameManager _gManager;
 	GameObject _player;
-	Player_Body _playerBody;
-	Player_Brain _playerBrain;
+	Player_Body_OLD _playerBody;
+	Player_Brain_OLD _playerBrain;
 	List<Command> _commands = new List<Command>();
 	enum Cmd
 	{
@@ -50,8 +50,8 @@ public class Debug_Console : MonoBehaviour, IUpdateable
 	{
 		try
 		{
-			_playerBrain = GameObject.FindObjectOfType<Player_Brain>();
-			_playerBody = GameObject.FindObjectOfType<Player_Body>();
+			_playerBrain = GameObject.FindObjectOfType<Player_Brain_OLD>();
+			_playerBody = GameObject.FindObjectOfType<Player_Body_OLD>();
 		}
 		catch (NullReferenceException)
 		{
@@ -191,7 +191,7 @@ public class Debug_Console : MonoBehaviour, IUpdateable
 	/// </summary>
 	void ReadInput()
 	{
-		if (Input.GetButtonDown("Console"))
+		if (UnityEngine.Input.GetButtonDown("Console"))
 		{
 			_opened = !_opened;
 			Container.SetActive(_opened);
@@ -203,7 +203,7 @@ public class Debug_Console : MonoBehaviour, IUpdateable
 		}
 		if (_opened)
 		{
-			if (Input.GetKeyDown(KeyCode.Return))
+			if (UnityEngine.Input.GetKeyDown(KeyCode.Return))
 			{
 				ExecuteCommand();
 			}

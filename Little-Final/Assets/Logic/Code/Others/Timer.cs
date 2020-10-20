@@ -74,12 +74,14 @@ public class Timer : MonoBehaviour, IUpdateable
 	#region Public
 	public void Play()
 	{
+		_uManager.RemoveItem(this);
 		_uManager.AddItem(this);
 		_counting = true;
 		_currentTime = 0;
 	}
 	public void Stop()
 	{
+		_uManager.RemoveItem(this);
 		_counting = false;
 		_currentTime = 0;
 	}
@@ -87,6 +89,11 @@ public class Timer : MonoBehaviour, IUpdateable
 	{
 		_totalTime = newTotalTime;
 		_id = newID;
+	}
+
+	private void OnDestroy()
+	{
+		_uManager.RemoveItem(this);
 	}
 	#endregion
 }

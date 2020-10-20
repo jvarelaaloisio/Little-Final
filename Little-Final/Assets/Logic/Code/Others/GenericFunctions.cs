@@ -14,11 +14,5 @@ public abstract class GenericFunctions : MonoBehaviour
 	}
 
 	protected abstract void TimerFinishedHandler(string ID);
-
-	//protected float SmoothFormula(float x, float length)
-	//{
-	//	float result = (Mathf.Cos(x * Mathf.PI / length + Mathf.PI) + 1) / 2;
-	//	return result;
-	//}
 	#endregion
 }

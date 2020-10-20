@@ -13,7 +13,11 @@ public class GameParameters : ScriptableObject
 			//tomo la primer instancia que haya en la carpeta Resources
 			if (!instance)
 			{
-				instance = Resources.FindObjectsOfTypeAll<GameParameters>()[0];
+				GameParameters[] candidates = Resources.FindObjectsOfTypeAll<GameParameters>();
+				if (candidates.Length > 0)
+				{
+					instance = candidates[0];
+				}
 			}
 			//si no encuentro un asset, creo uno vacío
 			if (!instance)
@@ -32,6 +36,5 @@ public class GameParameters : ScriptableObject
 
 	[SerializeField]
 	private PlayerProperties playerProperties;
-
 
 }

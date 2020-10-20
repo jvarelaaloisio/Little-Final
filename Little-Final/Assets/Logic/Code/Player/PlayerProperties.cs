@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-
-[CreateAssetMenu(menuName ="Player/Player Properties")]
+[CreateAssetMenu(menuName = "Player/Player Properties")]
 public class PlayerProperties : ScriptableObject
 {
 	#region Singleton
@@ -12,10 +11,12 @@ public class PlayerProperties : ScriptableObject
 		{
 			if (!instance)
 			{
-				instance = Resources.FindObjectsOfTypeAll<PlayerProperties>()[0];
+				PlayerProperties[] propertiesFound = Resources.LoadAll<PlayerProperties>("");
+				if (propertiesFound.Length >= 1) instance = propertiesFound[0];
 			}
 			if (!instance)
 			{
+				Debug.Log("No PlayerProperties found in Resources folder");
 				instance = CreateInstance<PlayerProperties>();
 			}
 			return instance;
@@ -25,24 +26,36 @@ public class PlayerProperties : ScriptableObject
 	#endregion
 
 	#region Getters
-	public float JumpForce { get => jumpForce; }
-	public float JumpSpeed { get => jumpSpeed; }
-	public float FallMultiplier { get => fallMultiplier; }
-	public float LowJumpMultiplier { get => lowJumpMultiplier; }
-	public float CoyoteTime { get => coyoteTime; }
-	public float GlidingDrag { get => glidingDrag; }
-	public float ClimbSpeed { get => climbSpeed; }
-	public float TurnSpeed { get => turnSpeed; }
+	public float Speed => speed;
+	public float JumpForce => jumpForce;
+	public float JumpSpeed => jumpSpeed;
+	public float LongJumpSpeed => longJumpSpeed;
+	public float LandColliderDelay => landColliderEnableDelay;
+	public float FallMultiplier => fallMultiplier;
+	public float LowJumpMultiplier => lowJumpMultiplier;
+	public float CoyoteTime => coyoteTime;
+	public float GlidingDrag => glidingDrag;
+	public float ClimbSpeed => climbSpeed;
+	public float TurnSpeed => turnSpeed;
+	public float TurnSpeedInTheAir => turnSpeedInTheAir;
+	public float TurnSpeedLongJump => turnSpeedLongJump;
 	#endregion
 
 	[SerializeField]
 	[Range(0, 10, step: .5f)]
-	private float jumpForce,
+	private float speed,
+		jumpForce,
 		jumpSpeed,
+		longJumpSpeed,
 		fallMultiplier,
 		lowJumpMultiplier,
-		coyoteTime,
 		glidingDrag,
 		climbSpeed,
-		turnSpeed;
+		turnSpeed,
+		turnSpeedInTheAir,
+		turnSpeedLongJump;
+	[SerializeField]
+	[UnityEngine.Range(0, 3)]
+	private float coyoteTime,
+		landColliderEnableDelay;
 }

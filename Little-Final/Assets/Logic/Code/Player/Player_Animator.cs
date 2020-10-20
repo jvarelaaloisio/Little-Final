@@ -10,11 +10,11 @@ public class Player_Animator : MonoBehaviour, IUpdateable
 	#region Variables
 
 	#region Constant
-	const string CrouchFlag = "Crouch",
-	speedX = "SpeedX",
-	speedY = "SpeedY",
-	speedZ = "SpeedZ",
-	animState = "State";
+	const string CROUCH_FLAG = "Crouch",
+	SPEED_X = "SpeedX",
+	SPEED_Y = "SpeedY",
+	SPEED_Z = "SpeedZ",
+	ANIMATION_STATE = "State";
 	#endregion
 
 	#region Public
@@ -23,14 +23,14 @@ public class Player_Animator : MonoBehaviour, IUpdateable
 
 	#region Private
 	UpdateManager _uManager;
-	Player_Body _body;
+	Player_Body_OLD _body;
 	Animator _anim;
 	PlayerState _state;
 	PlayerState State
 	{
 		set
 		{
-			if (_state != value) _anim.SetFloat(animState, (int)value);
+			if (_state != value) _anim.SetFloat(ANIMATION_STATE, (int)value);
 			_state = value;
 		}
 	}
@@ -60,7 +60,7 @@ public class Player_Animator : MonoBehaviour, IUpdateable
 		}
 		try
 		{
-			_body = GetComponentInParent<Player_Body>();
+			_body = GetComponentInParent<Player_Body_OLD>();
 		}
 		catch (NullReferenceException)
 		{
@@ -88,14 +88,14 @@ public class Player_Animator : MonoBehaviour, IUpdateable
 
 	public void SetCrouch(bool Value)
 	{
-		_anim.SetBool(CrouchFlag, Value);
+		_anim.SetBool(CROUCH_FLAG, Value);
 	}
 
 	public void SetSpeedParameter(Vector3 Speed)
 	{
-		_anim.SetFloat(speedX, Speed.x);
-		_anim.SetFloat(speedY, Speed.y);
-		_anim.SetFloat(speedZ, Speed.z);
+		_anim.SetFloat(SPEED_X, Speed.x);
+		_anim.SetFloat(SPEED_Y, Speed.y);
+		_anim.SetFloat(SPEED_Z, Speed.z);
 	}
 
 	public void ChangeState(PlayerState newState)

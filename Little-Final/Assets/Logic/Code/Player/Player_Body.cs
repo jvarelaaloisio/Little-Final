@@ -1,19 +1,27 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum BodyEvent
+{
+	TRIGGER,
+	JUMP,
+	CLIMB,
+	LAND
+}
+
 public delegate void BodyEvents(BodyEvent typeOfEvent);
 [RequireComponent(typeof(Rigidbody))]
-public class Player_Body : GenericFunctions, IUpdateable, IBody
+public class Player_Body : MonoBehaviour, IUpdateable, IBody
 {
 	#region Variables
 
-	public Layer_SO climbableTopLayer;
+	public SO_Layer climbableTopLayer;
 
 	#region Public
 	public event BodyEvents BodyEvents;
 	public Transform lastClimbable;
+	public Collider landCollider;
 	#endregion
 
 	#region Serialized
@@ -37,16 +45,16 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	#endregion
 
 	#region Private
+
 	UpdateManager updateManager;
 	AudioManager audioManager;
 
-	PlayerProperties properties;
 	Rigidbody rb;
 	Timer _colTimer, _coyoteTimer, _jumpTimer, _climbTimer;
 
 	ContactPoint lastContact;
 	Vector3 _collisionAngles;
-	float JumpingAccelerationFactor => flags[Flag.IN_THE_AIR] ? properties.JumpSpeed : 1;
+	float JumpingAccelerationFactor => flags[Flag.IN_THE_AIR] ? PlayerProperties.Instance.JumpSpeed : 1;
 	#endregion
 
 	#region Getters
@@ -65,23 +73,16 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		}
 	}
 
+	#endregion
+
+	#region Setters
 	public bool IsInTheAir
 	{
 		get
 		{
 			return flags[Flag.IN_THE_AIR];
 		}
-	}
-	#endregion
-
-	#region Setters
-	public bool PlayerInTheAir
-	{
-		get
-		{
-			return flags[Flag.IN_THE_AIR];
-		}
-		set
+		/*set
 		{
 			if (!value)
 			{
@@ -96,14 +97,14 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 					_coyoteTimer.Stop();
 					flags[Flag.IN_COYOTE_TIME] = false;
 				}
-				Glide(false);
+				TurnGlide(false);
 			}
 			else if (!flags[Flag.IN_COYOTE_TIME] && !flags[Flag.IN_THE_AIR] && !flags[Flag.CLIMBING])
 			{
 				_coyoteTimer.Play();
 				flags[Flag.IN_COYOTE_TIME] = true;
 			}
-		}
+		}*/
 	}
 	public bool CollidingWithClimbable
 	{
@@ -189,7 +190,6 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	#region Unity
 	void Start()
 	{
-		audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
 		try
 		{
 			updateManager = GameObject.FindObjectOfType<UpdateManager>();
@@ -199,18 +199,9 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		{
 			print(this.name + "update manager not found");
 		}
-		try
-		{
-			properties = GameObject.FindObjectOfType<GameManager>().PlayerProperties;
-		}
-		catch (NullReferenceException)
-		{
-			print(this.name + "no gameManager/playerProperties found");
-		}
 		rb = GetComponent<Rigidbody>();
 
 		SetupFlags();
-		InitializeTimers();
 	}
 	public void OnUpdate()
 	{
@@ -232,21 +223,11 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		}
 	}
 
-	/// <summary>
-	/// Setups the timers
-	/// </summary>
-	void InitializeTimers()
-	{
-		_colTimer = SetupTimer(_colTimeToOff, "Collider Timer");
-		_coyoteTimer = SetupTimer(properties.CoyoteTime, "Coyote Timer");
-		_jumpTimer = SetupTimer(_inTheAirTimeToOff, "In the Air Timer");
-		_climbTimer = SetupTimer(climbTimeToOff, "Climb Off Timer");
-	}
 
 	/// <summary>
 	/// Event Handler for the timers
 	/// </summary>
-	protected override void TimerFinishedHandler(string ID)
+	void TimerFinishedHandler(string ID)
 	{
 		switch (ID)
 		{
@@ -284,16 +265,15 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	/// <summary>
 	/// This function lets the body know if it should move or if moving would cause trouble
 	/// </summary>
-	/// <param name="Input">Player's input</param>
+	/// <param name="direction">Player's input</param>
 	/// <returns></returns>
-	bool DecideIfWalk(Vector2 Input)
+	bool CheckCollisionAngle(Vector3 direction)
 	{
 		//Set Variables
 		Vector3 horizontalCollisionNormal = lastContact.normal;
 		horizontalCollisionNormal.y = 0;
-		Vector3 inputNormal = transform.forward * Input.y + transform.right * Input.x;
 
-		_collisionAngles = new Vector2(Vector3.Angle(inputNormal, horizontalCollisionNormal), Vector3.Angle(transform.up, lastContact.normal));
+		_collisionAngles = new Vector2(Vector3.Angle(direction, horizontalCollisionNormal), Vector3.Angle(transform.up, lastContact.normal));
 
 		//Conditions
 		bool _conditionA = (_collisionAngles.y > _yMinAngle && _collisionAngles.y < _yMaxAngle);
@@ -312,26 +292,17 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		if (flags[Flag.JUMP_REQUEST])
 		{
 			flags[Flag.JUMP_REQUEST] = false;
-			if (!flags[Flag.IN_THE_AIR])
-			{
-				//Physics
-				Vector3 newVel = rb.velocity;
-				newVel.y = 0;
-				rb.velocity = newVel;
-				rb.AddForce(Vector3.up * properties.JumpForce, ForceMode.Impulse);
+			//Physics
+			Vector3 newVel = rb.velocity;
+			newVel.y = 0;
+			rb.velocity = newVel;
+			rb.AddForce(Vector3.up * PlayerProperties.Instance.JumpForce, ForceMode.Impulse);
+			//Event
+			BodyEvents?.Invoke(BodyEvent.JUMP);
+			//_jumpTimer.Play();
 
-				flags[Flag.IN_THE_AIR] = true;
-				//Event
-				BodyEvents?.Invoke(BodyEvent.JUMP);
-				_jumpTimer.Play();
-
-				//Sound
-				PlaySound(0);
-			}
-		}
-		else
-		{
-			Glide(flags[Flag.GLIDE_REQUEST]);
+			//Sound
+			PlaySound(0);
 		}
 	}
 
@@ -342,7 +313,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	{
 		if (rb.velocity.y < .5 && rb.velocity.y > -15)
 		{
-			rb.velocity += Vector3.up * Physics2D.gravity.y * (properties.FallMultiplier - 1) * Time.deltaTime;
+			rb.velocity += Vector3.up * Physics2D.gravity.y * (PlayerProperties.Instance.FallMultiplier - 1) * Time.deltaTime;
 		}
 	}
 
@@ -371,13 +342,13 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	/// Turn on and off the gliding
 	/// </summary>
 	/// <param name="HoldingButton"></param>
-	void Glide(bool HoldingButton)
+	public void TurnGlide(bool HoldingButton)
 	{
-		if (HoldingButton && rb.velocity.y < 0 && flags[Flag.IN_THE_AIR])
+		if (HoldingButton && rb.velocity.y < 0 /*&& flags[Flag.IN_THE_AIR]*/)
 		{
 			if (!flags[Flag.GLIDING])
 			{
-				rb.drag = properties.GlidingDrag;
+				rb.drag = PlayerProperties.Instance.GlidingDrag;
 				flags[Flag.GLIDING] = true;
 			}
 		}
@@ -392,7 +363,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	{
 		try
 		{
-			audioManager.PlayCharacterSound(_soundEffects[Index]);
+			//audioManager.PlayCharacterSound(_soundEffects[Index]);
 
 		}
 		catch (NullReferenceException)
@@ -408,26 +379,12 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	/// Sets the Velocity for the Player
 	/// </summary>
 	/// <param name="input"></param>
-	public void Walk(Vector2 input)
+	public void MoveHorizontally(Vector3 direction, float speed)
 	{
-		Vector3 NewVel;
-		if (DecideIfWalk(input))
+		if (CheckCollisionAngle(direction))
 		{
-			if (input.y == 0) NewVel = transform.right * input.x * Speed * JumpingAccelerationFactor;
-			else
-			{
-				NewVel = transform.forward * input.y * Speed * JumpingAccelerationFactor;
-				int rotationDirection = input.y > 0 ? 1 : -1;
-				transform.Rotate(transform.up * input.x * properties.TurnSpeed * rotationDirection);
-			}
-			NewVel += Vector3.up * rb.velocity.y;
-			rb.velocity = NewVel;
+			rb.velocity = direction * speed + rb.velocity.y * Vector3.up;
 		}
-		else
-		{
-			//NewVel = Vector3.zero + Vector3.up * rb.velocity.y;
-		}
-		//rb.velocity = NewVel;
 	}
 
 	public void Climb(Vector2 Input)
@@ -435,7 +392,7 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		if (!flags[Flag.CLIMBING]) return;
 		if (lastClimbable) transform.forward = lastClimbable.forward;
 		if (flags[Flag.TOUCHING_CLIMBABLE_TOP_SOLID] && Input.y > 0) Input.y = 0;
-		transform.position += (transform.right * Input.x + transform.up * Input.y) * properties.ClimbSpeed * Time.deltaTime;
+		transform.position += (transform.right * Input.x + transform.up * Input.y) * PlayerProperties.Instance.ClimbSpeed * Time.deltaTime;
 	}
 
 	/// <summary>
@@ -443,19 +400,22 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 	/// </summary>
 	public void StopJump()
 	{
-		rb.velocity += Vector3.up * Physics2D.gravity.y * (properties.LowJumpMultiplier - 1) * Time.deltaTime;
+		rb.velocity += Vector3.up * Physics2D.gravity.y * (PlayerProperties.Instance.LowJumpMultiplier - 1) * Time.deltaTime;
 	}
 
 	public void PushPlayer()
 	{
 		rb.isKinematic = false;
-		rb.AddForce(Vector3.up * properties.JumpForce + transform.forward, ForceMode.Impulse);
-
+		rb.AddForce(Vector3.up * PlayerProperties.Instance.JumpForce + transform.forward, ForceMode.Impulse);
 	}
 	public void Push(Vector3 direction, float force)
 	{
-		Glide(false);
+		TurnGlide(false);
 		rb.AddForce(direction.normalized * force, ForceMode.Impulse);
+	}
+	public Collider GetLandCollider()
+	{
+		return landCollider;
 	}
 	#endregion
 
@@ -466,6 +426,16 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		{
 			BodyEvents(BodyEvent.TRIGGER);
 		}
+		else
+		{
+			flags[Flag.IN_THE_AIR] = false;
+			BodyEvents?.Invoke(BodyEvent.LAND);
+		}
+	}
+	private void OnTriggerExit(Collider other)
+	{
+		flags[Flag.IN_THE_AIR] = true;
+		BodyEvents?.Invoke(BodyEvent.JUMP);
 	}
 
 	private void OnCollisionStay(Collision collision)
@@ -473,14 +443,5 @@ public class Player_Body : GenericFunctions, IUpdateable, IBody
 		flags[Flag.COLLIDING] = true;
 		lastContact = collision.contacts[0];
 	}
-
-	private void OnCollisionExit(Collision collision)
-	{
-		if (flags[Flag.COLLIDING])
-		{
-			_colTimer.Play();
-		}
-	}
-
 	#endregion
 }

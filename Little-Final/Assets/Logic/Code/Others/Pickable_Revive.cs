@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Damage_Handler))]
+[RequireComponent(typeof(DamageHandler))]
 public class Pickable_Revive : MonoBehaviour
 {
-    Damage_Handler _dhandler;
+    DamageHandler _dhandler;
     Vector3 origin;
     void Start()
     {
         origin = transform.position;
-        _dhandler = GetComponent<Damage_Handler>();
+        _dhandler = GetComponent<DamageHandler>();
         _dhandler.LifeChangedEvent += GoToOrigin;
     }
 

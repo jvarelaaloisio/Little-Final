@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public delegate void Damage_Events(float life);
-public class Damage_Handler : GenericFunctions, IDamageable
+public class DamageHandler : GenericFunctions, IDamageable
 {
 	#region Variables
 
@@ -17,22 +17,15 @@ public class Damage_Handler : GenericFunctions, IDamageable
 
 	#region Private
 	Timer _inmunityTimer;
-	bool isInmune;
 	#endregion
 
 	#region Getters
-	public bool IsInmune
-	{
-		get
-		{
-			return isInmune;
-		}
-	}
-    #endregion
-    #endregion
+	public bool IsInmune { get; private set; }
+	#endregion
+	#endregion
 
-    #region Unity
-    private void Start()
+	#region Unity
+	private void Start()
 	{
 		_inmunityTimer = SetupTimer(inmunityTime, "Inmunity Timer");
 	}
@@ -41,15 +34,15 @@ public class Damage_Handler : GenericFunctions, IDamageable
 	#region Private
 	protected override void TimerFinishedHandler(string ID)
 	{
-		isInmune = false;
+		IsInmune = false;
 	}
 	#endregion
 
 	#region Public
 	public void TakeDamage(float damage)
 	{
-		if (isInmune) return;
-		isInmune = true;
+		if (IsInmune) return;
+		IsInmune = true;
 		if (!_inmunityTimer.Counting)
 		{
 			_inmunityTimer.Play();
@@ -61,7 +54,7 @@ public class Damage_Handler : GenericFunctions, IDamageable
 
 	public void FinishInmunity()
 	{
-		isInmune = false;
+		IsInmune = false;
 	}
 	#endregion
 }

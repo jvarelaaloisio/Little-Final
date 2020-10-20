@@ -15,11 +15,11 @@ public class TestJump : StateMachineBehaviour
 			Debug_Console.print("no landCollider Available");
 			try
 			{
-				landCollider = animator.GetComponent<TestMovementPlayer>().landCollider;
+				landCollider = animator.GetComponent<IBody>().GetLandCollider();
 			}
 			catch (NullReferenceException)
 			{
-				Debug_Console.print("no testMovement on player");
+				Debug_Console.print("no body on player");
 				return;
 			}
 		}
@@ -35,7 +35,7 @@ public class TestJump : StateMachineBehaviour
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		animator.applyRootMotion = true;
+		//animator.applyRootMotion = true;
 	}
 
 	// OnStateMove is called right after Animator.OnAnimatorMove()

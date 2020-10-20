@@ -11,10 +11,9 @@ public class TestMovementPlayer : MonoBehaviour
 		runSpeed = 10;
 	Vector3 targetDirection;
 	Vector2 input;
-
 	private void Start()
 	{
-		playerProperties = GameParameters.Instance.PlayerProperties;
+		playerProperties = PlayerProperties.Instance;
 		myAnimator = GetComponent<Animator>();
 		script = myAnimator.GetBehaviour<TestJump>();
 		script.landCollider = landCollider;
@@ -31,9 +30,9 @@ public class TestMovementPlayer : MonoBehaviour
 		}
 
 		float speed = Mathf.Abs(input.x) + Mathf.Abs(input.y);
-		//Animator
-		myAnimator.SetFloat("SpeedY", speed);
-		//direction
+		//		Animator
+		myAnimator.SetFloat("Speed", speed);
+		//		direction
 		var forward = Camera.main.transform.TransformDirection(Vector3.forward);
 		forward.y = 0;
 

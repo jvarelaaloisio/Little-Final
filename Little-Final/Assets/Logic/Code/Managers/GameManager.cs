@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour, IUpdateable
 		{
 			print(this.name + "update manager not found");
 		}
-		if (!player) player = GameObject.FindObjectOfType<Player_Brain>().GetComponent<Transform>();
+		if (!player) player = GameObject.FindObjectOfType<Player_Brain_OLD>().GetComponent<Transform>();
 		Cursor.visible = false;
 	}
 	public void OnUpdate()

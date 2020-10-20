@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DesktopInput : MonoBehaviour, IPlayerInput
+public class DesktopInput : IPlayerInput
 {
 	#region Public
-	public Vector2 ReadWalkInput()
+	public Vector2 ReadHorInput()
 	{
-		return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+		return new Vector2(Input.GetAxis("Horizontal"), UnityEngine.Input.GetAxis("Vertical"));
 	}
 
 	public bool ReadClimbInput()
@@ -17,7 +15,11 @@ public class DesktopInput : MonoBehaviour, IPlayerInput
 
 	public bool ReadJumpInput()
 	{
-		return Input.GetButton("Jump");
+		return Input.GetButtonDown("Jump");
+	}
+	public bool ReadLongJumpInput()
+	{
+		return Input.GetButtonDown("Jump") && Input.GetButton("Crouch");
 	}
 
 	public bool ReadPickInput()
@@ -29,5 +31,11 @@ public class DesktopInput : MonoBehaviour, IPlayerInput
 	{
 		return Input.GetButton("Throw");
 	}
+
+	public bool ReadGlideInput()
+	{
+		return Input.GetButton("Jump");
+	}
+
 	#endregion
 }

@@ -23,10 +23,10 @@ public class Flight:MonoBehaviour{
             int roll = 0;
             int pitch = 0;
             int yaw = 0;
-            roll = (int)(Input.GetAxis("Horizontal") * (Time.deltaTime * _rotationSpeed));
-            pitch = (int)(Input.GetAxis("Vertical") * -(Time.deltaTime * _rotationSpeed));
-            yaw = (int)(Input.GetAxis("Horizontal2") * (Time.deltaTime * _rotationSpeed));
-            _speed = Input.GetAxis("Vertical2") * -(Time.deltaTime * _acceleration);
+            roll = (int)(UnityEngine.Input.GetAxis("Horizontal") * (Time.deltaTime * _rotationSpeed));
+            pitch = (int)(UnityEngine.Input.GetAxis("Vertical") * -(Time.deltaTime * _rotationSpeed));
+            yaw = (int)(UnityEngine.Input.GetAxis("Horizontal2") * (Time.deltaTime * _rotationSpeed));
+		_speed = UnityEngine.Input.GetAxis("Vertical2") * -(Time.deltaTime * _acceleration);
     		_speed = Mathf.Clamp(_speed, _minSpeed, _maxSpeed);
             
     //        if(_speed < _minSpeed){
