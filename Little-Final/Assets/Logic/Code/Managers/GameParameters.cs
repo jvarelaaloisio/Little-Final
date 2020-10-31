@@ -31,10 +31,10 @@ public class GameParameters : ScriptableObject
 	#endregion
 
 	#region Getters
-	public PlayerProperties PlayerProperties { get => playerProperties; }
+	public PP_Walk PlayerProperties { get => playerProperties; }
 	#endregion
 
 	[SerializeField]
-	private PlayerProperties playerProperties;
+	private PP_Walk playerProperties;
 
 }

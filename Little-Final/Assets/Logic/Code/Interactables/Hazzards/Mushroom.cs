@@ -17,7 +17,7 @@ public class Mushroom : Hazzard
 
 	#region Private
 	SphereCollider _collider;
-	Timer _damageTurnOnTimer,
+	Timer_DEPRECATED _damageTurnOnTimer,
 		_damageTurnOffTimer,
 		_ticTimer;
 	Animation anim;

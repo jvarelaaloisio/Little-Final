@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class HardCode : GenericFunctions, IUpdateable
+public class HardCode : GenericFunctions, IUpdateable_DEPRECATED
 {
     [SerializeField]
     float moveTime;
-    UpdateManager _uManager;
-    Timer _moveTimer;
+    UpdateManager_DEPRECATED _uManager;
+    Timer_DEPRECATED _moveTimer;
     Vector3 origin, obj;
     void Start()
     {
         try
         {
-            _uManager = GameObject.FindObjectOfType<UpdateManager>();
+            _uManager = GameObject.FindObjectOfType<UpdateManager_DEPRECATED>();
             _uManager.AddItem(this);
         }
         catch (NullReferenceException)

@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MobileInput : MonoBehaviour, IPlayerInput, IUpdateable
+public class MobileInput : MonoBehaviour, IPlayerInput, IUpdateable_DEPRECATED
 {
 	#region Variables
 
@@ -13,7 +13,7 @@ public class MobileInput : MonoBehaviour, IPlayerInput, IUpdateable
 	#endregion
 
 	#region Private
-	UpdateManager _uManager;
+	UpdateManager_DEPRECATED _uManager;
 	UnityEngine.UI.Button[] buttonGOs;
 	enum ButtonType
 	{

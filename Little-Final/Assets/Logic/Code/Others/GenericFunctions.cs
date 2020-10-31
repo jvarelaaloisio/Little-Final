@@ -5,9 +5,9 @@ using UnityEngine;
 public abstract class GenericFunctions : MonoBehaviour
 {
 	#region Private
-	protected Timer SetupTimer(float time, string id)
+	protected Timer_DEPRECATED SetupTimer(float time, string id)
 	{
-		Timer newTimer = gameObject.AddComponent<Timer>();
+		Timer_DEPRECATED newTimer = gameObject.AddComponent<Timer_DEPRECATED>();
 		newTimer.Instantiate(time, id);
 		newTimer.ClockTickingEvent += TimerFinishedHandler;
 		return newTimer;

@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class GameManager : MonoBehaviour, IUpdateable
+public class GameManager : MonoBehaviour, IUpdateable_DEPRECATED
 {
 	#region Variables
 
 	#region Serialized
 	[SerializeField]
-	CameraBehaviour cameraPivot;
+	CameraBehaviour_DEPRECATED cameraPivot;
 	[SerializeField]
 	Transform player;
 	[SerializeField]
-	PlayerProperties playerProperties;
+	PP_Walk playerProperties;
 	[SerializeField]
 	[Range(0, 1f)]
 	float timeScale = 1;
@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour, IUpdateable
 			return _playerIsAlive;
 		}
 	}
-	public PlayerProperties PlayerProperties
+	public PP_Walk PlayerProperties
 	{
 		get
 		{
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour, IUpdateable
 	#endregion
 
 	#region Private
-	UpdateManager _uManager;
+	UpdateManager_DEPRECATED _uManager;
 	bool _pause;
 	bool _playerIsAlive = true;
 	#endregion
@@ -64,14 +64,14 @@ public class GameManager : MonoBehaviour, IUpdateable
 	{
 		try
 		{
-			_uManager = GameObject.FindObjectOfType<UpdateManager>();
+			_uManager = GameObject.FindObjectOfType<UpdateManager_DEPRECATED>();
 			_uManager.AddItem(this);
 		}
 		catch (NullReferenceException)
 		{
 			print(this.name + "update manager not found");
 		}
-		if (!player) player = GameObject.FindObjectOfType<Player_Brain_OLD>().GetComponent<Transform>();
+		if (!player) player = GameObject.FindObjectOfType<Player_Brain_DEPRECATED>().GetComponent<Transform>();
 		Cursor.visible = false;
 	}
 	public void OnUpdate()

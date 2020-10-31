@@ -21,7 +21,7 @@ public class Player_FrontCollider : MonoBehaviour
 	#endregion
 
 	#region Private
-	Player_Body_OLD _body;
+	Player_Body_DEPRECATED _body;
 	Transform lastClimbable = null;
 	IPickable _pickableItem;
 	#endregion
@@ -31,7 +31,7 @@ public class Player_FrontCollider : MonoBehaviour
 	#region Unity
 	void Start()
 	{
-		_body = GetComponentInParent<Player_Body_OLD>();
+		_body = GetComponentInParent<Player_Body_DEPRECATED>();
 	}
 	#endregion
 

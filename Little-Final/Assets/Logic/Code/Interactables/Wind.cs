@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UpdateManagement;
 
 [RequireComponent(typeof(Collider))]
 public class Wind : MonoBehaviour
@@ -9,7 +11,10 @@ public class Wind : MonoBehaviour
 
 	#region Serialized
 	[SerializeField]
-	float force;
+	float force,
+		pushPeriod;
+	List<IBody> bodies;
+	CountDownTimer pushTimer;
 	#endregion
 
 	#endregion
@@ -19,15 +24,35 @@ public class Wind : MonoBehaviour
 	{
 		GetComponent<Collider>().isTrigger = true;
 		GetComponentInChildren<ParticleSystem>().Play();
+		bodies = new List<IBody>();
+		pushTimer = new CountDownTimer(pushPeriod, PushBodies);
+	}
+	#endregion
+
+	#region Private
+	private void PushBodies()
+	{
+		bodies.ForEach(x => x.Push(transform.up, force));
+		pushTimer.StartTimer();
 	}
 	#endregion
 
 	#region Collisions
-	private void OnTriggerStay(Collider other)
+	private void OnTriggerEnter(Collider other)
 	{
 		IBody characterBody = other.GetComponent<IBody>();
-		if (characterBody == null) return;
-		characterBody.Push(transform.up, force);
+		if (bodies.Exists(x => x.GameObject.Equals(characterBody.GameObject)))
+			return;
+		bodies.Add(characterBody);
+		if (!pushTimer.IsTicking)
+			pushTimer.StartTimer();
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		bodies.Remove(other.GetComponent<IBody>());
+		if (bodies.Count <= 0)
+			pushTimer.StopTimer();
 	}
 	#endregion
 

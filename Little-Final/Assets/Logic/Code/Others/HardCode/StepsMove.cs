@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class StepsMove : GenericFunctions, IUpdateable
+public class StepsMove : GenericFunctions, IUpdateable_DEPRECATED
 {
 	Player_Rewards pRewards;
-	UpdateManager _uManager;
+	UpdateManager_DEPRECATED _uManager;
 	public int moonIndex;
 	public float timeToMove;
-	Timer _moveTimer;
+	Timer_DEPRECATED _moveTimer;
 	Vector3 _origin,
 		_obj;
 	void Start()
@@ -18,7 +18,7 @@ public class StepsMove : GenericFunctions, IUpdateable
 		if (!pRewards) return;
 		try
 		{
-			_uManager = GameObject.FindObjectOfType<UpdateManager>();
+			_uManager = GameObject.FindObjectOfType<UpdateManager_DEPRECATED>();
 			_uManager.AddItem(this);
 		}
 		catch (NullReferenceException)

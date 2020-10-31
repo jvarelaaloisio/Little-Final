@@ -29,7 +29,7 @@ public class EW_Player : EditorWindow
 		{
 			typesInAssembly.AddRange(a.GetTypes());
 		}
-		List<Type> typesFiltered = typesInAssembly.FindAll(t => t.IsSubclassOf(typeof(PlayerState_Ab)));
+		List<Type> typesFiltered = typesInAssembly.FindAll(t => t.IsSubclassOf(typeof(PlayerState)));
 
 		return typesFiltered;
 	}

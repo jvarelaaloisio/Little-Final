@@ -1,43 +1,43 @@
-﻿using System.Collections;
+﻿using CharacterMovement;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(DamageHandler))]
 [RequireComponent(typeof(Animator))]
-public class Player_Brain : MonoBehaviour, IUpdateable
+public class Player_Brain : MonoBehaviour, IUpdateable_DEPRECATED
 {
 	#region Variables
 	#region Private
 	IPickable _itemPicked;
-	UpdateManager updateManager;
+	UpdateManager_DEPRECATED updateManager;
 	IBody body;
 	Player_Animator animator;
 	DamageHandler damageHandler;
-	PlayerState_Ab state;
+	PlayerState state;
 	#endregion
-	#region Props
-	public IBody Body { get => body; }
+	#region Properties
+	public IBody Body => body;
+	public bool JumpBuffer { get; set; }
+	public bool LongJumpBuffer { get; set; }
 	#endregion
 	#endregion
 
 	void Start()
 	{
-		updateManager = GameObject.FindObjectOfType<UpdateManager>();
+		updateManager = GameObject.FindObjectOfType<UpdateManager_DEPRECATED>();
 		updateManager?.AddItem(this);
 		body = GetComponent<IBody>();
 		animator = GetComponent<Player_Animator>();
-		body.BodyEvents += BodyEventHandler;
 		//damageHandler.LifeChangedEvent += LifeChangedHandler;
 		//animator.AnimationEvents += AnimationEventHandler;
 		state = new PS_Walk();
 		state.OnStateEnter(this);
 	}
 
-	public void ChangeState<T>() where T : PlayerState_Ab, new()
+	public void ChangeState<T>() where T : PlayerState, new()
 	{
-		//OnStateExit del estado anterior
 		state.OnStateExit();
-		//Creo nuevo estado y corro su OnStateEnter
 		state = new T();
 		//Debug.Log(typeof(T));
 		state.OnStateEnter(this);
@@ -48,6 +48,12 @@ public class Player_Brain : MonoBehaviour, IUpdateable
 		state.OnStateUpdate();
 		if (Input.GetKeyDown(KeyCode.R))
 			Debug.Log(state.ToString());
+		if (Input.GetKeyDown(KeyCode.F))
+		{
+			Debug.DrawRay(transform.position, transform.forward, Color.blue, 1);
+			Debug.DrawRay(transform.position, transform.up, Color.green, 1);
+			Debug.DrawRay(transform.position, transform.right, Color.red, 1);
+		}
 	}
 
 	public void PickItem()
@@ -64,6 +70,11 @@ public class Player_Brain : MonoBehaviour, IUpdateable
 		}*/
 	}
 
+	public void ResetJumpBuffers()
+	{
+		JumpBuffer = false;
+		LongJumpBuffer = false;
+	}
 	#region EventHandlers
 	void BodyEventHandler(BodyEvent eventType)
 	{

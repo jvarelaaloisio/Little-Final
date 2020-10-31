@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Runtime.Serialization;
 
 public enum BodyEvent
 {
@@ -12,7 +14,7 @@ public enum BodyEvent
 
 public delegate void BodyEvents(BodyEvent typeOfEvent);
 [RequireComponent(typeof(Rigidbody))]
-public class Player_Body : MonoBehaviour, IUpdateable, IBody
+public class Player_Body : MonoBehaviour, IUpdateable_DEPRECATED, IBody
 {
 	#region Variables
 
@@ -25,10 +27,6 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	#endregion
 
 	#region Serialized
-	[Header("Movement")]
-	[SerializeField]
-	float Speed = 4;
-
 	[Header("Audio")]
 	[SerializeField]
 	AudioClip[] _soundEffects = null;
@@ -46,119 +44,31 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 
 	#region Private
 
-	UpdateManager updateManager;
+	UpdateManager_DEPRECATED updateManager;
 	AudioManager audioManager;
 
 	Rigidbody rb;
-	Timer _colTimer, _coyoteTimer, _jumpTimer, _climbTimer;
+	Timer_DEPRECATED _colTimer, _coyoteTimer, _jumpTimer, _climbTimer;
 
+	private GameObject lastFloor;
 	ContactPoint lastContact;
 	Vector3 _collisionAngles;
-	float JumpingAccelerationFactor => flags[Flag.IN_THE_AIR] ? PlayerProperties.Instance.JumpSpeed : 1;
+	private float jumpForce;
 	#endregion
 
 	#region Getters
-	public Vector3 Position
-	{
-		get
-		{
-			return transform.position;
-		}
-	}
-	public Vector3 Velocity
-	{
-		get
-		{
-			return rb.velocity;
-		}
-	}
+	public Vector3 Position => transform.position;
+	public Vector3 Velocity => rb.velocity;
+	public GameObject GameObject => gameObject;
+	public Vector3 LastFloorNormal { get; set; }
 
 	#endregion
 
 	#region Setters
-	public bool IsInTheAir
-	{
-		get
-		{
-			return flags[Flag.IN_THE_AIR];
-		}
-		/*set
-		{
-			if (!value)
-			{
-				if (flags[Flag.IN_THE_AIR])
-				{
-					//Event
-					BodyEvents?.Invoke(BodyEvent.LAND);
-					flags[Flag.IN_THE_AIR] = false;
-				}
-				if (flags[Flag.IN_COYOTE_TIME])
-				{
-					_coyoteTimer.Stop();
-					flags[Flag.IN_COYOTE_TIME] = false;
-				}
-				TurnGlide(false);
-			}
-			else if (!flags[Flag.IN_COYOTE_TIME] && !flags[Flag.IN_THE_AIR] && !flags[Flag.CLIMBING])
-			{
-				_coyoteTimer.Play();
-				flags[Flag.IN_COYOTE_TIME] = true;
-			}
-		}*/
-	}
-	public bool CollidingWithClimbable
-	{
-		set
-		{
-			flags[Flag.TOUCHING_CLIMBABLE] = value;
-		}
-	}
-	public bool CollidingWithClimbableTopSolid
-	{
-		set
-		{
-			flags[Flag.TOUCHING_CLIMBABLE_TOP_SOLID] = value;
-		}
-	}
-
-	public bool CollidingWithPickable
-	{
-		get
-		{
-			return flags[Flag.TOUCHING_PICKABLE];
-		}
-		set
-		{
-			flags[Flag.TOUCHING_PICKABLE] = value;
-		}
-	}
-	public bool InputClimb
-	{
-		set
-		{
-			flags[Flag.CLIMB_REQUEST] = value;
-		}
-	}
-	public bool InputJump
-	{
-		set
-		{
-			flags[Flag.JUMP_REQUEST] = true;
-		}
-	}
+	public bool IsInTheAir => flags[Flag.IN_THE_AIR];
 	public bool InputGlide
 	{
-		set
-		{
-			flags[Flag.GLIDE_REQUEST] = value;
-		}
-	}
-	public float flash
-	{
-		set
-		{
-			Speed *= value;
-		}
+		set => flags[Flag.GLIDE_REQUEST] = value;
 	}
 	#endregion
 
@@ -192,7 +102,7 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	{
 		try
 		{
-			updateManager = GameObject.FindObjectOfType<UpdateManager>();
+			updateManager = GameObject.FindObjectOfType<UpdateManager_DEPRECATED>();
 			updateManager.AddFixedItem(this);
 		}
 		catch (NullReferenceException)
@@ -267,7 +177,7 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	/// </summary>
 	/// <param name="direction">Player's input</param>
 	/// <returns></returns>
-	bool CheckCollisionAngle(Vector3 direction)
+	private bool CheckCollisionAngle(Vector3 direction)
 	{
 		//Set Variables
 		Vector3 horizontalCollisionNormal = lastContact.normal;
@@ -287,7 +197,7 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	/// <summary>
 	/// Makes the player jump
 	/// </summary>
-	void ControlJump()
+	private void ControlJump()
 	{
 		if (flags[Flag.JUMP_REQUEST])
 		{
@@ -296,10 +206,9 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 			Vector3 newVel = rb.velocity;
 			newVel.y = 0;
 			rb.velocity = newVel;
-			rb.AddForce(Vector3.up * PlayerProperties.Instance.JumpForce, ForceMode.Impulse);
+			rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 			//Event
 			BodyEvents?.Invoke(BodyEvent.JUMP);
-			//_jumpTimer.Play();
 
 			//Sound
 			PlaySound(0);
@@ -313,7 +222,7 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	{
 		if (rb.velocity.y < .5 && rb.velocity.y > -15)
 		{
-			rb.velocity += Vector3.up * Physics2D.gravity.y * (PlayerProperties.Instance.FallMultiplier - 1) * Time.deltaTime;
+			rb.velocity += Vector3.up * Physics2D.gravity.y * (PP_Jump.Instance.FallMultiplier - 1) * Time.deltaTime;
 		}
 	}
 
@@ -341,14 +250,14 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	/// <summary>
 	/// Turn on and off the gliding
 	/// </summary>
-	/// <param name="HoldingButton"></param>
-	public void TurnGlide(bool HoldingButton)
+	/// <param name="value"></param>
+	public void TurnGlide(bool value)
 	{
-		if (HoldingButton && rb.velocity.y < 0 /*&& flags[Flag.IN_THE_AIR]*/)
+		if (value && rb.velocity.y < 0)
 		{
 			if (!flags[Flag.GLIDING])
 			{
-				rb.drag = PlayerProperties.Instance.GlidingDrag;
+				rb.drag = PP_Jump.Instance.GlidingDrag;
 				flags[Flag.GLIDING] = true;
 			}
 		}
@@ -387,12 +296,19 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 		}
 	}
 
+	public void Move(Vector3 direction, float speed) => transform.position += direction * speed * Time.deltaTime;
+
+	public void Jump(float jumpForce)
+	{
+		this.jumpForce = jumpForce;
+		flags[Flag.JUMP_REQUEST] = true;
+	}
 	public void Climb(Vector2 Input)
 	{
 		if (!flags[Flag.CLIMBING]) return;
 		if (lastClimbable) transform.forward = lastClimbable.forward;
 		if (flags[Flag.TOUCHING_CLIMBABLE_TOP_SOLID] && Input.y > 0) Input.y = 0;
-		transform.position += (transform.right * Input.x + transform.up * Input.y) * PlayerProperties.Instance.ClimbSpeed * Time.deltaTime;
+		transform.position += (transform.right * Input.x + transform.up * Input.y) * PP_Climb.Instance.ClimbSpeed * Time.deltaTime;
 	}
 
 	/// <summary>
@@ -400,17 +316,11 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	/// </summary>
 	public void StopJump()
 	{
-		rb.velocity += Vector3.up * Physics2D.gravity.y * (PlayerProperties.Instance.LowJumpMultiplier - 1) * Time.deltaTime;
+		rb.velocity += Vector3.up * Physics2D.gravity.y * (PP_Jump.Instance.LowJumpMultiplier - 1) * Time.deltaTime;
 	}
 
-	public void PushPlayer()
-	{
-		rb.isKinematic = false;
-		rb.AddForce(Vector3.up * PlayerProperties.Instance.JumpForce + transform.forward, ForceMode.Impulse);
-	}
 	public void Push(Vector3 direction, float force)
 	{
-		TurnGlide(false);
 		rb.AddForce(direction.normalized * force, ForceMode.Impulse);
 	}
 	public Collider GetLandCollider()
@@ -429,6 +339,12 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 		else
 		{
 			flags[Flag.IN_THE_AIR] = false;
+			if(lastFloor != other.gameObject)
+			{
+				lastFloor = other.gameObject;
+				Physics.Raycast(Position, -transform.up, out RaycastHit hit, 10);
+				LastFloorNormal = hit.normal;
+			}
 			BodyEvents?.Invoke(BodyEvent.LAND);
 		}
 	}

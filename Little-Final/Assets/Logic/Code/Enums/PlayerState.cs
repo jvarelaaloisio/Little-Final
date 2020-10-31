@@ -1,9 +1,0 @@
-﻿public enum PlayerState
-{
-	WALKING,
-	JUMPING,
-	CLIMBING,
-	CLIMBING_TO_TOP,
-	GOT_HIT,
-	DEAD
-}

@@ -1,0 +1,9 @@
+﻿public enum PlayerState_DEPRECATED
+{
+	WALKING,
+	JUMPING,
+	CLIMBING,
+	CLIMBING_TO_TOP,
+	GOT_HIT,
+	DEAD
+}

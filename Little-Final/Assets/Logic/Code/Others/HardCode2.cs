@@ -4,10 +4,10 @@ using UnityEngine;
 using System;
 using UnityEngine.SceneManagement;
 
-public class HardCode2 : MonoBehaviour, IUpdateable
+public class HardCode2 : MonoBehaviour, IUpdateable_DEPRECATED
 {
     Player_Rewards pRewards;
-    UpdateManager _uManager;
+    UpdateManager_DEPRECATED _uManager;
     public GameObject Win;
     public int WinScene;
     bool earned;
@@ -17,7 +17,7 @@ public class HardCode2 : MonoBehaviour, IUpdateable
         if (!pRewards) return;
         try
         {
-            _uManager = GameObject.FindObjectOfType<UpdateManager>();
+            _uManager = GameObject.FindObjectOfType<UpdateManager_DEPRECATED>();
             _uManager.AddItem(this);
         }
         catch (NullReferenceException)

@@ -5,7 +5,7 @@ using System;
 
 public delegate void AnimationEvents(AnimationEvent typeOfEvent);
 
-public class Player_Animator : MonoBehaviour, IUpdateable
+public class Player_Animator : MonoBehaviour, IUpdateable_DEPRECATED
 {
 	#region Variables
 
@@ -22,11 +22,11 @@ public class Player_Animator : MonoBehaviour, IUpdateable
 	#endregion
 
 	#region Private
-	UpdateManager _uManager;
-	Player_Body_OLD _body;
+	UpdateManager_DEPRECATED _uManager;
+	Player_Body_DEPRECATED _body;
 	Animator _anim;
-	PlayerState _state;
-	PlayerState State
+	PlayerState_DEPRECATED _state;
+	PlayerState_DEPRECATED State
 	{
 		set
 		{
@@ -43,7 +43,7 @@ public class Player_Animator : MonoBehaviour, IUpdateable
 	{
 		try
 		{
-			_uManager = GameObject.FindObjectOfType<UpdateManager>();
+			_uManager = GameObject.FindObjectOfType<UpdateManager_DEPRECATED>();
 			_uManager.AddItem(this);
 		}
 		catch (NullReferenceException)
@@ -60,7 +60,7 @@ public class Player_Animator : MonoBehaviour, IUpdateable
 		}
 		try
 		{
-			_body = GetComponentInParent<Player_Body_OLD>();
+			_body = GetComponentInParent<Player_Body_DEPRECATED>();
 		}
 		catch (NullReferenceException)
 		{
@@ -98,7 +98,7 @@ public class Player_Animator : MonoBehaviour, IUpdateable
 		_anim.SetFloat(SPEED_Z, Speed.z);
 	}
 
-	public void ChangeState(PlayerState newState)
+	public void ChangeState(PlayerState_DEPRECATED newState)
 	{
 		State = newState;
 	}

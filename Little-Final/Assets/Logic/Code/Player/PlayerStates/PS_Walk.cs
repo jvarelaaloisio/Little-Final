@@ -1,70 +1,71 @@
 ﻿using UnityEngine;
+using CharacterMovement;
 
-public class PS_Walk : PlayerState_Ab
+public class PS_Walk : PlayerState
 {
 	Animator animator;
 	Transform transform;
 	IBody body;
-	Timer coyoteTimer;
+	Timer_DEPRECATED coyoteTimer;
 	public override void OnStateEnter(Player_Brain brain)
 	{
 		base.OnStateEnter(brain);
-
 		animator = brain.GetComponent<Animator>();
 
 		body = brain.GetComponent<Player_Body>();
 		body.BodyEvents += BodyEventsHandler;
 
 		transform = brain.transform;
-		coyoteTimer = TimerHelper.SetupTimer(PlayerProperties.Instance.CoyoteTime, "", brain.gameObject, FinishCoyoteTime);
-	}
+		coyoteTimer = TimerHelper.SetupTimer(PP_Jump.Instance.CoyoteTime, "", brain.gameObject, FinishCoyoteTime);
 
-	private void BodyEventsHandler(BodyEvent eventType)
-	{
-		if (eventType == BodyEvent.JUMP)
-			coyoteTimer.Play();
-	}
+		Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 10);
+		body.LastFloorNormal = hit.normal;
 
-	private void FinishCoyoteTime(string id)
-	{
-		if (body.IsInTheAir)
+		if (brain.LongJumpBuffer)
+		{
+			brain.ResetJumpBuffers();
+			body.Jump(PP_Jump.Instance.LongJumpForce);
+			brain.ChangeState<PS_LongJump>();
+		}
+		else if (brain.JumpBuffer)
+		{
+			brain.ResetJumpBuffers();
+			body.Jump(PP_Jump.Instance.JumpForce);
 			brain.ChangeState<PS_Jump>();
+		}
 	}
 
 	public override void OnStateUpdate()
 	{
-		//		Read Input
 		Vector2 input = InputManager.ReadHorInput();
-		float speed = Mathf.Abs(input.x) + Mathf.Abs(input.y);
-
-		//		Animator
-		animator.SetFloat("Speed", speed);
 
 		Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
-		Debug.DrawRay(transform.position, desiredDirection, Color.green);
+		Debug.DrawRay(transform.position, desiredDirection.normalized / 2, Color.green);
 
-		HorizontalMovementHelper.moveWithRotation(transform,
-											body,
-											desiredDirection,
-											PlayerProperties.Instance.Speed,
-											PlayerProperties.Instance.TurnSpeed);
+		if (HorizontalMovementHelper.IsSafeAngle(transform.position, desiredDirection.normalized, .5f, PP_Walk.Instance.MinSafeAngle))
+			HorizontalMovementHelper.MoveWithRotation(transform,
+												body,
+												desiredDirection,
+												PP_Walk.Instance.Speed,
+												PP_Walk.Instance.TurnSpeed);
 
 		//		Picking
-		if (InputManager.ReadPickInput())
-		{
-			brain.PickItem();
-		}
+		//if (InputManager.ReadPickInput())
+		//{
+		//	brain.PickItem();
+		//}
 
 		if (InputManager.ReadLongJumpInput())
 		{
-			body.InputJump = true;
+			body.Jump(PP_Jump.Instance.LongJumpForce);
 			brain.ChangeState<PS_LongJump>();
 		}
 		else if (InputManager.ReadJumpInput())
 		{
-			body.InputJump = true;
+			body.Jump(PP_Jump.Instance.JumpForce);
 			brain.ChangeState<PS_Jump>();
 		}
+		CheckClimb();
 	}
 
 	public override void OnStateExit()
@@ -73,5 +74,29 @@ public class PS_Walk : PlayerState_Ab
 		coyoteTimer.Stop();
 		GameObject.Destroy(coyoteTimer);
 		brain.Body.BodyEvents -= BodyEventsHandler;
+	}
+	private void FinishCoyoteTime(string id)
+	{
+		if (body.IsInTheAir)
+			brain.ChangeState<PS_Jump>();
+	}
+	private void BodyEventsHandler(BodyEvent eventType)
+	{
+		if (eventType == BodyEvent.JUMP)
+			coyoteTimer.Play();
+	}
+	protected virtual void CheckClimb()
+	{
+		if (InputManager.ReadClimbInput())
+		{
+			if (ClimbHelper.CanClimb(transform.position,
+									transform.forward,
+									PP_Climb.Instance.MaxDistanceToTriggerClimb,
+									PP_Climb.Instance.MaxClimbAngle,
+									out _))
+			{
+				brain.ChangeState<PS_Climb>();
+			}
+		}
 	}
 }

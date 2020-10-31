@@ -16,7 +16,7 @@ public class DamageHandler : GenericFunctions, IDamageable
 	#endregion
 
 	#region Private
-	Timer _inmunityTimer;
+	Timer_DEPRECATED _inmunityTimer;
 	#endregion
 
 	#region Getters

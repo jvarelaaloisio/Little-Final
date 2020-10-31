@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 
-public class Debug_Console : MonoBehaviour, IUpdateable
+public class Debug_Console : MonoBehaviour, IUpdateable_DEPRECATED
 {
 	#region Variables
 
@@ -25,11 +25,11 @@ public class Debug_Console : MonoBehaviour, IUpdateable
 	#endregion
 
 	#region Private
-	UpdateManager _uManager;
+	UpdateManager_DEPRECATED _uManager;
 	GameManager _gManager;
 	GameObject _player;
-	Player_Body_OLD _playerBody;
-	Player_Brain_OLD _playerBrain;
+	Player_Body_DEPRECATED _playerBody;
+	Player_Brain_DEPRECATED _playerBrain;
 	List<Command> _commands = new List<Command>();
 	enum Cmd
 	{
@@ -50,8 +50,8 @@ public class Debug_Console : MonoBehaviour, IUpdateable
 	{
 		try
 		{
-			_playerBrain = GameObject.FindObjectOfType<Player_Brain_OLD>();
-			_playerBody = GameObject.FindObjectOfType<Player_Body_OLD>();
+			_playerBrain = GameObject.FindObjectOfType<Player_Brain_DEPRECATED>();
+			_playerBody = GameObject.FindObjectOfType<Player_Body_DEPRECATED>();
 		}
 		catch (NullReferenceException)
 		{
@@ -67,7 +67,7 @@ public class Debug_Console : MonoBehaviour, IUpdateable
 		}
 		try
 		{
-			_uManager = GameObject.FindObjectOfType<UpdateManager>();
+			_uManager = GameObject.FindObjectOfType<UpdateManager_DEPRECATED>();
 		}
 		catch (NullReferenceException)
 		{

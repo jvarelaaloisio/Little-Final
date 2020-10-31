@@ -5,13 +5,13 @@ using UnityEngine;
 public class Player_FeetCollider : MonoBehaviour
 {
 	#region Variables
-		Player_Body_OLD Body;
+		Player_Body_DEPRECATED Body;
 	#endregion
 
 	#region Unity
 	void Start()
     {
-		Body = GetComponentInParent<Player_Body_OLD>();
+		Body = GetComponentInParent<Player_Body_DEPRECATED>();
     }
 	#endregion
 

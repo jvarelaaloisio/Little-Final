@@ -1,22 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
+using CharacterMovement;
 public class PS_LongJump : PS_Jump
 {
 	public override void OnStateUpdate()
 	{
-		//		Read Input
 		Vector2 input = InputManager.ReadHorInput();
 
 		Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
-		Debug.DrawRay(transform.position, desiredDirection, Color.green);
+		Debug.DrawRay(transform.position, desiredDirection / 4, Color.green);
 
-		HorizontalMovementHelper.moveWithRotation(transform,
-											body,
-											desiredDirection,
-											PlayerProperties.Instance.LongJumpSpeed,
-											PlayerProperties.Instance.TurnSpeedLongJump);
-		ReadInput();
+		if (HorizontalMovementHelper.IsSafeAngle(transform.position, desiredDirection.normalized, .5f, PP_Walk.Instance.MinSafeAngle))
+		{
+			HorizontalMovementHelper.MoveWithRotation(
+														transform,
+														body,
+														desiredDirection,
+														PP_Jump.Instance.LongJumpSpeed,
+														PP_Jump.Instance.TurnSpeedLongJump);
+		}
+
+		ControlGlide();
+		CheckForJumpBuffer();
+		CheckClimb();
 	}
 }
