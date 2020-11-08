@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-[CreateAssetMenu(menuName = "Player/Properties/Walk")]
+[CreateAssetMenu(menuName = "Properties/Player/Walk")]
 public class PP_Walk : ScriptableObject
 {
 	#region Singleton

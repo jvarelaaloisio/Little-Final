@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Player/Properties/Jump")]
+[CreateAssetMenu(menuName = "Properties/Player/Jump")]
 public class PP_Jump : ScriptableObject
 {
 	#region Singleton
@@ -41,7 +41,8 @@ public class PP_Jump : ScriptableObject
 					turnSpeedLongJump;
 	[SerializeField]
 	[UnityEngine.Range(0, 3)]
-	private float coyoteTime;
+	private float coyoteTime,
+		distanceToGround;
 
 	#region Getters
 	public float JumpForce => jumpForce;
@@ -54,5 +55,6 @@ public class PP_Jump : ScriptableObject
 	public float TurnSpeedInTheAir => turnSpeedInTheAir;
 	public float TurnSpeedLongJump => turnSpeedLongJump;
 	public float CoyoteTime => coyoteTime;
+	public float DistanceToGround => distanceToGround;
 	#endregion
 }

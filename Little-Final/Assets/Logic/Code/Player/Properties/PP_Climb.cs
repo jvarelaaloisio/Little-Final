@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(menuName = "Player/Properties/Climb")]
+[CreateAssetMenu(menuName = "Properties/Player/Climb")]
 public class PP_Climb : ScriptableObject
 {
 	#region Singleton

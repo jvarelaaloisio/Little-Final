@@ -58,19 +58,16 @@ public class PS_Climb : PlayerState
 				ResetPosition(hit);
 			}
 			body.Move(moveDirection, PP_Climb.Instance.ClimbSpeed);
-			Physics.Raycast(transform.position, transform.forward, out RaycastHit forwardHit, PP_Climb.Instance.MaxDistanceToTriggerClimb, LayerMask.GetMask("Climbable"));
+			Physics.Raycast(transform.position, transform.forward, out RaycastHit forwardHit, PP_Climb.Instance.MaxDistanceToTriggerClimb, ~LayerMask.GetMask("NonClimbable"));
 			transform.rotation = Quaternion.LookRotation(-forwardHit.normal);
 			Debug.DrawLine(transform.position, hit.point, Color.yellow);
 		}
-		else
-		{
-			if (Vector3.Dot(moveDirection, transform.up) == 1
+		else if (Mathf.Approximately(Vector3.Dot(moveDirection, transform.up), 1)
 				&&
 				ClimbHelper.CanClimbUp(transform.position, transform.up, transform.forward, PP_Climb.Instance.MaxClimbDistanceFromCorners, PP_Climb.Instance.MaxDistanceToTriggerClimb, out RaycastHit cliffHit))
-			{
-				Debug.DrawRay(cliffHit.point, cliffHit.normal / 4, Color.blue, 2);
-				GetOverCliff(cliffHit);
-			}
+		{
+			Debug.DrawRay(cliffHit.point, cliffHit.normal / 4, Color.blue, 2);
+			GetOverCliff(cliffHit);
 		}
 
 		if (!InputManager.ReadClimbInput())

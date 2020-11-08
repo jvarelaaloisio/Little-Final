@@ -5,6 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(DamageHandler))]
 [RequireComponent(typeof(Animator))]
+[SelectionBase]
 public class Player_Brain : MonoBehaviour, IUpdateable_DEPRECATED
 {
 	#region Variables

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.Serialization;
+using CharacterMovement;
 
 public enum BodyEvent
 {
@@ -61,7 +62,7 @@ public class Player_Body : MonoBehaviour, IUpdateable_DEPRECATED, IBody
 	public Vector3 Velocity => rb.velocity;
 	public GameObject GameObject => gameObject;
 	public Vector3 LastFloorNormal { get; set; }
-
+	public bool IsGrounded => !flags[Flag.IN_THE_AIR];
 	#endregion
 
 	#region Setters
@@ -338,8 +339,9 @@ public class Player_Body : MonoBehaviour, IUpdateable_DEPRECATED, IBody
 		}
 		else
 		{
+			FallHelper.AddFloor(other.gameObject);
 			flags[Flag.IN_THE_AIR] = false;
-			if(lastFloor != other.gameObject)
+			if (lastFloor != other.gameObject)
 			{
 				lastFloor = other.gameObject;
 				Physics.Raycast(Position, -transform.up, out RaycastHit hit, 10);
@@ -350,6 +352,7 @@ public class Player_Body : MonoBehaviour, IUpdateable_DEPRECATED, IBody
 	}
 	private void OnTriggerExit(Collider other)
 	{
+		FallHelper.RemoveFloor(other.gameObject);
 		flags[Flag.IN_THE_AIR] = true;
 		BodyEvents?.Invoke(BodyEvent.JUMP);
 	}

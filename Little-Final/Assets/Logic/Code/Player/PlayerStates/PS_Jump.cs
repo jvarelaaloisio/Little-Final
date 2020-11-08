@@ -16,14 +16,15 @@ public class PS_Jump : PlayerState
 		body = brain.GetComponent<Player_Body>();
 		body.BodyEvents += BodyEventsHandler;
 
-
 		animator = brain.GetComponent<Animator>();
 	}
 
 	private void BodyEventsHandler(BodyEvent eventType)
 	{
-		if (eventType.Equals(BodyEvent.LAND))
+		if (eventType.Equals(BodyEvent.LAND) && FallHelper.IsGrounded)
+		{
 			brain.ChangeState<PS_Walk>();
+		}
 	}
 	public override void OnStateUpdate()
 	{
@@ -65,6 +66,7 @@ public class PS_Jump : PlayerState
 			}
 		}
 	}
+
 
 	protected virtual void CheckForJumpBuffer()
 	{

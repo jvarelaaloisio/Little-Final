@@ -13,7 +13,6 @@ public class PS_Walk : PlayerState
 		animator = brain.GetComponent<Animator>();
 
 		body = brain.GetComponent<Player_Body>();
-		body.BodyEvents += BodyEventsHandler;
 
 		transform = brain.transform;
 		coyoteTimer = TimerHelper.SetupTimer(PP_Jump.Instance.CoyoteTime, "", brain.gameObject, FinishCoyoteTime);
@@ -66,6 +65,7 @@ public class PS_Walk : PlayerState
 			brain.ChangeState<PS_Jump>();
 		}
 		CheckClimb();
+		CheckGround();
 	}
 
 	public override void OnStateExit()
@@ -73,17 +73,11 @@ public class PS_Walk : PlayerState
 		base.OnStateExit();
 		coyoteTimer.Stop();
 		GameObject.Destroy(coyoteTimer);
-		brain.Body.BodyEvents -= BodyEventsHandler;
 	}
 	private void FinishCoyoteTime(string id)
 	{
-		if (body.IsInTheAir)
+		if (!FallHelper.IsGrounded)
 			brain.ChangeState<PS_Jump>();
-	}
-	private void BodyEventsHandler(BodyEvent eventType)
-	{
-		if (eventType == BodyEvent.JUMP)
-			coyoteTimer.Play();
 	}
 	protected virtual void CheckClimb()
 	{
@@ -98,5 +92,11 @@ public class PS_Walk : PlayerState
 				brain.ChangeState<PS_Climb>();
 			}
 		}
+	}
+
+	protected virtual void CheckGround()
+	{
+		if(!FallHelper.IsGrounded)
+			coyoteTimer.Play();
 	}
 }

@@ -16,7 +16,7 @@ namespace CharacterMovement
 									direction,
 									out hit,
 									maxDistance,
-									LayerMask.GetMask("Climbable")))
+									~LayerMask.GetMask("NonClimbable")))
 			{
 			Debug.DrawLine(position, hit.point, Color.white);
 				return hit.normal.y * Mathf.Rad2Deg <= Mathf.Abs(maxDegrees);
