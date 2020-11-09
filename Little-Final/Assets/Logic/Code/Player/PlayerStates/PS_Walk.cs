@@ -36,7 +36,7 @@ public class PS_Walk : PlayerState
 
 	public override void OnStateUpdate()
 	{
-		Vector2 input = InputManager.ReadHorInput();
+		Vector2 input = InputManager.GetHorInput();
 
 		Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
 		Debug.DrawRay(transform.position, desiredDirection.normalized / 2, Color.green);
@@ -54,12 +54,12 @@ public class PS_Walk : PlayerState
 		//	brain.PickItem();
 		//}
 
-		if (InputManager.ReadLongJumpInput())
+		if (InputManager.GetLongJumpInput())
 		{
 			body.Jump(PP_Jump.Instance.LongJumpForce);
 			brain.ChangeState<PS_LongJump>();
 		}
-		else if (InputManager.ReadJumpInput())
+		else if (InputManager.GetJumpInput())
 		{
 			body.Jump(PP_Jump.Instance.JumpForce);
 			brain.ChangeState<PS_Jump>();
@@ -81,7 +81,7 @@ public class PS_Walk : PlayerState
 	}
 	protected virtual void CheckClimb()
 	{
-		if (InputManager.ReadClimbInput())
+		if (InputManager.GetClimbInput())
 		{
 			if (ClimbHelper.CanClimb(transform.position,
 									transform.forward,
@@ -96,7 +96,7 @@ public class PS_Walk : PlayerState
 
 	protected virtual void CheckGround()
 	{
-		if(!FallHelper.IsGrounded)
+		if (!FallHelper.IsGrounded)
 			coyoteTimer.Play();
 	}
 }

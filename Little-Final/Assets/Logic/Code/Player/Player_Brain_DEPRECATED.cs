@@ -174,7 +174,7 @@ public class Player_Brain_DEPRECATED : GenericFunctions, IUpdateable_DEPRECATED
 	/// </summary>
 	void ControlHorMovement()
 	{
-		walkInput = input.ReadHorInput();
+		walkInput = input.GetHorInput();
 		UpdateTargetDirection();
 
 		myBody.MoveHorizontally(walkInput);
@@ -186,12 +186,12 @@ public class Player_Brain_DEPRECATED : GenericFunctions, IUpdateable_DEPRECATED
 	/// </summary>
 	void ReadClimbInput()
 	{
-		myBody.InputClimb = input.ReadClimbInput();
+		myBody.InputClimb = input.GetClimbInput();
 	}
 
 	void ReadPickInput()
 	{
-		if (input.ReadPickInput())
+		if (input.GetPickInput())
 		{
 			if (_itemPicked == null)
 			{
@@ -207,7 +207,7 @@ public class Player_Brain_DEPRECATED : GenericFunctions, IUpdateable_DEPRECATED
 				_itemPicked = null;
 			}
 		}
-		if (input.ReadThrowInput() && _itemPicked != null)
+		if (input.GetThrowInput() && _itemPicked != null)
 		{
 			_itemPicked.Throw(throwForce, transform.forward);
 			_itemPicked = null;
@@ -224,7 +224,7 @@ public class Player_Brain_DEPRECATED : GenericFunctions, IUpdateable_DEPRECATED
 		if (walkInput != Vector2.zero) FollowCameraRotation();
 
 		//Jump
-		if (input.ReadJumpInput()) myBody.InputJump = true;
+		if (input.GetJumpInput()) myBody.InputJump = true;
 		ReadClimbInput();
 	}
 
@@ -236,7 +236,7 @@ public class Player_Brain_DEPRECATED : GenericFunctions, IUpdateable_DEPRECATED
 		ControlHorMovement();
 
 		if (walkInput != Vector2.zero) FollowCameraRotation();
-		bool jumpInput = input.ReadJumpInput();
+		bool jumpInput = input.GetJumpInput();
 		myBody.InputGlide = jumpInput;
 		if (!jumpInput && myBody.Velocity.y > 0) myBody.StopJump();
 
@@ -245,7 +245,7 @@ public class Player_Brain_DEPRECATED : GenericFunctions, IUpdateable_DEPRECATED
 
 	void ReadClimbingStateInput()
 	{
-		walkInput = input.ReadHorInput();
+		walkInput = input.GetHorInput();
 		myBody.Climb(walkInput);
 	}
 

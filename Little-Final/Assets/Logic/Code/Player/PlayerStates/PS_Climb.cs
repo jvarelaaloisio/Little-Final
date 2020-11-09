@@ -38,7 +38,7 @@ public class PS_Climb : PlayerState
 	{
 		if (!isInPosition)
 			return;
-		Vector2 input = InputManager.ReadHorInput();
+		Vector2 input = InputManager.GetHorInput();
 		Vector3 moveDirection = transform.right * input.x + transform.up * input.y;
 
 		if (IsTouchingGround() && moveDirection.y < 0)
@@ -70,7 +70,7 @@ public class PS_Climb : PlayerState
 			GetOverCliff(cliffHit);
 		}
 
-		if (!InputManager.ReadClimbInput())
+		if (!InputManager.GetClimbInput())
 		{
 			brain.ChangeState<PS_Jump>();
 		}

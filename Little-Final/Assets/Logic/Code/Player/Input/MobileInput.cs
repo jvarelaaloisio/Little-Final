@@ -58,35 +58,35 @@ public class MobileInput : MonoBehaviour, IPlayerInput, IUpdateable_DEPRECATED
 	#endregion
 
 	#region Public
-	public Vector2 ReadHorInput()
+	public Vector2 GetHorInput()
 	{
 		throw new System.NotImplementedException();
 	}
-	public bool ReadClimbInput()
+	public bool GetClimbInput()
 	{
 		throw new System.NotImplementedException();
 	}
 
-	public bool ReadJumpInput()
+	public bool GetJumpInput()
 	{
 		throw new System.NotImplementedException();
 	}
-	public bool ReadLongJumpInput()
+	public bool GetLongJumpInput()
 	{
 		throw new NotImplementedException();
 	}
 
-	public bool ReadPickInput()
+	public bool GetPickInput()
 	{
 		throw new NotImplementedException();
 	}
 
-	public bool ReadThrowInput()
+	public bool GetThrowInput()
 	{
 		throw new NotImplementedException();
 	}
 
-	public bool ReadGlideInput()
+	public bool GetGlideInput()
 	{
 		throw new NotImplementedException();
 	}

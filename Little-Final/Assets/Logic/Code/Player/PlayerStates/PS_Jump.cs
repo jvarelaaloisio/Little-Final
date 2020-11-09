@@ -28,7 +28,7 @@ public class PS_Jump : PlayerState
 	}
 	public override void OnStateUpdate()
 	{
-		Vector2 input = InputManager.ReadHorInput();
+		Vector2 input = InputManager.GetHorInput();
 
 		Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
 		Debug.DrawRay(transform.position, desiredDirection / 4, Color.green);
@@ -49,12 +49,12 @@ public class PS_Jump : PlayerState
 
 	protected virtual void ControlGlide()
 	{
-		body.TurnGlide(InputManager.ReadGlideInput());
+		body.TurnGlide(InputManager.GetGlideInput());
 	}
 
 	protected virtual void CheckClimb()
 	{
-		if (InputManager.ReadClimbInput())
+		if (InputManager.GetClimbInput())
 		{
 			if (ClimbHelper.CanClimb(transform.position,
 									transform.forward,
@@ -70,11 +70,11 @@ public class PS_Jump : PlayerState
 
 	protected virtual void CheckForJumpBuffer()
 	{
-		if (InputManager.ReadLongJumpInput() && Physics.Raycast(transform.position, -transform.up, .5f))
+		if (InputManager.GetLongJumpInput() && Physics.Raycast(transform.position, -transform.up, .5f))
 		{
 			brain.LongJumpBuffer = true;
 		}
-		else if (InputManager.ReadJumpInput() && Physics.Raycast(transform.position, -transform.up, .5f))
+		else if (InputManager.GetJumpInput() && Physics.Raycast(transform.position, -transform.up, .5f))
 		{
 			brain.JumpBuffer = true;
 		}

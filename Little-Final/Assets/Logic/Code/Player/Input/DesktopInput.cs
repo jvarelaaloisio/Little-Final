@@ -3,39 +3,38 @@
 public class DesktopInput : IPlayerInput
 {
 	#region Public
-	public Vector2 ReadHorInput()
+	public Vector2 GetHorInput()
 	{
 		return new Vector2(Input.GetAxis("Horizontal"), UnityEngine.Input.GetAxis("Vertical"));
 	}
 
-	public bool ReadClimbInput()
+	public bool GetClimbInput()
 	{
 		return Input.GetButton("Climb");
 	}
 
-	public bool ReadJumpInput()
+	public bool GetJumpInput()
 	{
 		return Input.GetButtonDown("Jump");
 	}
-	public bool ReadLongJumpInput()
+	public bool GetLongJumpInput()
 	{
 		return Input.GetButtonDown("Jump") && Input.GetButton("Crouch");
 	}
 
-	public bool ReadPickInput()
+	public bool GetPickInput()
 	{
 		return Input.GetButtonDown("Pick");
 	}
 
-	public bool ReadThrowInput()
+	public bool GetThrowInput()
 	{
 		return Input.GetButton("Throw");
 	}
 
-	public bool ReadGlideInput()
+	public bool GetGlideInput()
 	{
 		return Input.GetButton("Jump");
 	}
-
 	#endregion
 }

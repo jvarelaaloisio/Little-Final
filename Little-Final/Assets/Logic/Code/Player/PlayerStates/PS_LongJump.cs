@@ -4,7 +4,7 @@ public class PS_LongJump : PS_Jump
 {
 	public override void OnStateUpdate()
 	{
-		Vector2 input = InputManager.ReadHorInput();
+		Vector2 input = InputManager.GetHorInput();
 
 		Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
 		Debug.DrawRay(transform.position, desiredDirection / 4, Color.green);

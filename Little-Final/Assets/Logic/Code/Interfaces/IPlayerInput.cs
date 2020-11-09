@@ -5,31 +5,31 @@ public interface IPlayerInput
 	/// Returns the input in the hor axis
 	/// </summary>
 	/// <returns></returns>
-	Vector2 ReadHorInput();
+	Vector2 GetHorInput();
 	/// <summary>
 	/// Returns true if the player is pressing the climb button
 	/// </summary>
 	/// <returns></returns>
-	bool ReadClimbInput();
+	bool GetClimbInput();
 	/// <summary>
 	/// Returns true if the player is pressing the jump button
 	/// </summary>
 	/// <returns></returns>
-	bool ReadJumpInput();
+	bool GetJumpInput();
 	/// <summary>
 	/// Returns true if the player is pressing the long jump button
 	/// </summary>
 	/// <returns></returns>
-	bool ReadLongJumpInput();
-	bool ReadGlideInput();
+	bool GetLongJumpInput();
+	bool GetGlideInput();
 	/// <summary>
 	/// Returns true if the player is pressing the pick button
 	/// </summary>
 	/// <returns></returns>
-	bool ReadPickInput();
+	bool GetPickInput();
 	/// <summary>
 	/// Returns true if the player is pressing the throw button
 	/// </summary>
 	/// <returns></returns>
-	bool ReadThrowInput();
+	bool GetThrowInput();
 }

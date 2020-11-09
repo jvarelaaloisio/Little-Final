@@ -17,34 +17,34 @@ public static class InputManager
 	} 
 	#endregion
 
-	public static Vector2 ReadHorInput()
+	public static Vector2 GetHorInput()
 	{
-		return inputReader.ReadHorInput();
+		return inputReader.GetHorInput();
 	}
 	
-	public static bool ReadClimbInput()
+	public static bool GetClimbInput()
 	{
-		return inputReader.ReadClimbInput();
+		return inputReader.GetClimbInput();
 	}
-	public static bool ReadJumpInput()
+	public static bool GetJumpInput()
 	{
-		return inputReader.ReadJumpInput();
+		return inputReader.GetJumpInput();
 	}
 
-	public static bool ReadLongJumpInput()
+	public static bool GetLongJumpInput()
 	{
-		return inputReader.ReadLongJumpInput();
+		return inputReader.GetLongJumpInput();
 	}
-	public static bool ReadGlideInput()
+	public static bool GetGlideInput()
 	{
-		return inputReader.ReadGlideInput();
+		return inputReader.GetGlideInput();
 	}
-	public static bool ReadPickInput()
+	public static bool GetPickInput()
 	{
-		return inputReader.ReadPickInput();
+		return inputReader.GetPickInput();
 	}
-	public static bool ReadThrowInput()
+	public static bool GetThrowInput()
 	{
-		return inputReader.ReadThrowInput();
+		return inputReader.GetThrowInput();
 	}
 }
