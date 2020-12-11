@@ -2,18 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UpdateManagement;
 [RequireComponent(typeof(DamageHandler))]
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Player_View))]
 [SelectionBase]
-public class Player_Brain : MonoBehaviour, IUpdateable_DEPRECATED
+public class Player_Brain : MonoBehaviour, IUpdateable
 {
 	#region Variables
+	public Player_View view;
 	#region Private
 	IPickable _itemPicked;
-	UpdateManager_DEPRECATED updateManager;
 	IBody body;
-	Player_Animator animator;
 	DamageHandler damageHandler;
 	PlayerState state;
 	#endregion
@@ -26,12 +25,9 @@ public class Player_Brain : MonoBehaviour, IUpdateable_DEPRECATED
 
 	void Start()
 	{
-		updateManager = GameObject.FindObjectOfType<UpdateManager_DEPRECATED>();
-		updateManager?.AddItem(this);
+		UpdateManager.Instance.Subscribe(this);
 		body = GetComponent<IBody>();
-		animator = GetComponent<Player_Animator>();
 		//damageHandler.LifeChangedEvent += LifeChangedHandler;
-		//animator.AnimationEvents += AnimationEventHandler;
 		state = new PS_Walk();
 		state.OnStateEnter(this);
 	}

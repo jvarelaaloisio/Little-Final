@@ -10,7 +10,7 @@ public class DesktopInput : IPlayerInput
 
 	public bool GetClimbInput()
 	{
-		return Input.GetButton("Climb");
+		return Input.GetButton("Climb") || Input.GetAxis("Climb") == 1;
 	}
 
 	public bool GetJumpInput()

@@ -92,7 +92,7 @@ InputManager:
     negativeButton: 
     positiveButton: space
     altNegativeButton: 
-    altPositiveButton: joystick button 4
+    altPositiveButton: 
     gravity: 1000
     dead: 0.001
     sensitivity: 1000
@@ -106,7 +106,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: joystick button 2
+    positiveButton: joystick button 0
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000
@@ -319,11 +319,11 @@ InputManager:
     altPositiveButton: 
     gravity: 0
     dead: 0
-    sensitivity: 0.1
+    sensitivity: 0.6
     snap: 0
     invert: 0
     type: 2
-    axis: 2
+    axis: 3
     joyNum: 0
   - serializedVersion: 3
     m_Name: Crouch
@@ -332,7 +332,7 @@ InputManager:
     negativeButton: 
     positiveButton: left ctrl
     altNegativeButton: 
-    altPositiveButton: 
+    altPositiveButton: joystick button 4
     gravity: 0
     dead: 0
     sensitivity: 0.1
@@ -346,16 +346,16 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: mouse 1
+    positiveButton: 
     altNegativeButton: 
     altPositiveButton: 
     gravity: 2.5
     dead: 0.001
     sensitivity: 3
-    snap: 0
+    snap: 1
     invert: 0
-    type: 0
-    axis: 2
+    type: 2
+    axis: 9
     joyNum: 0
   - serializedVersion: 3
     m_Name: Climb

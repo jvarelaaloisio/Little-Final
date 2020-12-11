@@ -294,6 +294,7 @@ public class Player_Body : MonoBehaviour, IUpdateable_DEPRECATED, IBody
 		if (CheckCollisionAngle(direction))
 		{
 			rb.velocity = direction * speed + rb.velocity.y * Vector3.up;
+			Debug.DrawRay(transform.position, rb.velocity, Color.cyan);
 		}
 	}
 

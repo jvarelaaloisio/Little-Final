@@ -12,8 +12,7 @@ public class PP_Climb : ScriptableObject
 		{
 			if (!instance)
 			{
-				PP_Climb[] propertiesFound = Resources.LoadAll<PP_Climb>("");
-				if (propertiesFound.Length >= 1) instance = propertiesFound[0];
+				instance = Resources.Load<PP_Climb>("PP_Climb");
 			}
 			if (!instance)
 			{

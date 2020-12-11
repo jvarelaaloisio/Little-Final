@@ -28,7 +28,7 @@ public class Player_Brain_DEPRECATED : GenericFunctions, IUpdateable_DEPRECATED
 
 	GameManager gameManager;
 	UpdateManager_DEPRECATED updateManager;
-	Player_Animator myAnimator;
+	Player_Animator_DEPRECATED myAnimator;
 	Player_Body_DEPRECATED myBody;
 	DamageHandler myDamageHandler;
 	IPickable _itemPicked;
@@ -152,7 +152,7 @@ public class Player_Brain_DEPRECATED : GenericFunctions, IUpdateable_DEPRECATED
 	{
 		myBody = GetComponent<Player_Body_DEPRECATED>();
 		myDamageHandler = GetComponent<DamageHandler>();
-		myAnimator = GetComponent<Player_Animator>();
+		myAnimator = GetComponent<Player_Animator_DEPRECATED>();
 		//input = gameObject.AddComponent<DesktopInput>();
 		properties = gameManager.PlayerProperties;
 	}

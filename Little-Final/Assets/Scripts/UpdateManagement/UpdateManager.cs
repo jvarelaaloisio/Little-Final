@@ -9,12 +9,23 @@ namespace UpdateManagement
 		private Action update;
 		private Action fixedUpdate;
 		private Action lateUpdate;
-		public static UpdateManager Instance { get; private set; }
-
+		private static UpdateManager instance;
+		public static UpdateManager Instance
+		{
+			get
+			{
+				if (instance == null && FindObjectOfType<UpdateManager>() == null)
+				{
+					GameObject go = new GameObject("UpdateManager");
+					instance = go.AddComponent<UpdateManager>();
+				}
+				return instance;
+			}
+		}
 		private void Awake()
 		{
-			if (Instance == null) Instance = this;
-			else if (Instance != this) Destroy(this);
+			if (instance == null) instance = this;
+			else if (instance != this) Destroy(this);
 		}
 
 		private void Update()

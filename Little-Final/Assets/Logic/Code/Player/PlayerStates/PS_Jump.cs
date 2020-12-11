@@ -1,22 +1,19 @@
 ﻿using UnityEngine;
 using CharacterMovement;
-using UnityEditor.MemoryProfiler;
 
 public class PS_Jump : PlayerState
 {
 	protected Transform transform;
 	protected Player_Body body;
-	protected Animator animator;
 	public override void OnStateEnter(Player_Brain brain)
 	{
 		base.OnStateEnter(brain);
+		brain.view.ShowJumpFeedback();
 		transform = brain.transform;
-
 		//	Body
 		body = brain.GetComponent<Player_Body>();
 		body.BodyEvents += BodyEventsHandler;
 
-		animator = brain.GetComponent<Animator>();
 	}
 
 	private void BodyEventsHandler(BodyEvent eventType)
@@ -50,6 +47,7 @@ public class PS_Jump : PlayerState
 	protected virtual void ControlGlide()
 	{
 		body.TurnGlide(InputManager.GetGlideInput());
+		brain.view.SetFlying(InputManager.GetGlideInput());
 	}
 
 	protected virtual void CheckClimb()

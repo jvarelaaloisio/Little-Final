@@ -3,15 +3,13 @@ using CharacterMovement;
 
 public class PS_Walk : PlayerState
 {
-	Animator animator;
 	Transform transform;
 	IBody body;
 	Timer_DEPRECATED coyoteTimer;
 	public override void OnStateEnter(Player_Brain brain)
 	{
 		base.OnStateEnter(brain);
-		animator = brain.GetComponent<Animator>();
-
+		brain.view.ShowLandFeedback();
 		body = brain.GetComponent<Player_Body>();
 
 		transform = brain.transform;
@@ -37,6 +35,8 @@ public class PS_Walk : PlayerState
 	public override void OnStateUpdate()
 	{
 		Vector2 input = InputManager.GetHorInput();
+
+		brain.view.SetSpeed(Mathf.Abs(input.y / 2));
 
 		Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
 		Debug.DrawRay(transform.position, desiredDirection.normalized / 2, Color.green);

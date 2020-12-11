@@ -5,7 +5,7 @@ using System;
 
 public delegate void AnimationEvents(AnimationEvent typeOfEvent);
 
-public class Player_Animator : MonoBehaviour, IUpdateable_DEPRECATED
+public class Player_Animator_DEPRECATED : MonoBehaviour, IUpdateable_DEPRECATED
 {
 	#region Variables
 

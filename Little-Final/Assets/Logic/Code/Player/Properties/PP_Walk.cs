@@ -11,8 +11,7 @@ public class PP_Walk : ScriptableObject
 		{
 			if (!instance)
 			{
-				PP_Walk[] propertiesFound = Resources.LoadAll<PP_Walk>("");
-				if (propertiesFound.Length >= 1) instance = propertiesFound[0];
+				instance = Resources.Load<PP_Walk>("PP_Walk");
 			}
 			if (!instance)
 			{

@@ -22,6 +22,7 @@ public class PS_Climb : PlayerState
 	public override void OnStateEnter(Player_Brain brain)
 	{
 		base.OnStateEnter(brain);
+		brain.view.ShowClimbFeedback();
 		body = brain.Body;
 		brain.GetComponent<Rigidbody>().isKinematic = true;
 		transform = brain.transform;

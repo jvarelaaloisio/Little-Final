@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
-public class GameManager : MonoBehaviour, IUpdateable_DEPRECATED
+using UpdateManagement;
+public class GameManager : MonoBehaviour, IUpdateable
 {
 	#region Variables
 
 	#region Serialized
-	[SerializeField]
-	CameraBehaviour_DEPRECATED cameraPivot;
 	[SerializeField]
 	Transform player;
 	[SerializeField]
@@ -52,7 +50,6 @@ public class GameManager : MonoBehaviour, IUpdateable_DEPRECATED
 	#endregion
 
 	#region Private
-	UpdateManager_DEPRECATED _uManager;
 	bool _pause;
 	bool _playerIsAlive = true;
 	#endregion
@@ -62,15 +59,7 @@ public class GameManager : MonoBehaviour, IUpdateable_DEPRECATED
 	#region Unity
 	private void Start()
 	{
-		try
-		{
-			_uManager = GameObject.FindObjectOfType<UpdateManager_DEPRECATED>();
-			_uManager.AddItem(this);
-		}
-		catch (NullReferenceException)
-		{
-			print(this.name + "update manager not found");
-		}
+		UpdateManager.Instance.Subscribe(this);
 		if (!player) player = GameObject.FindObjectOfType<Player_Brain_DEPRECATED>().GetComponent<Transform>();
 		Cursor.visible = false;
 	}
@@ -102,15 +91,6 @@ public class GameManager : MonoBehaviour, IUpdateable_DEPRECATED
 	public void PlayerIsDead(bool Win)
 	{
 		_playerIsAlive = false;
-	}
-
-	/// <summary>
-	/// Returns the camera transform
-	/// </summary>
-	/// <returns></returns>
-	public Transform GiveCamera()
-	{
-		return cameraPivot.transform;
 	}
 	#endregion
 
