@@ -26,10 +26,10 @@ Shader "StandarLeaves"
 
 		void surf( Input i , inout SurfaceOutputStandard o )
 		{
-			float4 color2 = IsGammaSpace() ? float4(0.5863218,0.8666667,0.0862745,0) : float4(0.3028145,0.7230552,0.008023192,0);
+			float4 color2 = IsGammaSpace() ? float4(0.5863218,0.8666667,0.0862745,0) : float4(0.3028144,0.7230552,0.00802319,0);
+			o.Albedo = color2.rgb;
 			float2 uv_Leaves1 = i.uv_texcoord;
 			float4 tex2DNode1 = tex2D( _Leaves, uv_Leaves1 );
-			o.Albedo = ( color2 * tex2DNode1 ).rgb;
 			o.Alpha = tex2DNode1.a;
 		}
 
@@ -112,14 +112,16 @@ Shader "StandarLeaves"
 }
 /*ASEBEGIN
 Version=17800
-343;73;919;746;1083.615;375.7731;1.441498;True;False
-Node;AmplifyShaderEditor.ColorNode;2;-456.5625,-160.4995;Inherit;False;Constant;_Color0;Color 0;1;0;Create;True;0;0;False;0;0.5863218,0.8666667,0.0862745,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SamplerNode;1;-532.9136,44.68146;Inherit;True;Property;_Leaves;Leaves;0;1;[NoScaleOffset];Create;True;0;0;False;0;-1;f986dbbad8d93f84db625cb84199dcf9;f986dbbad8d93f84db625cb84199dcf9;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;6;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+342;73;919;746;1290.315;354.8715;1.689855;True;False
+Node;AmplifyShaderEditor.SamplerNode;1;-894.9451,18.41272;Inherit;True;Property;_Leaves;Leaves;0;1;[NoScaleOffset];Create;True;0;0;False;0;-1;None;6ff8ab38d7ec9da42ab22aff2083ca24;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;6;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ColorNode;2;-821.094,-153.4682;Inherit;False;Constant;_Color0;Color 0;1;0;Create;True;0;0;False;0;0.5863218,0.8666667,0.0862745,0;0,0,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;3;-205.5625,-34.49951;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.StandardSurfaceOutputNode;0;0,0;Float;False;True;-1;2;ASEMaterialInspector;0;0;Standard;StandarLeaves;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;False;False;False;False;False;False;Back;0;False;-1;0;False;-1;False;0;False;-1;0;False;-1;False;0;Transparent;0.5;True;True;0;False;Transparent;;Transparent;All;14;all;True;True;True;True;0;False;-1;False;0;False;-1;255;False;-1;255;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;False;2;15;10;25;False;0.5;True;2;5;False;-1;10;False;-1;0;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;Relative;0;;-1;-1;-1;-1;0;False;0;0;False;-1;-1;0;False;-1;0;0;0;False;0.1;False;-1;0;False;-1;16;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
+Node;AmplifyShaderEditor.TFHCRemapNode;5;-587.131,21.25502;Inherit;False;5;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;COLOR;1,1,1,0;False;3;COLOR;1,1,1,0;False;4;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StandardSurfaceOutputNode;0;44,0;Float;False;True;-1;2;ASEMaterialInspector;0;0;Standard;StandarLeaves;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;False;False;False;False;False;False;Back;0;False;-1;0;False;-1;False;0;False;-1;0;False;-1;False;0;Transparent;0.5;True;True;0;False;Transparent;;Transparent;All;14;all;True;True;True;True;0;False;-1;False;0;False;-1;255;False;-1;255;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;-1;False;2;15;10;25;False;0.5;True;2;5;False;-1;10;False;-1;0;0;False;-1;0;False;-1;0;False;-1;0;False;-1;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;Relative;0;;-1;-1;-1;-1;0;False;0;0;False;-1;-1;0;False;-1;0;0;0;False;0.1;False;-1;0;False;-1;16;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
 WireConnection;3;0;2;0
-WireConnection;3;1;1;0
-WireConnection;0;0;3;0
+WireConnection;3;1;5;0
+WireConnection;5;0;1;0
+WireConnection;0;0;2;0
 WireConnection;0;9;1;4
 ASEEND*/
-//CHKSM=8FD35022EE4D4EDC87B68F08A194B61CEE6BC483
+//CHKSM=1EFA2675528310EFCD4301AE717F3B45CDD53B4E
