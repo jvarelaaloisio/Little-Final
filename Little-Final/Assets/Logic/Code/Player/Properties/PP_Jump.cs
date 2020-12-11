@@ -14,8 +14,9 @@ public class PP_Jump : ScriptableObject
 		{
 			if (!instance)
 			{
-				PP_Jump[] propertiesFound = Resources.LoadAll<PP_Jump>("");
-				if (propertiesFound.Length >= 1) instance = propertiesFound[0];
+				//PP_Jump[] propertiesFound = Resources.LoadAll<PP_Jump>("");
+				//if (propertiesFound.Length >= 1) instance = propertiesFound[0];
+				instance = Resources.Load<PP_Jump>("PP_Jump");
 			}
 			if (!instance)
 			{
@@ -24,7 +25,7 @@ public class PP_Jump : ScriptableObject
 			}
 			return instance;
 		}
-	}
+	}  
 
 	#endregion
 
