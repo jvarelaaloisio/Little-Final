@@ -12,16 +12,16 @@ public class CameraView : MonoBehaviour, ILateUpdateable
 	private float originalFov,
 					lastFov;
 	CinemachineFreeLook cinemachineFreeLook;
-	void Start()
-	{
-		cinemachineFreeLook = FindObjectOfType<CinemachineFreeLook>();
-		FindObjectOfType<UpdateManager>().SubscribeLate(this);
-		player_Body = FindObjectOfType<Player_Body>();
+	//void Start()
+	//{
+	//	cinemachineFreeLook = FindObjectOfType<CinemachineFreeLook>();
+	//	FindObjectOfType<UpdateManager>().SubscribeLate(this);
+	//	player_Body = FindObjectOfType<Player_Body>();
 
-		distortAction = new ActionOverTime(CameraProperties.Instance.DistortTime, Distort, true);
-		unDistortAction = new ActionOverTime(CameraProperties.Instance.DistortTime, UnDistort, true);
-		originalFov = cinemachineFreeLook.m_Lens.FieldOfView;
-	}
+	//	distortAction = new ActionOverTime(CameraProperties.Instance.DistortTime, Distort, true);
+	//	unDistortAction = new ActionOverTime(CameraProperties.Instance.DistortTime, UnDistort, true);
+	//	originalFov = cinemachineFreeLook.m_Lens.FieldOfView;
+	//}
 	public void OnLateUpdate()
 	{
 		Vector3 horizontalVelocity = player_Body.Velocity;
