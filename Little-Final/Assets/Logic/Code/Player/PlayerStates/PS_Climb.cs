@@ -16,6 +16,7 @@ public class PS_Climb : PlayerState
 	private Transform currentWall;
 	protected CountDownTimer consumeStaminaPeriod,
 		staminaConsumingDelay;
+	private bool isClimbFinished;
 	public PS_Climb()
 	{
 		positioningAction = new ActionOverTime(PP_Climb.Instance.ClimbPositioningTime, GetInPosition, true);
@@ -105,6 +106,7 @@ public class PS_Climb : PlayerState
 	public override void OnStateExit()
 	{
 		base.OnStateExit();
+		isClimbFinished = true;
 		positioningAction.StopAction();
 		consumeStaminaPeriod.StopTimer();
 		staminaConsumingDelay.StopTimer();
@@ -118,6 +120,8 @@ public class PS_Climb : PlayerState
 	protected void ConsumeStamina()
 	{
 		brain.stamina.ConsumeStamina(1);
+		if (isClimbFinished)
+			return;
 		consumeStaminaPeriod.StartTimer();
 	}
 
@@ -139,7 +143,7 @@ public class PS_Climb : PlayerState
 	{
 		originPosition = transform.position;
 		originRotation = transform.rotation;
-		targetPosition = hit.point + (transform.up * transform.localScale.y / 5 - transform.forward * .5f);
+		targetPosition = hit.point + (transform.up * transform.localScale.y / 5);
 		targetRotation = transform.rotation;
 
 		isInPosition = false;

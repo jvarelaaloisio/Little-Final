@@ -85,11 +85,16 @@ public class PlayerController : MonoBehaviour, IUpdateable
 	#endregion
 	private void OnGUI()
 	{
+		Rect rect = new Rect(10, 25, 100, 100);
+		GUILayout.BeginArea(rect);
 		GUI.skin.label.fontSize = 15;
-		Rect rect = new Rect(10, 25, 100, 30);
-		GUI.backgroundColor = Color.white;
-		GUI.Label(rect, state.GetType().ToString());
-		rect = new Rect(10, 75, 100, 30);
-		GUI.Label(rect, "Stamina: " + stamina.FillState);
+		GUILayout.Label(state.GetType().ToString());
+		if (stamina.IsRefillingActive)
+			GUI.skin.label.normal.textColor = Color.green;
+		else
+			GUI.skin.label.normal.textColor = Color.red;
+		
+		GUILayout.Label("Stamina: " + stamina.FillState);
+		GUILayout.EndArea();
 	}
 }

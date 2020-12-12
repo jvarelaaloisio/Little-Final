@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using CharacterMovement;
+using UpdateManagement;
 
 public class PS_Walk : PlayerState
 {
 	Transform transform;
 	IBody body;
-	Timer_DEPRECATED coyoteTimer;
+	CountDownTimer coyoteEffect;
 	public override void OnStateEnter(PlayerController brain)
 	{
 		base.OnStateEnter(brain);
@@ -13,8 +14,7 @@ public class PS_Walk : PlayerState
 		body = brain.GetComponent<Player_Body>();
 
 		transform = brain.transform;
-		coyoteTimer = TimerHelper.SetupTimer(PP_Jump.Instance.CoyoteTime, "", brain.gameObject, FinishCoyoteTime);
-
+		coyoteEffect = new CountDownTimer(PP_Jump.Instance.CoyoteTime, OnCoyoteFinished);
 		Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 10);
 		body.LastFloorNormal = hit.normal;
 
@@ -71,10 +71,14 @@ public class PS_Walk : PlayerState
 	public override void OnStateExit()
 	{
 		base.OnStateExit();
-		coyoteTimer.Stop();
-		GameObject.Destroy(coyoteTimer);
+		coyoteEffect.StopTimer();
 	}
 	private void FinishCoyoteTime(string id)
+	{
+		if (!FallHelper.IsGrounded)
+			brain.ChangeState<PS_Jump>();
+	}
+	private void OnCoyoteFinished()
 	{
 		if (!FallHelper.IsGrounded)
 			brain.ChangeState<PS_Jump>();
@@ -93,7 +97,7 @@ public class PS_Walk : PlayerState
 
 	protected virtual void CheckGround()
 	{
-		if (!FallHelper.IsGrounded)
-			coyoteTimer.Play();
+		if (!FallHelper.IsGrounded && !coyoteEffect.IsTicking)
+			coyoteEffect.StartTimer();
 	}
 }

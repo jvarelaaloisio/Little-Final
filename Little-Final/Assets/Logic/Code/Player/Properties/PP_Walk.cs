@@ -25,7 +25,7 @@ public class PP_Walk : ScriptableObject
 	#endregion
 
 	[SerializeField]
-	[Range(0, 10, step: .5f)]
+	[Range(0, 100, step: .5f)]
 	private float speed,
 		turnSpeed;
 	[SerializeField]

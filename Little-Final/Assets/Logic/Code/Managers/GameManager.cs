@@ -60,13 +60,13 @@ public class GameManager : MonoBehaviour, IUpdateable
 	private void Start()
 	{
 		UpdateManager.Instance.Subscribe(this);
-		if (!player) player = GameObject.FindObjectOfType<Player_Brain_DEPRECATED>().GetComponent<Transform>();
-		Cursor.visible = false;
+		//if (!player) player = GameObject.FindObjectOfType<Player_Brain_DEPRECATED>().GetComponent<Transform>();
+		//Cursor.visible = false;
 	}
 	public void OnUpdate()
 	{
 		ControlTimeScale();
-		controlPause();
+		//controlPause();
 	}
 	#endregion
 

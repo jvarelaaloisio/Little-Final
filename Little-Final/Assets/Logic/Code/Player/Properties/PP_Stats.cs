@@ -25,7 +25,7 @@ public class PP_Stats : ScriptableObject
 	#endregion
 
 	[SerializeField]
-	[Range(0, 100, step: 1)]
+	[Range(0, 500, step: 1)]
 	private float maxStamina,
 		staminaRefillSpeed;
 	[SerializeField]

@@ -21,7 +21,6 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 
 	#region Public
 	public event BodyEvents BodyEvents;
-	public Transform lastClimbable;
 	public Collider landCollider;
 	#endregion
 
@@ -48,7 +47,6 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	AudioManager audioManager;
 
 	Rigidbody rb;
-	Timer_DEPRECATED _colTimer, _coyoteTimer, _jumpTimer, _climbTimer;
 
 	private GameObject lastFloor;
 	ContactPoint lastContact;
@@ -61,15 +59,10 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	public Vector3 Velocity => rb.velocity;
 	public GameObject GameObject => gameObject;
 	public Vector3 LastFloorNormal { get; set; }
-	public bool IsGrounded => !flags[Flag.IN_THE_AIR];
 	#endregion
 
 	#region Setters
 	public bool IsInTheAir => flags[Flag.IN_THE_AIR];
-	public bool InputGlide
-	{
-		set => flags[Flag.GLIDE_REQUEST] = value;
-	}
 	#endregion
 
 	#region Flags
@@ -77,14 +70,9 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	{
 		IN_THE_AIR,
 		JUMP_REQUEST,
-		GLIDE_REQUEST,
-		CLIMB_REQUEST,
 		GLIDING,
-		CLIMBING,
 		COLLIDING,
 		TOUCHING_PICKABLE,
-		TOUCHING_CLIMBABLE,
-		TOUCHING_CLIMBABLE_TOP_SOLID,
 		COL_COUNTING,
 		WEIRD_COL_COUNTING,
 		IN_COYOTE_TIME
@@ -108,7 +96,6 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	public void OnUpdate()
 	{
 		ControlJump();
-		ControlClimb();
 		AccelerateFall();
 		if (rb.velocity.magnitude > maxSpeed)
 			rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
@@ -124,45 +111,6 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 		foreach (var flag in (Flag[])Enum.GetValues(typeof(Flag)))
 		{
 			flags.Add(flag, false);
-		}
-	}
-
-
-	/// <summary>
-	/// Event Handler for the timers
-	/// </summary>
-	void TimerFinishedHandler(string ID)
-	{
-		switch (ID)
-		{
-			case "Collider Timer":
-				{
-					flags[Flag.COLLIDING] = false;
-					break;
-				}
-			case "Coyote Timer":
-				{
-					flags[Flag.IN_THE_AIR] = true;
-					flags[Flag.IN_COYOTE_TIME] = false;
-
-					//Event
-					BodyEvents(BodyEvent.JUMP);
-					break;
-				}
-			case "In the Air Timer":
-				{
-					flags[Flag.IN_THE_AIR] = true;
-					break;
-				}
-			case "Climb Off Timer":
-				{
-					flags[Flag.CLIMBING] = false;
-					rb.isKinematic = false;
-
-					//Event
-					BodyEvents?.Invoke(BodyEvent.JUMP);
-					break;
-				}
 		}
 	}
 
@@ -217,27 +165,6 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 		if (rb.velocity.y < .5 && rb.velocity.y > -10)
 		{
 			rb.velocity += Vector3.up * Physics2D.gravity.y * (PP_Jump.Instance.FallMultiplier - 1) * Time.deltaTime;
-		}
-	}
-
-	void ControlClimb()
-	{
-		if (flags[Flag.CLIMB_REQUEST] && flags[Flag.TOUCHING_CLIMBABLE])
-		{
-			_climbTimer.Stop();
-			if (flags[Flag.CLIMBING]) return;
-			flags[Flag.CLIMBING] = true;
-			rb.isKinematic = true;
-
-			//Event
-			BodyEvents?.Invoke(BodyEvent.CLIMB);
-		}
-		else if (flags[Flag.CLIMBING])
-		{
-			if (!_climbTimer.Counting)
-			{
-				_climbTimer.Play();
-			}
 		}
 	}
 
@@ -297,13 +224,6 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	{
 		this.jumpForce = jumpForce;
 		flags[Flag.JUMP_REQUEST] = true;
-	}
-	public void Climb(Vector2 Input)
-	{
-		if (!flags[Flag.CLIMBING]) return;
-		if (lastClimbable) transform.forward = lastClimbable.forward;
-		if (flags[Flag.TOUCHING_CLIMBABLE_TOP_SOLID] && Input.y > 0) Input.y = 0;
-		transform.position += (transform.right * Input.x + transform.up * Input.y) * PP_Climb.Instance.ClimbSpeed * Time.deltaTime;
 	}
 
 	/// <summary>

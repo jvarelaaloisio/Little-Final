@@ -14,12 +14,15 @@ public class Stamina
 			fillState = Mathf.Clamp(value, 0, maxStamina);
 		}
 	}
+
+	public bool IsRefillingActive => isRefillingActive;
+
 	private readonly Action onRefillingStart;
 	private readonly Action<float> onStaminaChange;
 	private readonly CountDownTimer refillDelayTimer;
 	private readonly CountDownTimer refillPeriod;
 	private readonly float maxStamina;
-	private bool isFilling = true;
+	private bool isRefillingActive = true;
 	public Stamina(float maxStamina, float refillDelay, float refillSpeed, Action<float> onStaminaChange = null, Action onRefillingStart = null)
 	{
 		this.refillSpeed = refillSpeed;
@@ -43,19 +46,21 @@ public class Stamina
 	}
 	public void ConsumeStamina(float value)
 	{
+		if (value == 0)
+			return;
 		FillState -= value;
 		refillPeriod.StopTimer();
-		if (isFilling)
+		if (isRefillingActive)
 			refillDelayTimer.StartTimer();
 	}
 	public void StopFilling()
 	{
 		refillPeriod.StopTimer();
-		isFilling = false;
+		isRefillingActive = false;
 	}
 	public void ResumeFilling()
 	{
 		refillDelayTimer.StartTimer();
-		isFilling = true;
+		isRefillingActive = true;
 	}
 }

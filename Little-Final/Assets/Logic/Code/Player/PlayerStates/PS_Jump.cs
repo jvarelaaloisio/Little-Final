@@ -7,6 +7,7 @@ public class PS_Jump : PlayerState
 	protected Player_Body body;
 	protected CountDownTimer consumeStaminaPeriod,
 		staminaConsumingDelay;
+	bool isStateFinished;
 	public override void OnStateEnter(PlayerController brain)
 	{
 		base.OnStateEnter(brain);
@@ -93,11 +94,13 @@ public class PS_Jump : PlayerState
 	protected void ConsumeStamina()
 	{
 		brain.stamina.ConsumeStamina(1);
-		consumeStaminaPeriod.StartTimer();
+		if (!isStateFinished)
+			consumeStaminaPeriod.StartTimer();
 	}
 
 	public override void OnStateExit()
 	{
+		isStateFinished = true;
 		consumeStaminaPeriod.StopTimer();
 		staminaConsumingDelay.StopTimer();
 		body.BodyEvents -= BodyEventsHandler;
