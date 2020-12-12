@@ -9,10 +9,10 @@ namespace UpdateManagement
 		public float totalTime;
 		public bool IsRunning { get; private set; }
 		private readonly Action action;
-		public ActionOverTime(float time, Action<float> action, bool giveBezier = false)
+		public ActionOverTime(float time, Action<float> action, bool giveLerp = false)
 		{
 			this.totalTime = time;
-			if (giveBezier)
+			if (giveLerp)
 			{
 				this.action = () => action(currentTime / totalTime);
 			}

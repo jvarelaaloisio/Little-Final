@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(menuName = "Properties/Player/Climb")]
+[CreateAssetMenu(menuName = "Properties/Player/Climb", fileName = "PP_Climb")]
 public class PP_Climb : ScriptableObject
 {
 	#region Singleton
@@ -40,6 +40,12 @@ public class PP_Climb : ScriptableObject
 	[SerializeField]
 	[Range(0, 60, step: 1)]
 	private float maxClimbAngle;
+	[SerializeField]
+	[Range(0, 20, step: 1)]
+	private float staminaPerSecond;
+	[SerializeField]
+	[Range(0, 10, step: .2f)]
+	private float staminaConsumingDelay;
 
 	#region Getters
 	public float ClimbPositioningTime => climbPositioningTime;
@@ -49,5 +55,7 @@ public class PP_Climb : ScriptableObject
 	public float MaxClimbDistanceFromCorners => maxClimbDistanceFromCorners;
 	public float MaxClimbAngle => maxClimbAngle;
 	public float ClimbingPositionOffset => climbingPositionOffset;
+	public float StaminaPerSecond => staminaPerSecond;
+	public float StaminaConsumingDelay => staminaConsumingDelay;
 	#endregion
 }

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Runtime.Serialization;
 using CharacterMovement;
-
+using UpdateManagement;
 public enum BodyEvent
 {
 	TRIGGER,
@@ -15,7 +13,7 @@ public enum BodyEvent
 
 public delegate void BodyEvents(BodyEvent typeOfEvent);
 [RequireComponent(typeof(Rigidbody))]
-public class Player_Body : MonoBehaviour, IUpdateable_DEPRECATED, IBody
+public class Player_Body : MonoBehaviour, IUpdateable, IBody
 {
 	#region Variables
 
@@ -33,6 +31,8 @@ public class Player_Body : MonoBehaviour, IUpdateable_DEPRECATED, IBody
 	AudioClip[] _soundEffects = null;
 
 	[SerializeField]
+	private float maxSpeed;
+	[SerializeField]
 	float _xMinAngle = 5;
 	[SerializeField]
 	float _xMaxAngle = 92,
@@ -45,7 +45,6 @@ public class Player_Body : MonoBehaviour, IUpdateable_DEPRECATED, IBody
 
 	#region Private
 
-	UpdateManager_DEPRECATED updateManager;
 	AudioManager audioManager;
 
 	Rigidbody rb;
@@ -101,15 +100,7 @@ public class Player_Body : MonoBehaviour, IUpdateable_DEPRECATED, IBody
 	#region Unity
 	void Start()
 	{
-		try
-		{
-			updateManager = GameObject.FindObjectOfType<UpdateManager_DEPRECATED>();
-			updateManager.AddFixedItem(this);
-		}
-		catch (NullReferenceException)
-		{
-			print(this.name + "update manager not found");
-		}
+		UpdateManager.Instance.Subscribe(this);
 		rb = GetComponent<Rigidbody>();
 
 		SetupFlags();
@@ -119,6 +110,8 @@ public class Player_Body : MonoBehaviour, IUpdateable_DEPRECATED, IBody
 		ControlJump();
 		ControlClimb();
 		AccelerateFall();
+		if (rb.velocity.magnitude > maxSpeed)
+			rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
 	}
 	#endregion
 
@@ -221,7 +214,7 @@ public class Player_Body : MonoBehaviour, IUpdateable_DEPRECATED, IBody
 	/// </summary>
 	void AccelerateFall()
 	{
-		if (rb.velocity.y < .5 && rb.velocity.y > -15)
+		if (rb.velocity.y < .5 && rb.velocity.y > -10)
 		{
 			rb.velocity += Vector3.up * Physics2D.gravity.y * (PP_Jump.Instance.FallMultiplier - 1) * Time.deltaTime;
 		}

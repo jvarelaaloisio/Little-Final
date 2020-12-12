@@ -42,7 +42,7 @@ namespace UpdateManagement
 			if (currentTime >= totalTime)
 			{
 				UpdateManager.Instance.UnSubscribe(this);
-				onFinished();
+				onFinished?.Invoke();
 			}
 		}
 	}

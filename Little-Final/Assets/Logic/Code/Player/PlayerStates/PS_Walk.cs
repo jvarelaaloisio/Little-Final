@@ -6,7 +6,7 @@ public class PS_Walk : PlayerState
 	Transform transform;
 	IBody body;
 	Timer_DEPRECATED coyoteTimer;
-	public override void OnStateEnter(Player_Brain brain)
+	public override void OnStateEnter(PlayerController brain)
 	{
 		base.OnStateEnter(brain);
 		brain.view.ShowLandFeedback();
@@ -81,16 +81,13 @@ public class PS_Walk : PlayerState
 	}
 	protected virtual void CheckClimb()
 	{
-		if (InputManager.GetClimbInput())
+		if (InputManager.GetClimbInput() && brain.stamina.FillState > 0 && ClimbHelper.CanClimb(transform.position,
+																								transform.forward,
+																								PP_Climb.Instance.MaxDistanceToTriggerClimb,
+																								PP_Climb.Instance.MaxClimbAngle,
+																								out _))
 		{
-			if (ClimbHelper.CanClimb(transform.position,
-									transform.forward,
-									PP_Climb.Instance.MaxDistanceToTriggerClimb,
-									PP_Climb.Instance.MaxClimbAngle,
-									out _))
-			{
-				brain.ChangeState<PS_Climb>();
-			}
+			brain.ChangeState<PS_Climb>();
 		}
 	}
 

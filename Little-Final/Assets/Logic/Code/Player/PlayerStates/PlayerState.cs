@@ -2,13 +2,13 @@
 
 public abstract class PlayerState
 {
-	protected Player_Brain brain;
+	protected PlayerController brain;
 
 	/// <summary>
 	/// Runs once when the state starts
 	/// </summary>
 	/// <param name="brain"></param>
-	public virtual void OnStateEnter(Player_Brain brain)
+	public virtual void OnStateEnter(PlayerController brain)
 	{
 		this.brain = brain;
 	}

@@ -4,22 +4,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UpdateManagement;
 [RequireComponent(typeof(DamageHandler))]
-[RequireComponent(typeof(Player_View))]
+[RequireComponent(typeof(PlayerView))]
 [SelectionBase]
-public class Player_Brain : MonoBehaviour, IUpdateable
+public class PlayerController : MonoBehaviour, IUpdateable
 {
 	#region Variables
-	public Player_View view;
+	public PlayerView view;
 	#region Private
 	IPickable _itemPicked;
 	IBody body;
 	DamageHandler damageHandler;
+	public Stamina stamina;
 	PlayerState state;
 	#endregion
 	#region Properties
 	public IBody Body => body;
 	public bool JumpBuffer { get; set; }
 	public bool LongJumpBuffer { get; set; }
+	public Stamina Stamina => stamina;
 	#endregion
 	#endregion
 
@@ -28,6 +30,7 @@ public class Player_Brain : MonoBehaviour, IUpdateable
 		UpdateManager.Instance.Subscribe(this);
 		body = GetComponent<IBody>();
 		//damageHandler.LifeChangedEvent += LifeChangedHandler;
+		stamina = new Stamina(PP_Stats.Instance.MaxStamina, PP_Stats.Instance.StaminaRefillDelay, PP_Stats.Instance.StaminaRefillSpeed, view.UpdateStamina);
 		state = new PS_Walk();
 		state.OnStateEnter(this);
 	}
@@ -36,7 +39,6 @@ public class Player_Brain : MonoBehaviour, IUpdateable
 	{
 		state.OnStateExit();
 		state = new T();
-		//Debug.Log(typeof(T));
 		state.OnStateEnter(this);
 	}
 
@@ -44,13 +46,7 @@ public class Player_Brain : MonoBehaviour, IUpdateable
 	{
 		state.OnStateUpdate();
 		if (Input.GetKeyDown(KeyCode.R))
-			Debug.Log(state.ToString());
-		if (Input.GetKeyDown(KeyCode.F))
-		{
-			Debug.DrawRay(transform.position, transform.forward, Color.blue, 1);
-			Debug.DrawRay(transform.position, transform.up, Color.green, 1);
-			Debug.DrawRay(transform.position, transform.right, Color.red, 1);
-		}
+			stamina.ConsumeStamina(10);
 	}
 
 	public void PickItem()
@@ -87,4 +83,13 @@ public class Player_Brain : MonoBehaviour, IUpdateable
 
 	}
 	#endregion
+	private void OnGUI()
+	{
+		GUI.skin.label.fontSize = 15;
+		Rect rect = new Rect(10, 25, 100, 30);
+		GUI.backgroundColor = Color.white;
+		GUI.Label(rect, state.GetType().ToString());
+		rect = new Rect(10, 75, 100, 30);
+		GUI.Label(rect, "Stamina: " + stamina.FillState);
+	}
 }

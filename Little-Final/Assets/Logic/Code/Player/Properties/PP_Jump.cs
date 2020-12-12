@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Properties/Player/Jump")]
+[CreateAssetMenu(menuName = "Properties/Player/Jump", fileName = "PP_Jump")]
 public class PP_Jump : ScriptableObject
 {
 	#region Singleton
@@ -25,7 +25,7 @@ public class PP_Jump : ScriptableObject
 			}
 			return instance;
 		}
-	}  
+	}
 
 	#endregion
 
@@ -38,6 +38,8 @@ public class PP_Jump : ScriptableObject
 					fallMultiplier,
 					lowJumpMultiplier,
 					glidingDrag,
+					glideStaminaPerSecond,
+					glideStaminaConsumingDelay,
 					turnSpeedInTheAir,
 					turnSpeedLongJump;
 	[SerializeField]
@@ -53,6 +55,8 @@ public class PP_Jump : ScriptableObject
 	public float FallMultiplier => fallMultiplier;
 	public float LowJumpMultiplier => lowJumpMultiplier;
 	public float GlidingDrag => glidingDrag;
+	public float GlideStaminaPerSecond => glideStaminaPerSecond;
+	public float GlideStaminaConsumingDelay => glideStaminaConsumingDelay;
 	public float TurnSpeedInTheAir => turnSpeedInTheAir;
 	public float TurnSpeedLongJump => turnSpeedLongJump;
 	public float CoyoteTime => coyoteTime;
