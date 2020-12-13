@@ -21,6 +21,7 @@ public class PS_Jump : PlayerState
 
 		currentDrag = PP_Glide.Instance.Drag;
 		baseSpeed = PP_Jump.Instance.JumpSpeed;
+		currentSpeed = baseSpeed;
 		//	Body
 		body = model.Body;
 		body.BodyEvents += BodyEventsHandler;

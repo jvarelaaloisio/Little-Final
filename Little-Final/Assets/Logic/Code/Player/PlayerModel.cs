@@ -8,6 +8,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable
 {
 	#region Variables
 	#region Public
+	public CollectableBag collectableBag;
 	public PlayerView view;
 	public List<Ability> AbilitiesOnLand,
 					AbilitiesInAir,
@@ -30,10 +31,11 @@ public class PlayerModel : MonoBehaviour, IUpdateable
 
 	void Start()
 	{
+		collectableBag = new CollectableBag(PP_Stats.Instance.CollectablesForReward, UpgradeStamina);
 		UpdateManager.Instance.Subscribe(this);
 		body = GetComponent<IBody>();
 		//damageHandler.LifeChangedEvent += LifeChangedHandler;
-		stamina = new Stamina(PP_Stats.Instance.MaxStamina, PP_Stats.Instance.StaminaRefillDelay, PP_Stats.Instance.StaminaRefillSpeed, view.UpdateStamina);
+		stamina = new Stamina(PP_Stats.Instance.InitialStamina, PP_Stats.Instance.StaminaRefillDelay, PP_Stats.Instance.StaminaRefillSpeed, view.UpdateStamina);
 		state = new PS_Walk();
 		state.OnStateEnter(this);
 	}
@@ -84,10 +86,9 @@ public class PlayerModel : MonoBehaviour, IUpdateable
 		LongJumpBuffer = false;
 	}
 	#region EventHandlers
-	void BodyEventHandler(BodyEvent eventType)
+	private void UpgradeStamina()
 	{
-		if (eventType.Equals(BodyEvent.LAND))
-			ChangeState<PS_Walk>();
+		stamina.UpgradeMaxStamina(stamina.MaxStamina + PP_Stats.Instance.StaminaUpgrade);
 	}
 	void LifeChangedHandler(float newLife)
 	{

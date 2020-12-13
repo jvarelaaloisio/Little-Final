@@ -26,15 +26,21 @@ public class PP_Stats : ScriptableObject
 
 	[SerializeField]
 	[Range(0, 500, step: 1)]
-	private float maxStamina,
-		staminaRefillSpeed;
+	private float initialStamina,
+		staminaRefillSpeed,
+		staminaUpgrade;
 	[SerializeField]
 	[Range(0, 10, step: .5f)]
 	private float staminaRefillDelay;
+	[SerializeField]
+	[Range(0, 15, step: 1)]
+	private int collectablesForReward;
 
 	#region Getters
-	public float MaxStamina => maxStamina;
+	public float InitialStamina => initialStamina;
 	public float StaminaRefillSpeed => staminaRefillSpeed;
+	public float StaminaUpgrade => staminaUpgrade;
 	public float StaminaRefillDelay => staminaRefillDelay;
+	public int CollectablesForReward => collectablesForReward;
 	#endregion
 }

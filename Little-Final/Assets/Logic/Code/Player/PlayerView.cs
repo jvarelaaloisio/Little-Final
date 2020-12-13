@@ -1,17 +1,19 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using UpdateManagement;
-using Cinemachine;
 public class PlayerView : MonoBehaviour, IUpdateable
 {
 	public Color maxStamina,
 				minStamina;
 	public float staminaFadeDelay,
-				staminaFadeTime;
+				staminaFadeTime,
+				staminaPerCircle;
 	public int FOV,
 				FOVaccelerated;
 	public Vector3 StaminaUIOffset;
-	public Image staminaUI;
+	public List<Image> staminaUI;
+	public Image staminaUI_;
 	public string runningBlendTree;
 	public string jumpAnimation;
 	public string jumpAndFlyAnimation;
@@ -23,30 +25,36 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	public Animator animator;
 	ActionOverTime staminaFade;
 	CountDownTimer staminaFadeTimer;
+	private PlayerModel model;
 	private void Start()
 	{
 		staminaFade = new ActionOverTime(staminaFadeTime, ChangeStaminaMask, true);
 		staminaFadeTimer = new CountDownTimer(staminaFadeDelay, staminaFade.StartAction);
-		staminaUI.color = maxStamina;
+		staminaUI_.color = maxStamina;
 		ChangeStaminaMask(1);
 		UpdateManager.Instance.Subscribe(this);
+		model = GetComponent<PlayerModel>();
 	}
 	public void OnUpdate()
 	{
-		staminaUI.rectTransform.position = Camera.main.WorldToScreenPoint(transform.position) + StaminaUIOffset;
+		staminaUI_.rectTransform.position = Camera.main.WorldToScreenPoint(transform.position) + StaminaUIOffset;
 	}
 	private void ChangeStaminaMask(float lerp)
 	{
-		Color color = staminaUI.color;
+		Color color = staminaUI_.color;
 		color.a = 1 - lerp;
-		staminaUI.color = color;
+		staminaUI_.color = color;
 	}
 	public void UpdateStamina(float value)
 	{
 		ChangeStaminaMask(0);
-		float lerp = value / PP_Stats.Instance.MaxStamina;
-		staminaUI.fillAmount = lerp;
-		staminaUI.color = Color.Lerp(minStamina, maxStamina, lerp);
+		//int circleQuantity = Mathf.FloorToInt(model.stamina.MaxStamina / staminaPerCircle);
+		//int circleQuantity = Mathf.FloorToInt(value / staminaPerCircle);
+		//Debug.Log(circleQuantity + " circles");
+		//int circlesFilled = 
+		float lerp = value / model.stamina.MaxStamina;
+		staminaUI_.fillAmount = lerp;
+		staminaUI_.color = Color.Lerp(minStamina, maxStamina, lerp);
 		staminaFade.StopAction();
 		if (lerp == 1) staminaFadeTimer.StartTimer();
 	}

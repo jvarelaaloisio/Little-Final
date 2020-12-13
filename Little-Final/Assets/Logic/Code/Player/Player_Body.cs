@@ -57,7 +57,7 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 
 	#region Getters
 	public Vector3 Position => transform.position;
-	public Vector3 Velocity => rb.velocity;
+	public Vector3 Velocity { get => rb.velocity; set => rb.velocity = value; }
 	public GameObject GameObject => gameObject;
 	public Vector3 LastFloorNormal { get; set; }
 	#endregion
@@ -255,6 +255,8 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	}
 	private void OnTriggerExit(Collider other)
 	{
+		if (other.gameObject.layer == LayerMask.NameToLayer(INTERACTABLE_LAYER))
+			return;
 		FallHelper.RemoveFloor(other.gameObject);
 		flags[Flag.IN_THE_AIR] = true;
 		BodyEvents?.Invoke(BodyEvent.JUMP);

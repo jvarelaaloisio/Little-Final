@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UpdateManagement;
 
+[RequireComponent(typeof(CollectableRotator))]
 [RequireComponent(typeof(Collider))]
 public class Collectable : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public class Collectable : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
+		CollectableBag bag = other.GetComponent<PlayerModel>().collectableBag;
+		bag.AddCollectable(GetComponent<CollectableRotator>());
+		bag.ValidateNewReward();
+
 		GetComponent<Collider>().enabled = false;
 		transform.SetParent(other.transform);
 		Destroy(GetComponent<RotateAroundSelf>());

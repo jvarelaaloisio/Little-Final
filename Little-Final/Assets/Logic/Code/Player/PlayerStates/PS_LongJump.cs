@@ -6,6 +6,7 @@ public class PS_LongJump : PS_Jump
 	{
 		base.OnStateEnter(model);
 		baseSpeed = PP_Jump.Instance.LongJumpSpeed;
+		currentSpeed = baseSpeed;
 	}
 	public override void OnStateUpdate()
 	{
