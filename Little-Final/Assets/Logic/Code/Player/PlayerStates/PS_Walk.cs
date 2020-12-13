@@ -7,7 +7,7 @@ public class PS_Walk : PlayerState
 	Transform transform;
 	IBody body;
 	CountDownTimer coyoteEffect;
-	public override void OnStateEnter(PlayerController brain)
+	public override void OnStateEnter(PlayerModel brain)
 	{
 		base.OnStateEnter(brain);
 		brain.view.ShowLandFeedback();
@@ -23,30 +23,33 @@ public class PS_Walk : PlayerState
 			brain.ResetJumpBuffers();
 			body.Jump(PP_Jump.Instance.LongJumpForce);
 			brain.ChangeState<PS_LongJump>();
+			model.view.ShowJumpFeedback();
 		}
 		else if (brain.JumpBuffer)
 		{
 			brain.ResetJumpBuffers();
 			body.Jump(PP_Jump.Instance.JumpForce);
 			brain.ChangeState<PS_Jump>();
+			model.view.ShowJumpFeedback();
 		}
 	}
-
 	public override void OnStateUpdate()
 	{
 		Vector2 input = InputManager.GetHorInput();
 
-		brain.view.SetSpeed(Mathf.Abs(input.y / 2));
+		model.view.SetSpeed(Mathf.Abs(input.normalized.magnitude / 2));
 
 		Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
-		Debug.DrawRay(transform.position, desiredDirection.normalized / 2, Color.green);
+		Debug.DrawRay(transform.position, desiredDirection.normalized / 3, Color.green);
 
-		if (HorizontalMovementHelper.IsSafeAngle(transform.position, desiredDirection.normalized, .5f, PP_Walk.Instance.MinSafeAngle))
+		if (HorizontalMovementHelper.IsSafeAngle(transform.position, desiredDirection.normalized, .3f, PP_Walk.Instance.MinSafeAngle))
+		{
 			HorizontalMovementHelper.MoveWithRotation(transform,
 												body,
 												desiredDirection,
 												PP_Walk.Instance.Speed,
 												PP_Walk.Instance.TurnSpeed);
+		}
 
 		//		Picking
 		//if (InputManager.ReadPickInput())
@@ -54,48 +57,44 @@ public class PS_Walk : PlayerState
 		//	brain.PickItem();
 		//}
 
-		if (InputManager.GetLongJumpInput())
+		if (InputManager.CheckLongJumpInput())
 		{
 			body.Jump(PP_Jump.Instance.LongJumpForce);
-			brain.ChangeState<PS_LongJump>();
+			model.ChangeState<PS_LongJump>();
+			model.view.ShowJumpFeedback();
 		}
-		else if (InputManager.GetJumpInput())
+		else if (InputManager.CheckJumpInput())
 		{
 			body.Jump(PP_Jump.Instance.JumpForce);
-			brain.ChangeState<PS_Jump>();
+			model.ChangeState<PS_Jump>();
+			model.view.ShowJumpFeedback();
 		}
-		CheckClimb();
-		CheckGround();
+		ValidateClimb();
+		ValidateGround();
+		model.RunAbilityList(model.AbilitiesOnLand);
 	}
-
 	public override void OnStateExit()
 	{
 		base.OnStateExit();
 		coyoteEffect.StopTimer();
 	}
-	private void FinishCoyoteTime(string id)
-	{
-		if (!FallHelper.IsGrounded)
-			brain.ChangeState<PS_Jump>();
-	}
 	private void OnCoyoteFinished()
 	{
 		if (!FallHelper.IsGrounded)
-			brain.ChangeState<PS_Jump>();
+			model.ChangeState<PS_Jump>();
 	}
-	protected virtual void CheckClimb()
+	protected virtual void ValidateClimb()
 	{
-		if (InputManager.GetClimbInput() && brain.stamina.FillState > 0 && ClimbHelper.CanClimb(transform.position,
+		if (InputManager.CheckClimbInput() && model.stamina.FillState > 0 && ClimbHelper.CanClimb(transform.position,
 																								transform.forward,
 																								PP_Climb.Instance.MaxDistanceToTriggerClimb,
 																								PP_Climb.Instance.MaxClimbAngle,
 																								out _))
 		{
-			brain.ChangeState<PS_Climb>();
+			model.ChangeState<PS_Climb>();
 		}
 	}
-
-	protected virtual void CheckGround()
+	protected virtual void ValidateGround()
 	{
 		if (!FallHelper.IsGrounded && !coyoteEffect.IsTicking)
 			coyoteEffect.StartTimer();

@@ -63,4 +63,9 @@ public class Stamina
 		refillDelayTimer.StartTimer();
 		isRefillingActive = true;
 	}
+	public void RefillCompletely()
+	{
+		FillState = maxStamina;
+		onStaminaChange?.Invoke(FillState);
+	}
 }

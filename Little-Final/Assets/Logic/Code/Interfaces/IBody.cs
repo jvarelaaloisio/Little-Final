@@ -5,7 +5,11 @@ using UnityEngine;
 public interface IBody
 {
 	event BodyEvents BodyEvents;
-	void Push(Vector3 direction, float force);
+	Vector3 Velocity { get; }
+	void SetDrag(float value);
+	float GetDrag();
+	void Push(Vector3 directionNormalized, float force);
+	void Push(Vector3 direction);
 	void MoveHorizontally(Vector3 direction, float inputSpeed);
 	void Move(Vector3 direction, float speed);
 	void StopJump();

@@ -12,6 +12,6 @@ public static class BezierHelper
 	}
 	public static float GetSinBezier(float x)
 	{
-		return Mathf.Sin((x - .5F) * Mathf.PI) / 2 + .5f;
+		return (Mathf.Sin((x - .5f) * Mathf.PI) + 1) / 2;
 	}
 }

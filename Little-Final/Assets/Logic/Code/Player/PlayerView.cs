@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UpdateManagement;
+using Cinemachine;
 public class PlayerView : MonoBehaviour, IUpdateable
 {
 	public Color maxStamina,
 				minStamina;
 	public float staminaFadeDelay,
 				staminaFadeTime;
+	public int FOV,
+				FOVaccelerated;
 	public Vector3 StaminaUIOffset;
 	public Image staminaUI;
 	public string runningBlendTree;
@@ -38,6 +41,15 @@ public class PlayerView : MonoBehaviour, IUpdateable
 		color.a = 1 - lerp;
 		staminaUI.color = color;
 	}
+	public void UpdateStamina(float value)
+	{
+		ChangeStaminaMask(0);
+		float lerp = value / PP_Stats.Instance.MaxStamina;
+		staminaUI.fillAmount = lerp;
+		staminaUI.color = Color.Lerp(minStamina, maxStamina, lerp);
+		staminaFade.StopAction();
+		if (lerp == 1) staminaFadeTimer.StartTimer();
+	}
 	public void SetSpeed(float value) => animator.SetFloat(speedParameter, value);
 	public void SetFlying(bool value) => animator.SetBool(flyingParameter, value);
 	public void ShowLandFeedback()
@@ -46,7 +58,8 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	}
 	public void ShowJumpFeedback()
 	{
-		animator.CrossFade(jumpAnimation, transitionDuration);
+		//animator.CrossFade(jumpAnimation, transitionDuration);
+		animator.Play(jumpAnimation);
 	}
 	public void ShowJumpAndFlyFeedback()
 	{
@@ -60,13 +73,21 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	{
 		animator.CrossFade(deathAnimation, transitionDuration);
 	}
-	public void UpdateStamina(float value)
+	public void SetAccelerationEffect(float lerp)
 	{
-		ChangeStaminaMask(0);
-		float lerp = value / PP_Stats.Instance.MaxStamina;
-		staminaUI.fillAmount = lerp;
-		staminaUI.color = Color.Lerp(minStamina, maxStamina, lerp);
-		staminaFade.StopAction();
-		if (lerp == 1) staminaFadeTimer.StartTimer();
+
+	}
+	public void ShowAccelerationFeedback()
+	{
+
+	}
+	public void StopAccelerationFeedback()
+	{
+
+	}
+	public void PlaySpecificAnimation(string stateName)
+	{
+		//animator.CrossFade(stateName, transitionDuration);
+		animator.Play(stateName);
 	}
 }

@@ -22,16 +22,16 @@ public static class InputManager
 		return inputReader.GetHorInput();
 	}
 	
-	public static bool GetClimbInput()
+	public static bool CheckClimbInput()
 	{
 		return inputReader.GetClimbInput();
 	}
-	public static bool GetJumpInput()
+	public static bool CheckJumpInput()
 	{
 		return inputReader.GetJumpInput();
 	}
 
-	public static bool GetLongJumpInput()
+	public static bool CheckLongJumpInput()
 	{
 		return inputReader.GetLongJumpInput();
 	}
@@ -39,11 +39,12 @@ public static class InputManager
 	{
 		return inputReader.GetGlideInput();
 	}
-	public static bool GetPickInput()
+	public static bool CheckSwirlInput() => inputReader.GetSwirlInput();
+	public static bool CheckPickInput()
 	{
 		return inputReader.GetPickInput();
 	}
-	public static bool GetThrowInput()
+	public static bool CheckThrowInput()
 	{
 		return inputReader.GetThrowInput();
 	}

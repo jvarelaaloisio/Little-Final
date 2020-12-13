@@ -1,15 +1,18 @@
-﻿using CharacterMovement;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UpdateManagement;
 [RequireComponent(typeof(DamageHandler))]
 [RequireComponent(typeof(PlayerView))]
 [SelectionBase]
-public class PlayerController : MonoBehaviour, IUpdateable
+public class PlayerModel : MonoBehaviour, IUpdateable
 {
 	#region Variables
+	#region Public
 	public PlayerView view;
+	public List<Ability> AbilitiesOnLand,
+					AbilitiesInAir,
+					AbilitiesOnWall;
+	#endregion
 	#region Private
 	IPickable _itemPicked;
 	IBody body;
@@ -40,6 +43,18 @@ public class PlayerController : MonoBehaviour, IUpdateable
 		state.OnStateExit();
 		state = new T();
 		state.OnStateEnter(this);
+	}
+
+	public void RunAbilityList(List<Ability> abilities)
+	{
+		foreach (Ability ability in abilities)
+		{
+			if (ability.ValidateTrigger(this))
+			{
+				ability.Use(this);
+				stamina.ConsumeStamina(ability.Stamina);
+			}
+		}
 	}
 
 	public void OnUpdate()
@@ -75,10 +90,6 @@ public class PlayerController : MonoBehaviour, IUpdateable
 			ChangeState<PS_Walk>();
 	}
 	void LifeChangedHandler(float newLife)
-	{
-
-	}
-	void AnimationEventHandler(AnimationEvent typeOfEvent)
 	{
 
 	}

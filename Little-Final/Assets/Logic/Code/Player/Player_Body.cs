@@ -16,6 +16,7 @@ public delegate void BodyEvents(BodyEvent typeOfEvent);
 public class Player_Body : MonoBehaviour, IUpdateable, IBody
 {
 	#region Variables
+	const string INTERACTABLE_LAYER = "Interactable";
 
 	public SO_Layer climbableTopLayer;
 
@@ -70,7 +71,6 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	{
 		IN_THE_AIR,
 		JUMP_REQUEST,
-		GLIDING,
 		COLLIDING,
 		TOUCHING_PICKABLE,
 		COL_COUNTING,
@@ -168,26 +168,9 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 		}
 	}
 
-	/// <summary>
-	/// Turn on and off the gliding
-	/// </summary>
-	/// <param name="value"></param>
-	public void TurnGlide(bool value)
-	{
-		if (value && rb.velocity.y < 0)
-		{
-			if (!flags[Flag.GLIDING])
-			{
-				rb.drag = PP_Jump.Instance.GlidingDrag;
-				flags[Flag.GLIDING] = true;
-			}
-		}
-		else
-		{
-			rb.drag = 0;
-			flags[Flag.GLIDING] = false;
-		}
-	}
+	public void SetDrag(float value) => rb.drag = value;
+
+	public float GetDrag() => rb.drag;
 
 	void PlaySound(int Index)
 	{
@@ -234,9 +217,13 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 		rb.velocity += Vector3.up * Physics2D.gravity.y * (PP_Jump.Instance.LowJumpMultiplier - 1) * Time.deltaTime;
 	}
 
-	public void Push(Vector3 direction, float force)
+	public void Push(Vector3 directionNormalized, float force)
 	{
-		rb.AddForce(direction.normalized * force, ForceMode.Impulse);
+		Push(directionNormalized * force);
+	}
+	public void Push(Vector3 direction)
+	{
+		rb.AddForce(direction, ForceMode.Impulse);
 	}
 	public Collider GetLandCollider()
 	{
@@ -247,6 +234,8 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	#region Collisions
 	private void OnTriggerEnter(Collider other)
 	{
+		if (other.gameObject.layer == LayerMask.NameToLayer(INTERACTABLE_LAYER))
+			return;
 		if (other.gameObject.layer == climbableTopLayer.Layer)
 		{
 			BodyEvents(BodyEvent.TRIGGER);
