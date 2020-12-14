@@ -6,6 +6,7 @@ using UpdateManagement;
 [RequireComponent(typeof(Collider))]
 public class Collectable : MonoBehaviour
 {
+	public ParticleSystem idleParticles;
 	public float distanceFromGround;
 	public float setupTime;
 	public Vector3 scaleWhenPicked;
@@ -22,6 +23,7 @@ public class Collectable : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
+		idleParticles.Stop();
 		CollectableBag bag = other.GetComponent<PlayerModel>().collectableBag;
 		bag.AddCollectable(GetComponent<CollectableRotator>());
 		bag.ValidateNewReward();

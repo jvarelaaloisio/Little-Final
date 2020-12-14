@@ -23,6 +23,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 	public Stamina stamina;
 	PlayerState state;
 	private Vector3 lastSafePosition;
+	private Quaternion lastSafeRotation;
 	private bool isDead;
 	#endregion
 	#region Properties
@@ -92,11 +93,12 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 		}*/
 	}
 
-	public void SaveSafePosition(Vector3 position)
+	public void SaveSafeState(Vector3 position, Quaternion rotation)
 	{
 		if (isDead)
 			return;
 		lastSafePosition = position;
+		lastSafeRotation = rotation;
 	}
 	
 	public void Revive()
@@ -106,6 +108,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 		ChangeState<PS_Walk>();
 		damageHandler.ResetLifePoints();
 		transform.position = lastSafePosition;
+		transform.rotation = lastSafeRotation;
 	}
 
 	public void ResetJumpBuffers()

@@ -119,7 +119,8 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	}
 	public void ShowClimbFeedback()
 	{
-		animator.Play(climbAnimation);
+		animator.CrossFade(climbAnimation, transitionDuration);
+		//animator.Play(climbAnimation);
 	}
 	public void ShowDeathFeedback()
 	{
