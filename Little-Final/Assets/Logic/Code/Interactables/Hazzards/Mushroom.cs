@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UpdateManagement;
 [RequireComponent(typeof(SphereCollider))]
 public class Mushroom : Hazzard
 {
@@ -17,9 +17,9 @@ public class Mushroom : Hazzard
 
 	#region Private
 	SphereCollider _collider;
-	Timer_DEPRECATED _damageTurnOnTimer,
-		_damageTurnOffTimer,
-		_ticTimer;
+	CountDownTimer damageTurnOnDelay,
+		damageTurnOffDelay,
+		damageTic;
 	Animation anim;
 	#endregion
 
@@ -31,7 +31,7 @@ public class Mushroom : Hazzard
 		_collider = GetComponent<SphereCollider>();
 		_collider.enabled = false;
 		InitializeTimers();
-		_damageTurnOnTimer.Play();
+		damageTurnOnDelay.StartTimer();
 		anim = GetComponent<Animation>();
 		anim.Play("idle");
 	}
@@ -43,44 +43,30 @@ public class Mushroom : Hazzard
 	/// </summary>
 	void InitializeTimers()
 	{
-		_ticTimer = SetupTimer(ticTime, "Tic Timer");
-		_damageTurnOffTimer = SetupTimer(damageTimeToOff, "Damage Off Timer");
-		_damageTurnOnTimer = SetupTimer(damageTimeToOn, "Damage On Timer");
-
+		damageTic = new CountDownTimer(ticTime, OnTicFinish);
+		damageTurnOnDelay = new CountDownTimer(damageTimeToOn, TurnOnDamage);
+		damageTurnOffDelay = new CountDownTimer(damageTimeToOff, TurnOffDamage);
 	}
-	protected override void TimerFinishedHandler(string ID)
+	private void OnTicFinish()
 	{
-		switch (ID)
-		{
-			case "Damage On Timer":
-				{
-					_collider.enabled = true;
-					particles.Play();
-					anim.Play("hop");
-					_ticTimer.Play();
-					_damageTurnOffTimer.Play();
-					break;
-				}
-			case "Damage Off Timer":
-				{
-					if (_damageables.Count <= 0) _collider.enabled = false;
-					anim.Play("idle");
-					_ticTimer.Stop();
-					_damageTurnOnTimer.Play();
-					particles.Stop();
-					break;
-				}
-			case "Tic Timer":
-				{
-					Attack();
-					_ticTimer.Play();
-					//_ticTimer.GottaCount = true;
-					break;
-				}
-		}
+		Attack();
+		damageTic.StartTimer();
 	}
-	#endregion
-
-	#region Collisions
+	private void TurnOffDamage()
+	{
+		if (_damageables.Count <= 0) _collider.enabled = false;
+		anim.Play("idle");
+		damageTic.StartTimer();
+		damageTurnOnDelay.StartTimer();
+		particles.Stop();
+	}
+	private void TurnOnDamage()
+	{
+		_collider.enabled = true;
+		particles.Play();
+		anim.Play("hop");
+		damageTic.StartTimer();
+		damageTurnOffDelay.StartTimer();
+	}
 	#endregion
 }

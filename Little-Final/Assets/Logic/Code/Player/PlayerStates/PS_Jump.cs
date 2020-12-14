@@ -63,6 +63,7 @@ public class PS_Jump : PlayerState
 		consumeStaminaPeriod.StopTimer();
 		staminaConsumptiongDelay.StopTimer();
 		ResetAcceleration();
+		model.view.SetFlying(false);
 		body.BodyEvents -= BodyEventsHandler;
 		body.SetDrag(0);
 	}

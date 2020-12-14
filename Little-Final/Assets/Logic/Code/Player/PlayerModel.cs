@@ -4,7 +4,7 @@ using UpdateManagement;
 [RequireComponent(typeof(DamageHandler))]
 [RequireComponent(typeof(PlayerView))]
 [SelectionBase]
-public class PlayerModel : MonoBehaviour, IUpdateable
+public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 {
 	#region Variables
 	#region Public
@@ -15,6 +15,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable
 					AbilitiesOnWall;
 	#endregion
 	#region Private
+	public float shadowMinDot;
 	IPickable _itemPicked;
 	IBody body;
 	DamageHandler damageHandler;
@@ -26,6 +27,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable
 	public bool JumpBuffer { get; set; }
 	public bool LongJumpBuffer { get; set; }
 	public Stamina Stamina => stamina;
+	public DamageHandler DamageHandler => damageHandler;
 	#endregion
 	#endregion
 
@@ -34,7 +36,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable
 		collectableBag = new CollectableBag(PP_Stats.Instance.CollectablesForReward, UpgradeStamina);
 		UpdateManager.Instance.Subscribe(this);
 		body = GetComponent<IBody>();
-		//damageHandler.LifeChangedEvent += LifeChangedHandler;
+		damageHandler.onLifeChanged += OnlifeChanged;
 		stamina = new Stamina(PP_Stats.Instance.InitialStamina, PP_Stats.Instance.StaminaRefillDelay, PP_Stats.Instance.StaminaRefillSpeed, view.UpdateStamina);
 		state = new PS_Walk();
 		state.OnStateEnter(this);
@@ -62,8 +64,13 @@ public class PlayerModel : MonoBehaviour, IUpdateable
 	public void OnUpdate()
 	{
 		state.OnStateUpdate();
-		if (Input.GetKeyDown(KeyCode.R))
-			stamina.ConsumeStamina(10);
+		if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 100, LayerMask.GetMask("Default", "Floor", "NonClimbable")))
+		{
+			float _shadowSize = Mathf.Clamp(hit.distance, 0, 1);
+			if (Mathf.Abs(Vector3.Dot(Vector3.down, hit.normal)) < shadowMinDot)
+				_shadowSize = 0;
+			view.ShowPlayerShadow(hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal), _shadowSize);
+		}
 	}
 
 	public void PickItem()
@@ -90,22 +97,27 @@ public class PlayerModel : MonoBehaviour, IUpdateable
 	{
 		stamina.UpgradeMaxStamina(stamina.MaxStamina + PP_Stats.Instance.StaminaUpgrade);
 	}
-	void LifeChangedHandler(float newLife)
+	void OnlifeChanged(float lifePoints)
 	{
-
+		if (lifePoints < 0)
+		{
+			view.ShowDeathFeedback();
+			ChangeState<PS_Idle>();
+		}
 	}
 	#endregion
 	private void OnGUI()
 	{
-		Rect rect = new Rect(10, 25, 100, 100);
+		Rect rect = new Rect(10, 25, 100, 550);
 		GUILayout.BeginArea(rect);
 		GUI.skin.label.fontSize = 15;
-		GUILayout.Label(state.GetType().ToString());
+		GUI.skin.label.normal.textColor = Color.white;
+		GUILayout.Label("State: " + state.GetType().ToString());
 		if (stamina.IsRefillingActive)
 			GUI.skin.label.normal.textColor = Color.green;
 		else
 			GUI.skin.label.normal.textColor = Color.red;
-		
+
 		GUILayout.Label("Stamina: " + stamina.FillState);
 		GUILayout.EndArea();
 	}

@@ -101,6 +101,7 @@ public class PS_Climb : PlayerState
 		if (!InputManager.CheckClimbInput() || model.stamina.FillState < 1)
 		{
 			model.ChangeState<PS_Jump>();
+			model.view.ShowJumpFeedback();
 		}
 
 		model.RunAbilityList(model.AbilitiesOnWall);

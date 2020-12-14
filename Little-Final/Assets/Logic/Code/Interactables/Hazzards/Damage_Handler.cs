@@ -1,60 +1,41 @@
 ﻿using UnityEngine;
-
-public delegate void Damage_Events(float life);
-public class DamageHandler : GenericFunctions, IDamageable
+using System;
+using UpdateManagement;
+public struct DamageHandler
 {
-	#region Variables
-
-	#region Public
-	public event Damage_Events LifeChangedEvent;
-	#endregion
-
-	#region Serialized
-	[SerializeField]
-	float lifePoints,
+	public Action<float> onLifeChanged;
+	public float maxLifePoints,
+		lifePoints,
 		inmunityTime;
-	#endregion
+	public bool IsInmune{ get; private set; }
+	public bool IsDead => lifePoints < 0;
 
-	#region Private
-	Timer_DEPRECATED _inmunityTimer;
-	#endregion
-
-	#region Getters
-	public bool IsInmune { get; private set; }
-	#endregion
-	#endregion
-
-	#region Unity
-	private void Start()
+	public DamageHandler(float maxLifePoints, float inmunityTime, Action<float> onLifeChanged)
 	{
-		_inmunityTimer = SetupTimer(inmunityTime, "Inmunity Timer");
-	}
-	#endregion
-
-	#region Private
-	protected override void TimerFinishedHandler(string ID)
-	{
+		this.maxLifePoints = maxLifePoints;
+		this.lifePoints = maxLifePoints;
+		this.inmunityTime = inmunityTime;
+		this.onLifeChanged = onLifeChanged;
 		IsInmune = false;
 	}
-	#endregion
 
 	#region Public
 	public void TakeDamage(float damage)
 	{
 		if (IsInmune) return;
 		IsInmune = true;
-		if (!_inmunityTimer.Counting)
-		{
-			_inmunityTimer.Play();
-			//_inmunityTimer.GottaCount = true;
-		}
+		new CountDownTimer(inmunityTime, FinishInmunity).StartTimer();
 		lifePoints -= damage;
-		LifeChangedEvent?.Invoke(lifePoints);
+		onLifeChanged?.Invoke(lifePoints);
 	}
 
 	public void FinishInmunity()
 	{
 		IsInmune = false;
+	}
+	public void ResetLifePoints()
+	{
+		lifePoints = maxLifePoints;
 	}
 	#endregion
 }
