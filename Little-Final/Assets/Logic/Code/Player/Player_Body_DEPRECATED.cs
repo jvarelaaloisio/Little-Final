@@ -378,7 +378,7 @@ public class Player_Body_DEPRECATED : GenericFunctions, IUpdateable_DEPRECATED/*
 		{
 			if (!flags[Flag.GLIDING])
 			{
-				rb.drag = PP_Jump.Instance.GlidingDrag;
+				//rb.drag = PP_Jump.Instance.GlidingDrag;
 				flags[Flag.GLIDING] = true;
 			}
 		}

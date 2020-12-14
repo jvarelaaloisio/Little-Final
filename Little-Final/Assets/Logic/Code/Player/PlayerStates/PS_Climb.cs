@@ -20,26 +20,26 @@ public class PS_Climb : PlayerState
 	public PS_Climb()
 	{
 		positioningAction = new ActionOverTime(PP_Climb.Instance.ClimbPositioningTime, GetInPosition, true);
-		CliffClimbingTimer = new CountDownTimer(PP_Climb.Instance.ClimbPositioningTime, () => brain.ChangeState<PS_Jump>());
+		CliffClimbingTimer = new CountDownTimer(PP_Climb.Instance.ClimbPositioningTime, () => model.ChangeState<PS_Jump>());
 
 		consumeStaminaPeriod = new CountDownTimer(1 / PP_Climb.Instance.StaminaPerSecond, ConsumeStamina);
 		staminaConsumingDelay = new CountDownTimer(PP_Climb.Instance.StaminaConsumingDelay, consumeStaminaPeriod.StartTimer);
 	}
-	public override void OnStateEnter(PlayerController brain)
+	public override void OnStateEnter(PlayerModel model)
 	{
-		base.OnStateEnter(brain);
-		transform = brain.transform;
-		body = brain.Body;
+		base.OnStateEnter(model);
+		transform = model.transform;
+		body = model.Body;
 
-		if (brain.stamina.FillState < 1)
+		if (model.stamina.FillState < 1)
 		{
-			brain.ChangeState<PS_Jump>();
+			model.ChangeState<PS_Jump>();
 			return;
 		}
-		brain.stamina.StopFilling();
+		model.stamina.StopFilling();
 
-		brain.view.ShowClimbFeedback();
-		brain.GetComponent<Rigidbody>().isKinematic = true;
+		model.view.ShowClimbFeedback();
+		model.GetComponent<Rigidbody>().isKinematic = true;
 
 		ClimbHelper.CanClimb(transform.position,
 								transform.forward,
@@ -98,10 +98,13 @@ public class PS_Climb : PlayerState
 			consumeStaminaPeriod.StopTimer();
 		}
 
-		if (!InputManager.GetClimbInput() || brain.stamina.FillState < 1)
+		if (!InputManager.CheckClimbInput() || model.stamina.FillState < 1)
 		{
-			brain.ChangeState<PS_Jump>();
+			model.ChangeState<PS_Jump>();
+			model.view.ShowJumpFeedback();
 		}
+
+		model.RunAbilityList(model.AbilitiesOnWall);
 	}
 	public override void OnStateExit()
 	{
@@ -110,8 +113,8 @@ public class PS_Climb : PlayerState
 		positioningAction.StopAction();
 		consumeStaminaPeriod.StopTimer();
 		staminaConsumingDelay.StopTimer();
-		brain.stamina.ResumeFilling();
-		brain.GetComponent<Rigidbody>().isKinematic = false;
+		model.stamina.ResumeFilling();
+		model.GetComponent<Rigidbody>().isKinematic = false;
 		Quaternion newRotation = Quaternion.identity;
 		newRotation.y = transform.rotation.y;
 		transform.rotation = newRotation;
@@ -119,7 +122,7 @@ public class PS_Climb : PlayerState
 
 	protected void ConsumeStamina()
 	{
-		brain.stamina.ConsumeStamina(1);
+		model.stamina.ConsumeStamina(1);
 		if (isClimbFinished)
 			return;
 		consumeStaminaPeriod.StartTimer();

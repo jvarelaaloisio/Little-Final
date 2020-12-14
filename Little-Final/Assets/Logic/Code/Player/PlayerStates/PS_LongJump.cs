@@ -2,6 +2,12 @@
 using CharacterMovement;
 public class PS_LongJump : PS_Jump
 {
+	public override void OnStateEnter(PlayerModel model)
+	{
+		base.OnStateEnter(model);
+		baseSpeed = PP_Jump.Instance.LongJumpSpeed;
+		currentSpeed = baseSpeed;
+	}
 	public override void OnStateUpdate()
 	{
 		Vector2 input = InputManager.GetHorInput();
@@ -15,12 +21,13 @@ public class PS_LongJump : PS_Jump
 														transform,
 														body,
 														desiredDirection,
-														PP_Jump.Instance.LongJumpSpeed,
+														currentSpeed,
 														PP_Jump.Instance.TurnSpeedLongJump);
 		}
 
 		ControlGlide();
 		CheckForJumpBuffer();
 		CheckClimb();
+		model.RunAbilityList(model.AbilitiesInAir);
 	}
 }

@@ -91,6 +91,11 @@ public class MobileInput : MonoBehaviour, IPlayerInput, IUpdateable_DEPRECATED
 		throw new NotImplementedException();
 	}
 
+	public bool GetSwirlInput()
+	{
+		throw new NotImplementedException();
+	}
+
 
 
 	#endregion

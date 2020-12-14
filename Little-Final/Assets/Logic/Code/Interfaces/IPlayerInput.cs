@@ -22,6 +22,8 @@ public interface IPlayerInput
 	/// <returns></returns>
 	bool GetLongJumpInput();
 	bool GetGlideInput();
+
+	bool GetSwirlInput();
 	/// <summary>
 	/// Returns true if the player is pressing the pick button
 	/// </summary>

@@ -7,42 +7,44 @@ using System.Linq;
 
 public class EW_Player : EditorWindow
 {
+	const int PANEL_WIDTH = 300;
 	PropertyHelper editorProperties;
 	string propertiesFileName = "editor.json";
 	string propertiesPath = "Assets/Editor/Properties";
-
+	
 	[MenuItem("Game Design/Player Editor")]
 	public static void OpenWindow()
 	{
 		var window = GetWindow<EW_Player>();
 		window.titleContent = new GUIContent("Player Editor");
-		window.Enable();
 		window.Show();
-	}
-
-	private void Enable()
-	{
-		if (!AssetDatabase.IsValidFolder(propertiesPath))
-		{
-			string[] folders = propertiesPath.Split('/');
-			string actualFolder = folders[0];
-			for (int i = 1; i < folders.Length; i++)
-			{
-				if (!AssetDatabase.IsValidFolder(actualFolder + folders[i]))
-					AssetDatabase.CreateFolder(actualFolder, folders[i]);
-				actualFolder += "/" + folders[i];
-			}
-		}
-		if (!File.Exists(propertiesPath + "/" + propertiesFileName))
-		{
-			Debug.Log("Properties file not found");
-			return;
-		}
-
-		editorProperties = new PropertyHelper(propertiesPath + "/" + propertiesFileName);
-		Debug.Log(editorProperties.GetProperty("prueba").value);
 	}
 	private void OnGUI()
 	{
+		maxSize = new Vector2(PANEL_WIDTH * 2 + 10, 740);
+		minSize = new Vector2(PANEL_WIDTH * 2 + 10, 740);
+		GUILayout.Label("Stats");
+		Editor.CreateEditor(PP_Stats.Instance).OnInspectorGUI();
+		GUILayout.Space(5);
+GUILayout.BeginHorizontal();
+	GUILayout.BeginVertical(GUILayout.MinWidth(PANEL_WIDTH), GUILayout.MaxWidth(PANEL_WIDTH));
+		GUILayout.Label("Walk");
+		Editor.CreateEditor(PP_Walk.Instance).OnInspectorGUI();
+	GUILayout.EndVertical();
+	GUILayout.BeginVertical(GUILayout.MinWidth(PANEL_WIDTH),GUILayout.MaxWidth(PANEL_WIDTH));
+		GUILayout.Label("Climb");
+		Editor.CreateEditor(PP_Climb.Instance).OnInspectorGUI();
+	GUILayout.EndVertical();
+GUILayout.EndHorizontal();
+GUILayout.BeginHorizontal();
+	GUILayout.BeginVertical(GUILayout.MinWidth(PANEL_WIDTH), GUILayout.MaxWidth(PANEL_WIDTH));
+		GUILayout.Label("Jump");
+		Editor.CreateEditor(PP_Jump.Instance).OnInspectorGUI();
+	GUILayout.EndVertical();
+	GUILayout.BeginVertical(GUILayout.MinWidth(PANEL_WIDTH), GUILayout.MaxWidth(PANEL_WIDTH));
+		GUILayout.Label("Glide");
+		Editor.CreateEditor(PP_Glide.Instance).OnInspectorGUI();
+	GUILayout.EndVertical();
+GUILayout.EndHorizontal();
 	}
 }

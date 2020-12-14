@@ -11,7 +11,7 @@ public class Pickable_Revive : MonoBehaviour
     {
         origin = transform.position;
         _dhandler = GetComponent<DamageHandler>();
-        _dhandler.LifeChangedEvent += GoToOrigin;
+        _dhandler.onLifeChanged += GoToOrigin;
     }
 
     void GoToOrigin(float lifePoints)

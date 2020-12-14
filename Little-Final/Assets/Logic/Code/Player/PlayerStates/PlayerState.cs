@@ -2,15 +2,15 @@
 
 public abstract class PlayerState
 {
-	protected PlayerController brain;
+	protected PlayerModel model;
 
 	/// <summary>
 	/// Runs once when the state starts
 	/// </summary>
 	/// <param name="brain"></param>
-	public virtual void OnStateEnter(PlayerController brain)
+	public virtual void OnStateEnter(PlayerModel brain)
 	{
-		this.brain = brain;
+		this.model = brain;
 	}
 	/// <summary>
 	/// Runs every update

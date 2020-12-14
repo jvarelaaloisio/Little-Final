@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Hazzard : GenericFunctions
+public abstract class Hazzard : MonoBehaviour
 {
 	#region Variables
-
-	#region Public
-
-	#endregion
 
 	#region Serialized
 	[SerializeField]
@@ -26,7 +22,7 @@ public abstract class Hazzard : GenericFunctions
 	{
 		foreach (var damagable in _damageables)
 		{
-			damagable.TakeDamage(damage);
+			damagable.DamageHandler.TakeDamage(damage);
 		}
 	}
 	#endregion

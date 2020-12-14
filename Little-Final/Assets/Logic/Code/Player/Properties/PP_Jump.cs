@@ -30,16 +30,13 @@ public class PP_Jump : ScriptableObject
 	#endregion
 
 	[SerializeField]
-	[Range(0, 10, step: .5f)]
+	[Range(0, 100, step: .5f)]
 	private float jumpForce,
 					longJumpForce,
 					jumpSpeed,
 					longJumpSpeed,
 					fallMultiplier,
 					lowJumpMultiplier,
-					glidingDrag,
-					glideStaminaPerSecond,
-					glideStaminaConsumingDelay,
 					turnSpeedInTheAir,
 					turnSpeedLongJump;
 	[SerializeField]
@@ -54,9 +51,6 @@ public class PP_Jump : ScriptableObject
 	public float LongJumpSpeed => longJumpSpeed;
 	public float FallMultiplier => fallMultiplier;
 	public float LowJumpMultiplier => lowJumpMultiplier;
-	public float GlidingDrag => glidingDrag;
-	public float GlideStaminaPerSecond => glideStaminaPerSecond;
-	public float GlideStaminaConsumingDelay => glideStaminaConsumingDelay;
 	public float TurnSpeedInTheAir => turnSpeedInTheAir;
 	public float TurnSpeedLongJump => turnSpeedLongJump;
 	public float CoyoteTime => coyoteTime;

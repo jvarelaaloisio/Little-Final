@@ -16,12 +16,14 @@ public class Stamina
 	}
 
 	public bool IsRefillingActive => isRefillingActive;
+	public float MaxStamina => maxStamina;
+
 
 	private readonly Action onRefillingStart;
 	private readonly Action<float> onStaminaChange;
 	private readonly CountDownTimer refillDelayTimer;
 	private readonly CountDownTimer refillPeriod;
-	private readonly float maxStamina;
+	private float maxStamina;
 	private bool isRefillingActive = true;
 	public Stamina(float maxStamina, float refillDelay, float refillSpeed, Action<float> onStaminaChange = null, Action onRefillingStart = null)
 	{
@@ -62,5 +64,15 @@ public class Stamina
 	{
 		refillDelayTimer.StartTimer();
 		isRefillingActive = true;
+	}
+	public void RefillCompletely()
+	{
+		FillState = maxStamina;
+		onStaminaChange?.Invoke(FillState);
+	}
+	public void UpgradeMaxStamina(float value)
+	{
+		maxStamina = value;
+		refillPeriod.StartTimer();
 	}
 }

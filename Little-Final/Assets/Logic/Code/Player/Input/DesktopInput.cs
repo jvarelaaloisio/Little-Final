@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
-
 public class DesktopInput : IPlayerInput
 {
-	#region Public
 	public Vector2 GetHorInput()
 	{
-		return new Vector2(Input.GetAxis("Horizontal"), UnityEngine.Input.GetAxis("Vertical"));
+		return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 	}
 
 	public bool GetClimbInput()
@@ -36,5 +34,9 @@ public class DesktopInput : IPlayerInput
 	{
 		return Input.GetButton("Jump");
 	}
-	#endregion
+
+	public bool GetSwirlInput()
+	{
+		return Input.GetButtonDown("Swirl");
+	}
 }

@@ -162,7 +162,7 @@ public class Player_Brain_DEPRECATED : GenericFunctions, IUpdateable_DEPRECATED
 	void SetupHandlers()
 	{
 		myBody.BodyEvents += BodyEventHandler;
-		myDamageHandler.LifeChangedEvent += LifeChangedHandler;
+		myDamageHandler.onLifeChanged += LifeChangedHandler;
 		myAnimator.AnimationEvents += AnimationEventHandler;
 	}
 	#endregion
