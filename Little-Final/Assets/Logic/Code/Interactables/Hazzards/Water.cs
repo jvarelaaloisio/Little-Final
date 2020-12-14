@@ -8,13 +8,14 @@ public class Water : Hazzard
 	#endregion
 
 	#region Collisions
-	private void OnCollisionEnter(Collision collision)
+	protected override void OnTriggerEnter(Collider other)
 	{
-		base.OnTriggerEnter(collision.collider);
-		if (collision.transform.GetComponent(typeof(IDamageable)))
+		base.OnTriggerEnter(other);
+		if (other.GetComponent(typeof(IDamageable)))
 		{
 			Attack();
 		}
+		
 	}
 	#endregion
 }

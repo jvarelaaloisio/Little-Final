@@ -53,6 +53,7 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	ContactPoint lastContact;
 	Vector3 _collisionAngles;
 	private float jumpForce;
+	public float safeDot;
 	#endregion
 
 	#region Getters

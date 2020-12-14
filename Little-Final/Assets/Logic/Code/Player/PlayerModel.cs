@@ -22,6 +22,8 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 	DamageHandler damageHandler;
 	public Stamina stamina;
 	PlayerState state;
+	private Vector3 lastSafePosition;
+	private bool isDead;
 	#endregion
 	#region Properties
 	public IBody Body => body;
@@ -64,6 +66,8 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 
 	public void OnUpdate()
 	{
+		if (Application.isEditor && Input.GetButtonDown("RefillStamina"))
+			stamina.RefillCompletely();
 		state.OnStateUpdate();
 		if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 100, LayerMask.GetMask("Default", "Floor", "NonClimbable")))
 		{
@@ -88,6 +92,22 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 		}*/
 	}
 
+	public void SaveSafePosition(Vector3 position)
+	{
+		if (isDead)
+			return;
+		lastSafePosition = position;
+	}
+	
+	public void Revive()
+	{
+		isDead = false;
+		stamina.RefillCompletely();
+		ChangeState<PS_Walk>();
+		damageHandler.ResetLifePoints();
+		transform.position = lastSafePosition;
+	}
+
 	public void ResetJumpBuffers()
 	{
 		JumpBuffer = false;
@@ -100,10 +120,12 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 	}
 	void OnlifeChanged(float lifePoints)
 	{
-		if (lifePoints < 0)
+		if (!isDead && lifePoints < 0)
 		{
+			isDead = true;
 			view.ShowDeathFeedback();
 			ChangeState<PS_Idle>();
+			new CountDownTimer(PP_Stats.Instance.DeadTime, Revive).StartTimer();
 		}
 	}
 	#endregion
@@ -121,5 +143,11 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 
 		GUILayout.Label("Stamina: " + stamina.FillState);
 		GUILayout.EndArea();
+	}
+
+	private void OnDrawGizmos()
+	{
+		Gizmos.color = Color.blue;
+		Gizmos.DrawLine(transform.position, lastSafePosition);
 	}
 }

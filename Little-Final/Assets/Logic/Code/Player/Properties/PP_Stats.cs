@@ -42,7 +42,8 @@ public class PP_Stats : ScriptableObject
 	[SerializeField, Range(1, 500, step: 1)]
 	private float lifePoints;
 	[SerializeField, Range(1, 5, step: .01f)]
-	private float inmunityTime;
+	private float inmunityTime,
+		deadTime;
 #pragma warning restore 0169
 #pragma warning restore 0649
 
@@ -55,5 +56,6 @@ public class PP_Stats : ScriptableObject
 	public int CollectablesForReward => collectablesForReward;
 	public float InmunityTime => inmunityTime;
 	public float LifePoints => lifePoints;
+	public float DeadTime => deadTime;
 	#endregion
 }
