@@ -29,6 +29,7 @@ public class Swirl : Ability
 
 	private void OnFinished()
 	{
+		Debug.Log("swirl finished");
 		model.GetComponent<Rigidbody>().useGravity = true;
 		isCoolDown = false;
 		if (FallHelper.IsGrounded)

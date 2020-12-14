@@ -28,7 +28,7 @@ public abstract class Hazzard : MonoBehaviour
 	#endregion
 
 	#region Collisions
-	private void OnTriggerExit(Collider other)
+	protected virtual void OnTriggerExit(Collider other)
 	{
 		if (other.gameObject.GetComponent<IDamageable>() != null)
 		{
