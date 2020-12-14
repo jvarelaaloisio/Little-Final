@@ -24,6 +24,8 @@ public class PP_Stats : ScriptableObject
 
 	#endregion
 
+#pragma warning disable 0169
+#pragma warning disable 0649
 	[Header("Stamina")]
 	[SerializeField, Range(0, 500, step: 1)]
 	private float initialStamina;
@@ -41,6 +43,9 @@ public class PP_Stats : ScriptableObject
 	private float lifePoints;
 	[SerializeField, Range(1, 5, step: .01f)]
 	private float inmunityTime;
+#pragma warning restore 0169
+#pragma warning restore 0649
+
 
 	#region Getters
 	public float InitialStamina => initialStamina;

@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour, IUpdateable
 	#region Unity
 	private void Start()
 	{
-		UpdateManager.Instance.Subscribe(this);
+		UpdateManager.Subscribe(this);
 		//if (!player) player = GameObject.FindObjectOfType<Player_Brain_DEPRECATED>().GetComponent<Transform>();
 		//Cursor.visible = false;
 	}

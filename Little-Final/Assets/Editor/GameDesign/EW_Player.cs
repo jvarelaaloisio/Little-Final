@@ -8,9 +8,6 @@ using System.Linq;
 public class EW_Player : EditorWindow
 {
 	const int PANEL_WIDTH = 300;
-	PropertyHelper editorProperties;
-	string propertiesFileName = "editor.json";
-	string propertiesPath = "Assets/Editor/Properties";
 	
 	[MenuItem("Game Design/Player Editor")]
 	public static void OpenWindow()

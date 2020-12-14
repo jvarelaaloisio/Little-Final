@@ -25,7 +25,10 @@ public class MovingObject : MonoBehaviour
 			move.StartAction();
 		}
 	}
-
+	private void OnDestroy()
+	{
+		move.StopAction();
+	}
 	private void OnDrawGizmos()
 	{
 		Gizmos.color = new Color(0, 0, 0, .5f);

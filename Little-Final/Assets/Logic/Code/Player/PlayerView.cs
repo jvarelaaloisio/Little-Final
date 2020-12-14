@@ -36,7 +36,7 @@ public class PlayerView : MonoBehaviour, IUpdateable
 		cameraView = FindObjectOfType<CameraView>();
 		staminaUI.ForEach((Image ui) => ui.color = maxStamina);
 		ChangeStaminaMask(1);
-		UpdateManager.Instance.Subscribe(this);
+		UpdateManager.Subscribe(this);
 	}
 	public void OnUpdate()
 	{

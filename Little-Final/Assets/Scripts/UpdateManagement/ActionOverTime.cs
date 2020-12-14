@@ -34,8 +34,8 @@ namespace UpdateManagement
 		{
 			IsRunning = true;
 			currentTime = 0;
-			UpdateManager.Instance.UnSubscribe(this);
-			UpdateManager.Instance.Subscribe(this);
+			UpdateManager.UnSubscribe(this);
+			UpdateManager.Subscribe(this);
 		}
 		/// <summary>
 		/// Stops ticking and unsubscribes from updateManager
@@ -43,7 +43,7 @@ namespace UpdateManagement
 		public void StopAction()
 		{
 			IsRunning = false;
-			UpdateManager.Instance.UnSubscribe(this);
+			UpdateManager.UnSubscribe(this);
 		}
 		/// <summary>
 		/// Method used for UpdateManager. Don't Call.
@@ -56,7 +56,7 @@ namespace UpdateManagement
 			if (currentTime >= totalTime)
 			{
 				currentTime = 0;
-				UpdateManager.Instance.UnSubscribe(this);
+				UpdateManager.UnSubscribe(this);
 			}
 		}
 	}

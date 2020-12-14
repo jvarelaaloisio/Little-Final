@@ -29,6 +29,8 @@ public class PP_Jump : ScriptableObject
 
 	#endregion
 
+#pragma warning disable 0169
+#pragma warning disable 0649
 	[SerializeField]
 	[Range(0, 100, step: .5f)]
 	private float jumpForce,
@@ -43,6 +45,8 @@ public class PP_Jump : ScriptableObject
 	[UnityEngine.Range(0, 3)]
 	private float coyoteTime,
 		distanceToGround;
+#pragma warning restore 0169
+#pragma warning restore 0649
 
 	#region Getters
 	public float JumpForce => jumpForce;

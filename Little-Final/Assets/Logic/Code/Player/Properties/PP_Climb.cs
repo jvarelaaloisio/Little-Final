@@ -25,6 +25,8 @@ public class PP_Climb : ScriptableObject
 
 	#endregion
 
+#pragma warning disable 0169
+#pragma warning disable 0649
 	[SerializeField]
 	[Range(0, 10, step: .5f)]
 	private float climbSpeed;
@@ -46,6 +48,9 @@ public class PP_Climb : ScriptableObject
 	[SerializeField]
 	[Range(0, 10, step: .2f)]
 	private float staminaConsumingDelay;
+#pragma warning restore 0169
+#pragma warning restore 0649
+
 
 	#region Getters
 	public float ClimbPositioningTime => climbPositioningTime;

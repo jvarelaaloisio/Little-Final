@@ -9,7 +9,7 @@ public class CameraView : MonoBehaviour, IUpdateable
 					isFlyingParameter;
 	void Start()
 	{
-		UpdateManager.Instance.Subscribe(this);
+		UpdateManager.Subscribe(this);
 	}
 
 	public void OnUpdate()

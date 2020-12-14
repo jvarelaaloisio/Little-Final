@@ -22,8 +22,8 @@ namespace UpdateManagement
 		{
 			currentTime = 0;
 			IsTicking = true;
-			UpdateManager.Instance.UnSubscribe(this);
-			UpdateManager.Instance.Subscribe(this);
+			UpdateManager.UnSubscribe(this);
+			UpdateManager.Subscribe(this);
 		}
 		/// <summary>
 		/// Stops timer and unsubscribes from updateManager
@@ -31,7 +31,7 @@ namespace UpdateManagement
 		public void StopTimer()
 		{
 			IsTicking = false;
-			UpdateManager.Instance.UnSubscribe(this);
+			UpdateManager.UnSubscribe(this);
 		}
 		/// <summary>
 		/// Method used for UpdateManager. Don't Call.
@@ -41,7 +41,7 @@ namespace UpdateManagement
 			currentTime += Time.deltaTime;
 			if (currentTime >= totalTime)
 			{
-				UpdateManager.Instance.UnSubscribe(this);
+				UpdateManager.UnSubscribe(this);
 				onFinished?.Invoke();
 			}
 		}

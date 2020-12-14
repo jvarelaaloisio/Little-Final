@@ -88,7 +88,7 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	#region Unity
 	void Start()
 	{
-		UpdateManager.Instance.Subscribe(this);
+		UpdateManager.Subscribe(this);
 		rb = GetComponent<Rigidbody>();
 
 		SetupFlags();

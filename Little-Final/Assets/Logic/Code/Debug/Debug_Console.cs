@@ -28,8 +28,6 @@ public class Debug_Console : MonoBehaviour, IUpdateable_DEPRECATED
 	UpdateManager_DEPRECATED _uManager;
 	GameManager _gManager;
 	GameObject _player;
-	Player_Body_DEPRECATED _playerBody;
-	Player_Brain_DEPRECATED _playerBrain;
 	List<Command> _commands = new List<Command>();
 	enum Cmd
 	{
@@ -50,8 +48,8 @@ public class Debug_Console : MonoBehaviour, IUpdateable_DEPRECATED
 	{
 		try
 		{
-			_playerBrain = GameObject.FindObjectOfType<Player_Brain_DEPRECATED>();
-			_playerBody = GameObject.FindObjectOfType<Player_Body_DEPRECATED>();
+			//_playerBrain = GameObject.FindObjectOfType<Player_Brain_DEPRECATED>();
+			//_playerBody = GameObject.FindObjectOfType<Player_Body_DEPRECATED>();
 		}
 		catch (NullReferenceException)
 		{
@@ -135,20 +133,20 @@ public class Debug_Console : MonoBehaviour, IUpdateable_DEPRECATED
 	public void GodMode()
 	{
 		_commands[(int)Cmd.godMode].state = !_commands[(int)Cmd.godMode].state;
-		_playerBrain.GodMode = _commands[(int)Cmd.godMode].state;
+		//_playerBrain.GodMode = _commands[(int)Cmd.godMode].state;
 		string _newState = _commands[(int)Cmd.godMode].state ? "on" : "off";
 		WriteFeedBack("GodMode: " + _newState);
 	}
 
 	void SavePosition()
 	{
-		_savedPosition = _playerBody.Position;
+		//_savedPosition = _playerBody.Position;
 		WriteFeedBack("Position saved to: " + _savedPosition);
 	}
 
 	void LoadPosition()
 	{
-		_playerBody.transform.position = _savedPosition;
+		//_playerBody.transform.position = _savedPosition;
 		WriteFeedBack("Position loaded to: " + _savedPosition);
 	}
 
@@ -161,12 +159,12 @@ public class Debug_Console : MonoBehaviour, IUpdateable_DEPRECATED
 
 		if (!_commands[(int)Cmd.flash].state)
 		{
-			_playerBody.flash = FlashMultiplier;
+			//_playerBody.flash = FlashMultiplier;
 			WriteFeedBack("Flash: On");
 		}
 		else
 		{
-			_playerBody.flash = 1 / FlashMultiplier;
+			//_playerBody.flash = 1 / FlashMultiplier;
 			WriteFeedBack("Flash: Off");
 		}
 		_commands[(int)Cmd.flash].state = !_commands[(int)Cmd.flash].state;

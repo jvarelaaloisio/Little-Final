@@ -13,7 +13,7 @@ public class CollectableRotator : MonoBehaviour, IUpdateable
 	private float t;
 	private void Start()
 	{
-		UpdateManager.Instance.Subscribe(this);
+		UpdateManager.Subscribe(this);
 		t = 0;
 	}
 
@@ -38,6 +38,6 @@ public class CollectableRotator : MonoBehaviour, IUpdateable
 	}
 	private void OnDestroy()
 	{
-		UpdateManager.Instance.UnSubscribe(this);
+		UpdateManager.UnSubscribe(this);
 	}
 }

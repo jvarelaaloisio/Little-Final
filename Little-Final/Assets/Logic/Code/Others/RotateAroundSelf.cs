@@ -8,7 +8,7 @@ public class RotateAroundSelf : MonoBehaviour, IUpdateable
 	public float rotationSpeed;
 	void Start()
     {
-		UpdateManager.Instance.Subscribe(this);
+		UpdateManager.Subscribe(this);
     }
 	public void OnUpdate()
 	{
@@ -16,6 +16,6 @@ public class RotateAroundSelf : MonoBehaviour, IUpdateable
 	}
 	private void OnDestroy()
 	{
-		UpdateManager.Instance.UnSubscribe(this);
+		UpdateManager.UnSubscribe(this);
 	}
 }

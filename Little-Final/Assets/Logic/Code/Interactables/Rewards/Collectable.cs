@@ -25,11 +25,11 @@ public class Collectable : MonoBehaviour
 		CollectableBag bag = other.GetComponent<PlayerModel>().collectableBag;
 		bag.AddCollectable(GetComponent<CollectableRotator>());
 		bag.ValidateNewReward();
-
+		Transform _pivot = other.GetComponent<PlayerModel>().collectablePivot;
 		GetComponent<Collider>().enabled = false;
 		transform.SetParent(other.transform);
 		Destroy(GetComponent<RotateAroundSelf>());
-		collectableSetup = new CollectableSetup(GetComponent<CollectableRotator>(), scaleWhenPicked, setupTime, OnFinishedSetup);
+		collectableSetup = new CollectableSetup(GetComponent<CollectableRotator>(), _pivot, scaleWhenPicked, setupTime, OnFinishedSetup);
 		collectableSetup.StartSetup();
 	}
 	private void OnFinishedSetup()

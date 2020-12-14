@@ -24,6 +24,8 @@ public class PP_Walk : ScriptableObject
 
 	#endregion
 
+#pragma warning disable 0169
+#pragma warning disable 0649
 	[SerializeField]
 	[Range(0, 100, step: .5f)]
 	private float speed,
@@ -31,6 +33,8 @@ public class PP_Walk : ScriptableObject
 	[SerializeField]
 	[Range(0, 90, step: 1)]
 	private float minSafeAngle;
+#pragma warning restore 0169
+#pragma warning restore 0649
 
 	#region Getters
 	public float Speed => speed;

@@ -27,6 +27,8 @@ public class PP_Glide : ScriptableObject
 
 	#endregion
 
+#pragma warning disable 0169
+#pragma warning disable 0649
 	[SerializeField]
 	[Range(0, 100, step: .5f)]
 	private float drag,
@@ -34,10 +36,11 @@ public class PP_Glide : ScriptableObject
 					acceleratedSpeed,
 					staminaPerSecond,
 					staminaConsumptionDelay,
-					//Unused
-					turnSpeed,
 					accelerationDelay,
 					accelerationTime;
+#pragma warning restore 0169
+#pragma warning restore 0649
+
 
 	#region Getters
 	public float Drag => drag;
@@ -45,7 +48,6 @@ public class PP_Glide : ScriptableObject
 	public float AcceleratedSpeed => acceleratedSpeed;
 	public float StaminaPerSecond => staminaPerSecond;
 	public float StaminaConsumptionDelay => staminaConsumptionDelay;
-	public float TurnSpeed => turnSpeed;
 	public float AccelerationDelay => accelerationDelay;
 	public float AccelerationTime => accelerationTime;
 	#endregion

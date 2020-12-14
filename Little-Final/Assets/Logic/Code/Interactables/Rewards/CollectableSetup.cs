@@ -10,9 +10,10 @@ public class CollectableSetup
 							originalScale,
 							objScale;
 	private readonly Action onFinishCallBack;
-	public CollectableSetup(CollectableRotator collectable, Vector3 objScale, float setupTime, Action onFinishCallBack)
+	public CollectableSetup(CollectableRotator collectable, Transform pivot, Vector3 objScale, float setupTime, Action onFinishCallBack)
 	{
 		this.collectable = collectable;
+		this.collectable.pivot = pivot;
 		this.onFinishCallBack = onFinishCallBack;
 		this.objScale = objScale;
 		originalScale = collectable.transform.localScale;

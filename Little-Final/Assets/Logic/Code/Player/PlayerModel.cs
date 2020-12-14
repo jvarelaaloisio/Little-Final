@@ -8,6 +8,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 {
 	#region Variables
 	#region Public
+	public Transform collectablePivot;
 	public CollectableBag collectableBag;
 	public PlayerView view;
 	public List<Ability> AbilitiesOnLand,
@@ -34,7 +35,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 	void Start()
 	{
 		collectableBag = new CollectableBag(PP_Stats.Instance.CollectablesForReward, UpgradeStamina);
-		UpdateManager.Instance.Subscribe(this);
+		UpdateManager.Subscribe(this);
 		body = GetComponent<IBody>();
 		damageHandler.onLifeChanged += OnlifeChanged;
 		stamina = new Stamina(PP_Stats.Instance.InitialStamina, PP_Stats.Instance.StaminaRefillDelay, PP_Stats.Instance.StaminaRefillSpeed, view.UpdateStamina);
