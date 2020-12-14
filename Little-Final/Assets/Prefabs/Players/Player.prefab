@@ -531,7 +531,7 @@ Transform:
   m_GameObject: {fileID: 6687177953548559736}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 34, y: 1.82, z: 28.25}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.0000001, y: 1, z: 1.0000001}
   m_Children:
   - {fileID: 2911283040937431661}
   - {fileID: 3453220764226834838}
@@ -553,6 +553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 880d65ce424cb304896159ffb5f05598, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collectablePivot: {fileID: 0}
   view: {fileID: 6687177953548559741}
   AbilitiesOnLand:
   - {fileID: 11400000, guid: 686addaf50031344d86d88f1d7d38016, type: 2}
@@ -583,6 +584,7 @@ MonoBehaviour:
   _inTheAirTimeToOff: 0.005
   _colTimeToOff: 0
   climbTimeToOff: 0.05
+  safeDot: 0
 --- !u!114 &6687177953548559741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -595,9 +597,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c5daa7edc1c6e4da494ea90092dbaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxStamina: {r: 0.0025007725, g: 1, b: 0, a: 1}
-  midStamina: {r: 1, g: 1, b: 0, a: 1}
-  minStamina: {r: 1, g: 0, b: 0, a: 1}
+  maxStamina: {r: 0.0025007725, g: 1, b: 0, a: 0.39215687}
+  midStamina: {r: 1, g: 1, b: 0, a: 0.5882353}
+  minStamina: {r: 1, g: 0, b: 0, a: 0.78431374}
   staminaFadeDelay: 1
   staminaFadeTime: 2
   staminaPerCircle: 100
