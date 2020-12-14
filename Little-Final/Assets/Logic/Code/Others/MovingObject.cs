@@ -27,7 +27,8 @@ public class MovingObject : MonoBehaviour
 	}
 	private void OnDestroy()
 	{
-		move.StopAction();
+		if (move.IsRunning)
+			move.StopAction();
 	}
 	private void OnDrawGizmos()
 	{
