@@ -6,9 +6,10 @@ public class CheckPoint : MonoBehaviour
 {
 	public float distanceFromFloor;
 	public Vector3 safePoint;
+	public Quaternion safeRotation;
 	private void OnTriggerEnter(Collider other)
 	{
-		other.GetComponent<PlayerModel>().SaveSafePosition(safePoint);
+		other.GetComponent<PlayerModel>().SaveSafeState(safePoint, safeRotation);
 	}
 	private void OnDrawGizmos()
 	{
