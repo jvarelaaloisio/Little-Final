@@ -9,6 +9,7 @@ public class Swirl : Ability
 	public float cooldown;
 	private bool isCoolDown;
 	private PlayerModel model;
+	private CountDownTimer cooldownTimer;
 	public override int Stamina => stamina;
 	public override void Use(PlayerModel model)
 	{
@@ -19,9 +20,13 @@ public class Swirl : Ability
 		model.view.PlaySpecificAnimation(animationStateName);
 		model.ChangeState<PS_Idle>();
 		isCoolDown = true;
-		new CountDownTimer(cooldown, OnFinished).StartTimer();
+		cooldownTimer = new CountDownTimer(cooldown, OnFinished);
+		cooldownTimer.StartTimer();
 	}
-
+	private void OnEnable()
+	{
+		isCoolDown = false;
+	}
 	public override bool ValidateTrigger(PlayerModel model)
 	{
 		return !isCoolDown && model.stamina.FillState >= stamina && InputManager.CheckSwirlInput();
@@ -29,7 +34,6 @@ public class Swirl : Ability
 
 	private void OnFinished()
 	{
-		Debug.Log("swirl finished");
 		model.GetComponent<Rigidbody>().useGravity = true;
 		isCoolDown = false;
 		if (FallHelper.IsGrounded)

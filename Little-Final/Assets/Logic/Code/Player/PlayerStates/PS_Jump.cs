@@ -79,8 +79,8 @@ public class PS_Jump : PlayerState
 	private void StartAcceleration()
 	{
 		accelerate.StartAction();
+		model.view.ShowAccelerationFeedback();
 	}
-
 	private void Accelerate(float lerp)
 	{
 		accelerated = true;
@@ -140,6 +140,7 @@ public class PS_Jump : PlayerState
 
 	private void ResetAcceleration()
 	{
+		model.view.StopAccelerationFeedback();
 		accelerationDelay.StopTimer();
 		accelerate.StopAction();
 		currentDrag = PP_Glide.Instance.Drag;

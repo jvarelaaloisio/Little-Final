@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Rendering.PostProcessing;
 using UpdateManagement;
+using System.Linq;
 public class PlayerView : MonoBehaviour, IUpdateable
 {
 	public Color maxStamina,
@@ -12,7 +14,13 @@ public class PlayerView : MonoBehaviour, IUpdateable
 				staminaPerCircle;
 	[Range(0, 100)]
 	public float staminaFollowSpeed;
-	public Vector3 StaminaUIOffset;
+	public Vector3 StaminaUIOffset,
+					StaminaUIOffsetWhenFlying;
+	public RectTransform staminaRings;
+	public float staminaRingsScaleWhenFlying;
+	public float lensDistortionWhenFlying;
+	private Vector3 lastStaminaControlledPosition,
+					staminaOriginalScale;
 	public List<Image> staminaUI;
 	public string runningBlendTree;
 	public string jumpAnimation;
@@ -26,9 +34,12 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	public Material playerShadowMaterial;
 	public Vector3 playerShadowOffset;
 	public Animator animator;
+	private bool isControllingStaminaPosition;
 	CameraView cameraView;
 	ActionOverTime staminaFade;
 	CountDownTimer staminaFadeTimer;
+	private LensDistortion lensDistortionSettings;
+	private float originalDistorsionIntensity;
 	private void Start()
 	{
 		staminaFade = new ActionOverTime(staminaFadeTime, ChangeStaminaMask, true);
@@ -36,12 +47,19 @@ public class PlayerView : MonoBehaviour, IUpdateable
 		cameraView = FindObjectOfType<CameraView>();
 		staminaUI.ForEach((Image ui) => ui.color = maxStamina);
 		ChangeStaminaMask(1);
+		staminaOriginalScale = staminaRings.localScale;
+		Camera.main.GetComponent<PostProcessVolume>().profile.TryGetSettings<LensDistortion>(out lensDistortionSettings);
+		//lensDistortionSettings = (LensDistortion)Camera.main.GetComponent<PostProcessVolume>().profile.settings.First(s => s.GetType().Equals(typeof(LensDistortion)));
+		originalDistorsionIntensity = lensDistortionSettings.intensity;
 		UpdateManager.Subscribe(this);
 	}
 	public void OnUpdate()
 	{
-		Vector3 _StaminaPosition = Camera.main.WorldToScreenPoint(transform.position) + StaminaUIOffset;
-		staminaUI.ForEach((Image ui) => ui.rectTransform.position = Vector3.Lerp(ui.rectTransform.position, _StaminaPosition, Time.deltaTime * staminaFollowSpeed));
+		if (isControllingStaminaPosition)
+		{
+			Vector3 _StaminaPosition = Camera.main.WorldToScreenPoint(transform.position) + StaminaUIOffset;
+			staminaRings.position = Vector3.Lerp(staminaRings.position, _StaminaPosition, Time.deltaTime * staminaFollowSpeed);
+		}
 	}
 	private void ChangeStaminaMask(float lerp)
 	{
@@ -101,7 +119,6 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	}
 	public void ShowClimbFeedback()
 	{
-		//animator.CrossFade(climbAnimation, transitionDuration);
 		animator.Play(climbAnimation);
 	}
 	public void ShowDeathFeedback()
@@ -110,19 +127,23 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	}
 	public void SetAccelerationEffect(float lerp)
 	{
-
+		lensDistortionSettings.intensity.value = Mathf.Lerp(originalDistorsionIntensity, lensDistortionWhenFlying, BezierHelper.GetSinBezier(lerp));
+		staminaRings.localScale = Vector3.Lerp(staminaOriginalScale, Vector3.one * staminaRingsScaleWhenFlying, BezierHelper.GetSinBezier(lerp));
+		staminaRings.anchoredPosition = Vector3.Lerp(lastStaminaControlledPosition, StaminaUIOffsetWhenFlying, BezierHelper.GetSinBezier(lerp));
 	}
 	public void ShowAccelerationFeedback()
 	{
-
+		isControllingStaminaPosition = false;
+		lastStaminaControlledPosition = staminaRings.anchoredPosition;
 	}
 	public void StopAccelerationFeedback()
 	{
-
+		isControllingStaminaPosition = true;
+		staminaRings.localScale = staminaOriginalScale;
+		lensDistortionSettings.intensity.value = originalDistorsionIntensity;
 	}
 	public void PlaySpecificAnimation(string stateName)
 	{
-		//animator.CrossFade(stateName, transitionDuration);
 		animator.Play(stateName);
 	}
 	public void ShowPlayerShadow(Vector3 position, Quaternion rotation, float size)
