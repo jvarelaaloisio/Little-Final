@@ -80,7 +80,7 @@ public class PS_Climb : PlayerState
 				body.Move(moveDirection, PP_Climb.Instance.ClimbSpeed);
 				//Rotation
 				Physics.Raycast(transform.position, transform.forward, out RaycastHit forwardHit, PP_Climb.Instance.MaxDistanceToTriggerClimb, ~LayerMask.GetMask("NonClimbable"));
-				transform.rotation = Quaternion.LookRotation(-forwardHit.normal);
+				transform.rotation = Quaternion.LookRotation(-forwardHit.normal).normalized;
 				Debug.DrawLine(transform.position, hit.point, Color.yellow);
 			}
 		}
