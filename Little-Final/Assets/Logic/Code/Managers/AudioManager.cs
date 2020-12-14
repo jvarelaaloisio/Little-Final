@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
-
+using UpdateManagement;
 public class AudioManager : MonoBehaviour
 {
 	#region Variables
@@ -20,14 +20,21 @@ public class AudioManager : MonoBehaviour
 
 	public AudioClip[] MainTracks;
 
+	public float minSilentTime,
+				maxSilentTime;
+	public float minSongRandomCut,
+				maxSongRandomCut;
 	AudioSource[] Sources;
 	public AudioMixer Mixer;
 	public AudioMixerSnapshot[] SnapshotsVolDown, SnapshotsVolUp;
+	private CountDownTimer randomCut;
+	private CountDownTimer playNextSong;
 	#endregion
 
 	#region Unity
 	void Start()
 	{
+		randomCut = new CountDownTimer(Random.Range(minSongRandomCut, maxSongRandomCut), CutMusic);
 		Sources = GetComponentsInChildren<AudioSource>();
 		SelectMainMusic();
 	}
@@ -37,9 +44,24 @@ public class AudioManager : MonoBehaviour
 
 	void SelectMainMusic()
 	{
-		int musicTrack = Random.Range(0, MainTracks.Length);
-		PlayMainMusic(musicTrack);
-		Invoke("SelectMainMusic", MainTracks[musicTrack].length);
+		int _musicTrack = Random.Range(0, MainTracks.Length);
+		PlayMainMusic(_musicTrack);
+		float _waitTime = MainTracks[_musicTrack].length + Random.Range(minSilentTime, maxSilentTime);
+		if (MainTracks[_musicTrack].length > minSongRandomCut)
+			randomCut.StartTimer();
+		playNextSong = new CountDownTimer(_waitTime, SelectMainMusic);
+		//Invoke("SelectMainMusic", _waitTime);
+	}
+	private void CutMusic()
+	{
+		Debug.Log("Cut");
+		Sources[(int)SoundIndex.Music].Stop();
+		if (playNextSong.IsTicking)
+		{
+			playNextSong.StopTimer();
+			playNextSong = new CountDownTimer(Random.Range(minSilentTime, maxSilentTime), SelectMainMusic);
+			playNextSong.StartTimer();
+		}
 	}
 	/// <summary>
 	/// Controls the BGM

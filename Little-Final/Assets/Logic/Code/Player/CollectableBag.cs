@@ -5,12 +5,14 @@ public class CollectableBag
 	List<CollectableRotator> collectables;
 	public int quantityForReward;
 	private Action giveReward;
+	private Action<float> onCollectableAdded;
 	public int Quantity => collectables.Count;
 
-	public CollectableBag(int quantityForReward, Action giveReward)
+	public CollectableBag(int quantityForReward, Action onGiveReward, Action<float> onCollectableAdded = null)
 	{
 		this.quantityForReward = quantityForReward;
-		this.giveReward = giveReward;
+		this.giveReward = onGiveReward;
+		this.onCollectableAdded = onCollectableAdded;
 		collectables = new List<CollectableRotator>();
 	}
 
@@ -29,5 +31,6 @@ public class CollectableBag
 	public void AddCollectable(CollectableRotator collectable)
 	{
 		collectables.Add(collectable);
+		onCollectableAdded?.Invoke(collectables.Count);
 	}
 }

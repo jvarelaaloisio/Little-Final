@@ -32,6 +32,9 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	public float transitionDuration;
 	public Transform playerShadow;
 	public Material playerShadowMaterial;
+	public Material poncho;
+	public float ponchoTurnOffTime;
+	private ActionOverTime ponchoTurnOff;
 	public Vector3 playerShadowOffset;
 	public Animator animator;
 	private bool isControllingStaminaPosition;
@@ -49,8 +52,9 @@ public class PlayerView : MonoBehaviour, IUpdateable
 		ChangeStaminaMask(1);
 		staminaOriginalScale = staminaRings.localScale;
 		Camera.main.GetComponent<PostProcessVolume>().profile.TryGetSettings<LensDistortion>(out lensDistortionSettings);
-		//lensDistortionSettings = (LensDistortion)Camera.main.GetComponent<PostProcessVolume>().profile.settings.First(s => s.GetType().Equals(typeof(LensDistortion)));
 		originalDistorsionIntensity = lensDistortionSettings.intensity;
+		poncho.SetFloat("_Activate", 0);
+		ponchoTurnOff = new ActionOverTime(ponchoTurnOffTime, FadePoncho);
 		UpdateManager.Subscribe(this);
 	}
 	public void OnUpdate()
@@ -153,4 +157,16 @@ public class PlayerView : MonoBehaviour, IUpdateable
 		playerShadow.rotation = rotation;
 		playerShadowMaterial.SetFloat("_Size", size);
 	}
+	public void UpdatePonchoEffect(float collectableQuantity)
+	{
+		poncho.SetFloat("_Activate", collectableQuantity / PP_Stats.Instance.CollectablesForReward);
+		if (collectableQuantity == PP_Stats.Instance.CollectablesForReward)
+		{
+			ponchoTurnOff = new ActionOverTime(ponchoTurnOffTime, FadePoncho);
+			ponchoTurnOff.StartAction();
+		}
+		else if (ponchoTurnOff.IsRunning)
+			ponchoTurnOff.StopAction();
+	}
+	private void FadePoncho(float lerp) => poncho.SetFloat("_Activate", BezierHelper.GetSinBezier(lerp)); 
 }

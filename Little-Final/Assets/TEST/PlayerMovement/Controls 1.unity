@@ -17906,6 +17906,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distanceFromFloor: 0.3
   safePoint: {x: 114.82542, y: 5.7385645, z: 62.865574}
+  safeRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!4 &826309492
 Transform:
   m_ObjectHideFlags: 0
@@ -18816,6 +18817,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distanceFromFloor: 0.3
   safePoint: {x: 119.38374, y: 5.2990847, z: 109.85707}
+  safeRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!4 &868377162
 Transform:
   m_ObjectHideFlags: 0
@@ -23985,6 +23987,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a79c46f1f997649b5bfdf9fab03eba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  idleParticles: {fileID: 0}
   distanceFromGround: 0.3
   setupTime: 0.75
   scaleWhenPicked: {x: 0.08, y: 0.08, z: 0.03}
@@ -28995,6 +28998,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 458556066}
     m_Modifications:
+    - target: {fileID: 4586203727368041123, guid: 8fc9abd5682f9fc4f992fc8ba8e85e09,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4586203727496266065, guid: 8fc9abd5682f9fc4f992fc8ba8e85e09,
         type: 3}
       propertyPath: m_Name
@@ -29003,7 +29011,7 @@ PrefabInstance:
     - target: {fileID: 4586203727496266065, guid: 8fc9abd5682f9fc4f992fc8ba8e85e09,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4586203727496266094, guid: 8fc9abd5682f9fc4f992fc8ba8e85e09,
         type: 3}
@@ -29059,6 +29067,41 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4586203727496266095, guid: 8fc9abd5682f9fc4f992fc8ba8e85e09,
+        type: 3}
+      propertyPath: MainTracks.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4586203727496266095, guid: 8fc9abd5682f9fc4f992fc8ba8e85e09,
+        type: 3}
+      propertyPath: minSilentTime
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 4586203727496266095, guid: 8fc9abd5682f9fc4f992fc8ba8e85e09,
+        type: 3}
+      propertyPath: maxSilentTime
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 4586203727496266095, guid: 8fc9abd5682f9fc4f992fc8ba8e85e09,
+        type: 3}
+      propertyPath: MainTracks.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: dc85289f17801a74698e6a45a3736f4a, type: 3}
+    - target: {fileID: 4586203727496266095, guid: 8fc9abd5682f9fc4f992fc8ba8e85e09,
+        type: 3}
+      propertyPath: MainTracks.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: e918f206cc7ee0247a8147cc14b78992, type: 3}
+    - target: {fileID: 4586203727496266095, guid: 8fc9abd5682f9fc4f992fc8ba8e85e09,
+        type: 3}
+      propertyPath: minSongRandomCut
+      value: 240
+      objectReference: {fileID: 0}
+    - target: {fileID: 4586203727496266095, guid: 8fc9abd5682f9fc4f992fc8ba8e85e09,
+        type: 3}
+      propertyPath: maxSongRandomCut
+      value: 300
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8fc9abd5682f9fc4f992fc8ba8e85e09, type: 3}
@@ -29594,6 +29637,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a79c46f1f997649b5bfdf9fab03eba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  idleParticles: {fileID: 0}
   distanceFromGround: 0.3
   setupTime: 0.75
   scaleWhenPicked: {x: 0.08, y: 0.08, z: 0.03}
@@ -35398,6 +35442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distanceFromFloor: 0.3
   safePoint: {x: 66.63901, y: 15.591289, z: 53.26846}
+  safeRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!4 &1305187494
 Transform:
   m_ObjectHideFlags: 0
@@ -35692,6 +35737,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a79c46f1f997649b5bfdf9fab03eba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  idleParticles: {fileID: 0}
   distanceFromGround: 0.3
   setupTime: 0.75
   scaleWhenPicked: {x: 0.08, y: 0.08, z: 0.03}
@@ -36969,6 +37015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a79c46f1f997649b5bfdf9fab03eba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  idleParticles: {fileID: 0}
   distanceFromGround: 0.3
   setupTime: 0.75
   scaleWhenPicked: {x: 0.08, y: 0.08, z: 0.03}
@@ -37644,6 +37691,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a79c46f1f997649b5bfdf9fab03eba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  idleParticles: {fileID: 0}
   distanceFromGround: 0.3
   setupTime: 0.75
   scaleWhenPicked: {x: 0.08, y: 0.08, z: 0.03}
@@ -41480,6 +41528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a79c46f1f997649b5bfdf9fab03eba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  idleParticles: {fileID: 0}
   distanceFromGround: 0.3
   setupTime: 0.75
   scaleWhenPicked: {x: 0.08, y: 0.08, z: 0.03}
@@ -41970,6 +42019,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a79c46f1f997649b5bfdf9fab03eba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  idleParticles: {fileID: 0}
   distanceFromGround: 0.3
   setupTime: 0.75
   scaleWhenPicked: {x: 0.08, y: 0.08, z: 0.03}
@@ -51929,11 +51979,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 264562005, guid: db91e94b4d0923f4bb41a8c593f487b5, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000010829583
+      value: 0.000000010829581
       objectReference: {fileID: 0}
     - target: {fileID: 264562005, guid: db91e94b4d0923f4bb41a8c593f487b5, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000044857678
+      value: -0.000000004485765
       objectReference: {fileID: 0}
     - target: {fileID: 264562005, guid: db91e94b4d0923f4bb41a8c593f487b5, type: 3}
       propertyPath: m_LocalRotation.w

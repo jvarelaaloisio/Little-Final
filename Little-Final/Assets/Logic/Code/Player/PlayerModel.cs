@@ -9,8 +9,8 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 	#region Variables
 	#region Public
 	public Transform collectablePivot;
-	public CollectableBag collectableBag;
 	public PlayerView view;
+	public CollectableBag collectableBag;
 	public List<Ability> AbilitiesOnLand,
 					AbilitiesInAir,
 					AbilitiesOnWall;
@@ -37,7 +37,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 
 	void Start()
 	{
-		collectableBag = new CollectableBag(PP_Stats.Instance.CollectablesForReward, UpgradeStamina);
+		collectableBag = new CollectableBag(PP_Stats.Instance.CollectablesForReward, UpgradeStamina, view.UpdatePonchoEffect);
 		UpdateManager.Subscribe(this);
 		body = GetComponent<IBody>();
 		damageHandler.onLifeChanged += OnlifeChanged;
@@ -67,8 +67,11 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 
 	public void OnUpdate()
 	{
-		if (Application.isEditor && Input.GetButtonDown("RefillStamina"))
+		if (Input.GetButtonDown("RefillStamina"))
+		{
+			stamina.UpgradeMaxStamina(400);
 			stamina.RefillCompletely();
+		}
 		state.OnStateUpdate();
 		if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 100, LayerMask.GetMask("Default", "Floor", "NonClimbable")))
 		{
@@ -100,7 +103,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 		lastSafePosition = position;
 		lastSafeRotation = rotation;
 	}
-	
+
 	public void Revive()
 	{
 		isDead = false;
