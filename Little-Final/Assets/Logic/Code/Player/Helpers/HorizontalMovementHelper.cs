@@ -27,7 +27,6 @@ namespace CharacterMovement
 				desiredDirection.Normalize();
 				float differenceRotation = Vector3.Angle(transform.forward, desiredDirection);
 
-				float dot = Vector3.Dot(transform.right, desiredDirection);
 				var leastTravelDirection = GetLeastTravelDirection(transform, desiredDirection);
 				transform.Rotate(transform.up, differenceRotation * leastTravelDirection * turnSpeed * Time.deltaTime);
 				body.MoveHorizontally(transform.forward, speed);
@@ -39,7 +38,7 @@ namespace CharacterMovement
 												float maxDistance,
 												float minDegrees)
 		{
-			if (Physics.Raycast(position, direction, out RaycastHit hit, maxDistance) && hit.normal.y * Mathf.Rad2Deg > minDegrees)
+			if (Physics.Raycast(position, direction, out RaycastHit hit, maxDistance, ~LayerMask.GetMask("Interactable")) && hit.normal.y * Mathf.Rad2Deg > minDegrees)
 			{
 				Debug.DrawLine(position, hit.point, Color.red);
 				return false;

@@ -10,12 +10,16 @@ namespace CharacterMovement
 		public static void AddFloor(GameObject floor)
 		{
 			if (!floors.Contains(floor))
+			{
 				floors.Add(floor);
+			}
 		}
 		public static void RemoveFloor(GameObject floor)
 		{
 			if (floors.Contains(floor))
+			{
 				floors.Remove(floor);
+			}
 		}
 	}
 

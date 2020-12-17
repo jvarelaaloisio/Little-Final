@@ -14,6 +14,7 @@ public class PS_Jump : PlayerState
 	private float currentDrag;
 	private bool isStateFinished;
 	private bool accelerated;
+	private LayerMask interactable;
 	public override void OnStateEnter(PlayerModel model)
 	{
 		base.OnStateEnter(model);
@@ -25,6 +26,8 @@ public class PS_Jump : PlayerState
 		//	Body
 		body = model.Body;
 		body.BodyEvents += BodyEventsHandler;
+
+		interactable = LayerMask.GetMask("Interactable");
 
 		consumeStaminaPeriod = new CountDownTimer(1 / PP_Glide.Instance.StaminaPerSecond, ConsumeStamina);
 		staminaConsumptiongDelay = new CountDownTimer(PP_Glide.Instance.StaminaConsumptionDelay, null);
@@ -121,11 +124,11 @@ public class PS_Jump : PlayerState
 
 	protected virtual void CheckForJumpBuffer()
 	{
-		if (InputManager.CheckLongJumpInput() && Physics.Raycast(transform.position, -transform.up, .5f))
+		if (InputManager.CheckLongJumpInput() && Physics.Raycast(transform.position, -transform.up, .5f, ~interactable))
 		{
 			model.LongJumpBuffer = true;
 		}
-		else if (InputManager.CheckJumpInput() && Physics.Raycast(transform.position, -transform.up, .5f))
+		else if (InputManager.CheckJumpInput() && Physics.Raycast(transform.position, -transform.up, .5f, ~interactable))
 		{
 			model.JumpBuffer = true;
 		}

@@ -195,11 +195,11 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	/// <param name="input"></param>
 	public void MoveHorizontally(Vector3 direction, float speed)
 	{
-		if (CheckCollisionAngle(direction))
-		{
+		//if (CheckCollisionAngle(direction))
+		//{
 			rb.velocity = direction * speed + rb.velocity.y * Vector3.up;
 			Debug.DrawRay(transform.position, rb.velocity, Color.cyan);
-		}
+		//}
 	}
 
 	public void Move(Vector3 direction, float speed) => transform.position += direction * speed * Time.deltaTime;
@@ -235,7 +235,7 @@ public class Player_Body : MonoBehaviour, IUpdateable, IBody
 	#region Collisions
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject.layer == LayerMask.NameToLayer(INTERACTABLE_LAYER))
+		if (other.gameObject.layer == LayerMask.NameToLayer(INTERACTABLE_LAYER) || other.gameObject.layer == LayerMask.NameToLayer("OnlyForShadows"))
 			return;
 		if (other.gameObject.layer == climbableTopLayer.Layer)
 		{

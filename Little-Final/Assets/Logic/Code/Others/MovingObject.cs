@@ -9,7 +9,7 @@ public class MovingObject : MonoBehaviour
 	private ActionOverTime move;
 	private void Start()
 	{
-		origin = transform.position;
+		//origin = transform.position;
 		move = new ActionOverTime(period, Move, true);
 		move.StartAction();
 	}

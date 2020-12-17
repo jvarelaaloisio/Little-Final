@@ -7,16 +7,16 @@ using UpdateManagement;
 public class Collectable : MonoBehaviour
 {
 	public ParticleSystem idleParticles;
-	public float distanceFromGround;
 	public float setupTime;
 	public Vector3 scaleWhenPicked;
 	private CollectableSetup collectableSetup;
-
+	public float distanceFromGround;
+	public bool isRePositioningAtStart;
 	private void Start()
 	{
-		if(Physics.Raycast(transform.position + Vector3.up/3, Vector3.down, out RaycastHit hit, 10))
+		if(isRePositioningAtStart && Physics.Raycast(transform.position + Vector3.up/3, Vector3.down, out RaycastHit hit, 10))
 		{
-			Debug.DrawLine(transform.position, hit.point, Color.green, 1);
+			Debug.DrawLine(transform.position, hit.point, Color.red, 1);
 			transform.position = hit.point + Vector3.up * distanceFromGround;
 		}
 	}
@@ -41,9 +41,9 @@ public class Collectable : MonoBehaviour
 
 	private void OnDrawGizmos()
 	{
-		if (Physics.Raycast(transform.position + Vector3.up / 3, Vector3.down, out RaycastHit hit, 10))
+		if (isRePositioningAtStart && Physics.Raycast(transform.position + Vector3.up / 3, Vector3.down, out RaycastHit hit, 10))
 		{
-			Gizmos.color = Color.green;
+			Gizmos.color = Color.red;
 			Gizmos.DrawWireSphere(hit.point + Vector3.up * distanceFromGround, .2f);
 		}
 	}

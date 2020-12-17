@@ -6,6 +6,8 @@ namespace UpdateManagement
 {
 	public class UpdateManager : MonoBehaviour
 	{
+		private float lastTimeScale;
+		private bool isPause;
 		private Action update;
 		private Action fixedUpdate;
 		private Action lateUpdate;
@@ -23,6 +25,7 @@ namespace UpdateManagement
 				return instance;
 			}
 		}
+
 		private void Awake()
 		{
 			if (instance == null) instance = this;
@@ -32,20 +35,27 @@ namespace UpdateManagement
 		{
 			isQuittingAplication = true;
 		}
+
+		#region Update Messages
 		private void Update()
 		{
+			if (isPause)
+				return;
 			update?.Invoke();
 		}
 		private void FixedUpdate()
 		{
+			if (isPause)
+				return;
 			fixedUpdate?.Invoke();
 		}
-
 		private void LateUpdate()
 		{
+			if (isPause)
+				return;
 			lateUpdate?.Invoke();
 		}
-
+		#endregion
 
 		/// <summary>
 		/// Resets the delegates.
@@ -58,6 +68,20 @@ namespace UpdateManagement
 			lateUpdate = null;
 		}
 
+		public static void SetPause(bool value)
+		{
+			if (Instance.isPause == value)
+				return;
+			Instance.isPause = value;
+			if (value)
+			{
+				Instance.lastTimeScale = Time.timeScale;
+				//Time.timeScale = 0;
+			}
+			//else
+				//Time.timeScale = Instance.lastTimeScale;
+		}
+		
 		#region Subscriptions
 		/// <summary>
 		/// Subscribes to Update

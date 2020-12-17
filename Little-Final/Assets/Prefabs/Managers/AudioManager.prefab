@@ -172,7 +172,7 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 8300000, guid: 099c4a2e5f7baf84ebe6d1f8687f6104, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -281,7 +281,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4586203727496266065}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 12.686127, y: -15.965317, z: -10.270645}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -306,9 +306,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MainTracks:
-  - {fileID: 8300000, guid: 099c4a2e5f7baf84ebe6d1f8687f6104, type: 3}
-  - {fileID: 8300000, guid: 9551f15f6f3b4cf42b09a8678cb53ecb, type: 3}
-  - {fileID: 8300000, guid: c45c0c75e817d044e94c4aebee3e85d7, type: 3}
+  - {fileID: 8300000, guid: dc85289f17801a74698e6a45a3736f4a, type: 3}
+  - {fileID: 8300000, guid: e918f206cc7ee0247a8147cc14b78992, type: 3}
+  minSilentTime: 30
+  maxSilentTime: 120
+  minSongRandomCut: 240
+  maxSongRandomCut: 300
   Mixer: {fileID: 24100000, guid: d3b17fbb6760b2c4588ab054e48a8154, type: 2}
   SnapshotsVolDown:
   - {fileID: 24500006, guid: d3b17fbb6760b2c4588ab054e48a8154, type: 2}

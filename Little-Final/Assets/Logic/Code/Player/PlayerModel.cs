@@ -31,6 +31,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 	public bool JumpBuffer { get; set; }
 	public bool LongJumpBuffer { get; set; }
 	public Stamina Stamina => stamina;
+	public PlayerState State => state;
 	public DamageHandler DamageHandler => damageHandler;
 	#endregion
 	#endregion
@@ -73,8 +74,9 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 			stamina.RefillCompletely();
 		}
 		state.OnStateUpdate();
-		if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 100, LayerMask.GetMask("Default", "Floor", "NonClimbable")))
+		if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 100, LayerMask.GetMask("Default", "Floor", "NonClimbable", "OnlyForShadows"),QueryTriggerInteraction.Collide))
 		{
+			Debug.DrawLine(transform.position, hit.point, Color.white);
 			float _shadowSize = Mathf.Clamp(hit.distance, 0, 1);
 			if (Mathf.Abs(Vector3.Dot(Vector3.down, hit.normal)) < shadowMinDot)
 				_shadowSize = 0;

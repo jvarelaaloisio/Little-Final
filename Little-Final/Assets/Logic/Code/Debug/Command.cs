@@ -1,61 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using System;
 public class Command
 {
-	#region Variables
+	public string Sign { get; }
+	public string Description { get; }
+	public bool State { get; }
 
-	#region Public
-	public delegate void FunctionModel();
-	public FunctionModel function
+	public void Run(object[] args)
 	{
-		get
-		{
-			return _function;
-		}
-	}
-	public bool state
-	{
-		set
-		{
-			_state = value;
-		}
-		get
-		{
-			return _state;
-		}
-	}
-	public string name
-	{
-		get
-		{
-			return _name;
-		}
-	}
-	public string description
-	{
-		get
-		{
-			return _description;
-		}
-	}
-	#endregion
-
-	#region Private
-	FunctionModel _function;
-	string _name, _description;
-	bool _state;
-	#endregion
-
-	#endregion
-
-	#region Public
-	public Command(string NewName, string NewDescription, FunctionModel NewFunction)
-	{
-		_name = NewName;
-		_description = NewDescription;
-		_function = NewFunction;
 
 	}
-
-	#endregion
 }

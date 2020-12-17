@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UpdateManagement;
-public class GameManager : MonoBehaviour, IUpdateable
+public class GameManager : MonoBehaviour
 {
 	#region Variables
 
@@ -56,19 +56,25 @@ public class GameManager : MonoBehaviour, IUpdateable
 
 	#endregion
 
-	#region Unity
-	private void Start()
+	private void Update()
 	{
-		UpdateManager.Subscribe(this);
-		//if (!player) player = GameObject.FindObjectOfType<Player_Brain_DEPRECATED>().GetComponent<Transform>();
-		//Cursor.visible = false;
-	}
-	public void OnUpdate()
-	{
+#if UNITY_EDITOR
+		if (Input.GetButtonDown("Console"))
+		{
+			if (DebugConsole.IsOpened)
+			{
+				UpdateManager.SetPause(false);
+				DebugConsole.Close();
+			}
+			else
+			{
+				UpdateManager.SetPause(true);
+				DebugConsole.Open();
+			}
+		}
 		ControlTimeScale();
-		//controlPause();
+#endif
 	}
-	#endregion
 
 	#region Public
 	/// <summary>
@@ -98,11 +104,6 @@ public class GameManager : MonoBehaviour, IUpdateable
 	void ControlTimeScale()
 	{
 		Time.timeScale = timeScale;
-	}
-
-	void controlPause()
-	{
-		timeScale = _pause ? 0 : timeScale;
 	}
 	#endregion
 }

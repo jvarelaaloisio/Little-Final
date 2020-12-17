@@ -15,7 +15,7 @@ public class PS_Walk : PlayerState
 
 		transform = brain.transform;
 		coyoteEffect = new CountDownTimer(PP_Jump.Instance.CoyoteTime, OnCoyoteFinished);
-		Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 10);
+		Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 10, ~LayerMask.GetMask("Interactable"));
 		body.LastFloorNormal = hit.normal;
 
 		if (brain.LongJumpBuffer)
@@ -81,7 +81,10 @@ public class PS_Walk : PlayerState
 	private void OnCoyoteFinished()
 	{
 		if (!FallHelper.IsGrounded)
+		{
 			model.ChangeState<PS_Jump>();
+			model.view.ShowJumpFeedback();
+		}
 	}
 	protected virtual void ValidateClimb()
 	{

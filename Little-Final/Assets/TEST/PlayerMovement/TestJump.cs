@@ -12,14 +12,14 @@ public class TestJump : StateMachineBehaviour
 	{
 		if (!landCollider)
 		{
-			Debug_Console.print("no landCollider Available");
+			DebugConsole.print("no landCollider Available");
 			try
 			{
 				landCollider = animator.GetComponent<IBody>().GetLandCollider();
 			}
 			catch (NullReferenceException)
 			{
-				Debug_Console.print("no body on player");
+				DebugConsole.print("no body on player");
 				return;
 			}
 		}

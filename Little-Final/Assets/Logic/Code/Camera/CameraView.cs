@@ -14,7 +14,7 @@ public class CameraView : MonoBehaviour, IUpdateable
 
 	public void OnUpdate()
 	{
-		animator.SetBool(isInputParameter, Mathf.Abs(Input.GetAxis("Camera X")) > 0);
+		animator.SetBool(isInputParameter, Mathf.Abs(Input.GetAxis("Camera X")) > 0 || Mathf.Abs(Input.GetAxis("Mouse Y")) > 0);
 	}
 
 	public void IsFlying(bool value) => animator.SetBool(isFlyingParameter, value);
