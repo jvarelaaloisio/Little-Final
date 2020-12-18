@@ -45,6 +45,8 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	CountDownTimer staminaFadeTimer;
 	private LensDistortion lensDistortionSettings;
 	private float originalDistorsionIntensity;
+	public ParticleSystem glideEffect,
+							accelerationEffect;
 	private void Start()
 	{
 		audioManager = FindObjectOfType<AudioManager>();
@@ -107,12 +109,13 @@ public class PlayerView : MonoBehaviour, IUpdateable
 		staminaFade.StopAction();
 		if (_lerp == 1) staminaFadeTimer.StartTimer();
 	}
-	public void SetSpeed(float value)
-	{
-		animator.SetFloat(speedParameter, value);
-	}
+	public void SetSpeed(float value) => animator.SetFloat(speedParameter, value);
 	public void SetFlying(bool value)
 	{
+		if (value)
+			glideEffect.Play();
+		else
+			glideEffect.Stop();
 		animator.SetBool(isFlyingParameter, value);
 		cameraView.IsFlying(value);
 	}
@@ -122,10 +125,12 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	}
 	public void ShowJumpFeedback()
 	{
+		cameraView.IsFlying(true);
 		animator.Play(jumpAnimation);
 	}
 	public void ShowClimbFeedback()
 	{
+		cameraView.IsFlying(false);
 		animator.CrossFade(climbAnimation, transitionDuration);
 		//animator.Play(climbAnimation);
 	}
@@ -142,11 +147,13 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	public void ShowAccelerationFeedback()
 	{
 		isControllingStaminaPosition = false;
+		accelerationEffect.Play();
 		lastStaminaControlledPosition = staminaRings.anchoredPosition;
 	}
 	public void StopAccelerationFeedback()
 	{
 		isControllingStaminaPosition = true;
+		accelerationEffect.Stop();
 		staminaRings.localScale = staminaOriginalScale;
 		lensDistortionSettings.intensity.value = originalDistorsionIntensity;
 	}
@@ -172,5 +179,5 @@ public class PlayerView : MonoBehaviour, IUpdateable
 		else if (ponchoTurnOff.IsRunning)
 			ponchoTurnOff.StopAction();
 	}
-	private void FadePoncho(float lerp) => poncho.SetFloat("_Activate", BezierHelper.GetSinBezier(lerp)); 
+	private void FadePoncho(float lerp) => poncho.SetFloat("_Activate", BezierHelper.GetSinBezier(lerp));
 }

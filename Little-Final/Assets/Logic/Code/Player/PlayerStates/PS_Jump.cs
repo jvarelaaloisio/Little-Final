@@ -141,6 +141,7 @@ public class PS_Jump : PlayerState
 			consumeStaminaPeriod.StartTimer();
 	}
 
+
 	private void ResetAcceleration()
 	{
 		model.view.StopAccelerationFeedback();
