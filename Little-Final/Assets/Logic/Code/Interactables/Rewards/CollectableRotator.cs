@@ -7,10 +7,12 @@ using UpdateManagement;
 public class CollectableRotator : MonoBehaviour, IUpdateable
 {
 	public ParticleSystem rewardParticles;
+	public float destructionDelay;
 	public Transform pivot;
 	public Vector3 amplitude,
 				frecuency;
 	private float t;
+	private bool isRewarded;
 	private void Start()
 	{
 		UpdateManager.Subscribe(this);
@@ -19,6 +21,11 @@ public class CollectableRotator : MonoBehaviour, IUpdateable
 
 	public void OnUpdate()
 	{
+		if (isRewarded)
+		{
+			transform.position = pivot.position;
+			return;
+		}
 		transform.position = GetPosition(t);
 		t += Time.deltaTime;
 		if (t >= Mathf.PI * 2)
@@ -34,7 +41,9 @@ public class CollectableRotator : MonoBehaviour, IUpdateable
 	{
 		rewardParticles.Play();
 		GetComponent<MeshRenderer>().enabled = false;
-		new CountDownTimer(rewardParticles.main.startLifetime.constantMax, () => Destroy(this.gameObject)).StartTimer();
+		transform.SetParent(null);
+		new CountDownTimer(destructionDelay, () => Destroy(this.gameObject)).StartTimer();
+		isRewarded = true;
 	}
 	private void OnDestroy()
 	{

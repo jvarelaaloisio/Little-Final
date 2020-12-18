@@ -6,6 +6,8 @@ using UpdateManagement;
 using System.Linq;
 public class PlayerView : MonoBehaviour, IUpdateable
 {
+	public AudioClip reward;
+	private AudioManager audioManager;
 	public Color maxStamina,
 				midStamina,
 				minStamina;
@@ -45,6 +47,7 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	private float originalDistorsionIntensity;
 	private void Start()
 	{
+		audioManager = FindObjectOfType<AudioManager>();
 		staminaFade = new ActionOverTime(staminaFadeTime, ChangeStaminaMask, true);
 		staminaFadeTimer = new CountDownTimer(staminaFadeDelay, staminaFade.StartAction);
 		cameraView = FindObjectOfType<CameraView>();
@@ -162,6 +165,7 @@ public class PlayerView : MonoBehaviour, IUpdateable
 		poncho.SetFloat("_Activate", collectableQuantity / PP_Stats.Instance.CollectablesForReward);
 		if (collectableQuantity == PP_Stats.Instance.CollectablesForReward)
 		{
+			audioManager.PlayCharacterSound(reward);
 			ponchoTurnOff = new ActionOverTime(ponchoTurnOffTime, FadePoncho);
 			ponchoTurnOff.StartAction();
 		}

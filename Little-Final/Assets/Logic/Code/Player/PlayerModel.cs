@@ -125,6 +125,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 	private void UpgradeStamina()
 	{
 		stamina.UpgradeMaxStamina(stamina.MaxStamina + PP_Stats.Instance.StaminaUpgrade);
+		stamina.RefillCompletely();
 	}
 	void OnlifeChanged(float lifePoints)
 	{
@@ -139,6 +140,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 	#endregion
 	private void OnGUI()
 	{
+#if UNITY_EDITOR
 		Rect rect = new Rect(10, 25, 100, 550);
 		GUILayout.BeginArea(rect);
 		GUI.skin.label.fontSize = 15;
@@ -151,6 +153,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 
 		GUILayout.Label("Stamina: " + stamina.FillState);
 		GUILayout.EndArea();
+#endif
 	}
 
 	private void OnDrawGizmos()

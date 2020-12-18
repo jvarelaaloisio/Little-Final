@@ -15,7 +15,8 @@ public class AudioManager : MonoBehaviour
 		Ambient1,
 		Ambient2,
 		AmbientBG,
-		Character
+		Character,
+		Effect
 	}
 
 	public AudioClip[] MainTracks;
@@ -105,6 +106,10 @@ public class AudioManager : MonoBehaviour
 	public void PlayCharacterSound(AudioClip NewClip)
 	{
 		Sources[(int)SoundIndex.Character].PlayOneShot(NewClip);
+	}
+	public void PlayEffect(AudioClip NewClip)
+	{
+		Sources[(int)SoundIndex.Effect].PlayOneShot(NewClip);
 	}
 
 	/// <summary>
