@@ -115,7 +115,7 @@ namespace UpdateManagement
 		/// subscribes to FixedUpdate
 		/// </summary>
 		/// <param name="fixedUpdateable"></param>
-		public static void SubscribeFixed(IFixedUpdateable fixedUpdateable)
+		public static void Subscribe(IFixedUpdateable fixedUpdateable)
 		{
 			if (isQuittingAplication)
 				return;
@@ -129,7 +129,7 @@ namespace UpdateManagement
 		/// Unsubscribes from FixedUpdate
 		/// </summary>
 		/// <param name="fixedUpdateable"></param>
-		public static void UnSubscribeFixed(IFixedUpdateable fixedUpdateable)
+		public static void UnSubscribe(IFixedUpdateable fixedUpdateable)
 		{
 			if (isQuittingAplication)
 				return;
@@ -143,7 +143,7 @@ namespace UpdateManagement
 		/// subscribes to LateUpdate
 		/// </summary>
 		/// <param name="lateUpdateable"></param>
-		public static void SubscribeLate(ILateUpdateable lateUpdateable)
+		public static void Subscribe(ILateUpdateable lateUpdateable)
 		{
 			if (isQuittingAplication)
 				return;
@@ -157,7 +157,7 @@ namespace UpdateManagement
 		/// Unsubscribes from LateUpdate
 		/// </summary>
 		/// <param name="lateUpdateable"></param>
-		public static void UnSubscribeLate(ILateUpdateable lateUpdateable)
+		public static void UnSubscribe(ILateUpdateable lateUpdateable)
 		{
 			if (isQuittingAplication)
 				return;
