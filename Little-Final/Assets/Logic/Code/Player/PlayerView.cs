@@ -45,7 +45,7 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	CountDownTimer staminaFadeTimer;
 	private LensDistortion lensDistortionSettings;
 	private float originalDistorsionIntensity;
-	public ParticleSystem glideEffect,
+	public TrailRenderer[] glideEffect,
 							accelerationEffect;
 	private void Start()
 	{
@@ -112,10 +112,10 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	public void SetSpeed(float value) => animator.SetFloat(speedParameter, value);
 	public void SetFlying(bool value)
 	{
-		if (value)
-			glideEffect.Play();
-		else
-			glideEffect.Stop();
+		foreach (TrailRenderer p in glideEffect)
+		{
+			p.emitting = value;
+		}
 		animator.SetBool(isFlyingParameter, value);
 		cameraView.IsFlying(value);
 	}
@@ -147,13 +147,19 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	public void ShowAccelerationFeedback()
 	{
 		isControllingStaminaPosition = false;
-		accelerationEffect.Play();
+		foreach (TrailRenderer p in accelerationEffect)
+		{
+			p.emitting = true;
+		}
 		lastStaminaControlledPosition = staminaRings.anchoredPosition;
 	}
 	public void StopAccelerationFeedback()
 	{
 		isControllingStaminaPosition = true;
-		accelerationEffect.Stop();
+		foreach (TrailRenderer p in accelerationEffect)
+		{
+			p.emitting = false;
+		}
 		staminaRings.localScale = staminaOriginalScale;
 		lensDistortionSettings.intensity.value = originalDistorsionIntensity;
 	}
