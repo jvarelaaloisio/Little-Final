@@ -47,6 +47,7 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	private float originalDistorsionIntensity;
 	public TrailRenderer[] glideEffect,
 							accelerationEffect;
+	public bool IsFlying => glideEffect[0].emitting;
 	private void Start()
 	{
 		audioManager = FindObjectOfType<AudioManager>();
@@ -109,9 +110,23 @@ public class PlayerView : MonoBehaviour, IUpdateable
 		staminaFade.StopAction();
 		if (_lerp == 1) staminaFadeTimer.StartTimer();
 	}
-	public void SetSpeed(float value) => animator.SetFloat(speedParameter, value);
+	public void SetSpeed(float value)
+	{
+		if (value > 0)
+			GetComponent<PlayerSound>().PlayWalk();
+		else
+			GetComponent<PlayerSound>().StopWalk();
+		animator.SetFloat(speedParameter, value);
+	}
 	public void SetFlying(bool value)
 	{
+		if (value)
+		{
+			GetComponent<PlayerSound>().PlayFly();
+		}
+		else
+			GetComponent<PlayerSound>().StopFly();
+
 		foreach (TrailRenderer p in glideEffect)
 		{
 			p.emitting = value;
@@ -125,14 +140,17 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	}
 	public void ShowJumpFeedback()
 	{
+		//--
+		GetComponent<PlayerSound>().PlayJump();
 		cameraView.IsFlying(true);
 		animator.Play(jumpAnimation);
 	}
 	public void ShowClimbFeedback()
 	{
+		GetComponent<PlayerSound>().StopFly();
+		GetComponent<PlayerSound>().StopWalk();
 		cameraView.IsFlying(false);
 		animator.CrossFade(climbAnimation, transitionDuration);
-		//animator.Play(climbAnimation);
 	}
 	public void ShowDeathFeedback()
 	{
