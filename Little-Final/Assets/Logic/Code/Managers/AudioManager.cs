@@ -46,11 +46,13 @@ public class AudioManager : MonoBehaviour
 	void SelectMainMusic()
 	{
 		int _musicTrack = Random.Range(0, MainTracks.Length);
-		PlayMainMusic(_musicTrack);
+		PlayMainMusic(MainTracks[_musicTrack]);
 		float _waitTime = MainTracks[_musicTrack].length + Random.Range(minSilentTime, maxSilentTime);
+		playNextSong = new CountDownTimer(_waitTime, SelectMainMusic);
 		if (MainTracks[_musicTrack].length > minSongRandomCut)
 			randomCut.StartTimer();
-		playNextSong = new CountDownTimer(_waitTime, SelectMainMusic);
+		else
+			playNextSong.StartTimer();
 		//Invoke("SelectMainMusic", _waitTime);
 	}
 	private void CutMusic()
@@ -69,15 +71,16 @@ public class AudioManager : MonoBehaviour
 	/// </summary>
 	/// <param name="Index"></param>
 	/// <param name="Track"></param>
-	void PlayMainMusic(int Track)
+	public void PlayMainMusic(AudioClip Track)
 	{
-		if (Track >= MainTracks.Length)
-		{
-			Track = MainTracks.Length - 1;
-			Debug.Log("Track not found");
-		}
-			Sources[(int)SoundIndex.Music].clip = MainTracks[Track];
-			Sources[(int)SoundIndex.Music].Play();
+		Sources[(int)SoundIndex.Music].clip = Track;
+		Sources[(int)SoundIndex.Music].Play();
+	}
+	public void StopMainMusic()
+	{
+		playNextSong.StopTimer();
+		randomCut.StopTimer();
+		Sources[(int)SoundIndex.Music].Stop();
 	}
 	#endregion
 

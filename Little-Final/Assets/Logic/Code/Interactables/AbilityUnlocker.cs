@@ -8,12 +8,15 @@ public class AbilityUnlocker : MonoBehaviour
 	public bool isAir,
 				isLand,
 				isWall;
-
+	public GameObject canvas;
+	public float destroyTime;
+	//private CountDownTimer turnOffDescriptionTimer;
 	public ParticleSystem particles;
 	public float distanceFromGround;
 	public bool isRePositioningAtStart;
 	private void Start()
 	{
+		//turnOffDescriptionTimer = new CountDownTimer(fadeTime, () => canvas.SetActive(false));
 		if (isRePositioningAtStart && Physics.Raycast(transform.position + Vector3.up / 3, Vector3.down, out RaycastHit hit, 10))
 		{
 			Debug.DrawLine(transform.position, hit.point, Color.magenta, 1);
@@ -32,7 +35,9 @@ public class AbilityUnlocker : MonoBehaviour
 		GetComponent<MeshRenderer>().enabled = false;
 		GetComponent<Collider>().enabled = false;
 		particles.Play(true);
-		new CountDownTimer(particles.main.startLifetime.constantMax, () => Destroy(this.gameObject)).StartTimer();
+		canvas.SetActive(true);
+		//new CountDownTimer(particles.main.startLifetime.constantMax, () => Destroy(this.gameObject)).StartTimer();
+		new CountDownTimer(destroyTime, () => Destroy(this.gameObject)).StartTimer();
 	}
 	private void OnDrawGizmos()
 	{

@@ -58,7 +58,6 @@ public class GameManager : MonoBehaviour
 
 	private void Update()
 	{
-#if UNITY_EDITOR
 		if (Input.GetButtonDown("Console"))
 		{
 			if (DebugConsole.IsOpened)
@@ -72,6 +71,7 @@ public class GameManager : MonoBehaviour
 				DebugConsole.Open();
 			}
 		}
+#if UNITY_EDITOR
 		ControlTimeScale();
 #endif
 	}
