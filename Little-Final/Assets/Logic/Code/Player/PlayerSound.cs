@@ -17,7 +17,6 @@ public class PlayerSound : MonoBehaviour
 	}
 	public void PlayJump()
 	{
-		Debug.Log("Jump");
 		loopingSfx.Stop();
 		isWalkPlaying = false;
 		isflyPlaying = false;

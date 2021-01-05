@@ -68,7 +68,6 @@ public class Stamina
 	public void RefillCompletely()
 	{
 		FillState = maxStamina;
-		onStaminaChange?.Invoke(FillState);
 	}
 	public void UpgradeMaxStamina(float value)
 	{

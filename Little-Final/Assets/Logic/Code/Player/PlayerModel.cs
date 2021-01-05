@@ -42,7 +42,7 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 		UpdateManager.Subscribe(this);
 		body = GetComponent<IBody>();
 		damageHandler.onLifeChanged += OnlifeChanged;
-		stamina = new Stamina(PP_Stats.Instance.InitialStamina, PP_Stats.Instance.StaminaRefillDelay, PP_Stats.Instance.StaminaRefillSpeed, view.UpdateStamina);
+		stamina = new Stamina(maxStamina: PP_Stats.Instance.InitialStamina, refillDelay: PP_Stats.Instance.StaminaRefillDelay, refillSpeed: PP_Stats.Instance.StaminaRefillSpeed, onStaminaChange: view.UpdateStamina);
 		state = new PS_Walk();
 		state.OnStateEnter(this);
 	}

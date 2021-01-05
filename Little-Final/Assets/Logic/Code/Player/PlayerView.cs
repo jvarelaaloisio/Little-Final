@@ -48,8 +48,10 @@ public class PlayerView : MonoBehaviour, IUpdateable
 	public TrailRenderer[] glideEffect,
 							accelerationEffect;
 	public bool IsFlying => glideEffect[0].emitting;
+	private PlayerModel playerModel;
 	private void Start()
 	{
+		playerModel = GetComponent<PlayerModel>();
 		audioManager = FindObjectOfType<AudioManager>();
 		staminaFade = new ActionOverTime(staminaFadeTime, ChangeStaminaMask, true);
 		staminaFadeTimer = new CountDownTimer(staminaFadeDelay, staminaFade.StartAction);
@@ -80,10 +82,10 @@ public class PlayerView : MonoBehaviour, IUpdateable
 			ui.color = color;
 		}
 	}
-	public void UpdateStamina(float value)
+	public void UpdateStamina(float newStaminaAmount)
 	{
 		ChangeStaminaMask(0);
-		int _circleQuantity = Mathf.FloorToInt(value / staminaPerCircle);
+		int _circleQuantity = Mathf.FloorToInt(newStaminaAmount / staminaPerCircle);
 		for (int i = 0; i < staminaUI.Count; i++)
 		{
 			if (i < _circleQuantity)
@@ -99,8 +101,7 @@ public class PlayerView : MonoBehaviour, IUpdateable
 		if (_circleQuantity < 0 || _circleQuantity >= staminaUI.Count)
 			return;
 
-		float _lastCircleFillAmount = value % staminaPerCircle;
-
+		float _lastCircleFillAmount = newStaminaAmount % staminaPerCircle;
 		float _lerp = _lastCircleFillAmount / staminaPerCircle;
 		staminaUI[_circleQuantity].fillAmount = _lerp;
 		if (_lerp < .5f)
@@ -108,7 +109,8 @@ public class PlayerView : MonoBehaviour, IUpdateable
 		else
 			staminaUI[_circleQuantity].color = Color.Lerp(midStamina, maxStamina, (_lerp - .5f) * 2);
 		staminaFade.StopAction();
-		if (_lerp == 1) staminaFadeTimer.StartTimer();
+		if(newStaminaAmount == playerModel.stamina.MaxStamina)
+			staminaFadeTimer.StartTimer();
 	}
 	public void SetSpeed(float value)
 	{
