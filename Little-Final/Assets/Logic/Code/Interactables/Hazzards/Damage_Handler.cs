@@ -24,12 +24,12 @@ public struct DamageHandler
 	{
 		if (IsInmune) return;
 		IsInmune = true;
-		new CountDownTimer(inmunityTime, FinishInmunity).StartTimer();
+		new CountDownTimer(inmunityTime, FinishImmunity).StartTimer();
 		lifePoints -= damage;
 		onLifeChanged?.Invoke(lifePoints);
 	}
 
-	public void FinishInmunity()
+	public void FinishImmunity()
 	{
 		IsInmune = false;
 	}
