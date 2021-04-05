@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
-using UpdateManagement;
+﻿using UnityEngine;
+using VarelaAloisio.UpdateManagement.Runtime;
 public class GameManager : MonoBehaviour
 {
 	#region Variables

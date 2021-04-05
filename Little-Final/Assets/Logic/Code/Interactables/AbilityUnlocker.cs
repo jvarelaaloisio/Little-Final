@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UpdateManagement;
+﻿using UnityEngine;
+using VarelaAloisio.UpdateManagement.Runtime;
+
 public class AbilityUnlocker : MonoBehaviour
 {
 	public Ability ability;
@@ -10,13 +9,11 @@ public class AbilityUnlocker : MonoBehaviour
 				isWall;
 	public GameObject canvas;
 	public float destroyTime;
-	//private CountDownTimer turnOffDescriptionTimer;
 	public ParticleSystem particles;
 	public float distanceFromGround;
 	public bool isRePositioningAtStart;
 	private void Start()
 	{
-		//turnOffDescriptionTimer = new CountDownTimer(fadeTime, () => canvas.SetActive(false));
 		if (isRePositioningAtStart && Physics.Raycast(transform.position + Vector3.up / 3, Vector3.down, out RaycastHit hit, 10))
 		{
 			Debug.DrawLine(transform.position, hit.point, Color.magenta, 1);
@@ -36,8 +33,7 @@ public class AbilityUnlocker : MonoBehaviour
 		GetComponent<Collider>().enabled = false;
 		particles.Play(true);
 		canvas.SetActive(true);
-		//new CountDownTimer(particles.main.startLifetime.constantMax, () => Destroy(this.gameObject)).StartTimer();
-		new CountDownTimer(destroyTime, () => Destroy(this.gameObject)).StartTimer();
+		new CountDownTimer(destroyTime, () => Destroy(this.gameObject), gameObject.scene.buildIndex).StartTimer();
 	}
 	private void OnDrawGizmos()
 	{

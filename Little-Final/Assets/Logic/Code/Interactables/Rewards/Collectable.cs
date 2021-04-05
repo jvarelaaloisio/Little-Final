@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UpdateManagement;
 
 [SelectionBase]
 [RequireComponent(typeof(CollectableRotator))]
@@ -12,9 +11,16 @@ public class Collectable : MonoBehaviour
 	private CollectableSetup collectableSetup;
 	public float distanceFromGround;
 	public bool isRePositioningAtStart;
+	private int _sceneIndex;
 	private void Start()
 	{
-		if(isRePositioningAtStart && Physics.Raycast(transform.position + Vector3.up/3, Vector3.down, out RaycastHit hit, 10))
+		_sceneIndex = gameObject.scene.buildIndex;
+		if(isRePositioningAtStart
+		   && Physics.Raycast(
+			   transform.position + Vector3.up/3,
+			   Vector3.down,
+			   out RaycastHit hit,
+			   10))
 		{
 			Debug.DrawLine(transform.position, hit.point, Color.red, 1);
 			transform.position = hit.point + Vector3.up * distanceFromGround;
@@ -31,7 +37,14 @@ public class Collectable : MonoBehaviour
 		GetComponent<Collider>().enabled = false;
 		transform.SetParent(other.transform);
 		Destroy(GetComponent<RotateAroundSelf>());
-		collectableSetup = new CollectableSetup(GetComponent<CollectableRotator>(), _pivot, scaleWhenPicked, setupTime, OnFinishedSetup);
+		collectableSetup =
+			new CollectableSetup(
+				GetComponent<CollectableRotator>(),
+				_pivot,
+				scaleWhenPicked,
+				setupTime,
+				OnFinishedSetup,
+				_sceneIndex);
 		collectableSetup.StartSetup();
 	}
 	private void OnFinishedSetup()
@@ -41,7 +54,12 @@ public class Collectable : MonoBehaviour
 
 	private void OnDrawGizmos()
 	{
-		if (isRePositioningAtStart && Physics.Raycast(transform.position + Vector3.up / 3, Vector3.down, out RaycastHit hit, 10))
+		if (isRePositioningAtStart
+		    && Physics.Raycast(
+			    transform.position + Vector3.up / 3,
+			    Vector3.down,
+			    out RaycastHit hit,
+			    10))
 		{
 			Gizmos.color = Color.red;
 			Gizmos.DrawWireSphere(hit.point + Vector3.up * distanceFromGround, .2f);

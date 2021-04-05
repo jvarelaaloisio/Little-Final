@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CharacterMovement;
-using UpdateManagement;
+using VarelaAloisio.UpdateManagement.Runtime;
+
 public enum BodyEvent
 {
 	TRIGGER,

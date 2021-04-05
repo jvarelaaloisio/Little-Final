@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using CharacterMovement;
-using UpdateManagement;
+using VarelaAloisio.UpdateManagement.Runtime;
+
 public class PS_Jump : PlayerState
 {
 	protected Transform transform;
 	protected IBody body;
+
 	protected CountDownTimer consumeStaminaPeriod,
 		staminaConsumptiongDelay;
+
 	protected CountDownTimer accelerationDelay;
 	protected ActionOverTime accelerate;
 	protected float baseSpeed;
@@ -15,9 +18,10 @@ public class PS_Jump : PlayerState
 	private bool isStateFinished;
 	private bool accelerated;
 	private LayerMask interactable;
-	public override void OnStateEnter(PlayerModel model)
+
+	public override void OnStateEnter(PlayerModel model, int sceneIndex)
 	{
-		base.OnStateEnter(model);
+		base.OnStateEnter(model, sceneIndex);
 		transform = model.transform;
 
 		currentDrag = PP_Glide.Instance.Drag;
@@ -29,11 +33,27 @@ public class PS_Jump : PlayerState
 
 		interactable = LayerMask.GetMask("Interactable");
 
-		consumeStaminaPeriod = new CountDownTimer(1 / PP_Glide.Instance.StaminaPerSecond, ConsumeStamina);
-		staminaConsumptiongDelay = new CountDownTimer(PP_Glide.Instance.StaminaConsumptionDelay, null);
+		consumeStaminaPeriod =
+			new CountDownTimer(
+			1 / PP_Glide.Instance.StaminaPerSecond,
+			ConsumeStamina,
+			sceneIndex);
+		staminaConsumptiongDelay =
+			new CountDownTimer(
+				PP_Glide.Instance.StaminaConsumptionDelay,
+				null,
+				sceneIndex);
 
-		accelerate = new ActionOverTime(PP_Glide.Instance.AccelerationTime, Accelerate);
-		accelerationDelay = new CountDownTimer(PP_Glide.Instance.AccelerationDelay, StartAcceleration);
+		accelerate =
+			new ActionOverTime(
+			PP_Glide.Instance.AccelerationTime,
+			Accelerate,
+			sceneIndex);
+		accelerationDelay =
+			new CountDownTimer(
+			PP_Glide.Instance.AccelerationDelay,
+			StartAcceleration,
+			sceneIndex);
 	}
 
 	public override void OnStateUpdate()
@@ -43,14 +63,15 @@ public class PS_Jump : PlayerState
 		Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
 		Debug.DrawRay(transform.position, desiredDirection / 4, Color.green);
 
-		if (HorizontalMovementHelper.IsSafeAngle(transform.position, desiredDirection.normalized, .5f, PP_Walk.Instance.MinSafeAngle))
+		if (HorizontalMovementHelper.IsSafeAngle(transform.position, desiredDirection.normalized, .5f,
+			PP_Walk.Instance.MinSafeAngle))
 		{
 			Debug.DrawRay(transform.position, transform.up, Color.white);
 			HorizontalMovementHelper.MoveWithRotation(transform,
-														body,
-														desiredDirection,
-														currentSpeed,
-														PP_Jump.Instance.TurnSpeedInTheAir);
+				body,
+				desiredDirection,
+				currentSpeed,
+				PP_Jump.Instance.TurnSpeedInTheAir);
 		}
 		else Debug.DrawRay(transform.position, transform.up, Color.black);
 
@@ -84,11 +105,13 @@ public class PS_Jump : PlayerState
 		accelerate.StartAction();
 		model.view.ShowAccelerationFeedback();
 	}
+
 	private void Accelerate(float lerp)
 	{
 		accelerated = true;
 		currentSpeed = Mathf.Lerp(baseSpeed, PP_Glide.Instance.AcceleratedSpeed, BezierHelper.GetSinBezier(lerp));
-		currentDrag = Mathf.Lerp(PP_Glide.Instance.Drag, PP_Glide.Instance.AcceleratedDrag, BezierHelper.GetSinBezier(lerp));
+		currentDrag = Mathf.Lerp(PP_Glide.Instance.Drag, PP_Glide.Instance.AcceleratedDrag,
+			BezierHelper.GetSinBezier(lerp));
 		model.view.SetAccelerationEffect(lerp);
 	}
 
@@ -102,6 +125,7 @@ public class PS_Jump : PlayerState
 			ResetAcceleration();
 			return;
 		}
+
 		body.SetDrag(currentDrag);
 		model.view.SetFlying(true);
 		if (!accelerationDelay.IsTicking && !accelerated)
@@ -113,10 +137,10 @@ public class PS_Jump : PlayerState
 	protected virtual void CheckClimb()
 	{
 		if (InputManager.CheckClimbInput() && model.stamina.FillState > 0 && ClimbHelper.CanClimb(transform.position,
-																transform.forward,
-																PP_Climb.Instance.MaxDistanceToTriggerClimb,
-																PP_Climb.Instance.MaxClimbAngle,
-																out _))
+			transform.forward,
+			PP_Climb.Instance.MaxDistanceToTriggerClimb,
+			PP_Climb.Instance.MaxClimbAngle,
+			out _))
 		{
 			model.ChangeState<PS_Climb>();
 		}
@@ -128,7 +152,8 @@ public class PS_Jump : PlayerState
 		{
 			model.LongJumpBuffer = true;
 		}
-		else if (InputManager.CheckJumpInput() && Physics.Raycast(transform.position, -transform.up, .5f, ~interactable))
+		else if (InputManager.CheckJumpInput() &&
+		         Physics.Raycast(transform.position, -transform.up, .5f, ~interactable))
 		{
 			model.JumpBuffer = true;
 		}

@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using UpdateManagement;
+using VarelaAloisio.UpdateManagement.Runtime;
 
 public class CollectableSetup
 {
@@ -10,14 +10,20 @@ public class CollectableSetup
 							originalScale,
 							objScale;
 	private readonly Action onFinishCallBack;
-	public CollectableSetup(CollectableRotator collectable, Transform pivot, Vector3 objScale, float setupTime, Action onFinishCallBack)
+	public CollectableSetup(
+		CollectableRotator collectable,
+		Transform pivot,
+		Vector3 objScale,
+		float setupTime,
+		Action onFinishCallBack,
+		int sceneIndex)
 	{
 		this.collectable = collectable;
 		this.collectable.pivot = pivot;
 		this.onFinishCallBack = onFinishCallBack;
 		this.objScale = objScale;
 		originalScale = collectable.transform.localScale;
-		setupAction = new ActionOverTime(setupTime, Setup, true);
+		setupAction = new ActionOverTime(setupTime, Setup, sceneIndex, true);
 		originPosition = collectable.transform.position;
 	}
 

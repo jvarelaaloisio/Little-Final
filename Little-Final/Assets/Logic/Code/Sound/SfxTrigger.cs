@@ -8,7 +8,7 @@ public class SfxTrigger : MonoBehaviour
 
 	public void Trigger()
 	{
-		FindObjectOfType<AudioManager>().PlayEffect(sfx[Random.Range(0, sfx.Length)]);
+		FindObjectOfType<AudioManager>()?.PlayEffect(sfx[Random.Range(0, sfx.Length)]);
 	}
 	private void OnTriggerEnter(Collider other)
 	{

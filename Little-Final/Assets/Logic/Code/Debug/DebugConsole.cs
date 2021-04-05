@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System;
-using UpdateManagement;
 using System.IO;
 using System.Linq;
 public class DebugConsole : MonoBehaviour

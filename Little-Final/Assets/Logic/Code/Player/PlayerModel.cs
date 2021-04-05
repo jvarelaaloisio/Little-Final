@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Logic.Code.Player;
 using UnityEngine;
-using UpdateManagement;
+using VarelaAloisio.UpdateManagement.Runtime;
+
 [RequireComponent(typeof(DamageHandler))]
 [RequireComponent(typeof(PlayerView))]
 [SelectionBase]
@@ -25,6 +27,8 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 	private Vector3 lastSafePosition;
 	private Quaternion lastSafeRotation;
 	private bool isDead;
+	private int _sceneIndex;
+
 	#endregion
 	#region Properties
 	public IBody Body => body;
@@ -33,6 +37,9 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 	public Stamina Stamina => stamina;
 	public PlayerState State => state;
 	public DamageHandler DamageHandler => damageHandler;
+
+	public int SceneIndex => _sceneIndex;
+
 	#endregion
 	#endregion
 
@@ -42,16 +49,22 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 		UpdateManager.Subscribe(this);
 		body = GetComponent<IBody>();
 		damageHandler.onLifeChanged += OnlifeChanged;
-		stamina = new Stamina(maxStamina: PP_Stats.Instance.InitialStamina, refillDelay: PP_Stats.Instance.StaminaRefillDelay, refillSpeed: PP_Stats.Instance.StaminaRefillSpeed, onStaminaChange: view.UpdateStamina);
+		stamina = new Stamina(
+			PP_Stats.Instance.InitialStamina,
+			PP_Stats.Instance.StaminaRefillDelay,
+			PP_Stats.Instance.StaminaRefillSpeed,
+			SceneIndex,
+			view.UpdateStamina);
 		state = new PS_Walk();
-		state.OnStateEnter(this);
+		_sceneIndex = gameObject.scene.buildIndex;
+		state.OnStateEnter(this, SceneIndex);
 	}
 
 	public void ChangeState<T>() where T : PlayerState, new()
 	{
 		state.OnStateExit();
 		state = new T();
-		state.OnStateEnter(this);
+		state.OnStateEnter(this, SceneIndex);
 	}
 
 	public void RunAbilityList(List<Ability> abilities)
@@ -82,20 +95,6 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 				_shadowSize = 0;
 			view.ShowPlayerShadow(hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal), _shadowSize);
 		}
-	}
-
-	public void PickItem()
-	{/*
-		if (_itemPicked == null)
-		{
-			_itemPicked = GetComponentInChildren<Player_FrontCollider>().PickableItem;
-			_itemPicked?.Pick(transform);
-		}
-		else
-		{
-			_itemPicked.Release();
-			_itemPicked = null;
-		}*/
 	}
 
 	public void SaveSafeState(Vector3 position, Quaternion rotation)
@@ -133,14 +132,14 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 		{
 			isDead = true;
 			view.ShowDeathFeedback();
-			ChangeState<PS_Idle>();
-			new CountDownTimer(PP_Stats.Instance.DeadTime, Revive).StartTimer();
+			ChangeState<PS_Void>();
+			new CountDownTimer(PP_Stats.Instance.DeadTime, Revive, SceneIndex).StartTimer();
 		}
 	}
 	#endregion
+#if UNITY_EDITOR
 	private void OnGUI()
 	{
-#if UNITY_EDITOR
 		Rect rect = new Rect(10, 25, 100, 550);
 		GUILayout.BeginArea(rect);
 		GUI.skin.label.fontSize = 15;
@@ -153,8 +152,8 @@ public class PlayerModel : MonoBehaviour, IUpdateable, IDamageable
 
 		GUILayout.Label("Stamina: " + stamina.FillState);
 		GUILayout.EndArea();
-#endif
 	}
+#endif
 
 	private void OnDrawGizmos()
 	{

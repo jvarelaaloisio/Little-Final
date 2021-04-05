@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UpdateManagement;
+﻿using UnityEngine;
+using VarelaAloisio.UpdateManagement.Runtime;
 
 public class RotateAroundSelf : MonoBehaviour, IUpdateable
 {

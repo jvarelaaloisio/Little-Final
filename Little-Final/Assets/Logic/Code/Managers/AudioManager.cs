@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 using UnityEngine.Audio;
-using UpdateManagement;
+using VarelaAloisio.UpdateManagement.Runtime;
 public class AudioManager : MonoBehaviour
 {
 	#region Variables
@@ -30,12 +27,15 @@ public class AudioManager : MonoBehaviour
 	public AudioMixerSnapshot[] SnapshotsVolDown, SnapshotsVolUp;
 	private CountDownTimer randomCut;
 	private CountDownTimer playNextSong;
+	private int _sceneIndex;
+
 	#endregion
 
 	#region Unity
 	void Start()
 	{
-		randomCut = new CountDownTimer(Random.Range(minSongRandomCut, maxSongRandomCut), CutMusic);
+		_sceneIndex = gameObject.scene.buildIndex;
+		randomCut = new CountDownTimer(Random.Range(minSongRandomCut, maxSongRandomCut), CutMusic, _sceneIndex);
 		Sources = GetComponentsInChildren<AudioSource>();
 		SelectMainMusic();
 	}
@@ -48,7 +48,7 @@ public class AudioManager : MonoBehaviour
 		int _musicTrack = Random.Range(0, MainTracks.Length);
 		PlayMainMusic(MainTracks[_musicTrack]);
 		float _waitTime = MainTracks[_musicTrack].length + Random.Range(minSilentTime, maxSilentTime);
-		playNextSong = new CountDownTimer(_waitTime, SelectMainMusic);
+		playNextSong = new CountDownTimer(_waitTime, SelectMainMusic, _sceneIndex);
 		if (MainTracks[_musicTrack].length > minSongRandomCut)
 			randomCut.StartTimer();
 		else
@@ -62,7 +62,7 @@ public class AudioManager : MonoBehaviour
 		if (playNextSong.IsTicking)
 		{
 			playNextSong.StopTimer();
-			playNextSong = new CountDownTimer(Random.Range(minSilentTime, maxSilentTime), SelectMainMusic);
+			playNextSong = new CountDownTimer(Random.Range(minSilentTime, maxSilentTime), SelectMainMusic, _sceneIndex);
 			playNextSong.StartTimer();
 		}
 	}

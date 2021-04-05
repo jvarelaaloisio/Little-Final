@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using UpdateManagement;
+using VarelaAloisio.UpdateManagement.Runtime;
+
 public class MovingObject : MonoBehaviour
 {
 	public Vector3 origin,
@@ -9,8 +10,7 @@ public class MovingObject : MonoBehaviour
 	private ActionOverTime move;
 	private void Start()
 	{
-		//origin = transform.position;
-		move = new ActionOverTime(period, Move, true);
+		move = new ActionOverTime(period, Move, gameObject.scene.buildIndex, true);
 		move.StartAction();
 	}
 
@@ -25,7 +25,7 @@ public class MovingObject : MonoBehaviour
 			move.StartAction();
 		}
 	}
-	private void OnDestroy()
+	private void OnDisable()
 	{
 		if (move.IsRunning)
 			move.StopAction();

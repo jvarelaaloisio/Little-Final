@@ -8,9 +8,10 @@ public abstract class PlayerState
 	/// Runs once when the state starts
 	/// </summary>
 	/// <param name="brain"></param>
-	public virtual void OnStateEnter(PlayerModel brain)
+	/// <param name="sceneIndex">the index where the player lives</param>
+	public virtual void OnStateEnter(PlayerModel brain, int sceneIndex)
 	{
-		this.model = brain;
+		model = brain;
 	}
 	/// <summary>
 	/// Runs every update

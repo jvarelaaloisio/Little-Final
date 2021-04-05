@@ -8,8 +8,8 @@ public class PlayerSound : MonoBehaviour
 	public AudioSource loopingSfx;
 	AudioManager audioManager;
 	private PlayerModel model;
-	private bool isWalkPlaying,
-		isflyPlaying;
+	private bool _isWalkPlaying,
+		_isFlyPlaying;
 	void Start()
 	{
 		model = GetComponent<PlayerModel>();
@@ -18,29 +18,28 @@ public class PlayerSound : MonoBehaviour
 	public void PlayJump()
 	{
 		loopingSfx.Stop();
-		isWalkPlaying = false;
-		isflyPlaying = false;
-		audioManager.PlayCharacterSound(jump);
+		_isWalkPlaying = false;
+		_isFlyPlaying = false;
+		audioManager?.PlayCharacterSound(jump);
 	}
 	public void PlayWalk()
 	{
-		if (!isWalkPlaying)
-		{
-			isWalkPlaying = true;
-			loopingSfx.clip = walk;
-			loopingSfx.Play();
-		}
+		if (_isWalkPlaying)
+			return;
+		_isWalkPlaying = true;
+		loopingSfx.clip = walk;
+		loopingSfx.Play();
 	}
 	public void StopWalk()
 	{
 		loopingSfx.Stop();
-		isWalkPlaying = false;
+		_isWalkPlaying = false;
 	}
 	public void PlayFly()
 	{
-		if (!isflyPlaying)
+		if (!_isFlyPlaying)
 		{
-			isflyPlaying = true;
+			_isFlyPlaying = true;
 			loopingSfx.clip = fly;
 			loopingSfx.Play();
 		}
@@ -48,6 +47,6 @@ public class PlayerSound : MonoBehaviour
 	public void StopFly()
 	{
 		loopingSfx.Stop();
-		isflyPlaying = false;
+		_isFlyPlaying = false;
 	}
 }

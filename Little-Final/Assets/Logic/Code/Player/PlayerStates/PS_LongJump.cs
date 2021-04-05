@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 using CharacterMovement;
+
 public class PS_LongJump : PS_Jump
 {
-	public override void OnStateEnter(PlayerModel model)
+	public override void OnStateEnter(PlayerModel model, int sceneIndex)
 	{
-		base.OnStateEnter(model);
+		base.OnStateEnter(model, sceneIndex);
 		baseSpeed = PP_Jump.Instance.LongJumpSpeed;
 		currentSpeed = baseSpeed;
 	}
+
 	public override void OnStateUpdate()
 	{
 		Vector2 input = InputManager.GetHorInput();
@@ -15,14 +17,18 @@ public class PS_LongJump : PS_Jump
 		Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
 		Debug.DrawRay(transform.position, desiredDirection / 4, Color.green);
 
-		if (HorizontalMovementHelper.IsSafeAngle(transform.position, desiredDirection.normalized, .5f, PP_Walk.Instance.MinSafeAngle))
+		if (HorizontalMovementHelper.IsSafeAngle(
+			transform.position,
+			desiredDirection.normalized,
+			.5f,
+			PP_Walk.Instance.MinSafeAngle))
 		{
 			HorizontalMovementHelper.MoveWithRotation(
-														transform,
-														body,
-														desiredDirection,
-														currentSpeed,
-														PP_Jump.Instance.TurnSpeedLongJump);
+				transform,
+				body,
+				desiredDirection,
+				currentSpeed,
+				PP_Jump.Instance.TurnSpeedLongJump);
 		}
 
 		ControlGlide();

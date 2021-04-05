@@ -1,6 +1,6 @@
 ﻿using CharacterMovement;
 using UnityEngine;
-using UpdateManagement;
+using VarelaAloisio.UpdateManagement.Runtime;
 
 public class PS_Climb : PlayerState
 {
@@ -10,24 +10,16 @@ public class PS_Climb : PlayerState
 			targetPosition;
 	private Quaternion originRotation,
 			targetRotation;
-	private readonly ActionOverTime positioningAction;
-	private readonly CountDownTimer CliffClimbingTimer;
+	private ActionOverTime positioningAction;
+	private CountDownTimer CliffClimbingTimer;
 	private Transform transform;
 	private Transform currentWall;
 	protected CountDownTimer consumeStaminaPeriod,
 		staminaConsumingDelay;
 	private bool isClimbFinished;
-	public PS_Climb()
+	public override void OnStateEnter(PlayerModel model, int sceneIndex)
 	{
-		positioningAction = new ActionOverTime(PP_Climb.Instance.ClimbPositioningTime, GetInPosition, true);
-		CliffClimbingTimer = new CountDownTimer(PP_Climb.Instance.ClimbPositioningTime, () => model.ChangeState<PS_Jump>());
-
-		consumeStaminaPeriod = new CountDownTimer(1 / PP_Climb.Instance.StaminaPerSecond, ConsumeStamina);
-		staminaConsumingDelay = new CountDownTimer(PP_Climb.Instance.StaminaConsumingDelay, consumeStaminaPeriod.StartTimer);
-	}
-	public override void OnStateEnter(PlayerModel model)
-	{
-		base.OnStateEnter(model);
+		base.OnStateEnter(model, sceneIndex);
 		transform = model.transform;
 		body = model.Body;
 
@@ -47,7 +39,30 @@ public class PS_Climb : PlayerState
 								PP_Climb.Instance.MaxClimbAngle,
 								out RaycastHit hit);
 		ResetPosition(hit);
+		
+		positioningAction =
+			new ActionOverTime(
+				PP_Climb.Instance.ClimbPositioningTime,
+				GetInPosition,
+				sceneIndex,
+				true);
 		positioningAction.StartAction();
+		CliffClimbingTimer =
+			new CountDownTimer(
+				PP_Climb.Instance.ClimbPositioningTime,
+				model.ChangeState<PS_Jump>,
+				sceneIndex);
+
+		consumeStaminaPeriod =
+			new CountDownTimer(
+				1 / PP_Climb.Instance.StaminaPerSecond,
+				ConsumeStamina,
+				sceneIndex);
+		staminaConsumingDelay =
+			new CountDownTimer(
+				PP_Climb.Instance.StaminaConsumingDelay,
+				consumeStaminaPeriod.StartTimer,
+				sceneIndex);
 		staminaConsumingDelay.StartTimer();
 	}
 	public override void OnStateUpdate()

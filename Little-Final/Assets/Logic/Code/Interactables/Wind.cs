@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UpdateManagement;
+using VarelaAloisio.UpdateManagement.Runtime;
 
 [RequireComponent(typeof(Collider))]
 public class Wind : MonoBehaviour
@@ -25,7 +23,7 @@ public class Wind : MonoBehaviour
 		GetComponent<Collider>().isTrigger = true;
 		GetComponentInChildren<ParticleSystem>().Play();
 		bodies = new List<IBody>();
-		pushTimer = new CountDownTimer(pushPeriod, PushBodies);
+		pushTimer = new CountDownTimer(pushPeriod, PushBodies, gameObject.scene.buildIndex);
 	}
 	#endregion
 

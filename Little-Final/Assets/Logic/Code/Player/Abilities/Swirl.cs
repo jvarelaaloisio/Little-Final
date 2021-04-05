@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UpdateManagement;
+using VarelaAloisio.UpdateManagement.Runtime;
 using CharacterMovement;
 [CreateAssetMenu(menuName = "Abilities/Swirl", fileName = "Ability_Swirl")]
 public class Swirl : Ability
@@ -18,9 +18,9 @@ public class Swirl : Ability
 		model.Body.Velocity = Vector3.zero;
 		model.Body.Push(forceLocal);
 		model.view.PlaySpecificAnimation(animationStateName);
-		model.ChangeState<PS_Idle>();
+		model.ChangeState<PS_Void>();
 		isCoolDown = true;
-		cooldownTimer = new CountDownTimer(cooldown, OnFinished);
+		cooldownTimer = new CountDownTimer(cooldown, OnFinished, model.SceneIndex);
 		cooldownTimer.StartTimer();
 	}
 	private void OnEnable()

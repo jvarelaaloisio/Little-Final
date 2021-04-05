@@ -1,22 +1,24 @@
 ﻿using UnityEngine;
-using UpdateManagement;
+using VarelaAloisio.UpdateManagement.Runtime;
 using System;
 public class Stamina
 {
-	public float refillSpeed;
-	private float fillState;
+	private readonly float _refillSpeed;
+	private float _fillState;
 	public float FillState
 	{
-		get => fillState;
+		get => _fillState;
 		private set
 		{
 			onStaminaChange?.Invoke(value);
-			fillState = Mathf.Clamp(value, 0, maxStamina);
+			_fillState = Mathf.Clamp(value, 0, maxStamina);
 		}
 	}
 
 	public bool IsRefillingActive => isRefillingActive;
 	public float MaxStamina => maxStamina;
+
+	public float RefillSpeed => _refillSpeed;
 
 
 	private readonly Action onRefillingStart;
@@ -25,15 +27,21 @@ public class Stamina
 	private readonly CountDownTimer refillPeriod;
 	private float maxStamina;
 	private bool isRefillingActive = true;
-	public Stamina(float maxStamina, float refillDelay, float refillSpeed, Action<float> onStaminaChange = null, Action onRefillingStart = null)
+	public Stamina(
+		float maxStamina,
+		float refillDelay,
+		float refillSpeed,
+		int sceneIndex,
+		Action<float> onStaminaChange = null,
+		Action onRefillingStart = null)
 	{
-		this.refillSpeed = refillSpeed;
+		_refillSpeed = refillSpeed;
 		this.maxStamina = maxStamina;
 		FillState = maxStamina;
 		this.onStaminaChange = onStaminaChange;
 		this.onRefillingStart = onRefillingStart;
-		refillDelayTimer = new CountDownTimer(refillDelay, StartRefill);
-		refillPeriod = new CountDownTimer(1 / refillSpeed, RefillStamina);
+		refillDelayTimer = new CountDownTimer(refillDelay, StartRefill, sceneIndex);
+		refillPeriod = new CountDownTimer(1 / refillSpeed, RefillStamina, sceneIndex);
 	}
 	private void RefillStamina()
 	{
