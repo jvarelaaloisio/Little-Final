@@ -1,17 +1,16 @@
-﻿using System.Diagnostics;
-
+﻿
 public abstract class PlayerState
 {
-	protected PlayerModel model;
+	protected PlayerModel Model;
 
 	/// <summary>
 	/// Runs once when the state starts
 	/// </summary>
-	/// <param name="brain"></param>
+	/// <param name="model"></param>
 	/// <param name="sceneIndex">the index where the player lives</param>
-	public virtual void OnStateEnter(PlayerModel brain, int sceneIndex)
+	public virtual void OnStateEnter(PlayerModel model, int sceneIndex)
 	{
-		model = brain;
+		this.Model = model;
 	}
 	/// <summary>
 	/// Runs every update

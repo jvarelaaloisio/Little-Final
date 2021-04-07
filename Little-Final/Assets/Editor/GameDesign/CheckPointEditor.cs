@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+
 [CustomEditor(typeof(CheckPoint))]
 public class CheckPointEditor : Editor
 {

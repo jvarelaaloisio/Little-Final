@@ -78,7 +78,7 @@ public class PS_Jump : PlayerState
 		ControlGlide();
 		CheckForJumpBuffer();
 		CheckClimb();
-		model.RunAbilityList(model.AbilitiesInAir);
+		Model.RunAbilityList(Model.AbilitiesInAir);
 	}
 
 	public override void OnStateExit()
@@ -87,7 +87,7 @@ public class PS_Jump : PlayerState
 		consumeStaminaPeriod.StopTimer();
 		staminaConsumptiongDelay.StopTimer();
 		ResetAcceleration();
-		model.view.SetFlying(false);
+		Model.view.SetFlying(false);
 		body.BodyEvents -= BodyEventsHandler;
 		body.SetDrag(0);
 	}
@@ -96,14 +96,14 @@ public class PS_Jump : PlayerState
 	{
 		if (eventType.Equals(BodyEvent.LAND) && FallHelper.IsGrounded)
 		{
-			model.ChangeState<PS_Walk>();
+			Model.ChangeState<PS_Walk>();
 		}
 	}
 
 	private void StartAcceleration()
 	{
 		accelerate.StartAction();
-		model.view.ShowAccelerationFeedback();
+		Model.view.ShowAccelerationFeedback();
 	}
 
 	private void Accelerate(float lerp)
@@ -112,22 +112,22 @@ public class PS_Jump : PlayerState
 		currentSpeed = Mathf.Lerp(baseSpeed, PP_Glide.Instance.AcceleratedSpeed, BezierHelper.GetSinBezier(lerp));
 		currentDrag = Mathf.Lerp(PP_Glide.Instance.Drag, PP_Glide.Instance.AcceleratedDrag,
 			BezierHelper.GetSinBezier(lerp));
-		model.view.SetAccelerationEffect(lerp);
+		Model.view.SetAccelerationEffect(lerp);
 	}
 
 	protected virtual void ControlGlide()
 	{
-		if (!InputManager.GetGlideInput() || model.stamina.FillState < 1 || body.Velocity.y > 0)
+		if (!InputManager.GetGlideInput() || Model.stamina.FillState < 1 || body.Velocity.y > 0)
 		{
 			body.SetDrag(0);
-			model.view.SetFlying(false);
+			Model.view.SetFlying(false);
 			consumeStaminaPeriod.StopTimer();
 			ResetAcceleration();
 			return;
 		}
 
 		body.SetDrag(currentDrag);
-		model.view.SetFlying(true);
+		Model.view.SetFlying(true);
 		if (!accelerationDelay.IsTicking && !accelerated)
 			accelerationDelay.StartTimer();
 		if (!consumeStaminaPeriod.IsTicking && !staminaConsumptiongDelay.IsTicking)
@@ -136,13 +136,13 @@ public class PS_Jump : PlayerState
 
 	protected virtual void CheckClimb()
 	{
-		if (InputManager.CheckClimbInput() && model.stamina.FillState > 0 && ClimbHelper.CanClimb(transform.position,
+		if (InputManager.CheckClimbInput() && Model.stamina.FillState > 0 && ClimbHelper.CanClimb(transform.position,
 			transform.forward,
 			PP_Climb.Instance.MaxDistanceToTriggerClimb,
 			PP_Climb.Instance.MaxClimbAngle,
 			out _))
 		{
-			model.ChangeState<PS_Climb>();
+			Model.ChangeState<PS_Climb>();
 		}
 	}
 
@@ -150,18 +150,18 @@ public class PS_Jump : PlayerState
 	{
 		if (InputManager.CheckLongJumpInput() && Physics.Raycast(transform.position, -transform.up, .5f, ~interactable))
 		{
-			model.LongJumpBuffer = true;
+			Model.LongJumpBuffer = true;
 		}
 		else if (InputManager.CheckJumpInput() &&
 		         Physics.Raycast(transform.position, -transform.up, .5f, ~interactable))
 		{
-			model.JumpBuffer = true;
+			Model.JumpBuffer = true;
 		}
 	}
 
 	protected void ConsumeStamina()
 	{
-		model.stamina.ConsumeStamina(1);
+		Model.stamina.ConsumeStamina(1);
 		if (!isStateFinished)
 			consumeStaminaPeriod.StartTimer();
 	}
@@ -169,7 +169,7 @@ public class PS_Jump : PlayerState
 
 	private void ResetAcceleration()
 	{
-		model.view.StopAccelerationFeedback();
+		Model.view.StopAccelerationFeedback();
 		accelerationDelay.StopTimer();
 		accelerate.StopAction();
 		currentDrag = PP_Glide.Instance.Drag;

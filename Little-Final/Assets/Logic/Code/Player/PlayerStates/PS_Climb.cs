@@ -4,50 +4,59 @@ using VarelaAloisio.UpdateManagement.Runtime;
 
 public class PS_Climb : PlayerState
 {
-	private IBody body;
-	private bool isInPosition;
-	private Vector3 originPosition,
-			targetPosition;
-	private Quaternion originRotation,
-			targetRotation;
-	private ActionOverTime positioningAction;
-	private CountDownTimer CliffClimbingTimer;
-	private Transform transform;
-	private Transform currentWall;
+	private IBody _body;
+	private bool _isInPosition;
+
+	private Vector3 _originPosition,
+		_targetPosition;
+
+	private Quaternion _originRotation,
+		_targetRotation;
+
+	private ActionOverTime _getInPosition;
+	private CountDownTimer _afterCliff;
+	private Transform _myTransform;
+	private Transform _currentWall;
+
 	protected CountDownTimer consumeStaminaPeriod,
 		staminaConsumingDelay;
-	private bool isClimbFinished;
+
+	private bool _isClimbFinished;
+
 	public override void OnStateEnter(PlayerModel model, int sceneIndex)
 	{
 		base.OnStateEnter(model, sceneIndex);
-		transform = model.transform;
-		body = model.Body;
+		_myTransform = model.transform;
+		_body = model.Body;
 
 		if (model.stamina.FillState < 1)
 		{
 			model.ChangeState<PS_Jump>();
 			return;
 		}
+
 		model.stamina.StopFilling();
 
 		model.view.ShowClimbFeedback();
 		model.GetComponent<Rigidbody>().isKinematic = true;
 
-		ClimbHelper.CanClimb(transform.position,
-								transform.forward,
-								PP_Climb.Instance.MaxDistanceToTriggerClimb,
-								PP_Climb.Instance.MaxClimbAngle,
-								out RaycastHit hit);
-		ResetPosition(hit);
-		
-		positioningAction =
+		ClimbHelper.CanClimb(
+			_myTransform.position,
+			_myTransform.forward,
+			PP_Climb.Instance.MaxDistanceToTriggerClimb,
+			PP_Climb.Instance.MaxClimbAngle,
+			out RaycastHit hit);
+
+		_getInPosition =
 			new ActionOverTime(
 				PP_Climb.Instance.ClimbPositioningTime,
 				GetInPosition,
 				sceneIndex,
 				true);
-		positioningAction.StartAction();
-		CliffClimbingTimer =
+		_getInPosition.StartAction();
+		ResetPosition(hit);
+
+		_afterCliff =
 			new CountDownTimer(
 				PP_Climb.Instance.ClimbPositioningTime,
 				model.ChangeState<PS_Jump>,
@@ -65,26 +74,28 @@ public class PS_Climb : PlayerState
 				sceneIndex);
 		staminaConsumingDelay.StartTimer();
 	}
+
 	public override void OnStateUpdate()
 	{
-		if (!isInPosition)
+		if (!_isInPosition)
 			return;
+		var myPosition = _myTransform.position;
 		Vector2 input = InputManager.GetHorInput();
-		Vector3 moveDirection = transform.right * input.x + transform.up * input.y;
+		Vector3 moveDirection = _myTransform.right * input.x + _myTransform.up * input.y;
 
 		if (IsTouchingGround() && moveDirection.y < 0)
 			moveDirection.y = 0;
 
 		//Move
-		if (moveDirection.magnitude != 0 && ClimbHelper.CanMove(transform.position,
-				transform.forward,
-				moveDirection.normalized,
-				PP_Climb.Instance.MaxClimbDistanceFromCorners,
-				PP_Climb.Instance.MaxDistanceToTriggerClimb,
-				PP_Climb.Instance.MaxClimbAngle,
-				out RaycastHit hit))
+		if (moveDirection.magnitude != 0 && ClimbHelper.CanMove(myPosition,
+			_myTransform.forward,
+			moveDirection.normalized,
+			PP_Climb.Instance.MaxClimbDistanceFromCorners,
+			PP_Climb.Instance.MaxDistanceToTriggerClimb,
+			PP_Climb.Instance.MaxClimbAngle,
+			out RaycastHit hit))
 		{
-			if (!hit.transform.Equals(currentWall))
+			if (!hit.transform.Equals(_currentWall))
 			{
 				ResetPosition(hit);
 			}
@@ -92,17 +103,20 @@ public class PS_Climb : PlayerState
 			{
 				if (!consumeStaminaPeriod.IsTicking)
 					consumeStaminaPeriod.StartTimer();
-				body.Move(moveDirection, PP_Climb.Instance.ClimbSpeed);
+				_body.Move(moveDirection, PP_Climb.Instance.ClimbSpeed);
 				//Rotation
-				Physics.Raycast(transform.position, transform.forward, out RaycastHit forwardHit, PP_Climb.Instance.MaxDistanceToTriggerClimb, ~LayerMask.GetMask("NonClimbable", "Interactable"));
-				transform.rotation = Quaternion.LookRotation(-forwardHit.normal).normalized;
-				Debug.DrawLine(transform.position, hit.point, Color.yellow);
+				Physics.Raycast(myPosition, _myTransform.forward, out RaycastHit forwardHit,
+					PP_Climb.Instance.MaxDistanceToTriggerClimb, ~LayerMask.GetMask("NonClimbable", "Interactable"));
+				_myTransform.rotation = Quaternion.LookRotation(-forwardHit.normal).normalized;
+				Debug.DrawLine(myPosition, hit.point, Color.yellow);
 			}
 		}
 		//Cliff
-		else if (Mathf.Approximately(Vector3.Dot(moveDirection, transform.up), 1)
-				&&
-				ClimbHelper.CanClimbUp(transform.position, transform.up, transform.forward, PP_Climb.Instance.MaxClimbDistanceFromCorners, PP_Climb.Instance.MaxDistanceToTriggerClimb, out RaycastHit cliffHit))
+		else if (Mathf.Approximately(Vector3.Dot(moveDirection, _myTransform.up), 1)
+		         &&
+		         ClimbHelper.CanClimbUp(myPosition, _myTransform.up, _myTransform.forward,
+			         PP_Climb.Instance.MaxClimbDistanceFromCorners, PP_Climb.Instance.MaxDistanceToTriggerClimb,
+			         out RaycastHit cliffHit))
 		{
 			Debug.DrawRay(cliffHit.point, cliffHit.normal / 4, Color.blue, 2);
 			GetOverCliff(cliffHit);
@@ -113,83 +127,85 @@ public class PS_Climb : PlayerState
 			consumeStaminaPeriod.StopTimer();
 		}
 
-		if (!InputManager.CheckClimbInput() || model.stamina.FillState < 1)
+		if (!InputManager.CheckClimbInput() || Model.stamina.FillState < 1)
 		{
-			model.ChangeState<PS_Jump>();
-			model.view.ShowJumpFeedback();
+			Model.ChangeState<PS_Jump>();
+			Model.view.ShowJumpFeedback();
 		}
 
-		model.RunAbilityList(model.AbilitiesOnWall);
+		Model.RunAbilityList(Model.AbilitiesOnWall);
 	}
+
 	public override void OnStateExit()
 	{
 		base.OnStateExit();
-		isClimbFinished = true;
-		positioningAction.StopAction();
+		_isClimbFinished = true;
+		_getInPosition.StopAction();
 		consumeStaminaPeriod.StopTimer();
 		staminaConsumingDelay.StopTimer();
-		model.stamina.ResumeFilling();
-		model.GetComponent<Rigidbody>().isKinematic = false;
+		Model.stamina.ResumeFilling();
+		Model.GetComponent<Rigidbody>().isKinematic = false;
 		Quaternion newRotation = Quaternion.identity;
-		newRotation.y = transform.rotation.y;
-		transform.rotation = newRotation;
+		newRotation.y = _myTransform.rotation.y;
+		_myTransform.rotation = newRotation;
 	}
 
 	protected void ConsumeStamina()
 	{
-		model.stamina.ConsumeStamina(1);
-		if (isClimbFinished)
+		Model.stamina.ConsumeStamina(1);
+		if (_isClimbFinished)
 			return;
 		consumeStaminaPeriod.StartTimer();
 	}
 
 	private void ResetPosition(RaycastHit hit)
 	{
-		originPosition = transform.position;
-		originRotation = transform.rotation;
+		_originPosition = _myTransform.position;
+		_originRotation = _myTransform.rotation;
 
-		targetRotation = Quaternion.LookRotation(-hit.normal);
-		targetPosition = hit.point - transform.forward * PP_Climb.Instance.ClimbingPositionOffset;
+		_targetRotation = Quaternion.LookRotation(-hit.normal);
+		_targetPosition = hit.point - _myTransform.forward * PP_Climb.Instance.ClimbingPositionOffset;
 
-		currentWall = hit.transform;
+		_currentWall = hit.transform;
 
-		isInPosition = false;
-		positioningAction.StartAction();
+		_isInPosition = false;
+		_getInPosition.StartAction();
 	}
 
 	private void GetOverCliff(RaycastHit hit)
 	{
-		originPosition = transform.position;
-		originRotation = transform.rotation;
-		targetPosition = hit.point + (transform.up * transform.localScale.y / 5);
-		targetRotation = transform.rotation;
+		_originPosition = _myTransform.position;
+		_originRotation = _myTransform.rotation;
+		_targetPosition = hit.point + (_myTransform.up * _myTransform.localScale.y / 5);
+		_targetRotation = _myTransform.rotation;
 
-		isInPosition = false;
-		positioningAction.StartAction();
-		CliffClimbingTimer.StartTimer();
+		_isInPosition = false;
+		_getInPosition.StartAction();
+		_afterCliff.StartTimer();
 	}
 
 	private void GetInPosition(float bezier)
 	{
-		transform.position = Vector3.Lerp(originPosition, targetPosition, bezier);
-		transform.rotation = Quaternion.Slerp(originRotation, targetRotation, bezier);
+		_myTransform.position = Vector3.Lerp(_originPosition, _targetPosition, bezier);
+		_myTransform.rotation = Quaternion.Slerp(_originRotation, _targetRotation, bezier);
 		if (bezier == 1)
 		{
-			isInPosition = true;
+			_isInPosition = true;
 		}
 	}
 
 	private bool IsTouchingGround()
 	{
-		if (Physics.Raycast(transform.position,
-							Vector3.down,
-							PP_Climb.Instance.MaxClimbDistanceFromCorners,
-							LayerMask.GetMask("default", "Floor")))
+		if (Physics.Raycast(_myTransform.position,
+			Vector3.down,
+			PP_Climb.Instance.MaxClimbDistanceFromCorners,
+			LayerMask.GetMask("default", "Floor")))
 		{
-			Debug.DrawRay(transform.position, Vector3.down * PP_Climb.Instance.MaxClimbDistanceFromCorners, Color.green);
+			Debug.DrawRay(_myTransform.position, Vector3.down * PP_Climb.Instance.MaxClimbDistanceFromCorners,
+				Color.green);
 			return true;
 		}
+
 		return false;
 	}
-
 }

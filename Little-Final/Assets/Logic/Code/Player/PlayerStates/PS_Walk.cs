@@ -8,32 +8,32 @@ public class PS_Walk : PlayerState
 	IBody body;
 	CountDownTimer coyoteEffect;
 
-	public override void OnStateEnter(PlayerModel brain, int sceneIndex)
+	public override void OnStateEnter(PlayerModel model, int sceneIndex)
 	{
-		base.OnStateEnter(brain, sceneIndex);
-		brain.view.ShowLandFeedback();
-		body = brain.GetComponent<Player_Body>();
+		base.OnStateEnter(model, sceneIndex);
+		model.view.ShowLandFeedback();
+		body = model.GetComponent<Player_Body>();
 
-		transform = brain.transform;
+		transform = model.transform;
 		coyoteEffect = new CountDownTimer(PP_Jump.Instance.CoyoteTime,
 			OnCoyoteFinished,
 			sceneIndex);
 		Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 10, ~LayerMask.GetMask("Interactable"));
 		body.LastFloorNormal = hit.normal;
 
-		if (brain.LongJumpBuffer)
+		if (model.LongJumpBuffer)
 		{
-			brain.ResetJumpBuffers();
+			model.ResetJumpBuffers();
 			body.Jump(PP_Jump.Instance.LongJumpForce);
-			brain.ChangeState<PS_LongJump>();
-			model.view.ShowJumpFeedback();
+			model.ChangeState<PS_LongJump>();
+			base.Model.view.ShowJumpFeedback();
 		}
-		else if (brain.JumpBuffer)
+		else if (model.JumpBuffer)
 		{
-			brain.ResetJumpBuffers();
+			model.ResetJumpBuffers();
 			body.Jump(PP_Jump.Instance.JumpForce);
-			brain.ChangeState<PS_Jump>();
-			model.view.ShowJumpFeedback();
+			model.ChangeState<PS_Jump>();
+			base.Model.view.ShowJumpFeedback();
 		}
 	}
 
@@ -41,7 +41,7 @@ public class PS_Walk : PlayerState
 	{
 		Vector2 input = InputManager.GetHorInput();
 
-		model.view.SetSpeed(Mathf.Abs(input.normalized.magnitude / 2));
+		Model.view.SetSpeed(Mathf.Abs(input.normalized.magnitude / 2));
 
 		Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
 		Debug.DrawRay(transform.position, desiredDirection.normalized / 3, Color.green);
@@ -59,19 +59,19 @@ public class PS_Walk : PlayerState
 		if (InputManager.CheckLongJumpInput())
 		{
 			body.Jump(PP_Jump.Instance.LongJumpForce);
-			model.ChangeState<PS_LongJump>();
-			model.view.ShowJumpFeedback();
+			Model.ChangeState<PS_LongJump>();
+			Model.view.ShowJumpFeedback();
 		}
 		else if (InputManager.CheckJumpInput())
 		{
 			body.Jump(PP_Jump.Instance.JumpForce);
-			model.ChangeState<PS_Jump>();
-			model.view.ShowJumpFeedback();
+			Model.ChangeState<PS_Jump>();
+			Model.view.ShowJumpFeedback();
 		}
 
 		ValidateClimb();
 		ValidateGround();
-		model.RunAbilityList(model.AbilitiesOnLand);
+		Model.RunAbilityList(Model.AbilitiesOnLand);
 	}
 
 	public override void OnStateExit()
@@ -84,22 +84,22 @@ public class PS_Walk : PlayerState
 	{
 		if (!FallHelper.IsGrounded)
 		{
-			model.ChangeState<PS_Jump>();
-			model.view.ShowJumpFeedback();
+			Model.ChangeState<PS_Jump>();
+			Model.view.ShowJumpFeedback();
 		}
 	}
 
 	protected virtual void ValidateClimb()
 	{
 		if (InputManager.CheckClimbInput()
-		    && model.stamina.FillState > 0
+		    && Model.stamina.FillState > 0
 		    && ClimbHelper.CanClimb(transform.position,
 			    transform.forward,
 			    PP_Climb.Instance.MaxDistanceToTriggerClimb,
 			    PP_Climb.Instance.MaxClimbAngle,
 			    out _))
 		{
-			model.ChangeState<PS_Climb>();
+			Model.ChangeState<PS_Climb>();
 		}
 	}
 

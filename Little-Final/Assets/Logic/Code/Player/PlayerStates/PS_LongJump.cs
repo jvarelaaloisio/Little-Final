@@ -34,6 +34,6 @@ public class PS_LongJump : PS_Jump
 		ControlGlide();
 		CheckForJumpBuffer();
 		CheckClimb();
-		model.RunAbilityList(model.AbilitiesInAir);
+		Model.RunAbilityList(Model.AbilitiesInAir);
 	}
 }
