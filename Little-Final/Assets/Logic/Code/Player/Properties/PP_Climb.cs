@@ -53,14 +53,14 @@ public class PP_Climb : ScriptableObject
 
 
 	#region Getters
-	public float ClimbPositioningTime => climbPositioningTime;
-	public float ClimbMinTime => climbMinTime;
-	public float ClimbSpeed => climbSpeed;
-	public float MaxDistanceToTriggerClimb => maxDistanceToTriggerClimb;
-	public float MaxClimbDistanceFromCorners => maxClimbDistanceFromCorners;
-	public float MaxClimbAngle => maxClimbAngle;
-	public float ClimbingPositionOffset => climbingPositionOffset;
-	public float StaminaPerSecond => staminaPerSecond;
-	public float StaminaConsumingDelay => staminaConsumingDelay;
+	public static float ClimbPositioningTime => Instance.climbPositioningTime;
+	public static float ClimbMinTime => Instance.climbMinTime;
+	public static float ClimbSpeed => Instance.climbSpeed;
+	public static float MaxDistanceToTriggerClimb => Instance.maxDistanceToTriggerClimb;
+	public static float MaxClimbDistanceFromCorners => Instance.maxClimbDistanceFromCorners;
+	public static float MaxClimbAngle => Instance.maxClimbAngle;
+	public static float ClimbingPositionOffset => Instance.climbingPositionOffset;
+	public static float StaminaPerSecond => Instance.staminaPerSecond;
+	public static float StaminaConsumingDelay => Instance.staminaConsumingDelay;
 	#endregion
 }

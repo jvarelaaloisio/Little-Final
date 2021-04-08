@@ -22,7 +22,7 @@ public class AbilityUnlocker : MonoBehaviour
 	}
 	private void OnTriggerEnter(Collider other)
 	{
-		PlayerModel player = other.GetComponent<PlayerModel>();
+		PlayerController player = other.GetComponent<PlayerController>();
 		if (isAir)
 			player.AbilitiesInAir.Add(ability);
 		if (isLand)

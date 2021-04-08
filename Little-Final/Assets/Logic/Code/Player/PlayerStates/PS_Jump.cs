@@ -2,13 +2,10 @@
 using CharacterMovement;
 using VarelaAloisio.UpdateManagement.Runtime;
 
-public class PS_Jump : PlayerState
+public class PS_Jump : StaminaConsumingState
 {
 	protected Transform transform;
 	protected IBody body;
-
-	protected CountDownTimer consumeStaminaPeriod,
-		staminaConsumptiongDelay;
 
 	protected CountDownTimer accelerationDelay;
 	protected ActionOverTime accelerate;
@@ -19,41 +16,34 @@ public class PS_Jump : PlayerState
 	private bool accelerated;
 	private LayerMask interactable;
 
-	public override void OnStateEnter(PlayerModel model, int sceneIndex)
+	public PS_Jump()
 	{
-		base.OnStateEnter(model, sceneIndex);
-		transform = model.transform;
+		StaminaPerSecond = PP_Glide.StaminaPerSecond;
+		StaminaConsumptionDelay = PP_Glide.StaminaConsumptionDelay;
+	}
+	public override void OnStateEnter(PlayerController controller, int sceneIndex)
+	{
+		base.OnStateEnter(controller, sceneIndex);
+		transform = controller.transform;
 
-		currentDrag = PP_Glide.Instance.Drag;
+		currentDrag = PP_Glide.Drag;
 		baseSpeed = PP_Jump.Instance.JumpSpeed;
 		currentSpeed = baseSpeed;
 		//	Body
-		body = model.Body;
+		body = controller.Body;
 		body.BodyEvents += BodyEventsHandler;
 
 		interactable = LayerMask.GetMask("Interactable");
-
-		consumeStaminaPeriod =
-			new CountDownTimer(
-			1 / PP_Glide.Instance.StaminaPerSecond,
-			ConsumeStamina,
-			sceneIndex);
-		staminaConsumptiongDelay =
-			new CountDownTimer(
-				PP_Glide.Instance.StaminaConsumptionDelay,
-				null,
-				sceneIndex);
-
 		accelerate =
 			new ActionOverTime(
-			PP_Glide.Instance.AccelerationTime,
-			Accelerate,
-			sceneIndex);
+				PP_Glide.AccelerationTime,
+				Accelerate,
+				sceneIndex);
 		accelerationDelay =
 			new CountDownTimer(
-			PP_Glide.Instance.AccelerationDelay,
-			StartAcceleration,
-			sceneIndex);
+				PP_Glide.AccelerationDelay,
+				StartAcceleration,
+				sceneIndex);
 	}
 
 	public override void OnStateUpdate()
@@ -78,16 +68,17 @@ public class PS_Jump : PlayerState
 		ControlGlide();
 		CheckForJumpBuffer();
 		CheckClimb();
-		Model.RunAbilityList(Model.AbilitiesInAir);
+		Controller.RunAbilityList(Controller.AbilitiesInAir);
 	}
 
 	public override void OnStateExit()
 	{
 		isStateFinished = true;
-		consumeStaminaPeriod.StopTimer();
-		staminaConsumptiongDelay.StopTimer();
+		// consumeStaminaPeriod.StopTimer();
+		ConsumingStamina.StopAction();
+		WaitToConsumeStamina.StopTimer();
 		ResetAcceleration();
-		Model.view.SetFlying(false);
+		Controller.OnGlideChanges(false);
 		body.BodyEvents -= BodyEventsHandler;
 		body.SetDrag(0);
 	}
@@ -96,53 +87,54 @@ public class PS_Jump : PlayerState
 	{
 		if (eventType.Equals(BodyEvent.LAND) && FallHelper.IsGrounded)
 		{
-			Model.ChangeState<PS_Walk>();
+			Controller.ChangeState<PS_Walk>();
 		}
 	}
 
 	private void StartAcceleration()
 	{
 		accelerate.StartAction();
-		Model.view.ShowAccelerationFeedback();
+		Controller.view.ShowAccelerationFeedback();
 	}
 
 	private void Accelerate(float lerp)
 	{
 		accelerated = true;
-		currentSpeed = Mathf.Lerp(baseSpeed, PP_Glide.Instance.AcceleratedSpeed, BezierHelper.GetSinBezier(lerp));
-		currentDrag = Mathf.Lerp(PP_Glide.Instance.Drag, PP_Glide.Instance.AcceleratedDrag,
+		currentSpeed = Mathf.Lerp(baseSpeed, PP_Glide.AcceleratedSpeed, BezierHelper.GetSinBezier(lerp));
+		currentDrag = Mathf.Lerp(PP_Glide.Drag, PP_Glide.AcceleratedDrag,
 			BezierHelper.GetSinBezier(lerp));
-		Model.view.SetAccelerationEffect(lerp);
+		Controller.view.SetAccelerationEffect(lerp);
 	}
 
 	protected virtual void ControlGlide()
 	{
-		if (!InputManager.GetGlideInput() || Model.stamina.FillState < 1 || body.Velocity.y > 0)
+		if (!InputManager.GetGlideInput() || Controller.stamina.FillState < 1 || body.Velocity.y > 0)
 		{
 			body.SetDrag(0);
-			Model.view.SetFlying(false);
-			consumeStaminaPeriod.StopTimer();
+			Controller.OnGlideChanges(false);
+			ConsumingStamina.StopAction();
 			ResetAcceleration();
 			return;
 		}
 
 		body.SetDrag(currentDrag);
-		Model.view.SetFlying(true);
+		Controller.OnGlideChanges(true);
 		if (!accelerationDelay.IsTicking && !accelerated)
 			accelerationDelay.StartTimer();
-		if (!consumeStaminaPeriod.IsTicking && !staminaConsumptiongDelay.IsTicking)
-			consumeStaminaPeriod.StartTimer();
+		if (!ConsumingStamina.IsRunning && !WaitToConsumeStamina.IsTicking)
+			ConsumingStamina.StartAction();
 	}
 
 	protected virtual void CheckClimb()
 	{
-		if (InputManager.CheckClimbInput() && Model.stamina.FillState > 0 && ClimbHelper.CanClimb(transform.position,
+		if (InputManager.CheckClimbInput() && Controller.stamina.FillState > 0 && ClimbHelper.CanClimb(
+			transform.position,
 			transform.forward,
-			PP_Climb.Instance.MaxDistanceToTriggerClimb,
-			PP_Climb.Instance.MaxClimbAngle,
+			PP_Climb.MaxDistanceToTriggerClimb,
+			PP_Climb.MaxClimbAngle,
 			out _))
 		{
-			Model.ChangeState<PS_Climb>();
+			Controller.ChangeState<PS_Climb>();
 		}
 	}
 
@@ -150,29 +142,21 @@ public class PS_Jump : PlayerState
 	{
 		if (InputManager.CheckLongJumpInput() && Physics.Raycast(transform.position, -transform.up, .5f, ~interactable))
 		{
-			Model.LongJumpBuffer = true;
+			Controller.LongJumpBuffer = true;
 		}
 		else if (InputManager.CheckJumpInput() &&
 		         Physics.Raycast(transform.position, -transform.up, .5f, ~interactable))
 		{
-			Model.JumpBuffer = true;
+			Controller.JumpBuffer = true;
 		}
 	}
 
-	protected void ConsumeStamina()
-	{
-		Model.stamina.ConsumeStamina(1);
-		if (!isStateFinished)
-			consumeStaminaPeriod.StartTimer();
-	}
-
-
 	private void ResetAcceleration()
 	{
-		Model.view.StopAccelerationFeedback();
+		Controller.view.StopAccelerationFeedback();
 		accelerationDelay.StopTimer();
 		accelerate.StopAction();
-		currentDrag = PP_Glide.Instance.Drag;
+		currentDrag = PP_Glide.Drag;
 		currentSpeed = baseSpeed;
 		accelerated = false;
 	}

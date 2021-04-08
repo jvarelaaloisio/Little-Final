@@ -25,7 +25,7 @@ public class DebugConsole : MonoBehaviour
 
 	#region Private
 	Dictionary<string, Vector3> savedPositions;
-	private PlayerModel player;
+	private PlayerController player;
 	private static DebugConsole instance;
 	private static DebugConsole Instance
 	{
@@ -56,7 +56,7 @@ public class DebugConsole : MonoBehaviour
 	#region Unity
 	void Start()
 	{
-		player = FindObjectOfType<PlayerModel>();
+		player = FindObjectOfType<PlayerController>();
 		_commands.Add(new dumbCommand("help", "Muestra la descripción de todos los comandos", Help));
 		_commands.Add(new dumbCommand("godmode", "Sos inmortal", GodMode));
 		_commands.Add(new dumbCommand("savePosition", "guarda la posición actual", SavePosition));

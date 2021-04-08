@@ -21,7 +21,7 @@ public class StaminaRefiller : MonoBehaviour
 	}
 	private void OnTriggerEnter(Collider other)
 	{
-		other.GetComponent<PlayerModel>().stamina.RefillCompletely();
+		other.GetComponent<PlayerController>().stamina.RefillCompletely();
 		GetComponent<MeshRenderer>().enabled = false;
 		GetComponent<Collider>().enabled = false;
 		particles.Play(true);

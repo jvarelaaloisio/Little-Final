@@ -3,9 +3,9 @@ using CharacterMovement;
 
 public class PS_LongJump : PS_Jump
 {
-	public override void OnStateEnter(PlayerModel model, int sceneIndex)
+	public override void OnStateEnter(PlayerController controller, int sceneIndex)
 	{
-		base.OnStateEnter(model, sceneIndex);
+		base.OnStateEnter(controller, sceneIndex);
 		baseSpeed = PP_Jump.Instance.LongJumpSpeed;
 		currentSpeed = baseSpeed;
 	}
@@ -34,6 +34,6 @@ public class PS_LongJump : PS_Jump
 		ControlGlide();
 		CheckForJumpBuffer();
 		CheckClimb();
-		Model.RunAbilityList(Model.AbilitiesInAir);
+		Controller.RunAbilityList(Controller.AbilitiesInAir);
 	}
 }

@@ -8,37 +8,37 @@ public class Swirl : Ability
 	public Vector3 force;
 	public float cooldown;
 	private bool isCoolDown;
-	private PlayerModel model;
+	private PlayerController _controller;
 	private CountDownTimer cooldownTimer;
 	public override int Stamina => stamina;
-	public override void Use(PlayerModel model)
+	public override void Use(PlayerController controller)
 	{
-		this.model = model;
-		Vector3 forceLocal = model.transform.right * force.x + model.transform.up * force.y + model.transform.forward * force.z;
-		model.Body.Velocity = Vector3.zero;
-		model.Body.Push(forceLocal);
-		model.view.PlaySpecificAnimation(animationStateName);
-		model.ChangeState<PS_Void>();
+		this._controller = controller;
+		Vector3 forceLocal = controller.transform.right * force.x + controller.transform.up * force.y + controller.transform.forward * force.z;
+		controller.Body.Velocity = Vector3.zero;
+		controller.Body.Push(forceLocal);
+		controller.OnSpecificAction(animationStateName);
+		controller.ChangeState<PS_Void>();
 		isCoolDown = true;
-		cooldownTimer = new CountDownTimer(cooldown, OnFinished, model.SceneIndex);
+		cooldownTimer = new CountDownTimer(cooldown, OnFinished, controller.SceneIndex);
 		cooldownTimer.StartTimer();
 	}
 	private void OnEnable()
 	{
 		isCoolDown = false;
 	}
-	public override bool ValidateTrigger(PlayerModel model)
+	public override bool ValidateTrigger(PlayerController controller)
 	{
-		return !isCoolDown && model.stamina.FillState >= stamina && InputManager.CheckSwirlInput();
+		return !isCoolDown && controller.stamina.FillState >= stamina && InputManager.CheckSwirlInput();
 	}
 
 	private void OnFinished()
 	{
-		model.GetComponent<Rigidbody>().useGravity = true;
+		_controller.GetComponent<Rigidbody>().useGravity = true;
 		isCoolDown = false;
 		if (FallHelper.IsGrounded)
-			model.ChangeState<PS_Walk>();
+			_controller.ChangeState<PS_Walk>();
 		else
-			model.ChangeState<PS_LongJump>();
+			_controller.ChangeState<PS_LongJump>();
 	}
 }

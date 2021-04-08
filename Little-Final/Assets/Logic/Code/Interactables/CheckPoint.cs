@@ -9,7 +9,7 @@ public class CheckPoint : MonoBehaviour
 	public Quaternion safeRotation;
 	private void OnTriggerEnter(Collider other)
 	{
-		other.GetComponent<PlayerModel>().SaveSafeState(safePoint, safeRotation);
+		other.GetComponent<PlayerController>().SaveSafeState(safePoint, safeRotation);
 	}
 	private void OnDrawGizmos()
 	{

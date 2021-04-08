@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-[RequireComponent(typeof(PlayerModel))]
+[RequireComponent(typeof(PlayerController))]
 public class PlayerSound : MonoBehaviour
 {
 	public AudioClip walk,
@@ -7,12 +7,12 @@ public class PlayerSound : MonoBehaviour
 					fly;
 	public AudioSource loopingSfx;
 	AudioManager audioManager;
-	private PlayerModel model;
+	private PlayerController _controller;
 	private bool _isWalkPlaying,
 		_isFlyPlaying;
 	void Start()
 	{
-		model = GetComponent<PlayerModel>();
+		_controller = GetComponent<PlayerController>();
 		audioManager = FindObjectOfType<AudioManager>();
 	}
 	public void PlayJump()

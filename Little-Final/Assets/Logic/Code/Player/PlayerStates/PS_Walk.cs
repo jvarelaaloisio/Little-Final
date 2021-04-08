@@ -8,32 +8,32 @@ public class PS_Walk : PlayerState
 	IBody body;
 	CountDownTimer coyoteEffect;
 
-	public override void OnStateEnter(PlayerModel model, int sceneIndex)
+	public override void OnStateEnter(PlayerController controller, int sceneIndex)
 	{
-		base.OnStateEnter(model, sceneIndex);
-		model.view.ShowLandFeedback();
-		body = model.GetComponent<Player_Body>();
+		base.OnStateEnter(controller, sceneIndex);
+		controller.OnLand();
+		body = controller.GetComponent<Player_Body>();
 
-		transform = model.transform;
+		transform = controller.transform;
 		coyoteEffect = new CountDownTimer(PP_Jump.Instance.CoyoteTime,
 			OnCoyoteFinished,
 			sceneIndex);
 		Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 10, ~LayerMask.GetMask("Interactable"));
 		body.LastFloorNormal = hit.normal;
 
-		if (model.LongJumpBuffer)
+		if (controller.LongJumpBuffer)
 		{
-			model.ResetJumpBuffers();
+			controller.ResetJumpBuffers();
 			body.Jump(PP_Jump.Instance.LongJumpForce);
-			model.ChangeState<PS_LongJump>();
-			base.Model.view.ShowJumpFeedback();
+			controller.ChangeState<PS_LongJump>();
+			Controller.OnJump();
 		}
-		else if (model.JumpBuffer)
+		else if (controller.JumpBuffer)
 		{
-			model.ResetJumpBuffers();
+			controller.ResetJumpBuffers();
 			body.Jump(PP_Jump.Instance.JumpForce);
-			model.ChangeState<PS_Jump>();
-			base.Model.view.ShowJumpFeedback();
+			controller.ChangeState<PS_Jump>();
+			Controller.OnJump();
 		}
 	}
 
@@ -41,7 +41,7 @@ public class PS_Walk : PlayerState
 	{
 		Vector2 input = InputManager.GetHorInput();
 
-		Model.view.SetSpeed(Mathf.Abs(input.normalized.magnitude / 2));
+		Controller.OnChangeSpeed(Mathf.Abs(input.normalized.magnitude / 2));
 
 		Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
 		Debug.DrawRay(transform.position, desiredDirection.normalized / 3, Color.green);
@@ -59,19 +59,19 @@ public class PS_Walk : PlayerState
 		if (InputManager.CheckLongJumpInput())
 		{
 			body.Jump(PP_Jump.Instance.LongJumpForce);
-			Model.ChangeState<PS_LongJump>();
-			Model.view.ShowJumpFeedback();
+			Controller.ChangeState<PS_LongJump>();
+			Controller.OnJump();
 		}
 		else if (InputManager.CheckJumpInput())
 		{
 			body.Jump(PP_Jump.Instance.JumpForce);
-			Model.ChangeState<PS_Jump>();
-			Model.view.ShowJumpFeedback();
+			Controller.ChangeState<PS_Jump>();
+			Controller.OnJump();
 		}
 
 		ValidateClimb();
 		ValidateGround();
-		Model.RunAbilityList(Model.AbilitiesOnLand);
+		Controller.RunAbilityList(Controller.AbilitiesOnLand);
 	}
 
 	public override void OnStateExit()
@@ -82,24 +82,23 @@ public class PS_Walk : PlayerState
 
 	private void OnCoyoteFinished()
 	{
-		if (!FallHelper.IsGrounded)
-		{
-			Model.ChangeState<PS_Jump>();
-			Model.view.ShowJumpFeedback();
-		}
+		if (FallHelper.IsGrounded)
+			return;
+		Controller.ChangeState<PS_Jump>();
+		Controller.OnJump();
 	}
 
 	protected virtual void ValidateClimb()
 	{
 		if (InputManager.CheckClimbInput()
-		    && Model.stamina.FillState > 0
+		    && Controller.stamina.FillState > 0
 		    && ClimbHelper.CanClimb(transform.position,
 			    transform.forward,
-			    PP_Climb.Instance.MaxDistanceToTriggerClimb,
-			    PP_Climb.Instance.MaxClimbAngle,
+			    PP_Climb.MaxDistanceToTriggerClimb,
+			    PP_Climb.MaxClimbAngle,
 			    out _))
 		{
-			Model.ChangeState<PS_Climb>();
+			Controller.ChangeState<PS_Climb>();
 		}
 	}
 

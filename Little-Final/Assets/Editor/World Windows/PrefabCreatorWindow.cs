@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Platforms;
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -19,7 +18,7 @@ namespace Editors.World_Windows
 
 		private List<GameObject> _subjectsToReplace = new List<GameObject>();
 
-		[MenuItem("Tools/Prefab Creator")]
+		[MenuItem("Tools/Replace with Prefab")]
 		public static void OpenWindow()
 		{
 			var w = GetWindow<PrefabCreatorWindow>();
@@ -35,10 +34,10 @@ namespace Editors.World_Windows
 		private void OnGUI()
 		{
 			var temp = (GameObject) EditorGUILayout.ObjectField(
-				"base object",
+				"base prefab",
 				_baseObject,
 				typeof(GameObject),
-				true);
+				false);
 			if (!temp)
 				return;
 			DrawMeshPreview(temp);
@@ -69,7 +68,7 @@ namespace Editors.World_Windows
 			_prefabPath = EditorGUILayout.TextField(_prefabPath, textFieldStyle);
 			GUILayout.Label($"/{_newPrefabName}.prefab");
 			EditorGUILayout.EndHorizontal();
-			if (GUILayout.Button("Save Prefab and Replace") && AssetDatabase.IsValidFolder(_prefabPath))
+			if (GUILayout.Button("Save Prefab") && AssetDatabase.IsValidFolder(_prefabPath))
 			{
 				PrefabUtility.SaveAsPrefabAssetAndConnect(
 					_baseObject,
@@ -85,7 +84,7 @@ namespace Editors.World_Windows
 					var subject = _subjectsToReplace[i];
 					var subjectTransform = subject.transform;
 					var parentTransform = subjectTransform.parent;
-					Debug.Log(subject.name);
+					Debug.LogWarning(subject.name + " replaced.");
 					var newSubject = PrefabUtility.InstantiatePrefab(_baseObject, parentTransform) as GameObject;
 					newSubject.name = subject.name;
 					Transform newTransform = newSubject.transform;

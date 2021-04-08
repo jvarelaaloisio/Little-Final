@@ -3,30 +3,29 @@ using VarelaAloisio.UpdateManagement.Runtime;
 using System;
 public class Stamina
 {
-	private readonly float _refillSpeed;
 	private float _fillState;
 	public float FillState
 	{
 		get => _fillState;
 		private set
 		{
-			onStaminaChange?.Invoke(value);
-			_fillState = Mathf.Clamp(value, 0, maxStamina);
+			_onStaminaChange?.Invoke(value);
+			_fillState = Mathf.Clamp(value, 0, _maxStamina);
 		}
 	}
 
-	public bool IsRefillingActive => isRefillingActive;
-	public float MaxStamina => maxStamina;
+	public bool IsRefillingActive => _isRefillingActive;
+	public float MaxStamina => _maxStamina;
 
-	public float RefillSpeed => _refillSpeed;
+	public float RefillSpeed { get; }
 
 
-	private readonly Action onRefillingStart;
-	private readonly Action<float> onStaminaChange;
-	private readonly CountDownTimer refillDelayTimer;
-	private readonly CountDownTimer refillPeriod;
-	private float maxStamina;
-	private bool isRefillingActive = true;
+	private readonly Action _onRefillingStart;
+	private readonly Action<float> _onStaminaChange;
+	private readonly CountDownTimer _refillDelayTimer;
+	private readonly CountDownTimer _refillPeriod;
+	private float _maxStamina;
+	private bool _isRefillingActive = true;
 	public Stamina(
 		float maxStamina,
 		float refillDelay,
@@ -35,51 +34,51 @@ public class Stamina
 		Action<float> onStaminaChange = null,
 		Action onRefillingStart = null)
 	{
-		_refillSpeed = refillSpeed;
-		this.maxStamina = maxStamina;
+		RefillSpeed = refillSpeed;
+		_maxStamina = maxStamina;
 		FillState = maxStamina;
-		this.onStaminaChange = onStaminaChange;
-		this.onRefillingStart = onRefillingStart;
-		refillDelayTimer = new CountDownTimer(refillDelay, StartRefill, sceneIndex);
-		refillPeriod = new CountDownTimer(1 / refillSpeed, RefillStamina, sceneIndex);
+		_onStaminaChange = onStaminaChange ?? delegate { };
+		_onRefillingStart = onRefillingStart ?? delegate { };
+		_refillDelayTimer = new CountDownTimer(refillDelay, StartRefill, sceneIndex);
+		_refillPeriod = new CountDownTimer(1 / refillSpeed, RefillStamina, sceneIndex);
 	}
 	private void RefillStamina()
 	{
 		FillState++;
-		if (FillState < maxStamina)
-			refillPeriod.StartTimer();
+		if (FillState < _maxStamina)
+			_refillPeriod.StartTimer();
 	}
 	private void StartRefill()
 	{
-		onRefillingStart?.Invoke();
-		refillPeriod.StartTimer();
+		_onRefillingStart?.Invoke();
+		_refillPeriod.StartTimer();
 	}
 	public void ConsumeStamina(float value)
 	{
 		if (value == 0)
 			return;
 		FillState -= value;
-		refillPeriod.StopTimer();
-		if (isRefillingActive)
-			refillDelayTimer.StartTimer();
+		_refillPeriod.StopTimer();
+		if (_isRefillingActive)
+			_refillDelayTimer.StartTimer();
 	}
-	public void StopFilling()
+	public void StopRefilling()
 	{
-		refillPeriod.StopTimer();
-		isRefillingActive = false;
+		_refillPeriod.StopTimer();
+		_isRefillingActive = false;
 	}
-	public void ResumeFilling()
+	public void ResumeRefilling()
 	{
-		refillDelayTimer.StartTimer();
-		isRefillingActive = true;
+		_refillDelayTimer.StartTimer();
+		_isRefillingActive = true;
 	}
 	public void RefillCompletely()
 	{
-		FillState = maxStamina;
+		FillState = _maxStamina;
 	}
 	public void UpgradeMaxStamina(float value)
 	{
-		maxStamina = value;
-		refillPeriod.StartTimer();
+		_maxStamina = value;
+		_refillPeriod.StartTimer();
 	}
 }

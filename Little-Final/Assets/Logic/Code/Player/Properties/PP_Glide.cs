@@ -43,12 +43,12 @@ public class PP_Glide : ScriptableObject
 
 
 	#region Getters
-	public float Drag => drag;
-	public float AcceleratedDrag => acceleratedDrag;
-	public float AcceleratedSpeed => acceleratedSpeed;
-	public float StaminaPerSecond => staminaPerSecond;
-	public float StaminaConsumptionDelay => staminaConsumptionDelay;
-	public float AccelerationDelay => accelerationDelay;
-	public float AccelerationTime => accelerationTime;
+	public static float Drag => instance.drag;
+	public static float AcceleratedDrag => instance.acceleratedDrag;
+	public static float AcceleratedSpeed => instance.acceleratedSpeed;
+	public static float StaminaPerSecond => instance.staminaPerSecond;
+	public static float StaminaConsumptionDelay => instance.staminaConsumptionDelay;
+	public static float AccelerationDelay => instance.accelerationDelay;
+	public static float AccelerationTime => instance.accelerationTime;
 	#endregion
 }

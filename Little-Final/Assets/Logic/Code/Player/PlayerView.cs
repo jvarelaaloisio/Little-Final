@@ -8,7 +8,7 @@ namespace Logic.Code.Player
 {
 	public class PlayerView : MonoBehaviour, IUpdateable
 	{
-		private const string PonchoActivateFloat = "_Activate";
+		private const string PONCHO_ACTIVATE_FLOAT = "_Activate";
 		public AudioClip reward;
 		private AudioManager audioManager;
 
@@ -39,7 +39,6 @@ namespace Logic.Code.Player
 		public string climbAnimation;
 		public string deathAnimation;
 		public string speedParameter = "Speed";
-		public string cameraIsMovementParameter;
 		public string isFlyingParameter = "isFlying";
 		public float transitionDuration;
 		public Transform playerShadow;
@@ -60,15 +59,24 @@ namespace Logic.Code.Player
 			accelerationEffect;
 
 		public bool IsFlying => glideEffect[0].emitting;
-		private PlayerModel playerModel;
+		[SerializeField] private PlayerController playerController;
 		[SerializeField] private Image blackScreen;
 		[SerializeField] private AnimationCurve screenFade;
 		[SerializeField] private float deathFadeDuration;
 		private int _sceneIndex;
+		[SerializeField] private float shadowMinDot;
 
 		private void Start()
 		{
-			playerModel = GetComponent<PlayerModel>();
+			playerController.OnPickCollectable += UpdatePonchoEffect;
+			playerController.OnStaminaChanges += UpdateStamina;
+			playerController.OnChangeSpeed += SetSpeed;
+			playerController.OnSpecificAction += PlaySpecificAnimation;
+			playerController.OnJump += ShowJumpFeedback;
+			playerController.OnLand += ShowLandFeedback;
+			playerController.OnClimb += ShowClimbFeedback;
+			playerController.OnDeath += ShowDeathFeedback;
+			playerController.OnGlideChanges += SetFlying;
 			audioManager = FindObjectOfType<AudioManager>();
 			_sceneIndex = gameObject.scene.buildIndex;
 			staminaFade = new ActionOverTime(staminaFadeTime, ChangeStaminaMask, _sceneIndex, true);
@@ -80,19 +88,19 @@ namespace Logic.Code.Player
 			Camera.main.GetComponent<PostProcessVolume>().profile
 				.TryGetSettings(out lensDistortionSettings);
 			originalDistorsionIntensity = lensDistortionSettings.intensity;
-			poncho.SetFloat(PonchoActivateFloat, 0);
+			poncho.SetFloat(PONCHO_ACTIVATE_FLOAT, 0);
 			ponchoTurnOff = new ActionOverTime(ponchoTurnOffTime, FadePoncho, _sceneIndex);
 			UpdateManager.Subscribe(this);
 		}
 
 		public void OnUpdate()
 		{
-			if (isControllingStaminaPosition)
-			{
-				Vector3 _StaminaPosition = Camera.main.WorldToScreenPoint(transform.position) + StaminaUIOffset;
-				staminaRings.position = Vector3.Lerp(staminaRings.position, _StaminaPosition,
-					Time.deltaTime * staminaFollowSpeed);
-			}
+			ShowPlayerShadow();
+			if (!isControllingStaminaPosition)
+				return;
+			Vector3 _StaminaPosition = Camera.main.WorldToScreenPoint(transform.position) + StaminaUIOffset;
+			staminaRings.position = Vector3.Lerp(staminaRings.position, _StaminaPosition,
+				Time.deltaTime * staminaFollowSpeed);
 		}
 
 		private void ChangeStaminaMask(float lerp)
@@ -133,7 +141,7 @@ namespace Logic.Code.Player
 			else
 				staminaUI[_circleQuantity].color = Color.Lerp(midStamina, maxStamina, (_lerp - .5f) * 2);
 			staminaFade.StopAction();
-			if (newStaminaAmount == playerModel.stamina.MaxStamina)
+			if (newStaminaAmount == playerController.stamina.MaxStamina)
 				staminaFadeTimer.StartTimer();
 		}
 
@@ -189,7 +197,8 @@ namespace Logic.Code.Player
 		{
 			animator.CrossFade(deathAnimation, transitionDuration);
 			new ActionOverTime(deathFadeDuration,
-				(lerp) => blackScreen.color = new Color(0, 0, 0, screenFade.Evaluate(lerp)), _sceneIndex, true).StartAction();
+					(lerp) => blackScreen.color = new Color(0, 0, 0, screenFade.Evaluate(lerp)), _sceneIndex, true)
+				.StartAction();
 		}
 
 		public void SetAccelerationEffect(float lerp)
@@ -230,17 +239,30 @@ namespace Logic.Code.Player
 			animator.Play(stateName);
 		}
 
-		public void ShowPlayerShadow(Vector3 position, Quaternion rotation, float size)
+		private void ShowPlayerShadow()
 		{
-			playerShadow.position = position + playerShadowOffset;
-			playerShadow.rotation = rotation;
-			playerShadowMaterial.SetFloat("_Size", size);
+			if (!Physics.Raycast(
+				transform.position,
+				Vector3.down,
+				out RaycastHit hit,
+				100,
+				LayerMask.GetMask("Default", "Floor", "NonClimbable", "OnlyForShadows"),
+				QueryTriggerInteraction.Collide))
+				return;
+			Debug.DrawLine(transform.position, hit.point, Color.white);
+			float shadowSize = Mathf.Clamp(hit.distance, 0, 1);
+			float absDot = Mathf.Abs(Vector3.Dot(Vector3.down, hit.normal));
+			if (absDot < shadowMinDot)
+				shadowSize = 0;
+			playerShadow.position = hit.point + playerShadowOffset;
+			playerShadow.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+			playerShadowMaterial.SetFloat("_Size", shadowSize);
 		}
 
 		public void UpdatePonchoEffect(float collectableQuantity)
 		{
-			poncho.SetFloat("_Activate", collectableQuantity / PP_Stats.Instance.CollectablesForReward);
-			if (collectableQuantity == PP_Stats.Instance.CollectablesForReward)
+			poncho.SetFloat("_Activate", collectableQuantity / PP_Stats.CollectablesForReward);
+			if (collectableQuantity == PP_Stats.CollectablesForReward)
 			{
 				audioManager.PlayCharacterSound(reward);
 				ponchoTurnOff = new ActionOverTime(ponchoTurnOffTime, FadePoncho, _sceneIndex);

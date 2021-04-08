@@ -1,16 +1,16 @@
 ﻿
 public abstract class PlayerState
 {
-	protected PlayerModel Model;
+	protected PlayerController Controller;
 
 	/// <summary>
 	/// Runs once when the state starts
 	/// </summary>
-	/// <param name="model"></param>
+	/// <param name="controller"></param>
 	/// <param name="sceneIndex">the index where the player lives</param>
-	public virtual void OnStateEnter(PlayerModel model, int sceneIndex)
+	public virtual void OnStateEnter(PlayerController controller, int sceneIndex)
 	{
-		this.Model = model;
+		this.Controller = controller;
 	}
 	/// <summary>
 	/// Runs every update

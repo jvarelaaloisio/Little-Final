@@ -1,36 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
+
 public class CollectableBag
 {
-	List<CollectableRotator> collectables;
+	private List<CollectableRotator> _collectables;
 	public int quantityForReward;
-	private Action giveReward;
-	private Action<float> onCollectableAdded;
-	public int Quantity => collectables.Count;
+	private readonly Action _giveReward;
+	private readonly Action<float> _onCollectableAdded = delegate { };
+	public int Quantity => _collectables.Count;
 
-	public CollectableBag(int quantityForReward, Action onGiveReward, Action<float> onCollectableAdded = null)
+	public CollectableBag(
+		int quantityForReward,
+		Action onGiveReward)
 	{
 		this.quantityForReward = quantityForReward;
-		this.giveReward = onGiveReward;
-		this.onCollectableAdded = onCollectableAdded;
-		collectables = new List<CollectableRotator>();
+		_giveReward = onGiveReward;
+		_collectables = new List<CollectableRotator>();
+	}
+
+	public CollectableBag(
+		int quantityForReward,
+		Action onGiveReward,
+		Action<float> onCollectableAdded): this(quantityForReward, onGiveReward)
+	{
+		_onCollectableAdded = onCollectableAdded;
 	}
 
 	public void ValidateNewReward()
 	{
-		if (!(collectables.Count >= quantityForReward))
+		if (!(_collectables.Count >= quantityForReward))
 			return;
 		for (int i = 0; i < quantityForReward; i++)
 		{
-			collectables[i].OnRewardGiven();
+			_collectables[i].OnRewardGiven();
 		}
-		collectables.RemoveRange(0, quantityForReward);
-		giveReward();
+
+		_collectables.RemoveRange(0, quantityForReward);
+		_giveReward();
 	}
 
 	public void AddCollectable(CollectableRotator collectable)
 	{
-		collectables.Add(collectable);
-		onCollectableAdded?.Invoke(collectables.Count);
+		_collectables.Add(collectable);
+		_onCollectableAdded.Invoke(_collectables.Count);
 	}
 }

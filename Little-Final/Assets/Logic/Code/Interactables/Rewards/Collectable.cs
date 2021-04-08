@@ -30,10 +30,10 @@ public class Collectable : MonoBehaviour
 	private void OnTriggerEnter(Collider other)
 	{
 		idleParticles.Stop();
-		CollectableBag bag = other.GetComponent<PlayerModel>().collectableBag;
+		CollectableBag bag = other.GetComponent<PlayerController>().collectableBag;
 		bag.AddCollectable(GetComponent<CollectableRotator>());
 		bag.ValidateNewReward();
-		Transform _pivot = other.GetComponent<PlayerModel>().collectablePivot;
+		Transform _pivot = other.GetComponent<PlayerController>().collectablePivot;
 		GetComponent<Collider>().enabled = false;
 		transform.SetParent(other.transform);
 		Destroy(GetComponent<RotateAroundSelf>());

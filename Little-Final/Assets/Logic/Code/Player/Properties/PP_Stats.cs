@@ -49,13 +49,13 @@ public class PP_Stats : ScriptableObject
 
 
 	#region Getters
-	public float InitialStamina => initialStamina;
-	public float StaminaRefillSpeed => staminaRefillSpeed;
-	public float StaminaUpgrade => staminaUpgrade;
-	public float StaminaRefillDelay => staminaRefillDelay;
-	public int CollectablesForReward => collectablesForReward;
-	public float InmunityTime => inmunityTime;
-	public float LifePoints => lifePoints;
-	public float DeadTime => deadTime;
+	public static float InitialStamina => Instance.initialStamina;
+	public static float StaminaRefillSpeed => Instance.staminaRefillSpeed;
+	public static float StaminaUpgrade => Instance.staminaUpgrade;
+	public static float StaminaRefillDelay => Instance.staminaRefillDelay;
+	public static int CollectablesForReward => Instance.collectablesForReward;
+	public static float ImmunityTime => Instance.inmunityTime;
+	public static float LifePoints => Instance.lifePoints;
+	public static float DeadTime => Instance.deadTime;
 	#endregion
 }
