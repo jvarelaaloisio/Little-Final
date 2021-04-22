@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
+using Player.Properties;
 
 public class EW_Player : EditorWindow
 {

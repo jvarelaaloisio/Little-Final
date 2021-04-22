@@ -666,12 +666,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 880d65ce424cb304896159ffb5f05598, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectablePivot: {fileID: 3453220764226834838}
   view: {fileID: 6687177953548559741}
+  collectablePivot: {fileID: 3453220764226834838}
   AbilitiesOnLand: []
   AbilitiesInAir: []
   AbilitiesOnWall: []
-  shadowMinDot: 0.85
 --- !u!114 &6687177953548559737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -684,7 +683,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02fb4aeb2289a7c468c3145ec4570e7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  climbableTopLayer: {fileID: 11400000, guid: d245acc0e5adf954eba79dc82c69239e, type: 2}
   landCollider: {fileID: 0}
   _soundEffects: []
   maxSpeed: 15
@@ -716,8 +714,8 @@ MonoBehaviour:
   staminaFadeTime: 2
   staminaPerCircle: 100
   staminaFollowSpeed: 10
-  StaminaUIOffset: {x: -80, y: 50, z: 0}
-  StaminaUIOffsetWhenFlying: {x: 0, y: -75, z: 0}
+  staminaUIOffset: {x: -50, y: 50, z: 0}
+  staminaUIOffsetWhenFlying: {x: 0, y: -75, z: 0}
   staminaRings: {fileID: 867497660292907426}
   staminaRingsScaleWhenFlying: 0.5
   lensDistortionWhenFlying: 25
@@ -732,7 +730,6 @@ MonoBehaviour:
   climbAnimation: Climb
   deathAnimation: Death
   speedParameter: Speed
-  cameraIsMovementParameter: isMovement
   isFlyingParameter: isFlying
   transitionDuration: 0.2
   playerShadow: {fileID: 1119814554}
@@ -748,7 +745,7 @@ MonoBehaviour:
   accelerationEffect:
   - {fileID: 5065468767406028637}
   - {fileID: 7257661221088099367}
-  playerController: {fileID: 6687177953548559742}
+  controller: {fileID: 6687177953548559742}
   blackScreen: {fileID: 0}
   screenFade:
     serializedVersion: 2

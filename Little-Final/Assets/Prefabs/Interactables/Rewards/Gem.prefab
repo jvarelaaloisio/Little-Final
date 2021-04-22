@@ -9684,11 +9684,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8073410059099985034}
-  - component: {fileID: 8073410059099985035}
-  - component: {fileID: 8073410059099985028}
-  - component: {fileID: 8073410059099985029}
   - component: {fileID: 8073410059099985030}
   - component: {fileID: 8073410059099985031}
+  - component: {fileID: 8073410059099985029}
+  - component: {fileID: 8073410059099985035}
+  - component: {fileID: 8073410059099985028}
   - component: {fileID: 8073410059099985024}
   m_Layer: 13
   m_Name: Gem
@@ -9713,6 +9713,53 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8073410059099985030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8073410059099985025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2a79c46f1f997649b5bfdf9fab03eba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  idleParticles: {fileID: 5611868060819787115}
+  setupTime: 0.75
+  scaleWhenPicked: {x: 1, y: 1, z: 1}
+  distanceFromGround: 0.75
+  isRePositioningAtStart: 0
+--- !u!114 &8073410059099985031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8073410059099985025}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df9edb1f09b01fb498d40bcdfaaee7cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rewardParticles: {fileID: 5109545289808096773}
+  destructionDelay: 4
+  pivot: {fileID: 0}
+  amplitude: {x: 0.35, y: 0.2, z: 0.25}
+  frequency: {x: 3, y: 1, z: 3}
+--- !u!114 &8073410059099985029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8073410059099985025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4eb4c1dc7e13b0143a48c710acc5e772, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 150
 --- !u!33 &8073410059099985035
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -9760,53 +9807,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &8073410059099985029
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8073410059099985025}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4eb4c1dc7e13b0143a48c710acc5e772, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotationSpeed: 150
---- !u!114 &8073410059099985030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8073410059099985025}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2a79c46f1f997649b5bfdf9fab03eba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  idleParticles: {fileID: 5611868060819787115}
-  setupTime: 0.75
-  scaleWhenPicked: {x: 1, y: 1, z: 1}
-  distanceFromGround: 0.75
-  isRePositioningAtStart: 0
---- !u!114 &8073410059099985031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8073410059099985025}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df9edb1f09b01fb498d40bcdfaaee7cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rewardParticles: {fileID: 5109545289808096773}
-  destructionDelay: 4
-  pivot: {fileID: 0}
-  amplitude: {x: 0.35, y: 0.2, z: 0.25}
-  frecuency: {x: 6, y: 2, z: 6}
 --- !u!135 &8073410059099985024
 SphereCollider:
   m_ObjectHideFlags: 0
