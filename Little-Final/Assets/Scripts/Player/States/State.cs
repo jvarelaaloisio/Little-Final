@@ -35,11 +35,11 @@ namespace Player.States
 		/// </summary>
 		public abstract void OnStateUpdate();
 
-		//----------	ESTOS METODOS SE VAN AL CONTROLLER ----------
 		/// <summary>
 		/// runs once when the state finishes
 		/// </summary>
 		public abstract void OnStateExit();
+		//----------	ESTOS METODOS SE VAN AL CONTROLLER ----------
 		/// <summary>
 		/// Reads the input and moves the player horizontally
 		/// </summary>
