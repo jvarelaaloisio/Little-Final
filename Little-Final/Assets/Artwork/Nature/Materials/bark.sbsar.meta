@@ -1,0 +1,463 @@
+fileFormatVersion: 2
+guid: 45b0a16b9654b434f8b2389f4043158a
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 232528478, guid: 43a8bbf65be290d44ba52b94476242b9, type: 3}
+  version: 29
+  projectContext: 0
+  mGraphInstanceData:
+  - graphLabel: Tree Bark
+    prototypeName: Tree Bark
+    graphDescIndex: 0
+    generateAllOutputs: 0
+    generateMipMaps: 1
+    preset: " <sbspreset pkgurl=\"pkg://bark\" label=\"\" >\n  <presetinput identifier=\"$outputsize\"
+      uid=\"2368154341\" type=\"8\" value=\"9,9\" />\n </sbspreset>\n"
+    shaderName: Standard
+    materialProperties:
+      shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+      shaderKeywords: _MAINTEX _METALLICGLOSSMAP _NORMALMAP _OCCLUSIONMAP _PARALLAXMAP
+      lightmapFlags: 4
+      enableInstancingVariants: 0
+      doubleSidedGI: 0
+      customRenderQueue: -1
+      texEnvs:
+      - name: _BumpMap
+        texture: {fileID: -2264501487007211260, guid: 45b0a16b9654b434f8b2389f4043158a,
+          type: 3}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailAlbedoMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailMask
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailNormalMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _EmissionMap
+        texture: {instanceID: 0}
+        scale: {x: 6, y: 6}
+        offset: {x: 0, y: 0}
+      - name: _MainTex
+        texture: {fileID: -855163574636474834, guid: 45b0a16b9654b434f8b2389f4043158a,
+          type: 3}
+        scale: {x: 6, y: 6}
+        offset: {x: 0, y: 0}
+      - name: _MetallicGlossMap
+        texture: {fileID: 1643561108712592633, guid: 45b0a16b9654b434f8b2389f4043158a,
+          type: 3}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _OcclusionMap
+        texture: {fileID: 3863814734702358737, guid: 45b0a16b9654b434f8b2389f4043158a,
+          type: 3}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _ParallaxMap
+        texture: {fileID: 6692101846145137031, guid: 45b0a16b9654b434f8b2389f4043158a,
+          type: 3}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      floats:
+      - name: _BumpScale
+        float: 0.6
+      - name: _Cutoff
+        float: 0.5
+      - name: _DetailNormalMapScale
+        float: 1
+      - name: _DstBlend
+        float: 0
+      - name: _GlossMapScale
+        float: 0.2
+      - name: _Glossiness
+        float: 0.5
+      - name: _GlossyReflections
+        float: 1
+      - name: _Metallic
+        float: 0
+      - name: _Mode
+        float: 0
+      - name: _OcclusionStrength
+        float: 1
+      - name: _Parallax
+        float: 0.005
+      - name: _SmoothnessTextureChannel
+        float: 0
+      - name: _SpecularHighlights
+        float: 1
+      - name: _SrcBlend
+        float: 1
+      - name: _UVSec
+        float: 0
+      - name: _ZWrite
+        float: 1
+      colors:
+      - name: _Color
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - name: _EmissionColor
+        color: {r: 0, g: 0, b: 0, a: 1}
+    outputDescList:
+    - outputName: baseColor
+      identifier: basecolor
+      usageName: baseColor
+      channelStr: baseColor
+      label: Base Color
+      usage: 1
+      bImage: 1
+      bNumerical: 0
+      bLinear: 0
+    - outputName: normal
+      identifier: normal
+      usageName: normal
+      channelStr: normal
+      label: Normal
+      usage: 7
+      bImage: 1
+      bNumerical: 0
+      bLinear: 1
+    - outputName: roughness
+      identifier: roughness
+      usageName: roughness
+      channelStr: roughness
+      label: Roughness
+      usage: 15
+      bImage: 1
+      bNumerical: 0
+      bLinear: 1
+    - outputName: metallic
+      identifier: metallic
+      usageName: metallic
+      channelStr: metallic
+      label: Metallic
+      usage: 34
+      bImage: 1
+      bNumerical: 0
+      bLinear: 1
+    - outputName: height
+      identifier: height
+      usageName: height
+      channelStr: height
+      label: Height
+      usage: 9
+      bImage: 1
+      bNumerical: 0
+      bLinear: 1
+    - outputName: ambientOcclusion
+      identifier: ambientOcclusion
+      usageName: ambientOcclusion
+      channelStr: ambientOcclusion
+      label: ambientOcclusion
+      usage: 5
+      bImage: 1
+      bNumerical: 0
+      bLinear: 1
+    texturePackingList:
+    - targetName: baseColor
+      components:
+      - sourceName: baseColor
+        from: 0
+        to: 3
+    - targetName: normal
+      components:
+      - sourceName: normal
+        from: 0
+        to: 3
+    - targetName: roughness
+      components:
+      - sourceName: roughness
+        from: 0
+        to: 3
+    - targetName: metallic
+      components:
+      - sourceName: smoothness
+        from: 0
+        to: 3
+    - targetName: height
+      components:
+      - sourceName: height
+        from: 0
+        to: 3
+    - targetName: ambientOcclusion
+      components:
+      - sourceName: ambientOcclusion
+        from: 0
+        to: 3
+    textureParameters:
+    - textureName: Tree Bark - baseColor
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: Tree Bark - normal
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: Tree Bark - roughness
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: Tree Bark - metallic
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: Tree Bark - height
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: Tree Bark - ambientOcclusion
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    colorSpaceList: []
+    inputTextureMap: []
+    targetSettingList:
+    - label: Default
+      bOverride: 0
+      bLockRatio: 1
+      textureWidth: 512
+      textureHeight: 512
+      textureFormatMode: 0
+      normalCompressed: 0
+      bGenerateOnLoad: 1
+    material: {fileID: 5965259056727151324, guid: 45b0a16b9654b434f8b2389f4043158a,
+      type: 3}
+    generatedTextures:
+    - {fileID: -855163574636474834, guid: 45b0a16b9654b434f8b2389f4043158a, type: 3}
+    - {fileID: -2264501487007211260, guid: 45b0a16b9654b434f8b2389f4043158a, type: 3}
+    - {fileID: 1643561108712592633, guid: 45b0a16b9654b434f8b2389f4043158a, type: 3}
+    - {fileID: 6692101846145137031, guid: 45b0a16b9654b434f8b2389f4043158a, type: 3}
+    - {fileID: 3863814734702358737, guid: 45b0a16b9654b434f8b2389f4043158a, type: 3}
+  - graphLabel: Tree Bark_Pine
+    prototypeName: Tree Bark
+    graphDescIndex: 0
+    generateAllOutputs: 0
+    generateMipMaps: 1
+    preset: " <sbspreset pkgurl=\"pkg://bark\" label=\"\" >\n  <presetinput identifier=\"$outputsize\"
+      uid=\"2368154341\" type=\"8\" value=\"9,9\" />\n </sbspreset>\n"
+    shaderName: Standard
+    materialProperties:
+      shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+      shaderKeywords: _MAINTEX _METALLICGLOSSMAP _NORMALMAP _OCCLUSIONMAP _PARALLAXMAP
+      lightmapFlags: 4
+      enableInstancingVariants: 0
+      doubleSidedGI: 0
+      customRenderQueue: -1
+      texEnvs:
+      - name: _BumpMap
+        texture: {fileID: -7496163165834818747, guid: 45b0a16b9654b434f8b2389f4043158a,
+          type: 3}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailAlbedoMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailMask
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _DetailNormalMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _EmissionMap
+        texture: {instanceID: 0}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _MainTex
+        texture: {fileID: -7314534296256371714, guid: 45b0a16b9654b434f8b2389f4043158a,
+          type: 3}
+        scale: {x: 2, y: 2}
+        offset: {x: 0, y: 0}
+      - name: _MetallicGlossMap
+        texture: {fileID: -8578249857515159351, guid: 45b0a16b9654b434f8b2389f4043158a,
+          type: 3}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _OcclusionMap
+        texture: {fileID: 7601681875110635233, guid: 45b0a16b9654b434f8b2389f4043158a,
+          type: 3}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      - name: _ParallaxMap
+        texture: {fileID: 435911404800609974, guid: 45b0a16b9654b434f8b2389f4043158a,
+          type: 3}
+        scale: {x: 1, y: 1}
+        offset: {x: 0, y: 0}
+      floats:
+      - name: _BumpScale
+        float: 1
+      - name: _Cutoff
+        float: 0.5
+      - name: _DetailNormalMapScale
+        float: 1
+      - name: _DstBlend
+        float: 0
+      - name: _GlossMapScale
+        float: 1
+      - name: _Glossiness
+        float: 0.5
+      - name: _GlossyReflections
+        float: 1
+      - name: _Metallic
+        float: 0
+      - name: _Mode
+        float: 0
+      - name: _OcclusionStrength
+        float: 1
+      - name: _Parallax
+        float: 0.02
+      - name: _SmoothnessTextureChannel
+        float: 0
+      - name: _SpecularHighlights
+        float: 1
+      - name: _SrcBlend
+        float: 1
+      - name: _UVSec
+        float: 0
+      - name: _ZWrite
+        float: 1
+      colors:
+      - name: _Color
+        color: {r: 0.34233716, g: 0.45655334, b: 0.46226418, a: 1}
+      - name: _EmissionColor
+        color: {r: 0, g: 0, b: 0, a: 1}
+    outputDescList:
+    - outputName: baseColor
+      identifier: basecolor
+      usageName: baseColor
+      channelStr: baseColor
+      label: Base Color
+      usage: 1
+      bImage: 1
+      bNumerical: 0
+      bLinear: 0
+    - outputName: normal
+      identifier: normal
+      usageName: normal
+      channelStr: normal
+      label: Normal
+      usage: 7
+      bImage: 1
+      bNumerical: 0
+      bLinear: 1
+    - outputName: roughness
+      identifier: roughness
+      usageName: roughness
+      channelStr: roughness
+      label: Roughness
+      usage: 15
+      bImage: 1
+      bNumerical: 0
+      bLinear: 1
+    - outputName: metallic
+      identifier: metallic
+      usageName: metallic
+      channelStr: metallic
+      label: Metallic
+      usage: 34
+      bImage: 1
+      bNumerical: 0
+      bLinear: 1
+    - outputName: height
+      identifier: height
+      usageName: height
+      channelStr: height
+      label: Height
+      usage: 9
+      bImage: 1
+      bNumerical: 0
+      bLinear: 1
+    - outputName: ambientOcclusion
+      identifier: ambientOcclusion
+      usageName: ambientOcclusion
+      channelStr: ambientOcclusion
+      label: ambientOcclusion
+      usage: 5
+      bImage: 1
+      bNumerical: 0
+      bLinear: 1
+    texturePackingList:
+    - targetName: baseColor
+      components:
+      - sourceName: baseColor
+        from: 0
+        to: 3
+    - targetName: normal
+      components:
+      - sourceName: normal
+        from: 0
+        to: 3
+    - targetName: roughness
+      components:
+      - sourceName: roughness
+        from: 0
+        to: 3
+    - targetName: metallic
+      components:
+      - sourceName: smoothness
+        from: 0
+        to: 3
+    - targetName: height
+      components:
+      - sourceName: height
+        from: 0
+        to: 3
+    - targetName: ambientOcclusion
+      components:
+      - sourceName: ambientOcclusion
+        from: 0
+        to: 3
+    textureParameters:
+    - textureName: Tree Bark_Pine - baseColor
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: Tree Bark_Pine - normal
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: Tree Bark_Pine - roughness
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: Tree Bark_Pine - metallic
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: Tree Bark_Pine - height
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    - textureName: Tree Bark_Pine - ambientOcclusion
+      wrapMode: 0
+      filterMode: 1
+      aniso: 1
+    colorSpaceList: []
+    inputTextureMap: []
+    targetSettingList:
+    - label: Default
+      bOverride: 0
+      bLockRatio: 1
+      textureWidth: 512
+      textureHeight: 512
+      textureFormatMode: 0
+      normalCompressed: 0
+      bGenerateOnLoad: 1
+    material: {fileID: 7982910986960225406, guid: 45b0a16b9654b434f8b2389f4043158a,
+      type: 3}
+    generatedTextures:
+    - {fileID: -7314534296256371714, guid: 45b0a16b9654b434f8b2389f4043158a, type: 3}
+    - {fileID: -7496163165834818747, guid: 45b0a16b9654b434f8b2389f4043158a, type: 3}
+    - {fileID: -8578249857515159351, guid: 45b0a16b9654b434f8b2389f4043158a, type: 3}
+    - {fileID: 435911404800609974, guid: 45b0a16b9654b434f8b2389f4043158a, type: 3}
+    - {fileID: 7601681875110635233, guid: 45b0a16b9654b434f8b2389f4043158a, type: 3}
