@@ -147,13 +147,11 @@ namespace Player
 
 		private void OnLifeChanged(float lifePoints)
 		{
-			if (!isDead && lifePoints < 0)
-			{
-				isDead = true;
-				OnDeath();
-				ChangeState<Void>();
-				new CountDownTimer(PP_Stats.DeadTime, Revive, SceneIndex).StartTimer();
-			}
+			if (isDead || !(lifePoints < 0)) return;
+			isDead = true;
+			OnDeath();
+			ChangeState<Void>();
+			new CountDownTimer(PP_Stats.DeadTime, Revive, SceneIndex).StartTimer();
 		}
 
 		#endregion
