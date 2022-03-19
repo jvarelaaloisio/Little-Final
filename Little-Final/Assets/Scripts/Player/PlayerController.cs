@@ -34,6 +34,8 @@ namespace Player
 		public Action<bool> OnGlideChanges = delegate { };
 		public Action OnFallFromCliff;
 
+		[SerializeField] private Transform climbCheckPivot;
+
 		IPickable _itemPicked;
 		IBody body;
 		DamageHandler damageHandler;
@@ -56,6 +58,8 @@ namespace Player
 		public int SceneIndex => _sceneIndex;
 
 		public Vector3 LastSafePosition => _lastSafePosition;
+
+		public Transform ClimbCheckPivot => climbCheckPivot;
 
 		#endregion
 

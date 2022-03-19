@@ -1,6 +1,7 @@
 ﻿using CharacterMovement;
 using Player.PlayerInput;
 using Player.Properties;
+using Player.Stamina;
 using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
 
@@ -8,17 +9,25 @@ namespace Player.States
 {
 	public class Walk : State
 	{
-		private IBody _body;
-		private CountDownTimer _coyoteEffect;
+		private IBody body;
+		private CountDownTimer coyoteEffect;
+		private float currentSpeed;
+		private StaminaConsumer runningConsumer;
 
 		public override void OnStateEnter(PlayerController controller, int sceneIndex)
 		{
 			base.OnStateEnter(controller, sceneIndex);
 			controller.OnLand();
-			_body = controller.GetComponent<Player_Body>();
+			body = controller.GetComponent<Player_Body>();
+
+			currentSpeed = PP_Walk.Instance.Speed;
+			runningConsumer = new StaminaConsumer(
+				controller.Stamina,
+				PP_Walk.Instance.RunStaminaPerSecond,
+				sceneIndex);
 
 			MyTransform = controller.transform;
-			_coyoteEffect
+			coyoteEffect
 				= new CountDownTimer(
 					PP_Jump.CoyoteTime,
 					OnCoyoteFinished,
@@ -26,19 +35,19 @@ namespace Player.States
 				);
 			Physics.Raycast(MyTransform.position, -MyTransform.up, out RaycastHit hit, 10,
 				~LayerMask.GetMask("Interactable"));
-			_body.LastFloorNormal = hit.normal;
+			body.LastFloorNormal = hit.normal;
 
 			if (controller.LongJumpBuffer)
 			{
 				controller.ResetJumpBuffers();
-				_body.Jump(PP_Jump.LongJumpForce);
+				body.Jump(PP_Jump.LongJumpForce);
 				controller.ChangeState<LongJump>();
 				Controller.OnJump();
 			}
 			else if (controller.JumpBuffer)
 			{
 				controller.ResetJumpBuffers();
-				_body.Jump(PP_Jump.JumpForce);
+				body.Jump(PP_Jump.JumpForce);
 				controller.ChangeState<Jump>();
 				Controller.OnJump();
 			}
@@ -54,25 +63,38 @@ namespace Player.States
 			Debug.DrawRay(MyTransform.position, desiredDirection.normalized / 3, Color.green);
 
 			if (HorizontalMovementHelper.IsSafeAngle(MyTransform.position, desiredDirection.normalized, .3f,
-				PP_Walk.Instance.MinSafeAngle))
+				    PP_Walk.Instance.MinSafeAngle))
 			{
+				if (InputManager.CheckRunInput() && Controller.Stamina.FillState > 0)
+				{
+					if (!runningConsumer.IsConsuming)
+						runningConsumer.Start();
+
+					currentSpeed = PP_Walk.Instance.RunSpeed;
+				}
+				else if (runningConsumer.IsConsuming)
+				{
+					runningConsumer.Stop();
+					currentSpeed = PP_Walk.Instance.Speed;
+				}
+
 				HorizontalMovementHelper.MoveWithRotation(
 					MyTransform,
-					_body,
+					body,
 					desiredDirection,
-					PP_Walk.Instance.Speed,
+					currentSpeed,
 					desiredDirection.magnitude * PP_Walk.Instance.TurnSpeed);
 			}
 
 			if (InputManager.CheckLongJumpInput())
 			{
-				_body.Jump(PP_Jump.LongJumpForce);
+				body.Jump(PP_Jump.LongJumpForce);
 				Controller.ChangeState<LongJump>();
 				Controller.OnJump();
 			}
 			else if (InputManager.CheckJumpInput())
 			{
-				_body.Jump(PP_Jump.JumpForce);
+				body.Jump(PP_Jump.JumpForce);
 				Controller.ChangeState<Jump>();
 				Controller.OnJump();
 			}
@@ -84,7 +106,8 @@ namespace Player.States
 
 		public override void OnStateExit()
 		{
-			_coyoteEffect.StopTimer();
+			coyoteEffect.StopTimer();
+			runningConsumer.Stop();
 		}
 
 		private void OnCoyoteFinished()
@@ -97,8 +120,8 @@ namespace Player.States
 
 		protected virtual void ValidateGround()
 		{
-			if (!FallHelper.IsGrounded && !_coyoteEffect.IsTicking)
-				_coyoteEffect.StartTimer();
+			if (!FallHelper.IsGrounded && !coyoteEffect.IsTicking)
+				coyoteEffect.StartTimer();
 		}
 	}
 }

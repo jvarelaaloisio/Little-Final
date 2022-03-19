@@ -31,6 +31,8 @@ namespace Player.PlayerInput
 			=> InputReader.GetLongJumpInput();
 
 		public static bool GetGlideInput() => InputReader.GetGlideInput();
+
+		public static bool CheckRunInput() => InputReader.GetRunInput();
 		public static bool CheckSwirlInput()
 			=> InputReader.GetSwirlInput();
 		public static bool CheckPickInput()

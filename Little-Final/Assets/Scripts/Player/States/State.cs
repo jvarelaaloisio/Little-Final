@@ -67,15 +67,27 @@ namespace Player.States
 		/// </summary>
 		protected void CheckClimb()
 		{
+			Vector3 climbCheckPosition = Controller.ClimbCheckPivot.position;
 			if (InputManager.CheckClimbInput()
 			    && Controller.Stamina.FillState > 0
 			    && ClimbHelper.CanClimb(
-				    MyTransform.position,
-				    MyTransform.forward,
+				    climbCheckPosition,
+				    GetForwardDirectionBasedOnGroundAngle(),
 				    PP_Climb.MaxDistanceToTriggerClimb,
 				    PP_Climb.MaxClimbAngle,
 				    out _))
 				Controller.ChangeState<Climb>();
+
+			Vector3 GetForwardDirectionBasedOnGroundAngle()
+			{
+				if (!Physics.Raycast(climbCheckPosition, -MyTransform.up, out RaycastHit hit,
+					    PP_Climb.MaxClimbDistanceFromCorners,
+					    LayerMask.GetMask("Floor", "NonClimbable", "Default")))
+					return MyTransform.forward;
+				Vector3 newForward = Vector3.Cross(MyTransform.right, hit.normal);
+				return newForward;
+
+			}
 		}
 		protected void CheckForJumpBuffer()
 		{

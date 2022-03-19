@@ -90,6 +90,11 @@ public class MobileInput : MonoBehaviour, IPlayerInput
 		throw new NotImplementedException();
 	}
 
+	public bool GetRunInput()
+	{
+		throw new NotImplementedException();
+	}
+
 	public bool GetSwirlInput()
 	{
 		throw new NotImplementedException();
