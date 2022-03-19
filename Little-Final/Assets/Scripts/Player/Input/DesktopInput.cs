@@ -37,8 +37,7 @@ public class DesktopInput : IPlayerInput
 
 	public bool GetRunInput()
 	{
-		//TODO: Change the "Climb" key with "Run"
-		return Input.GetButton("Climb") || Input.GetAxis("Climb") == 1;
+		return Input.GetButton("Run") || Input.GetAxis("Run") == 1;
 	}
 
 	public bool GetSwirlInput()
