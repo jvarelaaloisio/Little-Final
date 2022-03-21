@@ -23,7 +23,7 @@ namespace Player
 		private void HandleStateChange(State state) =>
 			animator.SetBool(
 				isFlyingParameter,
-				state is Glide
+				state is Fly
 			);
 
 		public void OnLateUpdate()
