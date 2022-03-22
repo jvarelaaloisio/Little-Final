@@ -2,6 +2,7 @@
 using VarelaAloisio.UpdateManagement.Runtime;
 using CharacterMovement;
 using Player;
+using Player.Abilities;
 using Player.PlayerInput;
 using Player.States;
 
@@ -14,7 +15,6 @@ public class Swirl : Ability
 	private bool isCoolDown;
 	private PlayerController _controller;
 	private CountDownTimer cooldownTimer;
-	public override int Stamina => stamina;
 	public override void Use(PlayerController controller)
 	{
 		this._controller = controller;

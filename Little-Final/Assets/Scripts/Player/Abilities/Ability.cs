@@ -1,14 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Player;
-using UnityEngine;
+﻿using UnityEngine;
 
-public abstract class Ability : ScriptableObject
+namespace Player.Abilities
 {
-	[SerializeField]
-	[Range(0, 500)]
-	protected int stamina;
-	public abstract int Stamina { get; }
-	public abstract bool ValidateTrigger(PlayerController controller);
-	public abstract void Use(PlayerController controller);
+	public abstract class Ability : ScriptableObject
+	{
+		[SerializeField]
+		[Range(0, 500)]
+		protected int stamina;
+
+		public virtual int Stamina => stamina;
+		public abstract bool ValidateTrigger(PlayerController controller);
+		public abstract void Use(PlayerController controller);
+	}
 }
