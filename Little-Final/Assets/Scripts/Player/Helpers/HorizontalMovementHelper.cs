@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Player;
+using UnityEngine;
 
 namespace CharacterMovement
 {
@@ -14,9 +15,9 @@ namespace CharacterMovement
 			return direction;
 		}
 
-		public static int GetLeastTravelDirection(Transform transform, Vector3 desiredDirection)
+		public static int GetLeastTravelDirection(Vector3 right, Vector3 desiredDirection)
 		{
-			float dot = Vector3.Dot(transform.right, desiredDirection);
+			float dot = Vector3.Dot(right, desiredDirection);
 			var leastTravelDirection = dot < 0 ? -1 : 1;
 			return leastTravelDirection;
 		}
@@ -33,11 +34,38 @@ namespace CharacterMovement
 			desiredDirection.Normalize();
 			float differenceRotation = Vector3.Angle(transform.forward, desiredDirection);
 
-			var leastTravelDirection = GetLeastTravelDirection(transform, desiredDirection);
+			var leastTravelDirection = GetLeastTravelDirection(transform.right, desiredDirection);
 			transform.Rotate(transform.up, differenceRotation * leastTravelDirection * turnSpeed * Time.deltaTime);
 			body.MoveHorizontally(transform.forward, speed);
 		}
 
+		public static void MoveWithRotationByForce(
+			Transform transform,
+			IBody body,
+			Vector3 desiredDirection,
+			float speed,
+			float turnSpeed)
+		{
+			if (!(desiredDirection.magnitude > .1f))
+				return;
+			float rotationAngle = GetRotationAngleBasedOnDirection(transform, desiredDirection, turnSpeed);
+			transform.Rotate(transform.up, rotationAngle);
+			body.RequestForce(new ForceRequest(transform.forward * speed, ForceMode.Acceleration));
+		}
+
+		public static float GetRotationAngleBasedOnDirection(
+			Transform transform,
+			Vector3 movementDirection,
+			float turnSpeed)
+		{
+			if (!(movementDirection.magnitude > .1f))
+				return 0;
+			movementDirection.Normalize();
+			float differenceRotation = Vector3.Angle(transform.forward, movementDirection);
+
+			var leastTravelDirection = GetLeastTravelDirection(transform.right, movementDirection);
+			return differenceRotation * leastTravelDirection * turnSpeed * Time.deltaTime;
+		}
 		public static bool IsSafeAngle(Vector3 position,
 												Vector3 direction,
 												float maxDistance,

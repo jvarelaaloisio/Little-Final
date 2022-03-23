@@ -8,7 +8,7 @@ using Player.Properties;
 
 public class EW_Player : EditorWindow
 {
-	const int PANEL_WIDTH = 300;
+	const int PANEL_WIDTH = 350;
 	
 	[MenuItem("Game Design/Player Editor")]
 	public static void OpenWindow()
@@ -19,29 +19,31 @@ public class EW_Player : EditorWindow
 	}
 	private void OnGUI()
 	{
-		maxSize = new Vector2(PANEL_WIDTH * 2 + 10, 750);
-		minSize = new Vector2(PANEL_WIDTH * 2 + 10, 750);
+		maxSize = new Vector2(PANEL_WIDTH * 2 + 10, 825);
+		minSize = new Vector2(PANEL_WIDTH * 2 + 10, 825);
 		GUILayout.Label("Stats");
 		Editor.CreateEditor(PP_Stats.Instance).OnInspectorGUI();
 		GUILayout.Space(5);
 GUILayout.BeginHorizontal();
 	GUILayout.BeginVertical(GUILayout.MinWidth(PANEL_WIDTH), GUILayout.MaxWidth(PANEL_WIDTH));
-		GUILayout.Label("Walk");
+		GUILayout.Label("Walk", EditorStyles.boldLabel);
 		Editor.CreateEditor(PP_Walk.Instance).OnInspectorGUI();
 	GUILayout.EndVertical();
 	GUILayout.BeginVertical(GUILayout.MinWidth(PANEL_WIDTH),GUILayout.MaxWidth(PANEL_WIDTH));
-		GUILayout.Label("Climb");
+		GUILayout.Label("Climb", EditorStyles.boldLabel);
 		Editor.CreateEditor(PP_Climb.Instance).OnInspectorGUI();
 	GUILayout.EndVertical();
 GUILayout.EndHorizontal();
 GUILayout.BeginHorizontal();
 	GUILayout.BeginVertical(GUILayout.MinWidth(PANEL_WIDTH), GUILayout.MaxWidth(PANEL_WIDTH));
-		GUILayout.Label("Jump");
+		GUILayout.Label("Jump", EditorStyles.boldLabel);
 		Editor.CreateEditor(PP_Jump.Instance).OnInspectorGUI();
 	GUILayout.EndVertical();
 	GUILayout.BeginVertical(GUILayout.MinWidth(PANEL_WIDTH), GUILayout.MaxWidth(PANEL_WIDTH));
-		GUILayout.Label("Glide");
+		GUILayout.Label("Glide", EditorStyles.boldLabel);
 		Editor.CreateEditor(PP_Glide.Instance).OnInspectorGUI();
+		GUILayout.Label("Fly", EditorStyles.boldLabel);
+		Editor.CreateEditor(PP_Fly.Instance).OnInspectorGUI();
 	GUILayout.EndVertical();
 GUILayout.EndHorizontal();
 	}

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using CharacterMovement;
 using Player.Abilities;
+using Player.PlayerInput;
+using Player.Properties;
 using Player.States;
 using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
@@ -142,6 +145,28 @@ namespace Player
 			LongJumpBuffer = false;
 		}
 
+		/// <summary>
+		/// Reads the input and moves the player horizontally
+		/// </summary>
+		public void MoveByForce(float speed, float turnSpeed)
+		{
+			Vector2 input = InputManager.GetHorInput();
+
+			Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
+
+			if (HorizontalMovementHelper.IsSafeAngle(
+				    _myTransform.position,
+				    desiredDirection.normalized,
+				    .5f,
+				    PP_Walk.Instance.MinSafeAngle))
+				HorizontalMovementHelper.MoveWithRotationByForce(
+					_myTransform,
+					body,
+					desiredDirection,
+					speed,
+					turnSpeed);
+		}
+		
 		#region EventHandlers
 
 		private void UpgradeStamina()

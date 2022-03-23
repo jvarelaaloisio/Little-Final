@@ -18,7 +18,7 @@ namespace Player.States
 		{
 			base.OnStateEnter(controller, sceneIndex);
 			controller.OnLand();
-			body = controller.GetComponent<Player_Body>();
+			body = controller.GetComponent<PlayerBody>();
 
 			currentSpeed = PP_Walk.Instance.Speed;
 			runningConsumer = new StaminaConsumer(

@@ -2,6 +2,7 @@ using CharacterMovement;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
+using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
 
 namespace Player.States
@@ -62,7 +63,19 @@ namespace Player.States
 		}
 
 		protected virtual void Move()
-			=> MoveHorizontally(Body, PP_Glide.Speed, PP_Glide.TurnSpeed);
+		{
+			//TODO: Delete this and only use moveByForce once the movement tests are finished
+			if (Input.GetKey(KeyCode.RightControl))
+			{
+				Debug.Log("Glide speed");
+				MoveHorizontally(Body, 6f, PP_Glide.TurnSpeed);
+			}
+			else
+			{
+				Debug.Log("Glide force");
+				Controller.MoveByForce(PP_Glide.Force, PP_Glide.TurnSpeed);
+			}
+		}
 
 		protected virtual void SetupConsumer(int sceneIndex)
 		{

@@ -101,7 +101,7 @@ namespace Player.States
 				{
 					if (!_consumer.IsConsuming)
 						_consumer.Start();
-					_body.Move(moveDirection, PP_Climb.ClimbSpeed);
+					_body.MoveByTransform(moveDirection, PP_Climb.ClimbSpeed);
 					//Rotation
 					Physics.Raycast(myPosition, MyTransform.forward, out var forwardHit,
 						PP_Climb.MaxDistanceToTriggerClimb, ~LayerMask.GetMask("NonClimbable", "Interactable"));

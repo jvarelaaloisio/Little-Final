@@ -37,7 +37,19 @@ namespace Player.States
 		}
 
 		protected override void Move()
-			=> MoveHorizontally(Body, _currentSpeed, PP_Fly.TurnSpeed);
+		{
+			//TODO: Delete this and only use moveByForce once the movement tests are finished
+			if (Input.GetKey(KeyCode.RightControl))
+			{
+				Debug.Log("Fly speed");
+				MoveHorizontally(Body, 10, PP_Fly.TurnSpeed);
+			}
+			else
+			{
+				Debug.Log("Fly force");
+				Controller.MoveByForce(PP_Fly.Force, PP_Fly.TurnSpeed);
+			}
+		}
 
 		protected override void SetupConsumer(int sceneIndex)
 		{
@@ -55,7 +67,7 @@ namespace Player.States
 			_currentSpeed
 				= Mathf.Lerp(
 					_initialSpeed,
-					PP_Fly.Speed,
+					PP_Fly.Force,
 					smoothLerp
 				);
 			Body.SetDrag(

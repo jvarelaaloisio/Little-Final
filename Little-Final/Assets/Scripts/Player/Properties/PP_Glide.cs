@@ -1,5 +1,4 @@
-﻿using System.Data.SqlTypes;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Player.Properties
 {
@@ -7,7 +6,7 @@ namespace Player.Properties
 	public class PP_Glide : SingletonScriptable<PP_Glide>
 	{
 		[Range(0, 100, step: .5f), SerializeField]
-		private float speed;
+		private float force;
 		[Range(0, 100, step: .5f), SerializeField]
 		private float turnSpeed;
 	
@@ -19,7 +18,7 @@ namespace Player.Properties
 
 
 		#region Getters
-		public static float Speed => Instance.speed;
+		public static float Force => Instance.force;
 		public static float TurnSpeed => Instance.turnSpeed;
 		public static float Drag => Instance.drag;
 		public static float StaminaPerSecond => Instance.staminaPerSecond;

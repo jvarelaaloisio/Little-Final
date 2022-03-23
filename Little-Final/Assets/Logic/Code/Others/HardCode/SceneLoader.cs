@@ -1,12 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-public class SceneLoader : MonoBehaviour
+
+namespace Logic.Code.Others.HardCode
 {
-	private void Awake()
+	public class SceneLoader : MonoBehaviour
 	{
-		SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
-		SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive);
+		[SerializeField]
+		private int[] sceneIds;
+
+		private void Awake()
+		{
+			for (int id = 0; id < sceneIds.Length; id++)
+			{
+				SceneManager.LoadSceneAsync(sceneIds[id], LoadSceneMode.Additive);
+			}
+		}
 	}
 }
