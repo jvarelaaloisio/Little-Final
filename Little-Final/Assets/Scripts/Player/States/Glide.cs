@@ -67,12 +67,10 @@ namespace Player.States
 			//TODO: Delete this and only use moveByForce once the movement tests are finished
 			if (Input.GetKey(KeyCode.RightControl))
 			{
-				Debug.Log("Glide speed");
 				MoveHorizontally(Body, 6f, PP_Glide.TurnSpeed);
 			}
 			else
 			{
-				Debug.Log("Glide force");
 				Controller.MoveByForce(PP_Glide.Force, PP_Glide.TurnSpeed);
 			}
 		}

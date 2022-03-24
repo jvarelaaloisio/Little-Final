@@ -15,13 +15,6 @@ namespace CharacterMovement
 			return direction;
 		}
 
-		public static int GetLeastTravelDirection(Vector3 right, Vector3 desiredDirection)
-		{
-			float dot = Vector3.Dot(right, desiredDirection);
-			var leastTravelDirection = dot < 0 ? -1 : 1;
-			return leastTravelDirection;
-		}
-
 		public static void MoveWithRotation(
 			Transform transform,
 			IBody body,
@@ -31,11 +24,8 @@ namespace CharacterMovement
 		{
 			if (!(desiredDirection.magnitude > .1f))
 				return;
-			desiredDirection.Normalize();
-			float differenceRotation = Vector3.Angle(transform.forward, desiredDirection);
-
-			var leastTravelDirection = GetLeastTravelDirection(transform.right, desiredDirection);
-			transform.Rotate(transform.up, differenceRotation * leastTravelDirection * turnSpeed * Time.deltaTime);
+			float rotationAngle = GetRotationAngleBasedOnDirection(transform, desiredDirection, turnSpeed);
+			transform.Rotate(transform.up, rotationAngle);
 			body.MoveHorizontally(transform.forward, speed);
 		}
 
@@ -66,6 +56,14 @@ namespace CharacterMovement
 			var leastTravelDirection = GetLeastTravelDirection(transform.right, movementDirection);
 			return differenceRotation * leastTravelDirection * turnSpeed * Time.deltaTime;
 		}
+
+		private static int GetLeastTravelDirection(Vector3 right, Vector3 desiredDirection)
+		{
+			float dot = Vector3.Dot(right, desiredDirection);
+			var leastTravelDirection = dot < 0 ? -1 : 1;
+			return leastTravelDirection;
+		}
+		
 		public static bool IsSafeAngle(Vector3 position,
 												Vector3 direction,
 												float maxDistance,

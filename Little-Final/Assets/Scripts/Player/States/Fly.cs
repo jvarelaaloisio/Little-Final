@@ -41,12 +41,10 @@ namespace Player.States
 			//TODO: Delete this and only use moveByForce once the movement tests are finished
 			if (Input.GetKey(KeyCode.RightControl))
 			{
-				Debug.Log("Fly speed");
 				MoveHorizontally(Body, 10, PP_Fly.TurnSpeed);
 			}
 			else
 			{
-				Debug.Log("Fly force");
 				Controller.MoveByForce(PP_Fly.Force, PP_Fly.TurnSpeed);
 			}
 		}

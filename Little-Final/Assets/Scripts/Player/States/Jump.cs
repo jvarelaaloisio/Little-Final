@@ -40,12 +40,10 @@ namespace Player.States
 			//TODO: Delete this and only use moveByForce once the movement tests are finished
 			if (Input.GetKey(KeyCode.RightControl))
 			{
-				Debug.Log("Jump speed");
 				MoveHorizontally(Body, PP_Jump.JumpSpeed, PP_Jump.TurnSpeedInTheAir);
 			}
 			else
 			{
-				Debug.Log("Jump force");
 				Controller.MoveByForce(PP_Jump.MovementForce, PP_Jump.TurnSpeedInTheAir);
 			}
 

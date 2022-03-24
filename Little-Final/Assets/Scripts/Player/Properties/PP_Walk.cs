@@ -23,11 +23,11 @@ namespace Player.Properties
 
         #region Getters
 
-        public float Speed => speed;
-        public float TurnSpeed => turnSpeed;
-        public float MinSafeAngle => minSafeAngle;
-        public float RunSpeed => runSpeed;
-        public float RunStaminaPerSecond => runStaminaPerSecond;
+        public static float Speed => Instance.speed;
+        public static float TurnSpeed => Instance.turnSpeed;
+        public static float MinSafeAngle => Instance.minSafeAngle;
+        public static float RunSpeed => Instance.runSpeed;
+        public static float RunStaminaPerSecond => Instance.runStaminaPerSecond;
 
         #endregion
     }

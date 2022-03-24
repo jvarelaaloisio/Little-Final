@@ -158,7 +158,7 @@ namespace Player
 				    _myTransform.position,
 				    desiredDirection.normalized,
 				    .5f,
-				    PP_Walk.Instance.MinSafeAngle))
+				    PP_Walk.MinSafeAngle))
 				HorizontalMovementHelper.MoveWithRotationByForce(
 					_myTransform,
 					body,

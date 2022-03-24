@@ -106,7 +106,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 		ProcessMovementRequests();
 		if (rb.velocity.magnitude > maxSpeed)
 			rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
-		
+
 	}
 
 	private void ProcessMovementRequests()

@@ -11,19 +11,19 @@ namespace Player.States
 	{
 		private IBody body;
 		private CountDownTimer coyoteEffect;
-		private float currentSpeed;
-		private StaminaConsumer runningConsumer;
+		private StaminaConsumer _runningConsumer;
+		private bool isRunning;
 
 		public override void OnStateEnter(PlayerController controller, int sceneIndex)
 		{
 			base.OnStateEnter(controller, sceneIndex);
 			controller.OnLand();
 			body = controller.GetComponent<PlayerBody>();
+			isRunning = false;
 
-			currentSpeed = PP_Walk.Instance.Speed;
-			runningConsumer = new StaminaConsumer(
+			_runningConsumer = new StaminaConsumer(
 				controller.Stamina,
-				PP_Walk.Instance.RunStaminaPerSecond,
+				PP_Walk.RunStaminaPerSecond,
 				sceneIndex);
 
 			MyTransform = controller.transform;
@@ -63,27 +63,27 @@ namespace Player.States
 			Debug.DrawRay(MyTransform.position, desiredDirection.normalized / 3, Color.green);
 
 			if (HorizontalMovementHelper.IsSafeAngle(MyTransform.position, desiredDirection.normalized, .3f,
-				    PP_Walk.Instance.MinSafeAngle))
+				    PP_Walk.MinSafeAngle))
 			{
-				if (InputManager.CheckRunInput() && Controller.Stamina.FillState > 0)
+				if (input.magnitude > .1f && InputManager.CheckRunInput() && Controller.Stamina.FillState > 0)
 				{
-					if (!runningConsumer.IsConsuming)
-						runningConsumer.Start();
+					if (!_runningConsumer.IsConsuming)
+						_runningConsumer.Start();
 
-					currentSpeed = PP_Walk.Instance.RunSpeed;
+					isRunning = true;
 				}
-				else if (runningConsumer.IsConsuming)
+				else if (_runningConsumer.IsConsuming)
 				{
-					runningConsumer.Stop();
-					currentSpeed = PP_Walk.Instance.Speed;
+					_runningConsumer.Stop();
+					isRunning = false;
 				}
 
 				HorizontalMovementHelper.MoveWithRotation(
 					MyTransform,
 					body,
 					desiredDirection,
-					currentSpeed,
-					desiredDirection.magnitude * PP_Walk.Instance.TurnSpeed);
+					isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed,
+					desiredDirection.magnitude * PP_Walk.TurnSpeed);
 			}
 
 			if (InputManager.CheckLongJumpInput())
@@ -107,7 +107,7 @@ namespace Player.States
 		public override void OnStateExit()
 		{
 			coyoteEffect.StopTimer();
-			runningConsumer.Stop();
+			_runningConsumer.Stop();
 		}
 
 		private void OnCoyoteFinished()
