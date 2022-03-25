@@ -11,10 +11,7 @@ public class Swirl : Ability
 {
 	public string animationStateName;
 	public Vector3 force;
-	public float cooldown;
-	private bool isCoolDown;
 	private PlayerController _controller;
-	private CountDownTimer cooldownTimer;
 	public override void Use(PlayerController controller)
 	{
 		this._controller = controller;
@@ -23,23 +20,19 @@ public class Swirl : Ability
 		controller.Body.Push(forceLocal);
 		controller.OnSpecificAction(animationStateName);
 		controller.ChangeState<Void>();
-		isCoolDown = true;
-		cooldownTimer = new CountDownTimer(cooldown, OnFinished, controller.SceneIndex);
-		cooldownTimer.StartTimer();
+		IsOnCoolDown = true;
+		CooldownTimer = new CountDownTimer(cooldown, OnFinished, controller.SceneIndex);
+		CooldownTimer.StartTimer();
 	}
-	private void OnEnable()
+	protected override bool ValidateInternal(PlayerController controller)
 	{
-		isCoolDown = false;
-	}
-	public override bool ValidateTrigger(PlayerController controller)
-	{
-		return !isCoolDown && controller.Stamina.FillState >= stamina && InputManager.CheckSwirlInput();
+		return InputManager.CheckSwirlInput();
 	}
 
 	private void OnFinished()
 	{
 		_controller.GetComponent<Rigidbody>().useGravity = true;
-		isCoolDown = false;
+		IsOnCoolDown = false;
 		if (FallHelper.IsGrounded)
 			_controller.ChangeState<Walk>();
 		else

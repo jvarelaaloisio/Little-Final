@@ -1,5 +1,8 @@
-﻿namespace Player.States
+﻿using System;
+
+namespace Player.States
 {
+	[Obsolete]
 	public class LongJump : Jump
 	{
 		public override void OnStateUpdate()

@@ -70,6 +70,7 @@ public class MobileInput : MonoBehaviour, IPlayerInput
 	{
 		throw new System.NotImplementedException();
 	}
+	[Obsolete]
 	public bool GetLongJumpInput()
 	{
 		throw new NotImplementedException();

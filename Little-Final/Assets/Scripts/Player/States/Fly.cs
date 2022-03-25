@@ -24,8 +24,7 @@ namespace Player.States
 				);
 			_accelerate.StartAction();
 			controller.view.ShowAccelerationFeedback();
-			//esto está como el orto, debería
-			//hacer una clase fly base y de ahi sacar esta y glide?
+			//TODO: esto está como el orto, debería haber una clase fly base y de ahi sacar esta y glide?
 			SetFlight.StopTimer();
 		}
 

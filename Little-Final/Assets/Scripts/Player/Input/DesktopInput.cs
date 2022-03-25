@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 public class DesktopInput : IPlayerInput
 {
 	public Vector2 GetHorInput()
@@ -15,6 +16,7 @@ public class DesktopInput : IPlayerInput
 	{
 		return Input.GetButtonDown("Jump");
 	}
+	[Obsolete]
 	public bool GetLongJumpInput()
 	{
 		return Input.GetButtonDown("Jump") && Input.GetButton("Crouch");

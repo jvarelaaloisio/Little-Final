@@ -1,4 +1,5 @@
-﻿using CharacterMovement;
+﻿using System;
+using CharacterMovement;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
@@ -22,29 +23,20 @@ namespace Player.States
 			isRunning = false;
 
 			_runningConsumer = new StaminaConsumer(
-				controller.Stamina,
-				PP_Walk.RunStaminaPerSecond,
-				sceneIndex);
+													controller.Stamina,
+													PP_Walk.RunStaminaPerSecond,
+													sceneIndex);
 
 			MyTransform = controller.transform;
 			coyoteEffect
-				= new CountDownTimer(
-					PP_Jump.CoyoteTime,
-					OnCoyoteFinished,
-					sceneIndex
-				);
+				= new CountDownTimer(PP_Jump.CoyoteTime,
+									OnCoyoteFinished,
+									sceneIndex
+									);
 			Physics.Raycast(MyTransform.position, -MyTransform.up, out RaycastHit hit, 10,
-				~LayerMask.GetMask("Interactable"));
+							~LayerMask.GetMask("Interactable"));
 			body.LastFloorNormal = hit.normal;
-
-			if (controller.LongJumpBuffer)
-			{
-				controller.ResetJumpBuffers();
-				body.Jump(PP_Jump.LongJumpForce);
-				controller.ChangeState<LongJump>();
-				Controller.OnJump();
-			}
-			else if (controller.JumpBuffer)
+			if (controller.JumpBuffer)
 			{
 				controller.ResetJumpBuffers();
 				body.Jump(PP_Jump.JumpForce);
@@ -63,7 +55,7 @@ namespace Player.States
 			Debug.DrawRay(MyTransform.position, desiredDirection.normalized / 3, Color.green);
 
 			if (HorizontalMovementHelper.IsSafeAngle(MyTransform.position, desiredDirection.normalized, .3f,
-				    PP_Walk.MinSafeAngle))
+													PP_Walk.MinSafeAngle))
 			{
 				if (input.magnitude > .1f && InputManager.CheckRunInput() && Controller.Stamina.FillState > 0)
 				{
@@ -78,12 +70,11 @@ namespace Player.States
 					isRunning = false;
 				}
 
-				HorizontalMovementHelper.MoveWithRotation(
-					MyTransform,
-					body,
-					desiredDirection,
-					isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed,
-					desiredDirection.magnitude * PP_Walk.TurnSpeed);
+				HorizontalMovementHelper.MoveWithRotation(MyTransform,
+														body,
+														desiredDirection,
+														isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed,
+														desiredDirection.magnitude * PP_Walk.TurnSpeed);
 			}
 
 			if (InputManager.CheckLongJumpInput())
@@ -94,8 +85,12 @@ namespace Player.States
 			}
 			else if (InputManager.CheckJumpInput())
 			{
-				body.Jump(PP_Jump.JumpForce);
-				Controller.ChangeState<Jump>();
+				float force = isRunning ? PP_Jump.LongJumpForce : PP_Jump.JumpForce;
+				body.Jump(force);
+				if (isRunning)
+					Controller.ChangeState<LongJump>();
+				else
+					Controller.ChangeState<Jump>();
 				Controller.OnJump();
 			}
 

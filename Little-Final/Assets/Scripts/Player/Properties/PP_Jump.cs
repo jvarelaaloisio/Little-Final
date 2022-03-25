@@ -6,21 +6,50 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Properties/Player/Jump", fileName = "PP_Jump")]
 public class PP_Jump : SingletonScriptable<PP_Jump>
 {
-	[SerializeField] [Range(0, 100, step: .5f)]
+	[SerializeField]
+	[Range(0, 100, step: .5f)]
 	private float jumpForce;
-	[SerializeField] [Range(0, 100, step: .5f)]
-	private float movementForce,
-		longJumpForce,
-		jumpSpeed,
-		longJumpSpeed,
-		fallMultiplier,
-		lowJumpMultiplier,
-		turnSpeedInTheAir,
-		turnSpeedLongJump;
 
-	[SerializeField] [UnityEngine.Range(0, 3)]
-	private float coyoteTime,
-		distanceToGround;
+	[SerializeField]
+	[Range(0, 100, step: .5f)]
+	private float movementForce;
+
+	[SerializeField]
+	[Range(0, 100, step: .5f)]
+	private float longJumpForce;
+
+	[SerializeField]
+	[Range(0, 100, step: .5f)]
+	private float jumpSpeed;
+
+	[SerializeField]
+	[Range(0, 100, step: .5f)]
+	private float longJumpSpeed;
+
+	[SerializeField]
+	[Range(0, 2.5f, step: .5f)]
+	private float fallMultiplier;
+
+	//TODO: Revisar que hace este field
+	[SerializeField]
+	[Range(0, 100, step: .5f)]
+	private float lowJumpMultiplier;
+
+	[SerializeField]
+	[Range(0, 100, step: .5f)]
+	private float turnSpeedInTheAir;
+
+	[SerializeField]
+	[Range(0, 100, step: .5f)]
+	private float turnSpeedLongJump;
+
+	[SerializeField]
+	[UnityEngine.Range(0, 3)]
+	private float coyoteTime;
+
+	[SerializeField]
+	[UnityEngine.Range(0, 3)]
+	private float distanceToGround;
 
 	#region Getters
 

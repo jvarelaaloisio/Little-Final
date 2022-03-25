@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Player.PlayerInput
 {
@@ -27,6 +28,7 @@ namespace Player.PlayerInput
 		public static bool CheckJumpInput()
 			=> InputReader.GetJumpInput();
 
+		[Obsolete]
 		public static bool CheckLongJumpInput()
 			=> InputReader.GetLongJumpInput();
 

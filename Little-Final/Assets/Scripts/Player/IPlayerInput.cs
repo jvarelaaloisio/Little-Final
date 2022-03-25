@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 public interface IPlayerInput
 {
 	/// <summary>
@@ -20,6 +21,7 @@ public interface IPlayerInput
 	/// Returns true if the player is pressing the long jump button
 	/// </summary>
 	/// <returns></returns>
+	[Obsolete]
 	bool GetLongJumpInput();
 	bool GetGlideInput();
 	bool GetRunInput();

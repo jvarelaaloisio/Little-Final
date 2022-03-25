@@ -7,8 +7,8 @@ namespace Player.Abilities
 	public class Push : Ability
 	{
 		[SerializeField] private Vector3 direction;
-		
-		public override bool ValidateTrigger(PlayerController controller)
+
+		protected override bool ValidateInternal(PlayerController controller)
 		{
 			return InputManager.CheckSwirlInput();
 		}
