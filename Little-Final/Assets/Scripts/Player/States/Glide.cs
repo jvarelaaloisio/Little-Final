@@ -12,7 +12,7 @@ namespace Player.States
 		protected IBody Body;
 		protected StaminaConsumer Consumer;
 		protected CountDownTimer SetFlight;
-
+		private ActionOverTime pushPlayerUp;
 		public Glide() =>
 			Flags = (
 				allowsLanding: true,
@@ -51,6 +51,7 @@ namespace Player.States
 			CheckClimb();
 			CheckForJumpBuffer();
 			Controller.RunAbilityList(Controller.AbilitiesInAir);
+			
 		}
 
 		public override void OnStateExit()

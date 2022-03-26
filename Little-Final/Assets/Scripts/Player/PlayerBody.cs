@@ -100,6 +100,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	}
 	public void OnFixedUpdate()
 	{
+		Debug.DrawRay(transform.position, rb.velocity / 3, Color.cyan);
 		ControlJump();
 		AccelerateFall();
 		ProcessForceRequests();
@@ -113,7 +114,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	{
 		if(nextMovementByForceRequest.Equals(_invalidRequest))
 			return;
-		rb.AddForce(nextMovementByForceRequest.Force, nextMovementByForceRequest.ForceMode);
+		rb.AddForce(nextMovementByForceRequest.Force * Time.fixedDeltaTime * 10, nextMovementByForceRequest.ForceMode);
 		nextMovementByForceRequest = _invalidRequest;
 	}
 
@@ -204,7 +205,6 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	public void MoveHorizontally(Vector3 direction, float speed)
 	{
 		rb.velocity = direction * speed + rb.velocity.y * Vector3.up;
-		Debug.DrawRay(transform.position, rb.velocity, Color.cyan);
 	}
 
 	/// <summary>

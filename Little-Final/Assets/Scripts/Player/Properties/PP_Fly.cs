@@ -5,7 +5,7 @@ namespace Player.Properties
 	[CreateAssetMenu(menuName = "Properties/Player/Fly", fileName = "PP_Fly")]
 	public class PP_Fly : SingletonScriptable<PP_Fly>
 	{
-		[Range(0, 200, step: 1f), SerializeField]
+		[Range(0, 250, step: 5f), SerializeField]
 		private float force;
 		[Range(0, 100, step: .5f), SerializeField]
 		private float turnSpeed;

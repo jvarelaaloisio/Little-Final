@@ -19,6 +19,10 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	private float longJumpForce;
 
 	[SerializeField]
+	[Range(0, 50, step: 1)]
+	private float longJumpStaminaCost;
+
+	[SerializeField]
 	[Range(0, 100, step: .5f)]
 	private float jumpSpeed;
 
@@ -64,6 +68,7 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	public static float TurnSpeedLongJump => Instance.turnSpeedLongJump;
 	public static float CoyoteTime => Instance.coyoteTime;
 	public static float DistanceToGround => Instance.distanceToGround;
+	public static float LongJumpStaminaCost => Instance.longJumpStaminaCost;
 
 	#endregion
 }

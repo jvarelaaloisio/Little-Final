@@ -1,5 +1,4 @@
-﻿using System;
-using CharacterMovement;
+﻿using CharacterMovement;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
@@ -39,9 +38,7 @@ namespace Player.States
 			if (controller.JumpBuffer)
 			{
 				controller.ResetJumpBuffers();
-				body.Jump(PP_Jump.JumpForce);
-				controller.ChangeState<Jump>();
-				Controller.OnJump();
+				Jump();
 			}
 		}
 
@@ -77,6 +74,7 @@ namespace Player.States
 														desiredDirection.magnitude * PP_Walk.TurnSpeed);
 			}
 
+			//TODO:Remove
 			if (InputManager.CheckLongJumpInput())
 			{
 				body.Jump(PP_Jump.LongJumpForce);
@@ -85,18 +83,29 @@ namespace Player.States
 			}
 			else if (InputManager.CheckJumpInput())
 			{
-				float force = isRunning ? PP_Jump.LongJumpForce : PP_Jump.JumpForce;
-				body.Jump(force);
-				if (isRunning)
-					Controller.ChangeState<LongJump>();
-				else
-					Controller.ChangeState<Jump>();
-				Controller.OnJump();
+				Jump();
 			}
 
 			CheckClimb();
 			ValidateGround();
 			Controller.RunAbilityList(Controller.AbilitiesOnLand);
+		}
+
+		private void Jump()
+		{
+			if (isRunning)
+			{
+				body.Jump(PP_Jump.LongJumpForce);
+				Controller.Stamina.ConsumeStamina(PP_Jump.LongJumpStaminaCost);
+				Controller.ChangeState<LongJump>();
+			}
+			else
+			{
+				body.Jump(PP_Jump.JumpForce);
+				Controller.ChangeState<Jump>();
+			}
+
+			Controller.OnJump();
 		}
 
 		public override void OnStateExit()

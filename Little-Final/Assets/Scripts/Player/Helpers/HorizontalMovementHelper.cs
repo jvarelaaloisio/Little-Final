@@ -40,7 +40,7 @@ namespace CharacterMovement
 				return;
 			float rotationAngle = GetRotationAngleBasedOnDirection(transform, desiredDirection, turnSpeed);
 			transform.Rotate(transform.up, rotationAngle);
-			body.RequestForce(new ForceRequest(transform.forward * speed, ForceMode.Acceleration));
+			body.RequestMovementByForce(new ForceRequest(transform.forward * speed, ForceMode.Acceleration));
 		}
 
 		public static float GetRotationAngleBasedOnDirection(

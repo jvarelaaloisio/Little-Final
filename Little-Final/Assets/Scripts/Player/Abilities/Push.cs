@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Player.PlayerInput;
 
@@ -8,6 +9,8 @@ namespace Player.Abilities
 	{
 		[SerializeField] private Vector3 direction;
 
+		private ForceRequest _forceRequest;
+
 		protected override bool ValidateInternal(PlayerController controller)
 		{
 			return InputManager.CheckSwirlInput();
@@ -16,7 +19,7 @@ namespace Player.Abilities
 		public override void Use(PlayerController controller)
 		{
 			Debug.Log("push");
-			controller.Body.Push(controller.transform.TransformDirection(direction));
+			controller.Body.RequestForce(new ForceRequest(controller.transform.TransformDirection(direction), ForceMode.Impulse));
 		}
 	}
 }

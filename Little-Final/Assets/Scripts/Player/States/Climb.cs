@@ -59,6 +59,11 @@ namespace Player.States
 				PP_Climb.MaxClimbAngle,
 				out var hit);
 
+			if (hit.point == Vector3.zero)
+			{
+				Debug.Log("POINT WAS ZERO");
+				Debug.Break();
+			}
 			_getInPosition =
 				new ActionOverTime(
 					PP_Climb.ClimbPositioningTime,
