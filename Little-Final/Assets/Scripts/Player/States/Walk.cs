@@ -38,7 +38,8 @@ namespace Player.States
 			if (controller.JumpBuffer)
 			{
 				controller.ResetJumpBuffers();
-				Jump();
+				//TODO: Completar bien la llamada
+				// Jump();
 			}
 		}
 
@@ -67,23 +68,25 @@ namespace Player.States
 					isRunning = false;
 				}
 
-				HorizontalMovementHelper.MoveWithRotation(MyTransform,
-														body,
-														desiredDirection,
-														isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed,
-														desiredDirection.magnitude * PP_Walk.TurnSpeed);
+				HorizontalMovementHelper.RotateByDirection(MyTransform,
+															desiredDirection,
+															desiredDirection.magnitude * PP_Walk.TurnSpeed);
+				HorizontalMovementHelper.Move(MyTransform,
+											body,
+											desiredDirection,
+											isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed);
 			}
 
 			//TODO:Remove
 			if (InputManager.CheckLongJumpInput())
 			{
-				body.Jump(PP_Jump.LongJumpForce);
+				// body.Jump(PP_Jump.LongJumpForce);
 				Controller.ChangeState<LongJump>();
 				Controller.OnJump();
 			}
 			else if (InputManager.CheckJumpInput())
 			{
-				Jump();
+				Jump(desiredDirection);
 			}
 
 			CheckClimb();
@@ -91,19 +94,18 @@ namespace Player.States
 			Controller.RunAbilityList(Controller.AbilitiesOnLand);
 		}
 
-		private void Jump()
+		private void Jump(Vector3 direction)
 		{
+			direction *= PP_Jump.InitialForceMultiplier;
+			direction.y = isRunning ? PP_Jump.LongJumpForce : PP_Jump.JumpForce;
+			body.Jump(direction);
 			if (isRunning)
 			{
-				body.Jump(PP_Jump.LongJumpForce);
 				Controller.Stamina.ConsumeStamina(PP_Jump.LongJumpStaminaCost);
 				Controller.ChangeState<LongJump>();
 			}
 			else
-			{
-				body.Jump(PP_Jump.JumpForce);
 				Controller.ChangeState<Jump>();
-			}
 
 			Controller.OnJump();
 		}

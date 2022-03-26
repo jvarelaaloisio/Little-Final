@@ -13,6 +13,10 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	[SerializeField]
 	[Range(0, 100, step: .5f)]
 	private float movementForce;
+	
+	[SerializeField]
+	[Range(0, 3, step: .05f)]
+	private float initialForceMultiplier;
 
 	[SerializeField]
 	[Range(0, 100, step: .5f)]
@@ -59,6 +63,7 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 
 	public static float JumpForce => Instance.jumpForce;
 	public static float MovementForce => Instance.movementForce;
+	public static float InitialForceMultiplier => Instance.initialForceMultiplier;
 	public static float LongJumpForce => Instance.longJumpForce;
 	public static float JumpSpeed => Instance.jumpSpeed;
 	public static float LongJumpSpeed => Instance.longJumpSpeed;

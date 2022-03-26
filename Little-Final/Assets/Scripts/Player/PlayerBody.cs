@@ -52,10 +52,10 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	Rigidbody rb;
 	private readonly Queue<ForceRequest> forceRequests = new Queue<ForceRequest>();
 	private ForceRequest nextMovementByForceRequest;
+	private Vector3 _jumpForce;
 	private GameObject lastFloor;
 	ContactPoint lastContact;
 	Vector3 _collisionAngles;
-	private float jumpForce;
 	public float safeDot;
 	#endregion
 
@@ -156,8 +156,9 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 			//Physics
 			Vector3 newVel = rb.velocity;
 			newVel.y = 0;
-			rb.velocity = newVel;
-			rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+			// rb.velocity = newVel;
+			rb.velocity = Vector3.zero;
+			rb.AddForce(_jumpForce, ForceMode.Impulse);
 			//Event
 			BodyEvents?.Invoke(BodyEvent.JUMP);
 
@@ -219,9 +220,9 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	/// The jump will be reproduced next fixed update
 	/// </summary>
 	/// <param name="jumpForce"></param>
-	public void Jump(float jumpForce)
+	public void Jump(Vector3 jumpForce)
 	{
-		this.jumpForce = jumpForce;
+		_jumpForce = jumpForce;
 		flags[Flag.JUMP_REQUEST] = true;
 	}
 

@@ -15,32 +15,32 @@ namespace CharacterMovement
 			return direction;
 		}
 
-		public static void MoveWithRotation(
+		public static void Move(
 			Transform transform,
 			IBody body,
 			Vector3 desiredDirection,
-			float speed,
-			float turnSpeed)
+			float speed)
 		{
 			if (!(desiredDirection.magnitude > .1f))
 				return;
-			float rotationAngle = GetRotationAngleBasedOnDirection(transform, desiredDirection, turnSpeed);
-			transform.Rotate(transform.up, rotationAngle);
 			body.MoveHorizontally(transform.forward, speed);
 		}
 
-		public static void MoveWithRotationByForce(
+		public static void MoveByForce(
 			Transform transform,
 			IBody body,
 			Vector3 desiredDirection,
-			float speed,
-			float turnSpeed)
+			float speed)
 		{
 			if (!(desiredDirection.magnitude > .1f))
 				return;
+			body.RequestMovementByForce(new ForceRequest(transform.forward * speed, ForceMode.Acceleration));
+		}
+
+		public static void RotateByDirection(Transform transform, Vector3 desiredDirection, float turnSpeed)
+		{
 			float rotationAngle = GetRotationAngleBasedOnDirection(transform, desiredDirection, turnSpeed);
 			transform.Rotate(transform.up, rotationAngle);
-			body.RequestMovementByForce(new ForceRequest(transform.forward * speed, ForceMode.Acceleration));
 		}
 
 		public static float GetRotationAngleBasedOnDirection(

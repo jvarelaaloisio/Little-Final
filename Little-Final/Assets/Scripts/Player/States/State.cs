@@ -39,6 +39,7 @@ namespace Player.States
 		/// runs once when the state finishes
 		/// </summary>
 		public abstract void OnStateExit();
+
 		//----------	TODO:ESTOS METODOS SE VAN AL CONTROLLER ----------
 		/// <summary>
 		/// Reads the input and moves the player horizontally
@@ -50,17 +51,20 @@ namespace Player.States
 			Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
 
 			if (HorizontalMovementHelper.IsSafeAngle(
-				MyTransform.position,
-				desiredDirection.normalized,
-				.5f,
-				PP_Walk.MinSafeAngle))
-				HorizontalMovementHelper.MoveWithRotation(
-					MyTransform,
-					body,
-					desiredDirection,
-					speed,
-					turnSpeed);
+													MyTransform.position,
+													desiredDirection.normalized,
+													.5f,
+													PP_Walk.MinSafeAngle))
+			{
+				HorizontalMovementHelper.RotateByDirection(MyTransform, desiredDirection, turnSpeed);
+				HorizontalMovementHelper.Move(
+														MyTransform,
+														body,
+														desiredDirection,
+														speed);
+			}
 		}
+
 		/// <summary>
 		/// Checks if the climb input and the conditions are met.
 		/// If then, it changes to the Climb State.
@@ -69,43 +73,43 @@ namespace Player.States
 		{
 			Vector3 climbCheckPosition = Controller.ClimbCheckPivot.position;
 			if (InputManager.CheckClimbInput()
-			    && Controller.Stamina.FillState > 0
-			    && ClimbHelper.CanClimb(
-				    climbCheckPosition,
-				    GetForwardDirectionBasedOnGroundAngle(),
-				    PP_Climb.MaxDistanceToTriggerClimb,
-				    PP_Climb.MaxClimbAngle,
-				    out _))
+				&& Controller.Stamina.FillState > 0
+				&& ClimbHelper.CanClimb(
+										climbCheckPosition,
+										GetForwardDirectionBasedOnGroundAngle(),
+										PP_Climb.MaxDistanceToTriggerClimb,
+										PP_Climb.MaxClimbAngle,
+										out _))
 				Controller.ChangeState<Climb>();
 
 			Vector3 GetForwardDirectionBasedOnGroundAngle()
 			{
 				if (!Physics.Raycast(climbCheckPosition, -MyTransform.up, out RaycastHit hit,
-					    PP_Climb.MaxClimbDistanceFromCorners,
-					    LayerMask.GetMask("Floor", "NonClimbable", "Default")))
+									PP_Climb.MaxClimbDistanceFromCorners,
+									LayerMask.GetMask("Floor", "NonClimbable", "Default")))
 					return MyTransform.forward;
 				Vector3 newForward = Vector3.Cross(MyTransform.right, hit.normal);
 				return newForward;
-
 			}
 		}
+
 		protected void CheckForJumpBuffer()
 		{
 			if (InputManager.CheckLongJumpInput() &&
-			    Physics.Raycast(
-				    MyTransform.position,
-				    -MyTransform.up,
-				    .5f,
-				    ~_interactable))
+				Physics.Raycast(
+								MyTransform.position,
+								-MyTransform.up,
+								.5f,
+								~_interactable))
 			{
 				Controller.LongJumpBuffer = true;
 			}
 			else if (InputManager.CheckJumpInput() &&
-			         Physics.Raycast(
-				         MyTransform.position,
-				         -MyTransform.up,
-				         .5f,
-				         ~_interactable))
+					Physics.Raycast(
+									MyTransform.position,
+									-MyTransform.up,
+									.5f,
+									~_interactable))
 			{
 				Controller.JumpBuffer = true;
 			}

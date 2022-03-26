@@ -17,7 +17,7 @@ public interface IBody
 	void MoveByTransform(Vector3 direction, float speed);
 	void StopJump();
 	Collider GetLandCollider();
-	void Jump(float jumpForce);
+	void Jump(Vector3 jumpForce);
 	bool IsInTheAir { get; }
 	GameObject GameObject { get; }
 	Vector3 LastFloorNormal { get; set; }

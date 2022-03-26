@@ -15,6 +15,7 @@ namespace Player
 	public class PlayerController : MonoBehaviour, IUpdateable, IDamageable
 	{
 		public delegate void StateCallback(State state);
+
 		#region Variables
 
 		private Transform _myTransform;
@@ -25,7 +26,7 @@ namespace Player
 		public List<Ability> AbilitiesOnLand,
 			AbilitiesInAir,
 			AbilitiesOnWall;
-		
+
 		public event StateCallback OnStateChanges = delegate { };
 		public Action<float> OnPickCollectable = delegate { };
 		public Action<float> OnStaminaChanges = delegate { };
@@ -38,7 +39,8 @@ namespace Player
 		public Action<bool> OnGlideChanges = delegate { };
 		public Action OnFallFromCliff;
 
-		[SerializeField] private Transform climbCheckPivot;
+		[SerializeField]
+		private Transform climbCheckPivot;
 
 		IPickable _itemPicked;
 		IBody body;
@@ -73,18 +75,18 @@ namespace Player
 		{
 			_myTransform = transform;
 			collectableBag = new CollectableBag(
-				PP_Stats.CollectablesForReward,
-				UpgradeStamina,
-				OnPickCollectable);
+												PP_Stats.CollectablesForReward,
+												UpgradeStamina,
+												OnPickCollectable);
 			UpdateManager.Subscribe(this);
 			body = GetComponent<IBody>();
 			damageHandler.onLifeChanged += OnLifeChanged;
 			stamina = new Stamina.Stamina(
-				PP_Stats.InitialStamina,
-				PP_Stats.StaminaRefillDelay,
-				PP_Stats.StaminaRefillSpeed,
-				SceneIndex,
-				OnStaminaChanges);
+										PP_Stats.InitialStamina,
+										PP_Stats.StaminaRefillDelay,
+										PP_Stats.StaminaRefillSpeed,
+										SceneIndex,
+										OnStaminaChanges);
 			state = new Walk();
 			_sceneIndex = gameObject.scene.buildIndex;
 			state.OnStateEnter(this, SceneIndex);
@@ -155,18 +157,20 @@ namespace Player
 			Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
 
 			if (HorizontalMovementHelper.IsSafeAngle(
-				    _myTransform.position,
-				    desiredDirection.normalized,
-				    .5f,
-				    PP_Walk.MinSafeAngle))
-				HorizontalMovementHelper.MoveWithRotationByForce(
-					_myTransform,
-					body,
-					desiredDirection,
-					speed,
-					turnSpeed);
+													_myTransform.position,
+													desiredDirection.normalized,
+													.5f,
+													PP_Walk.MinSafeAngle))
+			{
+				HorizontalMovementHelper.RotateByDirection(_myTransform, desiredDirection, turnSpeed);
+				HorizontalMovementHelper.MoveByForce(
+													_myTransform,
+													body,
+													desiredDirection,
+													speed);
+			}
 		}
-		
+
 		#region EventHandlers
 
 		private void UpgradeStamina()
