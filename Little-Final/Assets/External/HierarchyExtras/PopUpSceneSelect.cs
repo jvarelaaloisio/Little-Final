@@ -14,10 +14,7 @@ namespace External.HierarchyExtras
         private GameObject[] _gameObjects;
         private bool _reParentGo = true;
         private string _newSceneName;
-        private string _scenesPath = "Scenes/";
 
-        private GUIStyle guiLabel = new GUIStyle() {fontStyle = FontStyle.Bold};
-        
         [MenuItem("GameObject/Sort Tools/Move To Scene", false, 0)]
         public static void ShowPopUpSceneSelect()
         {
