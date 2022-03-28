@@ -123,13 +123,21 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 
 	public void OnFixedUpdate()
 	{
-		Debug.DrawRay(transform.position, rb.velocity / 3, Color.cyan);
-		ControlJump();
-		AccelerateFall();
-		ProcessForceRequests();
-		ProcessMovementRequests();
+		// Debug.DrawRay(transform.position, rb.velocity / 3, Color.cyan);
+		// ControlJump();
+		// AccelerateFall();
+		// // ProcessForceRequests();
+		// ProcessMovementRequests();
 		// if (rb.velocity.magnitude > maxSpeed)
 		// 	rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
+	}
+
+	private void FixedUpdate()
+	{
+		ControlJump();
+		AccelerateFall();
+		ProcessMovementRequests();
+		
 	}
 
 	private void ProcessMovementRequests()
@@ -139,12 +147,12 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 		// Vector3 goalVelocity = Vector3.MoveTowards(rb.velocity.IgnoreY(),
 		// 											nextMovement.GetPeakVelocity(),
 		// 											nextMovement.Acceleration * Time.fixedDeltaTime);
-		Debug.Log(Time.fixedDeltaTime);
-		Vector3 goalVelocity = Vector3.Lerp(rb.velocity.IgnoreY(),
-											nextMovement.GetGoalVelocity(),
-											Mathf.Clamp01(nextMovement.AccelerationFactor / 2));
-		Vector3 acceleration = (goalVelocity - rb.velocity).IgnoreY() * 1000 * Time.fixedDeltaTime;
-		Debug.Log(acceleration.magnitude);
+		// Debug.Log(Time.fixedDeltaTime);
+		// Vector3 goalVelocity = Vector3.Lerp(rb.velocity.IgnoreY(),
+		// 									nextMovement.GetGoalVelocity(),
+		// 									Mathf.Clamp01(nextMovement.AccelerationFactor / 2));
+		Vector3 acceleration = (nextMovement.GetGoalVelocity() - rb.velocity).IgnoreY() * 1000 * Time.fixedDeltaTime;
+		Debug.Log("added Force");
 		rb.AddForce(acceleration, ForceMode.Force);
 	}
 
