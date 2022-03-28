@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using CharacterMovement;
+using Core.Extensions;
 using Player;
 using VarelaAloisio.UpdateManagement.Runtime;
 
@@ -15,27 +16,34 @@ public enum BodyEvent
 }
 
 public delegate void BodyEvents(BodyEvent typeOfEvent);
+
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 {
 	#region Variables
+
 	const string INTERACTABLE_LAYER = "Interactable";
 	private readonly ForceRequest _invalidRequest = new ForceRequest(new Vector3(), ForceMode.Acceleration);
 
 	#region Public
+
 	public event BodyEvents BodyEvents;
 	public Collider landCollider;
+
 	#endregion
 
 	#region Serialized
+
 	[Header("Audio")]
 	[SerializeField]
 	AudioClip[] _soundEffects = null;
 
 	[SerializeField]
 	private float maxSpeed;
+
 	[SerializeField]
 	float _xMinAngle = 5;
+
 	[SerializeField]
 	float _xMaxAngle = 92,
 		_yMinAngle = 45,
@@ -43,6 +51,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 		_inTheAirTimeToOff = .005f,
 		_colTimeToOff = 0,
 		climbTimeToOff = 0.05f;
+
 	#endregion
 
 	#region Private
@@ -52,25 +61,38 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	Rigidbody rb;
 	private readonly Queue<ForceRequest> forceRequests = new Queue<ForceRequest>();
 	private ForceRequest nextMovementByForceRequest;
+	private MovementRequest nextMovement;
 	private Vector3 _jumpForce;
 	private GameObject lastFloor;
 	ContactPoint lastContact;
 	Vector3 _collisionAngles;
 	public float safeDot;
+
 	#endregion
 
 	#region Getters
+
 	public Vector3 Position => transform.position;
-	public Vector3 Velocity { get => rb.velocity; set => rb.velocity = value; }
+
+	public Vector3 Velocity
+	{
+		get => rb.velocity;
+		set => rb.velocity = value;
+	}
+
 	public GameObject GameObject => gameObject;
 	public Vector3 LastFloorNormal { get; set; }
+
 	#endregion
 
 	#region Setters
+
 	public bool IsInTheAir => flags[Flag.IN_THE_AIR];
+
 	#endregion
 
 	#region Flags
+
 	enum Flag
 	{
 		IN_THE_AIR,
@@ -81,7 +103,6 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 
 	#endregion
 
-
 	#endregion
 
 	#region Unity
@@ -89,6 +110,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	private void Awake()
 	{
 		nextMovementByForceRequest = _invalidRequest;
+		nextMovement = MovementRequest.InvalidRequest;
 	}
 
 	void Start()
@@ -98,6 +120,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 
 		SetupFlags();
 	}
+
 	public void OnFixedUpdate()
 	{
 		Debug.DrawRay(transform.position, rb.velocity / 3, Color.cyan);
@@ -105,17 +128,23 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 		AccelerateFall();
 		ProcessForceRequests();
 		ProcessMovementRequests();
-		if (rb.velocity.magnitude > maxSpeed)
-			rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
-
+		// if (rb.velocity.magnitude > maxSpeed)
+		// 	rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
 	}
 
 	private void ProcessMovementRequests()
 	{
-		if(nextMovementByForceRequest.Equals(_invalidRequest))
+		if(!nextMovement.IsValid())
 			return;
-		rb.AddForce(nextMovementByForceRequest.Force * Time.fixedDeltaTime * 10, nextMovementByForceRequest.ForceMode);
-		nextMovementByForceRequest = _invalidRequest;
+		// Vector3 goalVelocity = Vector3.MoveTowards(rb.velocity.IgnoreY(),
+		// 											nextMovement.GetPeakVelocity(),
+		// 											nextMovement.Acceleration * Time.fixedDeltaTime);
+		Debug.Log(Time.fixedDeltaTime);
+		Vector3 goalVelocity = Vector3.Lerp(rb.velocity.IgnoreY(),
+											nextMovement.GetGoalVelocity(),
+											Mathf.Clamp01(nextMovement.AccelerationFactor / 2 + Time.fixedDeltaTime * 3));
+		Vector3 acceleration = (goalVelocity - rb.velocity).IgnoreY() * 10;
+		rb.AddForce(acceleration, ForceMode.Force);
 	}
 
 	#endregion
@@ -133,13 +162,13 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 			rb.AddForce(current.Force, current.ForceMode);
 		}
 	}
-	
+
 	/// <summary>
 	/// Setups the flags
 	/// </summary>
 	void SetupFlags()
 	{
-		foreach (var flag in (Flag[])Enum.GetValues(typeof(Flag)))
+		foreach (var flag in (Flag[]) Enum.GetValues(typeof(Flag)))
 		{
 			flags.Add(flag, false);
 		}
@@ -187,7 +216,6 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 		try
 		{
 			//audioManager.PlayCharacterSound(_soundEffects[Index]);
-
 		}
 		catch (NullReferenceException)
 		{
@@ -198,6 +226,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	#endregion
 
 	#region Public
+
 	/// <summary>
 	/// Sets the Velocity for the Player
 	/// This method overrides the velocity
@@ -213,8 +242,9 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	/// </summary>
 	/// <param name="direction"></param>
 	/// <param name="speed"></param>
-	public void MoveByTransform(Vector3 direction, float speed) => transform.position += direction * speed * Time.deltaTime;
-	
+	public void MoveByTransform(Vector3 direction, float speed) =>
+		transform.position += direction * speed * Time.deltaTime;
+
 	/// <summary>
 	/// Request a jump
 	/// The jump will be reproduced next fixed update
@@ -239,32 +269,38 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	/// </summary>
 	/// <param name="request"></param>
 	public void RequestForce(ForceRequest request) => forceRequests.Enqueue(request);
-	
+
 	/// <summary>
 	/// sets the next force to add as simple movement when the fixed update runs.
 	/// The body will only move with the last request added when the fixed update comes.
 	/// </summary>
 	/// <param name="request"></param>
 	public void RequestMovementByForce(ForceRequest request) => nextMovementByForceRequest = request;
+	public void RequestMovement(MovementRequest request) => nextMovement = request;
 
 	public void Push(Vector3 directionNormalized, float force)
 	{
 		Push(directionNormalized * force);
 	}
+
 	public void Push(Vector3 direction)
 	{
 		rb.AddForce(direction, ForceMode.Impulse);
 	}
+
 	public Collider GetLandCollider()
 	{
 		return landCollider;
 	}
+
 	#endregion
 
 	#region Collisions
+
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject.layer == LayerMask.NameToLayer(INTERACTABLE_LAYER) || other.gameObject.layer == LayerMask.NameToLayer("OnlyForShadows"))
+		if (other.gameObject.layer == LayerMask.NameToLayer(INTERACTABLE_LAYER) ||
+			other.gameObject.layer == LayerMask.NameToLayer("OnlyForShadows"))
 			return;
 		else
 		{
@@ -276,9 +312,11 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 				Physics.Raycast(Position, -transform.up, out RaycastHit hit, 10);
 				LastFloorNormal = hit.normal;
 			}
+
 			BodyEvents?.Invoke(BodyEvent.LAND);
 		}
 	}
+
 	private void OnTriggerExit(Collider other)
 	{
 		if (other.gameObject.layer == LayerMask.NameToLayer(INTERACTABLE_LAYER))
@@ -292,5 +330,6 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	{
 		lastContact = collision.contacts[0];
 	}
+
 	#endregion
 }

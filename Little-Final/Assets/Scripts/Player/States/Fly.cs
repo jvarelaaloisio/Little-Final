@@ -1,4 +1,6 @@
-﻿using Player.Properties;
+﻿using CharacterMovement;
+using Player.PlayerInput;
+using Player.Properties;
 using Player.Stamina;
 using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
@@ -44,7 +46,11 @@ namespace Player.States
 			}
 			else
 			{
-				Controller.MoveByForce(PP_Fly.Force, PP_Fly.TurnSpeed);
+				Vector2 input = InputManager.GetHorInput();
+				Vector3 direction = HorizontalMovementHelper.GetDirection(input);
+				HorizontalMovementHelper.Rotate(MyTransform, direction, PP_Fly.TurnSpeed);
+				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Fly.AccelerationFactor, PP_Fly.Speed));
+				// Controller.MoveByForce(PP_Fly.Force, PP_Fly.TurnSpeed);
 			}
 		}
 
@@ -64,7 +70,7 @@ namespace Player.States
 			_currentSpeed
 				= Mathf.Lerp(
 					_initialSpeed,
-					PP_Fly.Force,
+					PP_Fly.AccelerationFactor,
 					smoothLerp
 				);
 			Body.SetDrag(

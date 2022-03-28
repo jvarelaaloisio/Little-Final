@@ -28,10 +28,10 @@ namespace Player.States
 			Body.BodyEvents += BodyEventsHandler;
 
 			_waitBeforeGlide = new CountDownTimer(
-				MIN_TIME_BEFORE_GLIDE,
-				() => _canGlide = true,
-				sceneIndex
-			);
+												MIN_TIME_BEFORE_GLIDE,
+												() => _canGlide = true,
+												sceneIndex
+												);
 			_waitBeforeGlide.StartTimer();
 		}
 
@@ -44,7 +44,10 @@ namespace Player.States
 			}
 			else
 			{
-				Controller.MoveByForce(PP_Jump.MovementForce, PP_Jump.TurnSpeedInTheAir);
+				Vector2 input = InputManager.GetHorInput();
+				Vector3 direction = HorizontalMovementHelper.GetDirection(input);
+				HorizontalMovementHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedInTheAir);
+				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Jump.AccelerationFactor, PP_Jump.Speed));
 			}
 
 			CheckForJumpBuffer();
@@ -59,6 +62,7 @@ namespace Player.States
 			_waitBeforeGlide.StopTimer();
 			//-- A glide
 			Controller.OnGlideChanges(false);
+			Body.RequestMovement(MovementRequest.InvalidRequest);
 			Body.BodyEvents -= BodyEventsHandler;
 			//-- A glide
 			Body.SetDrag(0);
@@ -67,7 +71,7 @@ namespace Player.States
 		private void BodyEventsHandler(BodyEvent eventType)
 		{
 			if (eventType.Equals(BodyEvent.LAND)
-			    && FallHelper.IsGrounded)
+				&& FallHelper.IsGrounded)
 				Controller.ChangeState<Walk>();
 		}
 
@@ -75,9 +79,9 @@ namespace Player.States
 		protected virtual void CheckGlide()
 		{
 			if (_canGlide
-			    && InputManager.GetGlideInput()
-			    && !(Controller.Stamina.FillState < 1)
-			    && !(Body.Velocity.y > 0))
+				&& InputManager.GetGlideInput()
+				&& !(Controller.Stamina.FillState < 1)
+				&& !(Body.Velocity.y > 0))
 				Controller.ChangeState<Glide>();
 		}
 	}

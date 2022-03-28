@@ -1,12 +1,19 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player.Properties
 {
 	[CreateAssetMenu(menuName = "Properties/Player/Glide", fileName = "PP_Glide")]
 	public class PP_Glide : SingletonScriptable<PP_Glide>
 	{
-		[Range(0, 100, step: .5f), SerializeField]
-		private float force;
+		[FormerlySerializedAs("acceleration")]
+		[Range(0, 500, step: .5f), SerializeField]
+		private float accelerationFactor;
+	
+		[FormerlySerializedAs("peakSpeed")]
+		[SerializeField]
+		[Range(0, 100, step: .5f)]
+		private float speed;
 		[Range(0, 100, step: .5f), SerializeField]
 		private float turnSpeed;
 	
@@ -18,7 +25,8 @@ namespace Player.Properties
 
 
 		#region Getters
-		public static float Force => Instance.force;
+		public static float AccelerationFactor => Instance.accelerationFactor;
+		public static float Speed => Instance.speed;
 		public static float TurnSpeed => Instance.turnSpeed;
 		public static float Drag => Instance.drag;
 		public static float StaminaPerSecond => Instance.staminaPerSecond;

@@ -12,6 +12,7 @@ public interface IBody
 	void Push(Vector3 directionNormalized, float force);
 	void RequestForce(ForceRequest request);
 	void RequestMovementByForce(ForceRequest request);
+	void RequestMovement(MovementRequest request);
 	void Push(Vector3 direction);
 	void MoveHorizontally(Vector3 direction, float inputSpeed);
 	void MoveByTransform(Vector3 direction, float speed);

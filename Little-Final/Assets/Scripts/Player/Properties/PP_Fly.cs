@@ -1,12 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player.Properties
 {
 	[CreateAssetMenu(menuName = "Properties/Player/Fly", fileName = "PP_Fly")]
 	public class PP_Fly : SingletonScriptable<PP_Fly>
 	{
-		[Range(0, 250, step: 5f), SerializeField]
-		private float force;
+		[FormerlySerializedAs("acceleration")]
+		[Range(0, 1500, step: 1f), SerializeField]
+		private float accelerationFactor;
+		[FormerlySerializedAs("peakSpeed")]
+		[SerializeField]
+		[Range(0, 750, step: 1f)]
+		private float speed;
 		[Range(0, 100, step: .5f), SerializeField]
 		private float turnSpeed;
 
@@ -20,7 +26,8 @@ namespace Player.Properties
 		private float accelerationTime;
 
 		#region Getters
-		public static float Force => Instance.force;
+		public static float AccelerationFactor => Instance.accelerationFactor;
+		public static float Speed => Instance.speed;
 		public static float TurnSpeed => Instance.turnSpeed;
 		public static float Drag => Instance.drag;
 		public static float StaminaPerSecond => Instance.staminaPerSecond;

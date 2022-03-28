@@ -59,6 +59,7 @@ namespace Player.States
 			Controller.OnGlideChanges(false);
 			Consumer.Stop();
 			SetFlight.StopTimer();
+			Body.RequestMovement(MovementRequest.InvalidRequest);
 			Body.BodyEvents -= BodyEventsHandler;
 			Body.SetDrag(0);
 		}
@@ -72,7 +73,11 @@ namespace Player.States
 			}
 			else
 			{
-				Controller.MoveByForce(PP_Glide.Force, PP_Glide.TurnSpeed);
+				Vector2 input = InputManager.GetHorInput();
+				Vector3 direction = HorizontalMovementHelper.GetDirection(input);
+				HorizontalMovementHelper.Rotate(MyTransform, direction, PP_Glide.TurnSpeed);
+				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Glide.AccelerationFactor, PP_Glide.Speed));
+				// Controller.MoveByForce(PP_Glide.Force, PP_Glide.TurnSpeed);
 			}
 		}
 

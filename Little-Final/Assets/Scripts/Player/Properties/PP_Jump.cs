@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using Player.Properties;
 using UnityEngine;
+using UnityEngine.Serialization;
 
+//TODO:Refactor these scriptables to leave the singletons behind, so the jump and longJump props can be a single class with 2 instances with different values
 [CreateAssetMenu(menuName = "Properties/Player/Jump", fileName = "PP_Jump")]
 public class PP_Jump : SingletonScriptable<PP_Jump>
 {
@@ -10,13 +12,25 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	[Range(0, 100, step: .5f)]
 	private float jumpForce;
 
+	[FormerlySerializedAs("acceleration")]
+	[SerializeField]
+	[Range(0, 500, step: 1f)]
+	private float accelerationFactor;
+	
+	[FormerlySerializedAs("longAcceleration")]
+	[SerializeField]
+	[Range(0, 500, step: 1f)]
+	private float longAccelerationFactor;
+	
+	[FormerlySerializedAs("peakSpeed")]
 	[SerializeField]
 	[Range(0, 100, step: .5f)]
-	private float movementForce;
+	private float speed;
 	
+	[FormerlySerializedAs("longPeakSpeed")]
 	[SerializeField]
-	[Range(0, 3, step: .05f)]
-	private float initialForceMultiplier;
+	[Range(0, 100, step: .5f)]
+	private float longSpeed;
 
 	[SerializeField]
 	[Range(0, 100, step: .5f)]
@@ -62,8 +76,10 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	#region Getters
 
 	public static float JumpForce => Instance.jumpForce;
-	public static float MovementForce => Instance.movementForce;
-	public static float InitialForceMultiplier => Instance.initialForceMultiplier;
+	public static float AccelerationFactor => Instance.accelerationFactor;
+	public static float LongAccelerationFactor => Instance.longAccelerationFactor;
+	public static float Speed => Instance.speed;
+	public static float LongSpeed => Instance.longSpeed;
 	public static float LongJumpForce => Instance.longJumpForce;
 	public static float JumpSpeed => Instance.jumpSpeed;
 	public static float LongJumpSpeed => Instance.longJumpSpeed;

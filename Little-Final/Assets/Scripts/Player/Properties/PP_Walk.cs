@@ -3,6 +3,7 @@ using UnityEngine.Serialization;
 
 namespace Player.Properties
 {
+    //TODO:Refactor these scriptables to unify the movement properties (in a single class) and therefore simplify the code
     [CreateAssetMenu(menuName = "Properties/Player/Walk", fileName = "PP_Walk")]
     public class PP_Walk : SingletonScriptable<PP_Walk>
     {

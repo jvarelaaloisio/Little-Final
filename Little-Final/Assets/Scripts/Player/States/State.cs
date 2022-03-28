@@ -56,7 +56,7 @@ namespace Player.States
 													.5f,
 													PP_Walk.MinSafeAngle))
 			{
-				HorizontalMovementHelper.RotateByDirection(MyTransform, desiredDirection, turnSpeed);
+				HorizontalMovementHelper.Rotate(MyTransform, desiredDirection, turnSpeed);
 				HorizontalMovementHelper.Move(
 														MyTransform,
 														body,

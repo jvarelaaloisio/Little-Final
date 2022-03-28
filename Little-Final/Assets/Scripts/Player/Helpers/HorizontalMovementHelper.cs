@@ -23,7 +23,7 @@ namespace CharacterMovement
 		{
 			if (!(desiredDirection.magnitude > .1f))
 				return;
-			body.MoveHorizontally(transform.forward, speed);
+			body.MoveHorizontally(desiredDirection, speed);
 		}
 
 		public static void MoveByForce(
@@ -34,10 +34,10 @@ namespace CharacterMovement
 		{
 			if (!(desiredDirection.magnitude > .1f))
 				return;
-			body.RequestMovementByForce(new ForceRequest(transform.forward * speed, ForceMode.Acceleration));
+			body.RequestMovementByForce(new ForceRequest(desiredDirection * speed, ForceMode.Force));
 		}
 
-		public static void RotateByDirection(Transform transform, Vector3 desiredDirection, float turnSpeed)
+		public static void Rotate(Transform transform, Vector3 desiredDirection, float turnSpeed)
 		{
 			float rotationAngle = GetRotationAngleBasedOnDirection(transform, desiredDirection, turnSpeed);
 			transform.Rotate(transform.up, rotationAngle);

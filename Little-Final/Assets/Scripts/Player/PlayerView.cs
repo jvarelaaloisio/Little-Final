@@ -24,9 +24,11 @@ namespace Player
 		[Range(0, 100)]
 		public float staminaFollowSpeed;
 
-		[SerializeField] private Vector3 staminaUIOffset;
+		[SerializeField]
+		private Vector3 staminaUIOffset;
 
-		[SerializeField] private Vector3 staminaUIOffsetWhenFlying;
+		[SerializeField]
+		private Vector3 staminaUIOffsetWhenFlying;
 
 		public RectTransform staminaRings;
 		public float staminaRingsScaleWhenFlying;
@@ -65,12 +67,23 @@ namespace Player
 
 		public PlayerController Controller => controller;
 
-		[SerializeField] private PlayerController controller;
-		[SerializeField] private Image blackScreen;
-		[SerializeField] private AnimationCurve screenFade;
-		[SerializeField] private float deathFadeDuration;
+		[SerializeField]
+		private PlayerController controller;
+
+		[SerializeField]
+		private Image blackScreen;
+
+		[SerializeField]
+		private AnimationCurve screenFade;
+
+		[SerializeField]
+		private float deathFadeDuration;
+
 		private int _sceneIndex;
-		[SerializeField] private float shadowMinDot;
+
+		[SerializeField]
+		private float shadowMinDot;
+
 		private static readonly int Activate = Shader.PropertyToID(PONCHO_ACTIVATE_FLOAT);
 
 		private void Start()
@@ -92,13 +105,12 @@ namespace Player
 			staminaUI.ForEach(ui => ui.color = maxStamina);
 			SetStaminaTransparency(1);
 			_staminaOriginalScale = staminaRings.localScale;
-			(_mainCamera = Camera.main)
-				.GetComponent<PostProcessVolume>()
-				.profile
-				.TryGetSettings(
-					out lensDistortionSettings
-				);
-			originalDistorsionIntensity = lensDistortionSettings.intensity;
+			if ((_mainCamera = Camera.main).TryGetComponent(out PostProcessVolume postProcessVolume))
+				if (postProcessVolume.profile.TryGetSettings(out lensDistortionSettings))
+				{
+					originalDistorsionIntensity = lensDistortionSettings.intensity;
+				}
+
 			FadePoncho(0);
 			ponchoTurnOff = new ActionOverTime(ponchoTurnOffTime, FadePoncho, _sceneIndex);
 			UpdateManager.Subscribe(this);
@@ -111,7 +123,7 @@ namespace Player
 				return;
 			Vector3 staminaPosition = _mainCamera.WorldToScreenPoint(transform.position) + staminaUIOffset;
 			staminaRings.position = Vector3.Lerp(staminaRings.position, staminaPosition,
-				Time.deltaTime * staminaFollowSpeed);
+												Time.deltaTime * staminaFollowSpeed);
 		}
 
 		/// <summary>
@@ -146,7 +158,7 @@ namespace Player
 			}
 
 			if (circleQty < 0
-			    || circleQty >= staminaUI.Count)
+				|| circleQty >= staminaUI.Count)
 				return;
 
 			float lastCircleFillAmount = newStaminaAmount % staminaPerCircle;
@@ -213,18 +225,19 @@ namespace Player
 		{
 			animator.CrossFade(deathAnimation, transitionDuration);
 			new ActionOverTime(deathFadeDuration,
-					(lerp) => blackScreen.color = new Color(0, 0, 0, screenFade.Evaluate(lerp)), _sceneIndex, true)
+								(lerp) => blackScreen.color = new Color(0, 0, 0, screenFade.Evaluate(lerp)),
+								_sceneIndex, true)
 				.StartAction();
 		}
 
 		public void SetAccelerationEffect(float lerp)
 		{
 			lensDistortionSettings.intensity.value = Mathf.Lerp(originalDistorsionIntensity, lensDistortionWhenFlying,
-				BezierHelper.GetSinBezier(lerp));
+																BezierHelper.GetSinBezier(lerp));
 			staminaRings.localScale = Vector3.Lerp(_staminaOriginalScale, Vector3.one * staminaRingsScaleWhenFlying,
-				BezierHelper.GetSinBezier(lerp));
+													BezierHelper.GetSinBezier(lerp));
 			staminaRings.anchoredPosition = Vector3.Lerp(_lastStaminaControlledPosition, staminaUIOffsetWhenFlying,
-				BezierHelper.GetSinBezier(lerp));
+														BezierHelper.GetSinBezier(lerp));
 		}
 
 		public void ShowAccelerationFeedback()
@@ -258,12 +271,12 @@ namespace Player
 		private void ShowPlayerShadow()
 		{
 			if (!Physics.Raycast(
-				transform.position,
-				Vector3.down,
-				out RaycastHit hit,
-				100,
-				LayerMask.GetMask("Default", "Floor", "NonClimbable", "OnlyForShadows"),
-				QueryTriggerInteraction.Collide))
+								transform.position,
+								Vector3.down,
+								out RaycastHit hit,
+								100,
+								LayerMask.GetMask("Default", "Floor", "NonClimbable", "OnlyForShadows"),
+								QueryTriggerInteraction.Collide))
 				return;
 			Debug.DrawLine(transform.position, hit.point, Color.white);
 			float shadowSize = Mathf.Clamp(hit.distance, 0, 1);
@@ -289,13 +302,13 @@ namespace Player
 		}
 
 		private void FadePoncho(float lerp) => poncho.SetFloat(Activate, BezierHelper.GetSinBezier(lerp));
-		
+
 		private void OnDrawGizmos()
 		{
 			Gizmos.color = Color.blue;
 			Gizmos.DrawLine(transform.position, controller.LastSafePosition);
 		}
-		
+
 #if UNITY_EDITOR
 		private void OnGUI()
 		{
