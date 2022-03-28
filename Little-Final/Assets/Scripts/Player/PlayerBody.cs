@@ -142,8 +142,9 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 		Debug.Log(Time.fixedDeltaTime);
 		Vector3 goalVelocity = Vector3.Lerp(rb.velocity.IgnoreY(),
 											nextMovement.GetGoalVelocity(),
-											Mathf.Clamp01(nextMovement.AccelerationFactor / 2 + Time.fixedDeltaTime * 3));
-		Vector3 acceleration = (goalVelocity - rb.velocity).IgnoreY() * 10;
+											Mathf.Clamp01(nextMovement.AccelerationFactor / 2));
+		Vector3 acceleration = (goalVelocity - rb.velocity).IgnoreY() * 1000 * Time.fixedDeltaTime;
+		Debug.Log(acceleration.magnitude);
 		rb.AddForce(acceleration, ForceMode.Force);
 	}
 
