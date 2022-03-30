@@ -21,8 +21,7 @@ namespace Player.States
 			body = controller.GetComponent<PlayerBody>();
 			isRunning = false;
 
-			_runningConsumer = new StaminaConsumer(
-													controller.Stamina,
+			_runningConsumer = new StaminaConsumer(controller.Stamina,
 													PP_Walk.RunStaminaPerSecond,
 													sceneIndex);
 
@@ -38,8 +37,7 @@ namespace Player.States
 			if (controller.JumpBuffer)
 			{
 				controller.ResetJumpBuffers();
-				//TODO: Completar bien la llamada
-				// Jump();
+				Jump();
 			}
 		}
 
@@ -76,25 +74,16 @@ namespace Player.States
 											desiredDirection,
 											isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed);
 			}
-
-			//TODO:Remove
-			if (InputManager.CheckLongJumpInput())
-			{
-				// body.Jump(PP_Jump.LongJumpForce);
-				Controller.ChangeState<LongJump>();
-				Controller.OnJump();
-			}
-			else if (InputManager.CheckJumpInput())
-			{
-				Jump(desiredDirection);
-			}
+			
+			if (InputManager.CheckJumpInput())
+				Jump();
 
 			CheckClimb();
 			ValidateGround();
 			Controller.RunAbilityList(Controller.AbilitiesOnLand);
 		}
 
-		private void Jump(Vector3 direction)
+		private void Jump()
 		{
 			// direction *= PP_Jump.InitialForceMultiplier;
 			// direction.y = isRunning ? PP_Jump.LongJumpForce : PP_Jump.JumpForce;

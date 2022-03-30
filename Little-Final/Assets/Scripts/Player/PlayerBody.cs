@@ -126,17 +126,17 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 		// Debug.DrawRay(transform.position, rb.velocity / 3, Color.cyan);
 		// ControlJump();
 		// AccelerateFall();
-		// // ProcessForceRequests();
 		// ProcessMovementRequests();
-		// if (rb.velocity.magnitude > maxSpeed)
-		// 	rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
 	}
 
 	private void FixedUpdate()
 	{
 		ControlJump();
 		AccelerateFall();
+		ProcessForceRequests();
 		ProcessMovementRequests();
+		// if (rb.velocity.magnitude > maxSpeed)
+		// 	rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
 		
 	}
 
@@ -196,6 +196,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 			newVel.y = 0;
 			// rb.velocity = newVel;
 			rb.velocity = Vector3.zero;
+			Debug.Log(_jumpForce);
 			rb.AddForce(_jumpForce, ForceMode.Impulse);
 			//Event
 			BodyEvents?.Invoke(BodyEvent.JUMP);
