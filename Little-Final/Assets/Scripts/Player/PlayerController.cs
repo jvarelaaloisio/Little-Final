@@ -42,6 +42,16 @@ namespace Player
 		[SerializeField]
 		private Transform climbCheckPivot;
 
+		[Header("Interactions")]
+		[SerializeField]
+		private Transform interactionHelper;
+
+		[SerializeField]
+		private float interactionCheckRadius;
+
+		[SerializeField]
+		private LayerMask interactableLayer;
+
 		IPickable _itemPicked;
 		IBody body;
 		DamageHandler damageHandler;
@@ -66,6 +76,10 @@ namespace Player
 		public Vector3 LastSafePosition => _lastSafePosition;
 
 		public Transform ClimbCheckPivot => climbCheckPivot;
+
+		public Transform InteractionHelper => interactionHelper;
+
+		public float InteractionCheckRadius => interactionCheckRadius;
 
 		#endregion
 
@@ -114,11 +128,13 @@ namespace Player
 
 		public void OnUpdate()
 		{
-			if (Input.GetButtonDown("RefillStamina"))
+#if UNITY_EDITOR
+			if (Input.GetKeyDown(KeyCode.O))
 			{
 				stamina.UpgradeMaxStamina(400);
 				stamina.RefillCompletely();
 			}
+#endif
 
 			state.OnStateUpdate();
 		}
@@ -147,30 +163,6 @@ namespace Player
 			LongJumpBuffer = false;
 		}
 
-		/// <summary>
-		/// Reads the input and moves the player horizontally
-		/// </summary>
-		public void MoveByForce(float speed, float turnSpeed)
-		{
-			Vector2 input = InputManager.GetHorInput();
-
-			Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
-
-			if (HorizontalMovementHelper.IsSafeAngle(
-													_myTransform.position,
-													desiredDirection.normalized,
-													.5f,
-													PP_Walk.MinSafeAngle))
-			{
-				HorizontalMovementHelper.Rotate(_myTransform, desiredDirection, turnSpeed);
-				HorizontalMovementHelper.MoveByForce(
-													_myTransform,
-													body,
-													desiredDirection,
-													speed);
-			}
-		}
-
 		#region EventHandlers
 
 		private void UpgradeStamina()
@@ -189,5 +181,24 @@ namespace Player
 		}
 
 		#endregion
+
+		public bool CanInteract(out IInteractable interactable)
+		{
+			Collider[] results = new Collider[1];
+			if (Physics.OverlapSphereNonAlloc(interactionHelper.position, interactionCheckRadius, results,
+											interactableLayer) > 0)
+			{
+				results[0].TryGetComponent(out interactable);
+				return results[0] != null;
+			}
+			interactable = null;
+			return false;
+		}
+
+		public void Mount(Transform mount)
+		{
+			_myTransform.SetParent(mount);
+			_myTransform.SetPositionAndRotation(mount.position, mount.rotation);
+		}
 	}
 }

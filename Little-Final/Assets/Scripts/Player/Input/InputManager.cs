@@ -16,7 +16,7 @@ namespace Player.PlayerInput
 				InputReader = new MobileInput();
 			else
 				InputReader = new DesktopInput();
-		} 
+		}
 		#endregion
 
 		public static Vector2 GetHorInput()
@@ -42,5 +42,10 @@ namespace Player.PlayerInput
 
 		public static bool CheckThrowInput()
 			=> InputReader.GetThrowInput();
+
+		public static bool CheckInteractInput()
+		{
+			return InputReader.GetInteractInput();
+		}
 	}
 }

@@ -43,6 +43,7 @@ namespace Player.States
 
 		public override void OnStateUpdate()
 		{
+			//------- MOVEMENT ------- 
 			Vector2 input = InputManager.GetHorInput();
 
 			Controller.OnChangeSpeed(Mathf.Abs(input.normalized.magnitude / 2));
@@ -78,7 +79,16 @@ namespace Player.States
 			if (InputManager.CheckJumpInput())
 				Jump();
 
-			CheckClimb();
+			if (InputManager.CheckInteractInput() && Controller.CanInteract(out IInteractable interactable))
+			{
+				if (interactable is IRideable)
+				{
+					IRideable rideable = (IRideable)interactable;
+					Controller.Mount(rideable.GetMount());
+				}
+				
+			}
+			
 			ValidateGround();
 			Controller.RunAbilityList(Controller.AbilitiesOnLand);
 		}
