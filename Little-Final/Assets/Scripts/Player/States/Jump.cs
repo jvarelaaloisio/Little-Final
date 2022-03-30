@@ -58,7 +58,7 @@ namespace Player.States
 
 		public override void OnStateExit()
 		{
-			//-- Debería irse cuando refactorize para que el controller haga los cambios
+			//-- Deberia irse cuando refactorice para que el controller haga los cambios
 			_waitBeforeGlide.StopTimer();
 			//-- A glide
 			Controller.OnGlideChanges(false);

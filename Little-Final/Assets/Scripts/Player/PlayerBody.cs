@@ -59,9 +59,8 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	AudioManager audioManager;
 
 	Rigidbody rb;
-	private readonly Queue<ForceRequest> forceRequests = new Queue<ForceRequest>();
-	private ForceRequest nextMovementByForceRequest;
-	private MovementRequest nextMovement;
+	private readonly Queue<ForceRequest> _forceRequests = new Queue<ForceRequest>();
+	private MovementRequest _nextMovement;
 	private Vector3 _jumpForce;
 	private GameObject lastFloor;
 	ContactPoint lastContact;
@@ -109,8 +108,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 
 	private void Awake()
 	{
-		nextMovementByForceRequest = _invalidRequest;
-		nextMovement = MovementRequest.InvalidRequest;
+		_nextMovement = MovementRequest.InvalidRequest;
 	}
 
 	void Start()
@@ -142,17 +140,9 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 
 	private void ProcessMovementRequests()
 	{
-		if(!nextMovement.IsValid())
+		if(!_nextMovement.IsValid())
 			return;
-		// Vector3 goalVelocity = Vector3.MoveTowards(rb.velocity.IgnoreY(),
-		// 											nextMovement.GetPeakVelocity(),
-		// 											nextMovement.Acceleration * Time.fixedDeltaTime);
-		// Debug.Log(Time.fixedDeltaTime);
-		// Vector3 goalVelocity = Vector3.Lerp(rb.velocity.IgnoreY(),
-		// 									nextMovement.GetGoalVelocity(),
-		// 									Mathf.Clamp01(nextMovement.AccelerationFactor / 2));
-		Vector3 acceleration = (nextMovement.GetGoalVelocity() - rb.velocity).IgnoreY() * 1000 * Time.fixedDeltaTime;
-		Debug.Log("added Force");
+		Vector3 acceleration = (_nextMovement.GetGoalVelocity() - rb.velocity).IgnoreY() * 1000 * Time.fixedDeltaTime;
 		rb.AddForce(acceleration, ForceMode.Force);
 	}
 
@@ -165,9 +155,9 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	/// </summary>
 	private void ProcessForceRequests()
 	{
-		while (forceRequests.Count > 0)
+		while (_forceRequests.Count > 0)
 		{
-			var current = forceRequests.Dequeue();
+			var current = _forceRequests.Dequeue();
 			rb.AddForce(current.Force, current.ForceMode);
 		}
 	}
@@ -192,11 +182,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 		{
 			flags[Flag.JUMP_REQUEST] = false;
 			//Physics
-			Vector3 newVel = rb.velocity;
-			newVel.y = 0;
-			// rb.velocity = newVel;
 			rb.velocity = Vector3.zero;
-			Debug.Log(_jumpForce);
 			rb.AddForce(_jumpForce, ForceMode.Impulse);
 			//Event
 			BodyEvents?.Invoke(BodyEvent.JUMP);
@@ -278,15 +264,18 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	/// Adds a push to a queue, which will be processed on the next FixedUpdate
 	/// </summary>
 	/// <param name="request"></param>
-	public void RequestForce(ForceRequest request) => forceRequests.Enqueue(request);
+	public void RequestForce(ForceRequest request) => _forceRequests.Enqueue(request);
 
 	/// <summary>
 	/// sets the next force to add as simple movement when the fixed update runs.
 	/// The body will only move with the last request added when the fixed update comes.
 	/// </summary>
 	/// <param name="request"></param>
-	public void RequestMovementByForce(ForceRequest request) => nextMovementByForceRequest = request;
-	public void RequestMovement(MovementRequest request) => nextMovement = request;
+	public void RequestMovementByForce(ForceRequest request)
+	{
+	}
+
+	public void RequestMovement(MovementRequest request) => _nextMovement = request;
 
 	public void Push(Vector3 directionNormalized, float force)
 	{

@@ -4,7 +4,7 @@ public class DesktopInput : IPlayerInput
 {
 	public Vector2 GetHorInput()
 	{
-		return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+		return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
 	}
 
 	public bool GetClimbInput()

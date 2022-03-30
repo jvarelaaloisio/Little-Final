@@ -85,9 +85,6 @@ namespace Player.States
 
 		private void Jump()
 		{
-			// direction *= PP_Jump.InitialForceMultiplier;
-			// direction.y = isRunning ? PP_Jump.LongJumpForce : PP_Jump.JumpForce;
-			// body.Jump(direction);
 			body.Jump(Vector3.up * (isRunning ? PP_Jump.LongJumpForce : PP_Jump.JumpForce));
 			if (isRunning)
 			{

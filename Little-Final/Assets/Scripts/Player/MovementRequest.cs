@@ -9,10 +9,7 @@ namespace Player
 		/// Direction of the movement
 		/// </summary>
 		public readonly Vector3 Direction;
-		/// <summary>
-		/// Value between 0 and 1.
-		/// </summary>
-		public readonly float AccelerationFactor;
+
 		/// <summary>
 		/// Goal Speed for the movement
 		/// </summary>
@@ -23,7 +20,6 @@ namespace Player
 		public MovementRequest(Vector3 direction, float accelerationFactor, float goalSpeed)
 		{
 			Direction = direction;
-			AccelerationFactor = accelerationFactor;
 			GoalSpeed = goalSpeed;
 		}
 
@@ -33,7 +29,7 @@ namespace Player
 
 		public bool Equals(MovementRequest other)
 		{
-			return Direction.Equals(other.Direction) && AccelerationFactor.Equals(other.AccelerationFactor) && GoalSpeed.Equals(other.GoalSpeed);
+			return Direction.Equals(other.Direction) && GoalSpeed.Equals(other.GoalSpeed);
 		}
 
 		public override bool Equals(object obj)
@@ -46,7 +42,6 @@ namespace Player
 			unchecked
 			{
 				var hashCode = Direction.GetHashCode();
-				hashCode = (hashCode * 397) ^ AccelerationFactor.GetHashCode();
 				hashCode = (hashCode * 397) ^ GoalSpeed.GetHashCode();
 				return hashCode;
 			}
