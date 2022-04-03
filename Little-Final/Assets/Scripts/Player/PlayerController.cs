@@ -80,6 +80,7 @@ namespace Player
 		public Transform InteractionHelper => interactionHelper;
 
 		public float InteractionCheckRadius => interactionCheckRadius;
+		public IRideable Rideable { get; private set; }
 
 		#endregion
 
@@ -186,7 +187,7 @@ namespace Player
 		{
 			Collider[] results = new Collider[1];
 			if (Physics.OverlapSphereNonAlloc(interactionHelper.position, interactionCheckRadius, results,
-											interactableLayer) > 0)
+											interactableLayer, QueryTriggerInteraction.Collide) > 0)
 			{
 				results[0].TryGetComponent(out interactable);
 				return results[0] != null;
@@ -195,10 +196,17 @@ namespace Player
 			return false;
 		}
 
-		public void Mount(Transform mount)
+		public void Mount(IRideable rideable)
 		{
+			Rideable = rideable;
+			Transform mount = rideable.GetMount();
 			_myTransform.SetParent(mount);
 			_myTransform.SetPositionAndRotation(mount.position, mount.rotation);
+		}
+
+		public void Dismount()
+		{
+			transform.SetParent(null);
 		}
 	}
 }

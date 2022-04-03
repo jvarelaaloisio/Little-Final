@@ -12,7 +12,10 @@ public class CheckPoint : MonoBehaviour
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.TryGetComponent<PlayerController>(out var controller))
+		{
+Debug.Log($"updated checkpoint to pos: {safePoint} and rot: {safeRotation}");			
 			controller.SaveSafeState(safePoint, safeRotation);
+		}
 	}
 
 	private void OnDrawGizmos()

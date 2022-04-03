@@ -52,6 +52,14 @@ namespace Player.States
 			CheckForJumpBuffer();
 			Controller.RunAbilityList(Controller.AbilitiesInAir);
 			
+			if (InputManager.CheckInteractInput()
+				&& Controller.CanInteract(out IInteractable interactable)
+				&& interactable is IRideable)
+			{
+				IRideable rideable = (IRideable)interactable;
+				Controller.Mount(rideable);
+				Controller.ChangeState<Ride>();
+			}
 		}
 
 		public override void OnStateExit()

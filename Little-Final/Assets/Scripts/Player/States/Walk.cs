@@ -84,7 +84,8 @@ namespace Player.States
 				if (interactable is IRideable)
 				{
 					IRideable rideable = (IRideable)interactable;
-					Controller.Mount(rideable.GetMount());
+					Controller.Mount(rideable);
+					Controller.ChangeState<Ride>();
 				}
 				
 			}
