@@ -48,16 +48,16 @@ namespace Player.States
 		{
 			Vector2 input = InputManager.GetHorInput();
 
-			Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
+			Vector3 desiredDirection = MoveHelper.GetDirection(input);
 
-			if (HorizontalMovementHelper.IsSafeAngle(
+			if (MoveHelper.IsSafeAngle(
 													MyTransform.position,
 													desiredDirection.normalized,
 													.5f,
 													PP_Walk.MinSafeAngle))
 			{
-				HorizontalMovementHelper.Rotate(MyTransform, desiredDirection, turnSpeed);
-				HorizontalMovementHelper.Move(
+				MoveHelper.Rotate(MyTransform, desiredDirection, turnSpeed);
+				MoveHelper.Move(
 														MyTransform,
 														body,
 														desiredDirection,

@@ -82,9 +82,9 @@ namespace Player.States
 			else
 			{
 				Vector2 input = InputManager.GetHorInput();
-				Vector3 direction = HorizontalMovementHelper.GetDirection(input);
-				HorizontalMovementHelper.Rotate(MyTransform, direction, PP_Glide.TurnSpeed);
-				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Glide.AccelerationFactor, PP_Glide.Speed));
+				Vector3 direction = MoveHelper.GetDirection(input);
+				MoveHelper.Rotate(MyTransform, direction, PP_Glide.TurnSpeed);
+				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Glide.Speed));
 				// Controller.MoveByForce(PP_Glide.Force, PP_Glide.TurnSpeed);
 			}
 		}

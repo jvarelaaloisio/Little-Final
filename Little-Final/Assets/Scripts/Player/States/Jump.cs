@@ -45,9 +45,9 @@ namespace Player.States
 			else
 			{
 				Vector2 input = InputManager.GetHorInput();
-				Vector3 direction = HorizontalMovementHelper.GetDirection(input);
-				HorizontalMovementHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedInTheAir);
-				Body.RequestMovement(new MovementRequest(MyTransform.forward * input.magnitude, PP_Jump.AccelerationFactor, PP_Jump.Speed));
+				Vector3 direction = MoveHelper.GetDirection(input);
+				MoveHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedInTheAir);
+				Body.RequestMovement(new MovementRequest(MyTransform.forward * input.magnitude, PP_Jump.Speed));
 			}
 
 			CheckForJumpBuffer();

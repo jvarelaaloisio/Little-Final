@@ -19,9 +19,9 @@ namespace Player.States
 			{
 				//---------------------------------
 				Vector2 input = InputManager.GetHorInput();
-				Vector3 direction = HorizontalMovementHelper.GetDirection(input);
-				HorizontalMovementHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedLongJump);
-				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Jump.LongAccelerationFactor, PP_Jump.LongSpeed));
+				Vector3 direction = MoveHelper.GetDirection(input);
+				MoveHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedLongJump);
+				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Jump.LongSpeed));
 				//---------------------------------
 			}
 

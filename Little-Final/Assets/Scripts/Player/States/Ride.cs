@@ -25,7 +25,7 @@ namespace Player.States
 		public override void OnStateUpdate()
 		{
 			var input = InputManager.GetHorInput();
-			var direction = HorizontalMovementHelper.GetDirection(input);
+			var direction = MoveHelper.GetDirection(input);
 			Controller.Rideable.Move(direction);
 			if (InputManager.CheckRunInput())
 			{
@@ -33,7 +33,7 @@ namespace Player.States
 			}
 			if (InputManager.CheckInteractInput())
 			{
-				Controller.Body.Jump(Vector3.up * PP_Jump.JumpForce - MyTransform.forward * PP_Jump.JumpForce * 5);
+				Controller.Body.Jump(Vector3.up * PP_Jump.JumpForce - MyTransform.forward * PP_Jump.JumpForce);
 				Controller.ChangeState<Jump>();
 			}
 		}

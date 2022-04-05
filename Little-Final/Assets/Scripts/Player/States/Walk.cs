@@ -48,10 +48,10 @@ namespace Player.States
 
 			Controller.OnChangeSpeed(Mathf.Abs(input.normalized.magnitude / 2));
 
-			Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
+			Vector3 desiredDirection = MoveHelper.GetDirection(input);
 			Debug.DrawRay(MyTransform.position, desiredDirection.normalized / 3, Color.green);
 
-			if (HorizontalMovementHelper.IsSafeAngle(MyTransform.position, desiredDirection.normalized, .3f,
+			if (MoveHelper.IsSafeAngle(MyTransform.position, desiredDirection.normalized, .3f,
 													PP_Walk.MinSafeAngle))
 			{
 				if (input.magnitude > .1f && InputManager.CheckRunInput() && Controller.Stamina.FillState > 0)
@@ -67,10 +67,10 @@ namespace Player.States
 					isRunning = false;
 				}
 
-				HorizontalMovementHelper.Rotate(MyTransform,
+				MoveHelper.Rotate(MyTransform,
 															desiredDirection,
 															desiredDirection.magnitude * PP_Walk.TurnSpeed);
-				HorizontalMovementHelper.Move(MyTransform,
+				MoveHelper.Move(MyTransform,
 											body,
 											desiredDirection,
 											isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed);
