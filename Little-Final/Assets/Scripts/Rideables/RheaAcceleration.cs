@@ -18,43 +18,37 @@ namespace Rideables
 		[SerializeField]
 		private float torque;
 
-		[Header("sprint")]
 		[SerializeField]
-		private float sprintDuration;
+		private float breakCooldown;
 
 		[SerializeField]
-		private float sprintSpeed;
-
-		[SerializeField]
-		private float sprintCooldownTime;
-
+		private float breakMultiplier;
+		
 		private Rigidbody _rigidbody;
 		private float _sprintState = 1;
 		private ActionOverTime _sprint;
-		private CountDownTimer _sprintCooldown;
+		private CountDownTimer _breakCooling;
 		private MovementRequest _nextMovement;
 		private Vector3 direction;
+
 		private void Awake()
 		{
-			_sprint = new ActionOverTime(sprintDuration,
-										lerp => _sprintState = lerp,
-										gameObject.scene.buildIndex,
-										true);
-			_sprintCooldown = new CountDownTimer(sprintCooldownTime,
-												delegate { }, 
+			_breakCooling = new CountDownTimer(breakCooldown,
+												delegate { },
 												gameObject.scene.buildIndex);
 			_rigidbody = GetComponent<Rigidbody>();
 		}
 
 		private void FixedUpdate()
 		{
-			if(!_nextMovement.IsValid())
+			if (!_nextMovement.IsValid())
 				return;
-			
+
 			float rotation = MoveHelper.GetRotationAngleBasedOnDirection(transform, direction, torque);
 			_rigidbody.AddTorque(Vector3.up * rotation, ForceMode.Force);
-			
-			Vector3 acceleration = (_nextMovement.GetGoalVelocity() - _rigidbody.velocity).IgnoreY() * 1000 * Time.fixedDeltaTime;
+
+			Vector3 acceleration = (_nextMovement.GetGoalVelocity() - _rigidbody.velocity).IgnoreY() * 1000 *
+									Time.fixedDeltaTime;
 			_rigidbody.AddForce(acceleration, ForceMode.Force);
 		}
 
@@ -65,24 +59,25 @@ namespace Rideables
 
 		public void Move(Vector3 direction)
 		{
-			if (direction.magnitude < .1f)
+			if (direction.magnitude < .1f || _breakCooling.IsTicking)
 			{
 				_nextMovement = MovementRequest.InvalidRequest;
 				return;
 			}
+
 			MoveHelper.Rotate(transform, direction, torque);
-			
+
 			this.direction = direction;
-			float currSpeed = Mathf.Lerp(sprintSpeed, speed, _sprintState);
-			_nextMovement = new MovementRequest(transform.forward, currSpeed);
+			_nextMovement = new MovementRequest(transform.forward, speed);
 		}
 
 		public void UseAbility()
 		{
-			if (!_sprintCooldown.IsTicking)
+			//TODO:Que frene solo estando en el piso
+			if (!_breakCooling.IsTicking)
 			{
-				_sprintCooldown.StartTimer();
-				_sprint.StartAction();
+				_breakCooling.StartTimer();
+				_rigidbody.AddForce(-_rigidbody.velocity.IgnoreY(), ForceMode.VelocityChange);
 			}
 		}
 	}
