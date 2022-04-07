@@ -1,4 +1,5 @@
 ﻿using CharacterMovement;
+using Core.Interactions;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
@@ -52,7 +53,7 @@ namespace Player.States
 			Debug.DrawRay(MyTransform.position, desiredDirection.normalized / 3, Color.green);
 
 			if (MoveHelper.IsSafeAngle(MyTransform.position, desiredDirection.normalized, .3f,
-													PP_Walk.MinSafeAngle))
+										PP_Walk.MinSafeAngle))
 			{
 				if (input.magnitude > .1f && InputManager.CheckRunInput() && Controller.Stamina.FillState > 0)
 				{
@@ -68,28 +69,37 @@ namespace Player.States
 				}
 
 				MoveHelper.Rotate(MyTransform,
-															desiredDirection,
-															desiredDirection.magnitude * PP_Walk.TurnSpeed);
+								desiredDirection,
+								desiredDirection.magnitude * PP_Walk.TurnSpeed);
 				MoveHelper.Move(MyTransform,
-											body,
-											desiredDirection,
-											isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed);
+								body,
+								desiredDirection,
+								isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed);
 			}
-			
+
 			if (InputManager.CheckJumpInput())
 				Jump();
 
-			if (InputManager.CheckInteractInput() && Controller.CanInteract(out IInteractable interactable))
+			if (InputManager.CheckInteractInput())
 			{
-				if (interactable is IRideable)
+				if (Controller.HasItem())
 				{
-					IRideable rideable = (IRideable)interactable;
+					if (isRunning)
+						Controller.ThrowItem(PP_Walk.ThrowForce);
+					else
+						Controller.ReleaseItem();
+				}
+				else if (Controller.CanPick(out IPickable pickable))
+				{
+					Controller.Pick(pickable);
+				}
+				else if (Controller.CanMount(out IRideable rideable))
+				{
 					Controller.Mount(rideable);
 					Controller.ChangeState<Ride>();
 				}
-				
 			}
-			
+
 			ValidateGround();
 			Controller.RunAbilityList(Controller.AbilitiesOnLand);
 		}
@@ -112,6 +122,8 @@ namespace Player.States
 		{
 			coyoteEffect.StopTimer();
 			_runningConsumer.Stop();
+			if (Controller.HasItem())
+				Controller.ReleaseItem();
 		}
 
 		private void OnCoyoteFinished()

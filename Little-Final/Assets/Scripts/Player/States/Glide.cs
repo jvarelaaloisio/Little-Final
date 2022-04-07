@@ -1,4 +1,5 @@
 using CharacterMovement;
+using Core.Interactions;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
@@ -53,7 +54,7 @@ namespace Player.States
 			Controller.RunAbilityList(Controller.AbilitiesInAir);
 			
 			if (InputManager.CheckInteractInput()
-				&& Controller.CanInteract(out IInteractable interactable)
+				&& Controller.CanMount(out IRideable interactable)
 				&& interactable is IRideable)
 			{
 				IRideable rideable = (IRideable)interactable;

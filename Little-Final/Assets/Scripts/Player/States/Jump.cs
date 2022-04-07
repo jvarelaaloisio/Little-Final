@@ -1,4 +1,5 @@
 ﻿using CharacterMovement;
+using Core.Interactions;
 using Player.PlayerInput;
 using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
@@ -56,7 +57,7 @@ namespace Player.States
 			CheckGlide();
 			
 			if (InputManager.CheckInteractInput()
-				&& Controller.CanInteract(out IInteractable interactable)
+				&& Controller.CanMount(out var interactable)
 				&& interactable is IRideable)
 			{
 				IRideable rideable = (IRideable)interactable;

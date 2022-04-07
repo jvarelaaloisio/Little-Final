@@ -1,29 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Core.Interactions;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
 public class Pickable_Item : MonoBehaviour, IPickable
 {
-	#region Variables
-
-	#region Constant
-	const int PICKABLE_LAYER = 16;
-	#endregion
-
-	#region Private
 	Rigidbody _rb;
 	Transform _originalFather,
 		_picker;
-	#endregion
-
-	#endregion
 
 	#region Unity
 	void Start()
     {
-		this.gameObject.layer = PICKABLE_LAYER;
 		_originalFather = transform.parent;
 		_rb = GetComponent<Rigidbody>();
     }
@@ -32,9 +20,10 @@ public class Pickable_Item : MonoBehaviour, IPickable
 	#region Public
 	public void Pick(Transform picker)
 	{
+		Debug.Log("PICKED");
 		_picker = picker;
 		transform.SetParent(picker);
-		transform.position = picker.position + picker.up * 1.2f;
+		transform.position = picker.position + picker.up * 1f;
 		_rb.isKinematic = true;
 	}
 

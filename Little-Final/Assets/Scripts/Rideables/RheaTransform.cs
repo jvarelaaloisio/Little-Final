@@ -1,68 +1,24 @@
-﻿using System;
-using CharacterMovement;
+using Core.Movement;
 using Player;
-using UnityEngine;
-using VarelaAloisio.UpdateManagement.Runtime;
 
 namespace Rideables
 {
-	[RequireComponent(typeof(Rigidbody))]
-	public class RheaTransform : MonoBehaviour, IRideable
+	public class RheaTransform : Rhea
 	{
-		[SerializeField]
-		private float speed;
-
-		[SerializeField]
-		private Transform mount;
-
-		[SerializeField]
-		private float turnSpeed;
-
-		[Header("sprint")]
-		[SerializeField]
-		private float sprintDuration;
-
-		[SerializeField]
-		private float sprintSpeed;
-
-		[SerializeField]
-		private float sprintCooldownTime;
-
-		private float _sprintMultiplier = 1;
-		private ActionOverTime _sprint;
-		private CountDownTimer _sprintCooldown;
-
-		private void Awake()
+		protected override void Awake()
 		{
-			_sprint = new ActionOverTime(sprintDuration,
-										lerp => _sprintMultiplier = lerp,
-										gameObject.scene.buildIndex,
-										true);
-			_sprintCooldown = new CountDownTimer(sprintCooldownTime,
-												delegate { }, 
-												gameObject.scene.buildIndex);
+			base.Awake();
+			onBroke.AddListener(() => Movement.Speed = base.speed);
 		}
 
-		public Transform GetMount()
+		protected override void InitializeMovement(out IMovement movement, float speed)
 		{
-			return mount;
+			movement = new MovementThroughTransform(speed);
 		}
 
-		public void Move(Vector3 direction)
+		protected override void Break()
 		{
-			MoveHelper.Rotate(transform, direction, turnSpeed);
-
-			float currentSpeed = Mathf.Lerp(sprintSpeed, speed, _sprintMultiplier);
-			transform.position += transform.forward * direction.magnitude * currentSpeed * Time.deltaTime;
-		}
-
-		public void UseAbility()
-		{
-			if (!_sprintCooldown.IsTicking)
-			{
-				_sprintCooldown.StartTimer();
-				_sprint.StartAction();
-			}
+			Movement.Speed = 0;
 		}
 	}
 }
