@@ -22,7 +22,7 @@ namespace Platforms
 			set => rotation = value.eulerAngles;
 		}
 
-		public void ApplyData(ref Transform transform)
+		public void ApplyDataTo(Transform transform)
 		{
 			transform.localPosition = position;
 			transform.rotation = Rotation;

@@ -1,8 +1,8 @@
-﻿using CharacterMovement;
+﻿using System.Collections;
+using CharacterMovement;
 using Core.Extensions;
 using Player;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace Core.Movement
 {
@@ -11,40 +11,36 @@ namespace Core.Movement
 		public float Speed { get; set; }
 
 		private readonly Rigidbody _rigidbody;
-		private MovementRequest _nextMovement;
+		private readonly WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
+		private MonoBehaviour _mono;
 
-		public MovementThroughForce(AdvancedMonoBehaviour mono, Rigidbody rigidbody, float speed)
+		public MovementThroughForce(MonoBehaviour mono, Rigidbody rigidbody, float speed)
 		{
-			mono.OnFixedUpdate += FixedUpdate;
+			_mono = mono;
 			_rigidbody = rigidbody;
 			Speed = speed;
-			_nextMovement = MovementRequest.InvalidRequest;
 		}
 
 		public void Move(Transform transform, Vector3 direction)
 		{
+			_mono.StopCoroutine(nameof(MoveInFixedUpdate));
 			if (direction.magnitude < .1f)
-			{
-				_nextMovement = MovementRequest.InvalidRequest;
 				return;
-			}
-
-			_nextMovement = new MovementRequest(transform.forward, Speed);
+			
+			_mono.StartCoroutine(MoveInFixedUpdate(new MovementRequest(transform.forward, Speed)));
 		}
 
 		public void Rotate(Transform transform, Vector3 direction, float torque)
 		{
-			if (_nextMovement.IsValid())
+			if(_rigidbody.velocity.IgnoreY().magnitude >= 0)
 				MoveHelper.Rotate(transform, direction, torque);
 		}
 
-		private void FixedUpdate(MonoBehaviour mono, float fixedDeltaTime)
+		private IEnumerator MoveInFixedUpdate(MovementRequest movement)
 		{
-			if (!_nextMovement.IsValid())
-				return;
-
-			Vector3 acceleration = (_nextMovement.GetGoalVelocity() - _rigidbody.velocity).IgnoreY()
-									* (1000 * fixedDeltaTime);
+			yield return _waitForFixedUpdate;
+			Vector3 acceleration = (movement.GetGoalVelocity() - _rigidbody.velocity).IgnoreY()
+									* (1000 * Time.fixedDeltaTime);
 			_rigidbody.AddForce(acceleration, ForceMode.Force);
 		}
 	}

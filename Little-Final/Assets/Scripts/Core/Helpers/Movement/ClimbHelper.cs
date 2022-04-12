@@ -23,7 +23,8 @@ namespace CharacterMovement
 				direction,
 				out hit,
 				maxDistance,
-				~LayerMask.GetMask("NonClimbable", "Interactable")))
+				//TODO:Esto esta hardcodeado la concha de tu hermana
+				~LayerMask.GetMask("NonClimbable", "Interactable", "Fruit")))
 			{
 				Debug.DrawLine(position, hit.point, Color.white);
 				return hit.normal.y * Mathf.Rad2Deg <= Mathf.Abs(maxDegrees);

@@ -739,7 +739,8 @@ MonoBehaviour:
   interactionCheckRadius: 0.47
   interactableLayer:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 270336
+  shouldLogTransitions: 0
 --- !u!114 &6687177953548559737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -909,9 +910,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2ac09a6a0c106245bbee3dd142bebca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _controller: {fileID: 6687177953548559742}
+  controller: {fileID: 6687177953548559742}
   showInteractionBubble: 1
-  interactionBubbleColor: {r: 0, g: 0.72156864, b: 0.241, a: 0.6666667}
+  interactionBubbleColorNothing: {r: 0.75, g: 0.75, b: 0.15, a: 0.5}
+  interactionBubbleColorRideable: {r: 0, g: 0.25, b: 0.75, a: 0.5}
+  interactionBubbleColorPickable: {r: 0, g: 0.75, b: 0.25, a: 0.5}
 --- !u!1 &6898763842379415106
 GameObject:
   m_ObjectHideFlags: 0

@@ -89,14 +89,18 @@ namespace Player.States
 					else
 						Controller.ReleaseItem();
 				}
-				else if (Controller.CanPick(out IPickable pickable))
+				else if (Controller.CanInteract(out var interactable))
 				{
-					Controller.Pick(pickable);
-				}
-				else if (Controller.CanMount(out IRideable rideable))
-				{
-					Controller.Mount(rideable);
-					Controller.ChangeState<Ride>();
+					switch (interactable)
+					{
+						case IPickable pickable:
+							Controller.Pick(pickable);
+							break;
+						case IRideable rideable:
+							Controller.Mount(rideable);
+							Controller.ChangeState<Ride>();
+							break;
+					}
 				}
 			}
 

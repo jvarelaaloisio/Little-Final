@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using CharacterMovement;
+using Core.Extensions;
 using Core.Interactions;
 using Player.Abilities;
-using Player.PlayerInput;
-using Player.Properties;
 using Player.States;
 using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
@@ -12,7 +10,6 @@ using Void = Player.States.Void;
 
 namespace Player
 {
-	[RequireComponent(typeof(DamageHandler))]
 	public class PlayerController : MonoBehaviour, IUpdateable, IDamageable
 	{
 		public delegate void StateCallback(State state);
@@ -52,6 +49,10 @@ namespace Player
 
 		[SerializeField]
 		private LayerMask interactableLayer;
+
+		[Header("Debug")]
+		[SerializeField]
+		private bool shouldLogTransitions = false;
 
 		IPickable _itemPicked;
 		IBody body;
@@ -96,7 +97,7 @@ namespace Player
 												OnPickCollectable);
 			UpdateManager.Subscribe(this);
 			body = GetComponent<IBody>();
-			damageHandler.onLifeChanged += OnLifeChanged;
+			damageHandler = new DamageHandler(PP_Stats.LifePoints, PP_Stats.ImmunityTime, OnLifeChanged, _sceneIndex);
 			stamina = new Stamina.Stamina(
 										PP_Stats.InitialStamina,
 										PP_Stats.StaminaRefillDelay,
@@ -112,7 +113,8 @@ namespace Player
 		{
 			state.OnStateExit();
 			state = new T();
-			// Debug.Log($"{name}changed to state: {state.GetType()}");
+			if (shouldLogTransitions)
+				Debug.Log($"{name}changed to state: {state.GetType()}");
 			OnStateChanges(state);
 			state.OnStateEnter(this, SceneIndex);
 		}
@@ -184,9 +186,9 @@ namespace Player
 
 		#endregion
 
-		public bool CanMount(out IRideable rideable)
+		public bool CanInteract(out IInteractable interactable)
 		{
-			Collider[] results = new Collider[1];
+			Collider[] results = new Collider[5];
 			if (Physics.OverlapSphereNonAlloc(interactionHelper.position,
 											interactionCheckRadius,
 											results,
@@ -195,24 +197,55 @@ namespace Player
 			{
 				foreach (Collider current in results)
 				{
-					current.TryGetComponent(out rideable);
-					if (rideable != null) return true;
+					if(!current)
+						break;
+					if(current.TryGetComponent(out interactable))
+						return true;
+				}
+			}
+
+			interactable = null;
+			return false;
+		}
+		[Obsolete]
+		public bool CanMount(out IRideable rideable)
+		{
+			Collider[] results = new Collider[5];
+			if (Physics.OverlapSphereNonAlloc(interactionHelper.position,
+											interactionCheckRadius,
+											results,
+											interactableLayer,
+											QueryTriggerInteraction.Collide) > 0)
+			{
+				foreach (Collider current in results)
+				{
+					if(!current)
+						break;
+					if(current.TryGetComponent(out rideable))
+						return true;
 				}
 			}
 
 			rideable = null;
 			return false;
 		}
+
+		[Obsolete]
 		public bool CanPick(out IPickable pickable)
 		{
-			Collider[] results = new Collider[1];
-			if (Physics.OverlapSphereNonAlloc(interactionHelper.position, interactionCheckRadius, results,
-											interactableLayer) > 0)
+			Collider[] results = new Collider[5];
+			if (Physics.OverlapSphereNonAlloc(interactionHelper.position,
+											interactionCheckRadius,
+											results,
+											interactableLayer,
+											QueryTriggerInteraction.Collide) > 0)
 			{
 				foreach (Collider current in results)
 				{
-					current.TryGetComponent(out pickable);
-					if (pickable != null) return true;
+					if(!current)
+						break;
+					if(current.TryGetComponent(out pickable))
+						return true;
 				}
 			}
 
@@ -223,13 +256,14 @@ namespace Player
 		public void Pick(IPickable pickable)
 		{
 			_itemPicked = pickable;
-			pickable.Pick(_myTransform);
+			pickable.Interact(_myTransform);
 		}
+
 		public bool HasItem() => _itemPicked != null;
 
 		public void ReleaseItem()
 		{
-			_itemPicked.Release();
+			_itemPicked.Leave();
 			_itemPicked = null;
 		}
 
@@ -243,7 +277,7 @@ namespace Player
 		{
 			Rideable = rideable;
 			Transform mount = rideable.GetMount();
-			rideable.Mount();
+			rideable.Interact(_myTransform);
 			_myTransform.SetParent(mount);
 			_myTransform.SetPositionAndRotation(mount.position, mount.rotation);
 		}
@@ -251,7 +285,7 @@ namespace Player
 		public void Dismount()
 		{
 			transform.SetParent(null);
-			Rideable.DisMount();
+			Rideable.Leave();
 		}
 	}
 }

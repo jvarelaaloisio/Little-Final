@@ -4,9 +4,6 @@ namespace Core.Interactions
 {
 	public interface IPickable : IInteractable
 	{
-		void Pick(Transform picker);
-		void Release();
-
 		/// <summary>
 		/// Throw the object
 		/// </summary>

@@ -9,11 +9,17 @@ public class CheckPoint : MonoBehaviour
 	public Vector3 safePoint;
 	public Quaternion safeRotation;
 
+	[Header("Debug")]
+	[SerializeField]
+	private bool shouldLogCheckpointUpdate = false;
+
+
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.TryGetComponent<PlayerController>(out var controller))
 		{
-Debug.Log($"updated checkpoint to pos: {safePoint} and rot: {safeRotation}");			
+			if (shouldLogCheckpointUpdate)
+				Debug.Log($"updated checkpoint to pos: {safePoint} and rot: {safeRotation}");
 			controller.SaveSafeState(safePoint, safeRotation);
 		}
 	}
@@ -23,4 +29,8 @@ Debug.Log($"updated checkpoint to pos: {safePoint} and rot: {safeRotation}");
 		Gizmos.color = Color.blue;
 		Gizmos.DrawWireSphere(safePoint, .2f);
 	}
+
+	[ContextMenu("Reset safe rotation")]
+	private void ResetSafeRotation()
+		=> safeRotation = Quaternion.identity;
 }

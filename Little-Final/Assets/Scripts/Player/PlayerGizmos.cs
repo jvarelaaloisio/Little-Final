@@ -1,42 +1,57 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Player;
+﻿using Core.Interactions;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class PlayerGizmos : MonoBehaviour
+namespace Player
 {
-	[SerializeField]
-	private PlayerController _controller;
-
-	[Header("Interactions")]
-	[SerializeField]
-	private bool showInteractionBubble = true;
-
-	[SerializeField]
-	private Color interactionBubbleColor = new Color(.0f, .75f, .35f, .5f);
-
-	private void OnValidate()
+	public class PlayerGizmos : MonoBehaviour
 	{
-		TryGetComponent(out _controller);
-	}
+		[SerializeField]
+		private PlayerController controller;
 
-	void Start()
-	{
-#if UNITY_EDITOR
-		return;
-#endif
-		Destroy(gameObject);
-	}
+		[Header("Interactions")]
+		[SerializeField]
+		private bool showInteractionBubble = true;
 
-	private void OnDrawGizmos()
-	{
-		if(!_controller)
-			return;
-		if (showInteractionBubble && _controller.InteractionHelper != null)
+		[FormerlySerializedAs("interactionBubbleColor")]
+		[SerializeField]
+		private Color interactionBubbleColorNothing = new Color(.75f, .75f, .15f, .5f);
+
+		[SerializeField]
+		private Color interactionBubbleColorRideable = new Color(.0f, .25f, .75f, .5f);
+
+		[SerializeField]
+		private Color interactionBubbleColorPickable = new Color(.0f, .75f, .25f, .5f);
+
+		private void OnValidate()
 		{
-			Gizmos.color = interactionBubbleColor;
-			Gizmos.DrawSphere(_controller.InteractionHelper.position, _controller.InteractionCheckRadius);
+			TryGetComponent(out controller);
+		}
+
+		void Start()
+		{
+#if UNITY_EDITOR
+			return;
+#endif
+			Destroy(this);
+		}
+
+		private void OnDrawGizmos()
+		{
+			if (!controller)
+				return;
+			if (showInteractionBubble && controller.InteractionHelper != null)
+			{
+				Gizmos.color = controller.CanInteract(out var interactable)
+									? interactable is IRideable
+										? interactionBubbleColorRideable
+										: interactable is IPickable
+											? interactionBubbleColorPickable
+											: interactionBubbleColorNothing
+									: interactionBubbleColorNothing;
+				Gizmos.DrawWireSphere(controller.InteractionHelper.position, controller.InteractionCheckRadius);
+				Gizmos.DrawSphere(controller.InteractionHelper.position, controller.InteractionCheckRadius);
+			}
 		}
 	}
 }
