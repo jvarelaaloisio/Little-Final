@@ -1,2 +1,2 @@
-# Little-Final
- El proyecto little en su proceso de preparación para el final.
+# Lemu
+ Final Project of the game development career.
