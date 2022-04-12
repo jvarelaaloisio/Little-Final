@@ -37,9 +37,9 @@ public abstract class Hazzard : MonoBehaviour
 	}
 	protected virtual void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject.GetComponent<IDamageable>() != null)
+		if (other.gameObject.TryGetComponent<IDamageable>(out IDamageable damageable))
 		{
-			_damageables.Add(other.gameObject.GetComponent<IDamageable>());
+			_damageables.Add(damageable);
 		}
 	}
 	#endregion

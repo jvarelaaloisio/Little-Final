@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Obsolete]
 public class Water : Hazzard
 {
 	#region Private
@@ -15,7 +17,7 @@ public class Water : Hazzard
 		{
 			Attack();
 		}
-		
 	}
+
 	#endregion
 }
