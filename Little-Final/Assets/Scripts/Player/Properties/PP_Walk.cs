@@ -22,6 +22,9 @@ namespace Player.Properties
         [SerializeField] [Range(0, 90, step: 1)]
         private float minSafeAngle;
 
+        [SerializeField] [Range(0, 10, step: .5f)]
+        private float throwForce;
+
         #region Getters
 
         public static float Speed => Instance.speed;
@@ -29,6 +32,7 @@ namespace Player.Properties
         public static float MinSafeAngle => Instance.minSafeAngle;
         public static float RunSpeed => Instance.runSpeed;
         public static float RunStaminaPerSecond => Instance.runStaminaPerSecond;
+        public static float ThrowForce => Instance.throwForce;
 
         #endregion
     }

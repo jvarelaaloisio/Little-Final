@@ -7,15 +7,6 @@ using Core.Extensions;
 using Player;
 using VarelaAloisio.UpdateManagement.Runtime;
 
-public enum BodyEvent
-{
-	TRIGGER,
-	JUMP,
-	CLIMB,
-	LAND
-}
-
-public delegate void BodyEvents(BodyEvent typeOfEvent);
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
@@ -113,12 +104,14 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 
 	void Start()
 	{
+		//TODO:Delete this
 		UpdateManager.Subscribe(this);
 		rb = GetComponent<Rigidbody>();
 
 		SetupFlags();
 	}
 
+	[Obsolete]
 	public void OnFixedUpdate()
 	{
 		// Debug.DrawRay(transform.position, rb.velocity / 3, Color.cyan);

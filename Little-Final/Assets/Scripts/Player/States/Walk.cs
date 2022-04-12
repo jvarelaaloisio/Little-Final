@@ -1,4 +1,5 @@
 ﻿using CharacterMovement;
+using Core.Interactions;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
@@ -43,15 +44,16 @@ namespace Player.States
 
 		public override void OnStateUpdate()
 		{
+			//------- MOVEMENT ------- 
 			Vector2 input = InputManager.GetHorInput();
 
 			Controller.OnChangeSpeed(Mathf.Abs(input.normalized.magnitude / 2));
 
-			Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
+			Vector3 desiredDirection = MoveHelper.GetDirection(input);
 			Debug.DrawRay(MyTransform.position, desiredDirection.normalized / 3, Color.green);
 
-			if (HorizontalMovementHelper.IsSafeAngle(MyTransform.position, desiredDirection.normalized, .3f,
-													PP_Walk.MinSafeAngle))
+			if (MoveHelper.IsSafeAngle(MyTransform.position, desiredDirection.normalized, .3f,
+										PP_Walk.MinSafeAngle))
 			{
 				if (input.magnitude > .1f && InputManager.CheckRunInput() && Controller.Stamina.FillState > 0)
 				{
@@ -66,19 +68,42 @@ namespace Player.States
 					isRunning = false;
 				}
 
-				HorizontalMovementHelper.Rotate(MyTransform,
-															desiredDirection,
-															desiredDirection.magnitude * PP_Walk.TurnSpeed);
-				HorizontalMovementHelper.Move(MyTransform,
-											body,
-											desiredDirection,
-											isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed);
+				MoveHelper.Rotate(MyTransform,
+								desiredDirection,
+								desiredDirection.magnitude * PP_Walk.TurnSpeed);
+				MoveHelper.Move(MyTransform,
+								body,
+								desiredDirection,
+								isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed);
 			}
-			
+
 			if (InputManager.CheckJumpInput())
 				Jump();
 
-			CheckClimb();
+			if (InputManager.CheckInteractInput())
+			{
+				if (Controller.HasItem())
+				{
+					if (isRunning)
+						Controller.ThrowItem(PP_Walk.ThrowForce);
+					else
+						Controller.ReleaseItem();
+				}
+				else if (Controller.CanInteract(out var interactable))
+				{
+					switch (interactable)
+					{
+						case IPickable pickable:
+							Controller.Pick(pickable);
+							break;
+						case IRideable rideable:
+							Controller.Mount(rideable);
+							Controller.ChangeState<Ride>();
+							break;
+					}
+				}
+			}
+
 			ValidateGround();
 			Controller.RunAbilityList(Controller.AbilitiesOnLand);
 		}
@@ -101,6 +126,8 @@ namespace Player.States
 		{
 			coyoteEffect.StopTimer();
 			_runningConsumer.Stop();
+			if (Controller.HasItem())
+				Controller.ReleaseItem();
 		}
 
 		private void OnCoyoteFinished()

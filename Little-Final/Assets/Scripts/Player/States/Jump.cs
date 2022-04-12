@@ -1,4 +1,5 @@
 ﻿using CharacterMovement;
+using Core.Interactions;
 using Player.PlayerInput;
 using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
@@ -45,15 +46,24 @@ namespace Player.States
 			else
 			{
 				Vector2 input = InputManager.GetHorInput();
-				Vector3 direction = HorizontalMovementHelper.GetDirection(input);
-				HorizontalMovementHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedInTheAir);
-				Body.RequestMovement(new MovementRequest(MyTransform.forward * input.magnitude, PP_Jump.AccelerationFactor, PP_Jump.Speed));
+				Vector3 direction = MoveHelper.GetDirection(input);
+				MoveHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedInTheAir);
+				Body.RequestMovement(new MovementRequest(MyTransform.forward * input.magnitude, PP_Jump.Speed));
 			}
 
 			CheckForJumpBuffer();
 			CheckClimb();
 			Controller.RunAbilityList(Controller.AbilitiesInAir);
 			CheckGlide();
+			
+			if (InputManager.CheckInteractInput()
+				&& Controller.CanMount(out var interactable)
+				&& interactable is IRideable)
+			{
+				IRideable rideable = (IRideable)interactable;
+				Controller.Mount(rideable);
+				Controller.ChangeState<Ride>();
+			}
 		}
 
 		public override void OnStateExit()

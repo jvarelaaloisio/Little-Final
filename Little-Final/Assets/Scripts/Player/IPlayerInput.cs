@@ -36,4 +36,9 @@ public interface IPlayerInput
 	/// </summary>
 	/// <returns></returns>
 	bool GetThrowInput();
+
+	/// <summary>
+	/// Returns true if the player is pressing the Interact button
+	/// </summary>
+	bool GetInteractInput();
 }

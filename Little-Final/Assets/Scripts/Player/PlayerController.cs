@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using CharacterMovement;
+using Core.Extensions;
+using Core.Interactions;
 using Player.Abilities;
-using Player.PlayerInput;
-using Player.Properties;
 using Player.States;
 using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
@@ -11,7 +10,6 @@ using Void = Player.States.Void;
 
 namespace Player
 {
-	[RequireComponent(typeof(DamageHandler))]
 	public class PlayerController : MonoBehaviour, IUpdateable, IDamageable
 	{
 		public delegate void StateCallback(State state);
@@ -42,6 +40,20 @@ namespace Player
 		[SerializeField]
 		private Transform climbCheckPivot;
 
+		[Header("Interactions")]
+		[SerializeField]
+		private Transform interactionHelper;
+
+		[SerializeField]
+		private float interactionCheckRadius;
+
+		[SerializeField]
+		private LayerMask interactableLayer;
+
+		[Header("Debug")]
+		[SerializeField]
+		private bool shouldLogTransitions = false;
+
 		IPickable _itemPicked;
 		IBody body;
 		DamageHandler damageHandler;
@@ -67,6 +79,11 @@ namespace Player
 
 		public Transform ClimbCheckPivot => climbCheckPivot;
 
+		public Transform InteractionHelper => interactionHelper;
+
+		public float InteractionCheckRadius => interactionCheckRadius;
+		public IRideable Rideable { get; private set; }
+
 		#endregion
 
 		#endregion
@@ -80,7 +97,7 @@ namespace Player
 												OnPickCollectable);
 			UpdateManager.Subscribe(this);
 			body = GetComponent<IBody>();
-			damageHandler.onLifeChanged += OnLifeChanged;
+			damageHandler = new DamageHandler(PP_Stats.LifePoints, PP_Stats.ImmunityTime, OnLifeChanged, _sceneIndex);
 			stamina = new Stamina.Stamina(
 										PP_Stats.InitialStamina,
 										PP_Stats.StaminaRefillDelay,
@@ -96,7 +113,8 @@ namespace Player
 		{
 			state.OnStateExit();
 			state = new T();
-			// Debug.Log($"{name}changed to state: {state.GetType()}");
+			if (shouldLogTransitions)
+				Debug.Log($"{name}changed to state: {state.GetType()}");
 			OnStateChanges(state);
 			state.OnStateEnter(this, SceneIndex);
 		}
@@ -114,11 +132,13 @@ namespace Player
 
 		public void OnUpdate()
 		{
-			if (Input.GetButtonDown("RefillStamina"))
+#if UNITY_EDITOR
+			if (Input.GetKeyDown(KeyCode.O))
 			{
 				stamina.UpgradeMaxStamina(400);
 				stamina.RefillCompletely();
 			}
+#endif
 
 			state.OnStateUpdate();
 		}
@@ -147,30 +167,6 @@ namespace Player
 			LongJumpBuffer = false;
 		}
 
-		/// <summary>
-		/// Reads the input and moves the player horizontally
-		/// </summary>
-		public void MoveByForce(float speed, float turnSpeed)
-		{
-			Vector2 input = InputManager.GetHorInput();
-
-			Vector3 desiredDirection = HorizontalMovementHelper.GetDirection(input);
-
-			if (HorizontalMovementHelper.IsSafeAngle(
-													_myTransform.position,
-													desiredDirection.normalized,
-													.5f,
-													PP_Walk.MinSafeAngle))
-			{
-				HorizontalMovementHelper.Rotate(_myTransform, desiredDirection, turnSpeed);
-				HorizontalMovementHelper.MoveByForce(
-													_myTransform,
-													body,
-													desiredDirection,
-													speed);
-			}
-		}
-
 		#region EventHandlers
 
 		private void UpgradeStamina()
@@ -189,5 +185,107 @@ namespace Player
 		}
 
 		#endregion
+
+		public bool CanInteract(out IInteractable interactable)
+		{
+			Collider[] results = new Collider[5];
+			if (Physics.OverlapSphereNonAlloc(interactionHelper.position,
+											interactionCheckRadius,
+											results,
+											interactableLayer,
+											QueryTriggerInteraction.Collide) > 0)
+			{
+				foreach (Collider current in results)
+				{
+					if(!current)
+						break;
+					if(current.TryGetComponent(out interactable))
+						return true;
+				}
+			}
+
+			interactable = null;
+			return false;
+		}
+		[Obsolete]
+		public bool CanMount(out IRideable rideable)
+		{
+			Collider[] results = new Collider[5];
+			if (Physics.OverlapSphereNonAlloc(interactionHelper.position,
+											interactionCheckRadius,
+											results,
+											interactableLayer,
+											QueryTriggerInteraction.Collide) > 0)
+			{
+				foreach (Collider current in results)
+				{
+					if(!current)
+						break;
+					if(current.TryGetComponent(out rideable))
+						return true;
+				}
+			}
+
+			rideable = null;
+			return false;
+		}
+
+		[Obsolete]
+		public bool CanPick(out IPickable pickable)
+		{
+			Collider[] results = new Collider[5];
+			if (Physics.OverlapSphereNonAlloc(interactionHelper.position,
+											interactionCheckRadius,
+											results,
+											interactableLayer,
+											QueryTriggerInteraction.Collide) > 0)
+			{
+				foreach (Collider current in results)
+				{
+					if(!current)
+						break;
+					if(current.TryGetComponent(out pickable))
+						return true;
+				}
+			}
+
+			pickable = null;
+			return false;
+		}
+
+		public void Pick(IPickable pickable)
+		{
+			_itemPicked = pickable;
+			pickable.Interact(_myTransform);
+		}
+
+		public bool HasItem() => _itemPicked != null;
+
+		public void ReleaseItem()
+		{
+			_itemPicked.Leave();
+			_itemPicked = null;
+		}
+
+		public void ThrowItem(float force)
+		{
+			_itemPicked.Throw(force, _myTransform.forward + _myTransform.up);
+			_itemPicked = null;
+		}
+
+		public void Mount(IRideable rideable)
+		{
+			Rideable = rideable;
+			Transform mount = rideable.GetMount();
+			rideable.Interact(_myTransform);
+			_myTransform.SetParent(mount);
+			_myTransform.SetPositionAndRotation(mount.position, mount.rotation);
+		}
+
+		public void Dismount()
+		{
+			transform.SetParent(null);
+			Rideable.Leave();
+		}
 	}
 }

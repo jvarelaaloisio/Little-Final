@@ -32,6 +32,11 @@ public class DesktopInput : IPlayerInput
 		return Input.GetButton("Throw");
 	}
 
+	public bool GetInteractInput()
+	{
+		return Input.GetButtonDown("Interact");
+	}
+
 	public bool GetGlideInput()
 	{
 		return Input.GetButton("Jump");

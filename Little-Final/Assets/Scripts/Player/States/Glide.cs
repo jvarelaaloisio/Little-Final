@@ -1,4 +1,5 @@
 using CharacterMovement;
+using Core.Interactions;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
@@ -52,6 +53,14 @@ namespace Player.States
 			CheckForJumpBuffer();
 			Controller.RunAbilityList(Controller.AbilitiesInAir);
 			
+			if (InputManager.CheckInteractInput()
+				&& Controller.CanMount(out IRideable interactable)
+				&& interactable is IRideable)
+			{
+				IRideable rideable = (IRideable)interactable;
+				Controller.Mount(rideable);
+				Controller.ChangeState<Ride>();
+			}
 		}
 
 		public override void OnStateExit()
@@ -74,9 +83,9 @@ namespace Player.States
 			else
 			{
 				Vector2 input = InputManager.GetHorInput();
-				Vector3 direction = HorizontalMovementHelper.GetDirection(input);
-				HorizontalMovementHelper.Rotate(MyTransform, direction, PP_Glide.TurnSpeed);
-				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Glide.AccelerationFactor, PP_Glide.Speed));
+				Vector3 direction = MoveHelper.GetDirection(input);
+				MoveHelper.Rotate(MyTransform, direction, PP_Glide.TurnSpeed);
+				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Glide.Speed));
 				// Controller.MoveByForce(PP_Glide.Force, PP_Glide.TurnSpeed);
 			}
 		}

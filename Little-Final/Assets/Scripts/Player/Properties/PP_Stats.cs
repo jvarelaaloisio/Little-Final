@@ -31,5 +31,6 @@ public class PP_Stats : SingletonScriptable<PP_Stats>
 	public static float ImmunityTime => Instance.inmunityTime;
 	public static float LifePoints => Instance.lifePoints;
 	public static float DeadTime => Instance.deadTime;
+
 	#endregion
 }
