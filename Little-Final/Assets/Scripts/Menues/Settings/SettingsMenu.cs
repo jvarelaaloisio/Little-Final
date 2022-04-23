@@ -22,7 +22,7 @@ public class SettingsMenu : MonoBehaviour
     private void OnDisable()
     {
         foreach (var entry in volumeSliders)
-            SavedData.SaveMixerChannelData(entry.channel, entry.slider.value);
+            SavedData.Instance.SaveMixerChannelData(entry.channel, entry.slider.value);
     }
 }
 
