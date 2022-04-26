@@ -19,12 +19,20 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _AO:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseColor:
         m_Texture: {fileID: 2800000, guid: 46e04f04dc582bc4f9100c83afd0f6e0, type: 3}
         m_Scale: {x: 3, y: 3}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Color__Albedo:
+        m_Texture: {fileID: 2800000, guid: 46e04f04dc582bc4f9100c83afd0f6e0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -97,6 +105,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
+    - _Color__Factor: 0
+    - _Color__MultiplierFactor: 0
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -122,4 +132,5 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorMultiplier: {r: 0.16286927, g: 0.5660378, b: 0.28870264, a: 0}
     - _ColorMultiply: {r: 1, g: 1, b: 1, a: 0}
+    - _Color__Multiplier: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
