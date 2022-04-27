@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Water
+  m_Name: WaterMat
   m_Shader: {fileID: 4800000, guid: 5061cc9ee5023b542b88d07b4eaea777, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -59,15 +59,25 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AOoverride: 1
     - _BigWavesScale: 0.1
     - _BigWavesSpeed: 4
+    - _BigWaves__LevelsMax: -1.34
+    - _BigWaves__LevelsMin: 0.46
+    - _BigWaves__Scale: 0.02
+    - _BigWaves__Speed: 4
     - _BorderDistance: 2
     - _BorderScale: 0.4
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DepthDistance: 0.246
     - _DepthRange: 8
+    - _Depth__Distance: 0.3
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EdgeLength: 15
@@ -78,6 +88,12 @@ Material:
     - _FoamRangeMax: 0.456
     - _FoamRangeMin: 0.43
     - _FoamScale: 0.204
+    - _Foam__Border: 0.412
+    - _Foam__BorderBlend: 0.05
+    - _Foam__Distance: 0.314
+    - _Foam__RangeMax: 0.456
+    - _Foam__RangeMin: 0.43
+    - _Foam__Scale: 0.287
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -100,6 +116,12 @@ Material:
     - _UVSec: 0
     - _VertexOffsetFactor: 0.1
     - _VertexOffsetFactor_: 0.003
+    - _Water__DetailPatternFactor: 1
+    - _Water__OpacityFactor: 1
+    - _Water__PatternDetailSpeed: 1
+    - _Water__PatternScale: 100
+    - _Water__Smoothness: 0.95
+    - _Water__VertexOffsetFactor: 0.0015
     - _WaveScaleX: 1
     - _WaveScaleY: 1
     - _WaveTransformX: 1
@@ -108,14 +130,22 @@ Material:
     - _WavesLaevelsMin: 0.89
     - _WavesLevelsMax: -1.34
     - _WavesLevelsMin: 0.46
+    - _Waves__NormalFactor: 1
+    - _Waves__ScaleX: 0.5
+    - _Waves__ScaleY: 0.5
+    - _Waves__SpeedDirX: 0.8
+    - _Waves__SpeedDirY: 0.8
+    - _Waves__SpeedFactor: 0.8
     - _WindSpeed: 0.8
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DepthColor: {r: 0.426193, g: 0, b: 0.8490566, a: 1}
+    - _Depth__Color: {r: 0.43943503, g: 0.745283, b: 0.6508056, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 0}
+    - _Foam__Color: {r: 1, g: 1, b: 1, a: 0}
     - _SpeedAndDirWaves: {r: 2, g: 2, b: 2, a: 0}
     - _SpeedDirWaves: {r: 1, g: 0, b: 0, a: 0}
     - _Vector0: {r: 0, g: 1, b: 0.89, a: -1.92}
@@ -125,3 +155,5 @@ Material:
     - _WatherColor_2: {r: 0.14509805, g: 0.7254902, b: 0.79215693, a: 1}
     - _WaveTransform: {r: 0.86, g: 1.12, b: 1.07, a: 0}
     - _WavesLevelsMinMax: {r: 0.89, g: -1.98, b: 0, a: 0}
+    - _Waves__ColorPrimary: {r: 0.07782952, g: 0.12028227, b: 0.3113201, a: 0}
+    - _Waves__ColorSecondary: {r: 0.1137251, g: 0.18039179, b: 0.4588232, a: 1}
