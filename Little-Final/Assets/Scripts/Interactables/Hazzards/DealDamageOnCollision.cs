@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Interactables.Hazzards
+namespace Interactables.Hazards
 {
     public class DealDamageOnCollision : MonoBehaviour
     {
