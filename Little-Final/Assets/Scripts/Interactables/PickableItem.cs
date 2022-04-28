@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Interactables
 {
+	[AddComponentMenu("Interactions/Pickable")]
 	[RequireComponent(typeof(Rigidbody))]
 	[RequireComponent(typeof(Collider))]
 	public class PickableItem : MonoBehaviour, IPickable
@@ -39,7 +40,8 @@ namespace Interactables
 		{
 			if (shouldLogInteractions)
 				Debug.Log($"{name}: item released by {_picker}", this);
-			if (_picker) transform.position = _picker.position + _picker.TransformDirection(pickPositionOffset);
+			if (_picker)
+				transform.position = _picker.position + _picker.TransformDirection(pickPositionOffset);
 			transform.SetParent(null);
 			rigidbody.isKinematic = false;
 		}

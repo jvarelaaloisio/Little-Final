@@ -78,9 +78,10 @@ namespace Rideables
 
 		private void OnValidate()
 		{
-			mount = transform.Find("Mount")
-					?? transform.Find("mount")
-					?? transform.Find("MOUNT");
+			if (!mount)
+				mount = transform.Find("Mount")
+						?? transform.Find("mount")
+						?? transform.Find("MOUNT");
 		}
 
 		protected virtual void Awake()
