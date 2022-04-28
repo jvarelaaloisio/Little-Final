@@ -805,6 +805,7 @@ MonoBehaviour:
   playerShadow: {fileID: 1119814554}
   playerShadowMaterial: {fileID: 2100000, guid: 821e82f08d18a3c458688987108864d9,
     type: 2}
+  ponchoRenderer: {fileID: 1690271879016789047}
   poncho: {fileID: 2100000, guid: 35407b8d792309e47837be559dc87ce4, type: 2}
   ponchoTurnOffTime: 3
   playerShadowOffset: {x: 0, y: 0.01, z: 0}
@@ -825,6 +826,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   deathFadeDuration: 0
   shadowMinDot: 0.85
+  onJump:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7950584731832542066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1622,6 +1626,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ebde32696f76514896b2e89e09b6be4, type: 3}
+--- !u!137 &1690271879016789047 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4078362048053641649, guid: 3ebde32696f76514896b2e89e09b6be4,
+    type: 3}
+  m_PrefabInstance: {fileID: 3453220764265526662}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1183908894636020294 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4576320367818713024, guid: 3ebde32696f76514896b2e89e09b6be4,
