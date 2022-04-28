@@ -14,12 +14,10 @@ public class StaminaRefiller : MonoBehaviour
 	private void Start()
 	{
 		_sceneIndex = gameObject.scene.buildIndex;
-		if (isRePositioningAtStart && Physics.Raycast(transform.position + Vector3.up / 3, Vector3.down, out RaycastHit hit, 10))
-		{
-			Debug.DrawLine(transform.position, hit.point, Color.green, 1);
-			transform.position = hit.point + Vector3.up * distanceFromGround;
-		}
+		if (isRePositioningAtStart)
+			Reposition();
 	}
+
 	private void OnTriggerEnter(Collider other)
 	{
 		other.GetComponent<PlayerController>().Stamina.RefillCompletely();
@@ -37,10 +35,23 @@ public class StaminaRefiller : MonoBehaviour
 
 	private void OnDrawGizmos()
 	{
-		if (isRePositioningAtStart && Physics.Raycast(transform.position + Vector3.up / 3, Vector3.down, out RaycastHit hit, 10))
+		if (isRePositioningAtStart &&
+			Physics.Raycast(transform.position + Vector3.up / 3, Vector3.down, out RaycastHit hit, 10))
 		{
 			Gizmos.color = Color.green;
 			Gizmos.DrawWireSphere(hit.point + Vector3.up * distanceFromGround, .2f);
+		}
+	}
+
+	[ContextMenu("Reposition")]
+	private void Reposition()
+	{
+		if (Physics.Raycast(transform.position + Vector3.up / 3,
+							Vector3.down,
+							out RaycastHit hit,
+							10))
+		{
+			transform.position = hit.point + Vector3.up * distanceFromGround;
 		}
 	}
 }
