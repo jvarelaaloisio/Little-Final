@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 using VarelaAloisio.UpdateManagement.Runtime;
@@ -48,7 +49,14 @@ namespace Player
 		public float transitionDuration;
 		public Transform playerShadow;
 		public Material playerShadowMaterial;
-		public Material poncho;
+
+		[Header("Poncho")]
+		[SerializeField]
+		private Renderer ponchoRenderer;
+
+		[SerializeField]
+		private Material poncho;
+		
 		public float ponchoTurnOffTime;
 		private ActionOverTime ponchoTurnOff;
 		public Vector3 playerShadowOffset;
@@ -84,12 +92,24 @@ namespace Player
 		[SerializeField]
 		private float shadowMinDot;
 
+		[Header("Events")]
+		[SerializeField]
+		private UnityEvent onJump;
+
 		private static readonly int Activate = Shader.PropertyToID(PONCHO_ACTIVATE_FLOAT);
 
 		private void Start()
 		{
+			//CREATE TEMPORAL MATERIAL INSTANCES SO WE DON'T GET UNWANTED GIT CHANGES.
+#if UNITY_EDITOR
+			Renderer renderer = playerShadow.GetComponent<Renderer>();
+			renderer.sharedMaterial = new Material(playerShadowMaterial);
+			playerShadowMaterial = renderer.sharedMaterial;
+			ponchoRenderer.sharedMaterial = new Material(poncho);
+			poncho = ponchoRenderer.sharedMaterial;
+#endif
+			controller.onStaminaChange += UpdateStamina;
 			controller.OnPickCollectable += UpdatePonchoEffect;
-			controller.OnStaminaChanges += UpdateStamina;
 			controller.OnChangeSpeed += SetSpeed;
 			controller.OnSpecificAction += PlaySpecificAnimation;
 			controller.OnJump += ShowJumpFeedback;
@@ -105,6 +125,7 @@ namespace Player
 			staminaUI.ForEach(ui => ui.color = maxStamina);
 			SetStaminaTransparency(1);
 			_staminaOriginalScale = staminaRings.localScale;
+			//TODO: Limpiá esto, sucio de mierda
 			if ((_mainCamera = Camera.main).TryGetComponent(out PostProcessVolume postProcessVolume))
 				if (postProcessVolume.profile.TryGetSettings(out lensDistortionSettings))
 				{
@@ -209,7 +230,7 @@ namespace Player
 
 		public void ShowJumpFeedback()
 		{
-			GetComponent<PlayerSound>().PlayJump();
+			onJump.Invoke();
 			animator.Play(jumpAnimation);
 		}
 
@@ -217,7 +238,6 @@ namespace Player
 		{
 			GetComponent<PlayerSound>().StopFly();
 			GetComponent<PlayerSound>().StopWalk();
-			// cameraView.IsFlying(false);
 			animator.CrossFade(climbAnimation, transitionDuration);
 		}
 

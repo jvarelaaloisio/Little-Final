@@ -1,48 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using Player.Collectables;
 
-public class CollectableBag
+namespace Player.Collectables
 {
-	private List<CollectableRotator> _collectables;
-	public int quantityForReward;
-	private readonly Action _giveReward;
-	private readonly Action<float> _onCollectableAdded = delegate { };
-	public int Quantity => _collectables.Count;
-
-	public CollectableBag(
-		int quantityForReward,
-		Action onGiveReward)
+	public class CollectableBag
 	{
-		this.quantityForReward = quantityForReward;
-		_giveReward = onGiveReward;
-		_collectables = new List<CollectableRotator>();
-	}
+		public Action<float> OnCollectableAdded = delegate { };
+		public int quantityForReward;
+		private readonly Action _giveReward;
+		private List<CollectableRotator> _collectables;
+		public int Quantity => _collectables.Count;
 
-	public CollectableBag(
-		int quantityForReward,
-		Action onGiveReward,
-		Action<float> onCollectableAdded): this(quantityForReward, onGiveReward)
-	{
-		_onCollectableAdded = onCollectableAdded;
-	}
-
-	public void ValidateNewReward()
-	{
-		if (!(_collectables.Count >= quantityForReward))
-			return;
-		for (int i = 0; i < quantityForReward; i++)
+		public CollectableBag(
+			int quantityForReward,
+			Action onGiveReward)
 		{
-			_collectables[i].OnRewardGiven();
+			this.quantityForReward = quantityForReward;
+			_giveReward = onGiveReward;
+			_collectables = new List<CollectableRotator>();
 		}
 
-		_collectables.RemoveRange(0, quantityForReward);
-		_giveReward();
-	}
+		public void ValidateNewReward()
+		{
+			if (!(_collectables.Count >= quantityForReward))
+				return;
+			for (int i = 0; i < quantityForReward; i++)
+			{
+				_collectables[i].OnRewardGiven();
+			}
 
-	public void AddCollectable(CollectableRotator collectable)
-	{
-		_collectables.Add(collectable);
-		_onCollectableAdded.Invoke(_collectables.Count);
+			_collectables.RemoveRange(0, quantityForReward);
+			_giveReward();
+		}
+
+		public void AddCollectable(CollectableRotator collectable)
+		{
+			_collectables.Add(collectable);
+			OnCollectableAdded.Invoke(_collectables.Count);
+		}
 	}
 }

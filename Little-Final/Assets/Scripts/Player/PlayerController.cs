@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core.Extensions;
 using Core.Interactions;
 using Player.Abilities;
+using Player.Collectables;
 using Player.States;
 using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
@@ -26,15 +26,29 @@ namespace Player
 			AbilitiesOnWall;
 
 		public event StateCallback OnStateChanges = delegate { };
-		public Action<float> OnPickCollectable = delegate { };
-		public Action<float> OnStaminaChanges = delegate { };
+
+		public Action<float> OnPickCollectable
+		{
+			get => collectableBag.OnCollectableAdded;
+			set => collectableBag.OnCollectableAdded = value;
+		}
+
+		public Action<float> onStaminaChange
+		{
+			get => stamina.OnStaminaChange;
+			set => stamina.OnStaminaChange = value;
+		}
+
 		public Action<float> OnChangeSpeed = delegate { };
 		public Action<string> OnSpecificAction = delegate { };
 		public Action OnJump = delegate { };
 		public Action OnLand = delegate { };
 		public Action OnClimb = delegate { };
 		public Action OnDeath = delegate { };
+
 		public Action<bool> OnGlideChanges = delegate { };
+
+		//TODO implement prediction logic that fires this event when the direction is towards a cliff
 		public Action OnFallFromCliff;
 
 		[SerializeField]
@@ -88,24 +102,24 @@ namespace Player
 
 		#endregion
 
-		private void Start()
+		private void Awake()
 		{
 			_myTransform = transform;
-			collectableBag = new CollectableBag(
-												PP_Stats.CollectablesForReward,
-												UpgradeStamina,
-												OnPickCollectable);
-			UpdateManager.Subscribe(this);
+			_sceneIndex = gameObject.scene.buildIndex;
+			collectableBag = new CollectableBag(PP_Stats.CollectablesForReward,
+												UpgradeStamina);
 			body = GetComponent<IBody>();
 			damageHandler = new DamageHandler(PP_Stats.LifePoints, PP_Stats.ImmunityTime, OnLifeChanged, _sceneIndex);
-			stamina = new Stamina.Stamina(
-										PP_Stats.InitialStamina,
+			stamina = new Stamina.Stamina(PP_Stats.InitialStamina,
 										PP_Stats.StaminaRefillDelay,
 										PP_Stats.StaminaRefillSpeed,
-										SceneIndex,
-										OnStaminaChanges);
+										SceneIndex);
+		}
+
+		private void Start()
+		{
+			UpdateManager.Subscribe(this);
 			state = new Walk();
-			_sceneIndex = gameObject.scene.buildIndex;
 			state.OnStateEnter(this, SceneIndex);
 		}
 
@@ -197,9 +211,9 @@ namespace Player
 			{
 				foreach (Collider current in results)
 				{
-					if(!current)
+					if (!current)
 						break;
-					if(current.TryGetComponent(out interactable))
+					if (current.TryGetComponent(out interactable))
 						return true;
 				}
 			}
@@ -207,6 +221,7 @@ namespace Player
 			interactable = null;
 			return false;
 		}
+
 		[Obsolete]
 		public bool CanMount(out IRideable rideable)
 		{
@@ -219,9 +234,9 @@ namespace Player
 			{
 				foreach (Collider current in results)
 				{
-					if(!current)
+					if (!current)
 						break;
-					if(current.TryGetComponent(out rideable))
+					if (current.TryGetComponent(out rideable))
 						return true;
 				}
 			}
@@ -242,9 +257,9 @@ namespace Player
 			{
 				foreach (Collider current in results)
 				{
-					if(!current)
+					if (!current)
 						break;
-					if(current.TryGetComponent(out pickable))
+					if (current.TryGetComponent(out pickable))
 						return true;
 				}
 			}

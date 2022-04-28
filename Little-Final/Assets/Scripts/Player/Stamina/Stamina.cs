@@ -12,7 +12,7 @@ namespace Player.Stamina
 			get => _fillState;
 			private set
 			{
-				_onStaminaChange?.Invoke(value);
+				OnStaminaChange?.Invoke(value);
 				_fillState = Mathf.Clamp(value, 0, _maxStamina);
 			}
 		}
@@ -23,8 +23,8 @@ namespace Player.Stamina
 		public float RefillSpeed { get; }
 
 
-		private readonly Action _onRefillingStart;
-		private readonly Action<float> _onStaminaChange;
+		public Action OnRefillingStart;
+		public Action<float> OnStaminaChange;
 		private readonly CountDownTimer _refillDelayTimer;
 		private readonly CountDownTimer _refillPeriod;
 		private float _maxStamina;
@@ -33,15 +33,11 @@ namespace Player.Stamina
 			float maxStamina,
 			float refillDelay,
 			float refillSpeed,
-			int sceneIndex,
-			Action<float> onStaminaChange = null,
-			Action onRefillingStart = null)
+			int sceneIndex)
 		{
 			RefillSpeed = refillSpeed;
 			_maxStamina = maxStamina;
 			FillState = maxStamina;
-			_onStaminaChange = onStaminaChange ?? delegate { };
-			_onRefillingStart = onRefillingStart ?? delegate { };
 			_refillDelayTimer = new CountDownTimer(refillDelay, StartRefill, sceneIndex);
 			_refillPeriod = new CountDownTimer(1 / refillSpeed, RefillStamina, sceneIndex);
 		}
@@ -53,7 +49,7 @@ namespace Player.Stamina
 		}
 		private void StartRefill()
 		{
-			_onRefillingStart?.Invoke();
+			OnRefillingStart?.Invoke();
 			_refillPeriod.StartTimer();
 		}
 		public void ConsumeStamina(float value)
