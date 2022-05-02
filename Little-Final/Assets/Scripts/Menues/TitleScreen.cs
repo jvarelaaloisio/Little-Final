@@ -2,7 +2,9 @@
 
 public class TitleScreen : MonoBehaviour
 {
-    public void PlayGame() => GameSceneManager.Instance.LoadGame();
+    public LevelDataContainer levelOne;
+    
+    public void PlayGame() => GameSceneManager.Instance.LoadLevel(levelOne.name);
 
     public void QuitGame() => Application.Quit();
 }
