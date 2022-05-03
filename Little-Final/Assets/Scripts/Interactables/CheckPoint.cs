@@ -1,36 +1,38 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Player;
+﻿using Player;
 using UnityEngine;
 
-public class CheckPoint : MonoBehaviour
+namespace Interactables
 {
-	public float distanceFromFloor;
-	public Vector3 safePoint;
-	public Quaternion safeRotation;
-
-	[Header("Debug")]
-	[SerializeField]
-	private bool shouldLogCheckpointUpdate = false;
-
-
-	private void OnTriggerEnter(Collider other)
+	public class CheckPoint : MonoBehaviour
 	{
-		if (other.TryGetComponent<PlayerController>(out var controller))
+		public float distanceFromFloor;
+		public Vector3 safePoint;
+		[HideInInspector]
+		public Quaternion safeRotation;
+
+		[Header("Debug")]
+		[SerializeField]
+		private bool shouldLogCheckpointUpdate = false;
+
+
+		private void OnTriggerEnter(Collider other)
 		{
-			if (shouldLogCheckpointUpdate)
-				Debug.Log($"updated checkpoint to pos: {safePoint} and rot: {safeRotation}");
-			controller.SaveSafeState(safePoint, safeRotation);
+			if (other.TryGetComponent<PlayerController>(out var controller))
+			{
+				if (shouldLogCheckpointUpdate)
+					Debug.Log($"updated checkpoint to pos: {safePoint} and rot: {safeRotation}");
+				controller.SaveSafeState(safePoint, safeRotation);
+			}
 		}
-	}
 
-	private void OnDrawGizmos()
-	{
-		Gizmos.color = Color.blue;
-		Gizmos.DrawWireSphere(safePoint, .2f);
-	}
+		private void OnDrawGizmos()
+		{
+			Gizmos.color = Color.blue;
+			Gizmos.DrawWireSphere(safePoint, .2f);
+		}
 
-	[ContextMenu("Reset safe rotation")]
-	private void ResetSafeRotation()
-		=> safeRotation = Quaternion.identity;
+		[ContextMenu("Reset safe rotation")]
+		private void ResetSafeRotation()
+			=> safeRotation = Quaternion.identity;
+	}
 }
