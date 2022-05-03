@@ -6,13 +6,12 @@ namespace EditorExtensions
 {
 	public static class TransformTools
 	{
-
 		[MenuItem("GameObject/Reset Transform ignore children", true, 49)]
 		private static bool Validate_ResetTransform()
 		{
 			return (Selection.activeGameObject != null);
 		}
-		
+
 		[MenuItem("GameObject/Reset Transform ignore children", false, 49)]
 		private static void ResetTransform()
 		{
@@ -60,6 +59,22 @@ namespace EditorExtensions
 				{
 					selectionTransform.position = hit.point;
 				}
+			}
+		}
+
+		[MenuItem("GameObject/Set Parent to Null", true, 49)]
+		private static bool Validate_MakeOrphan()
+		{
+			return (Selection.activeGameObject != null);
+		}
+
+		[MenuItem("GameObject/Set Parent to Null", false, 49)]
+		private static void MakeOrphan()
+		{
+			var selection = Selection.gameObjects;
+			foreach (GameObject current in selection)
+			{
+				current.transform.parent = null;
 			}
 		}
 	}
