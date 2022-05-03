@@ -79,6 +79,7 @@ namespace Player.States
 
 			if (InputManager.CheckJumpInput())
 				Jump();
+			CheckClimb();
 
 			if (InputManager.CheckInteractInput())
 			{
