@@ -173,6 +173,7 @@ namespace Player
 			damageHandler.ResetLifePoints();
 			_myTransform.position = LastSafePosition;
 			_myTransform.rotation = _lastSafeRotation;
+			body.Push(body.Velocity * -1);
 		}
 
 		public void ResetJumpBuffers()
