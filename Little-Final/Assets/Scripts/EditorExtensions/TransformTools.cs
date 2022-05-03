@@ -6,13 +6,13 @@ namespace EditorExtensions
 {
 	public static class TransformTools
 	{
-		[MenuItem("GameObject/Reset Transform ignore children", true, 49)]
+		[MenuItem("GameObject/Reset Transform (Ignore children)", true, 49)]
 		private static bool Validate_ResetTransform()
 		{
 			return (Selection.activeGameObject != null);
 		}
 
-		[MenuItem("GameObject/Reset Transform ignore children", false, 49)]
+		[MenuItem("GameObject/Reset Transform (Ignore children)", false, 49)]
 		private static void ResetTransform()
 		{
 			GameObject selection = Selection.activeGameObject;
