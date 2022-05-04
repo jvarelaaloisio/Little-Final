@@ -9,6 +9,16 @@ public class SettingsMenu : MonoBehaviour
 
     public void OnEnable()
     {
+        InitAudioSettings();
+    }
+
+    private void OnDisable()
+    {
+        SaveAudioSettings();
+    }
+
+    private void InitAudioSettings()
+    {
         foreach (var entry in volumeSliders)
         {
             entry.slider.value = SavedData.Instance.GetMixerChannelData(entry.channel);
@@ -19,7 +29,7 @@ public class SettingsMenu : MonoBehaviour
         }
     }
 
-    private void OnDisable()
+    private void SaveAudioSettings()
     {
         foreach (var entry in volumeSliders)
             SavedData.Instance.SaveMixerChannelData(entry.channel, entry.slider.value);
@@ -29,6 +39,6 @@ public class SettingsMenu : MonoBehaviour
 [Serializable]
 public struct VolumeSlider
 {
-    public MixerChannels channel;
+    public string channel;
     public Slider slider;
 }

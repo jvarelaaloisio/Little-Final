@@ -2091,19 +2091,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volumeSliders:
-  - channel: 0
+  - channel: MasterVolume
     slider: {fileID: 384941186}
-  - channel: 1
+  - channel: MusicVolume
     slider: {fileID: 1010684568}
-  - channel: 4
+  - channel: SFXVolume
     slider: {fileID: 1022617730}
-  - channel: 3
+  - channel: CharacterVolume
     slider: {fileID: 1864875086}
-  - channel: 6
+  - channel: CutsceneVolume
     slider: {fileID: 599961007}
-  - channel: 5
+  - channel: BGVolume
     slider: {fileID: 1300648235}
-  - channel: 2
+  - channel: AmbientVolume
     slider: {fileID: 167959438}
 --- !u!1 &459261319
 GameObject:
@@ -2479,7 +2479,7 @@ RectTransform:
   m_Father: {fileID: 2098847660}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.0834381}
+  m_AnchorMin: {x: 0, y: 0.08322519}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -8462,8 +8462,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 99.799995, y: -157.48428}
-  m_SizeDelta: {x: 199.59999, y: 314.96857}
+  m_AnchoredPosition: {x: 99.799995, y: -157.51622}
+  m_SizeDelta: {x: 199.59999, y: 315.03244}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1720602008
 CanvasRenderer:
@@ -9200,7 +9200,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 515699973}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.9165619
+  m_Size: 0.9167748
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -9470,8 +9470,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 338.8, y: -157.48428}
-  m_SizeDelta: {x: 278.39996, y: 314.96857}
+  m_AnchoredPosition: {x: 338.8, y: -157.51622}
+  m_SizeDelta: {x: 278.39996, y: 315.03244}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2046596709
 MonoBehaviour:

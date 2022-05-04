@@ -6,10 +6,11 @@ using Newtonsoft.Json;
 public class SavedData : MonobehaviourSingleton<SavedData>
 {
     private const string MIXER_CHANNEL = "/Data/MixerChannels.save";
-    private Dictionary<MixerChannels, float> MixerChannelsVolumes => _mixerChannelsVolumes ?? LoadMixerChannelData();
-    private Dictionary<MixerChannels, float> _mixerChannelsVolumes;
 
-    public float GetMixerChannelData(MixerChannels channel)
+    private Dictionary<string, float> MixerChannelsVolumes => _mixerChannelsVolumes ?? LoadMixerChannelData();
+    private Dictionary<string, float> _mixerChannelsVolumes;
+
+    public float GetMixerChannelData(string channel)
     {
         if (MixerChannelsVolumes.ContainsKey(channel))
             return MixerChannelsVolumes[channel];
@@ -18,7 +19,7 @@ public class SavedData : MonobehaviourSingleton<SavedData>
         return 0;
     }
 
-    public void SaveMixerChannelData(MixerChannels channel, float volume)
+    public void SaveMixerChannelData(string channel, float volume)
     {
         MixerChannelsVolumes[channel] = volume;
         var json = JsonConvert.SerializeObject(MixerChannelsVolumes, Formatting.Indented);
@@ -31,7 +32,7 @@ public class SavedData : MonobehaviourSingleton<SavedData>
         print(json);
     }
 
-    private Dictionary<MixerChannels, float> LoadMixerChannelData()
+    private Dictionary<string, float> LoadMixerChannelData()
     {
         var path = Application.persistentDataPath + MIXER_CHANNEL;
         if (!File.Exists(path)) return CreateMixerChannelData(path);
@@ -42,18 +43,18 @@ public class SavedData : MonobehaviourSingleton<SavedData>
             json = reader.ReadToEnd();
         }
 
-        var data = JsonConvert.DeserializeObject<Dictionary<MixerChannels, float>>(json);
-        _mixerChannelsVolumes = data ?? new Dictionary<MixerChannels, float>();
+        var data = JsonConvert.DeserializeObject<Dictionary<string, float>>(json);
+        _mixerChannelsVolumes = data ?? new Dictionary<string, float>();
 
         return _mixerChannelsVolumes;
     }
 
-    private Dictionary<MixerChannels, float> CreateMixerChannelData(string path)
+    private Dictionary<string, float> CreateMixerChannelData(string path)
     {
         var dir = Path.GetDirectoryName(path);
         if (dir != null && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
-        _mixerChannelsVolumes = new Dictionary<MixerChannels, float>();
+        _mixerChannelsVolumes = new Dictionary<string, float>();
         var json = JsonConvert.SerializeObject(_mixerChannelsVolumes, Formatting.Indented);
         using (var writer = new StreamWriter(path))
         {
