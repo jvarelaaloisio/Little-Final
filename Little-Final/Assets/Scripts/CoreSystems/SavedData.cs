@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 public class SavedData : MonobehaviourSingleton<SavedData>
 {
     private const string MIXER_CHANNEL = "/Data/MixerChannels.save";
+    private const string GRAPHICS_DATA = "/Data/Graphics.save";
 
     private Dictionary<string, float> MixerChannelsVolumes => _mixerChannelsVolumes ?? LoadMixerChannelData();
     private Dictionary<string, float> _mixerChannelsVolumes;
@@ -28,8 +29,6 @@ public class SavedData : MonobehaviourSingleton<SavedData>
         {
             writer.Write(json);
         }
-
-        print(json);
     }
 
     private Dictionary<string, float> LoadMixerChannelData()
@@ -62,5 +61,53 @@ public class SavedData : MonobehaviourSingleton<SavedData>
         }
 
         return _mixerChannelsVolumes;
+    }
+
+    public static GraphicsData GetGraphicsData()
+    {
+        var path = Application.persistentDataPath + GRAPHICS_DATA;
+        return File.Exists(path) ? LoadGraphicsData(path) : CreateGraphicsData(path);
+    }
+
+    private static GraphicsData LoadGraphicsData(string path)
+    {
+        string json;
+        using (var reader = new StreamReader(path))
+        {
+            json = reader.ReadToEnd();
+        }
+
+        return JsonConvert.DeserializeObject<GraphicsData>(json);
+    }
+
+    private static GraphicsData CreateGraphicsData(string path)
+    {
+        var dir = Path.GetDirectoryName(path);
+        if (dir != null && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+        var graphicsData = new GraphicsData
+        {
+            isFullScreen = true,
+            CurrentResolution = Screen.currentResolution,
+            currentQuality = 0
+        };
+
+        var json = JsonConvert.SerializeObject(graphicsData, Formatting.Indented);
+        using (var writer = new StreamWriter(path))
+        {
+            writer.Write(json);
+        }
+
+        return graphicsData;
+    }
+
+    public static void SaveGraphicsData(GraphicsData graphicsData)
+    {
+        var path = Application.persistentDataPath + GRAPHICS_DATA;
+        var json = JsonConvert.SerializeObject(graphicsData, Formatting.Indented);
+        using (var writer = new StreamWriter(path))
+        {
+            writer.Write(json);
+        }
     }
 }
