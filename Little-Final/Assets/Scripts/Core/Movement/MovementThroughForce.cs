@@ -12,7 +12,7 @@ namespace Core.Movement
 
 		private readonly Rigidbody _rigidbody;
 		private readonly WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
-		private MonoBehaviour _mono;
+		private readonly MonoBehaviour _mono;
 
 		public MovementThroughForce(MonoBehaviour mono, Rigidbody rigidbody, float speed)
 		{
@@ -26,7 +26,7 @@ namespace Core.Movement
 			_mono.StopCoroutine(nameof(MoveInFixedUpdate));
 			if (direction.magnitude < .1f)
 				return;
-			
+			Debug.DrawRay(transform.position, transform.forward * Speed, Color.white);
 			_mono.StartCoroutine(MoveInFixedUpdate(new MovementRequest(transform.forward, Speed)));
 		}
 
