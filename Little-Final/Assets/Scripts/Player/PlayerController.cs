@@ -44,6 +44,8 @@ namespace Player
 		public Action OnJump = delegate { };
 		public Action OnLand = delegate { };
 		public Action OnClimb = delegate { };
+		public Action OnMount = delegate { };
+		public Action OnDismount = delegate { };
 		public Action OnDeath = delegate { };
 
 		public Action<bool> OnGlideChanges = delegate { };
@@ -296,12 +298,14 @@ namespace Player
 			rideable.Interact(_myTransform);
 			_myTransform.SetParent(mount);
 			_myTransform.SetPositionAndRotation(mount.position, mount.rotation);
+			OnMount();
 		}
 
 		public void Dismount()
 		{
 			transform.SetParent(null);
 			Rideable.Leave();
+			OnDismount();
 		}
 	}
 }
