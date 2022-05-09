@@ -8,8 +8,10 @@ using JetBrains.RiderFlow.Core.Threading;
 using JetBrains.RiderFlow.Core.UI.SceneIntegration;
 using JetBrains.RiderFlow.Core.UI.SceneIntegration.Tools.SceneHighlighting;
 using JetBrains.RiderFlow.Core.UI.SearchEverywhere;
+using JetBrains.RiderFlow.Core.Utils;
 using JetBrains.RiderFlow.Since2021_2.SceneIntegration;
 using UnityEditor;
+using UnityEditor.Overlays;
 using UnityEngine;
 
 namespace JetBrains.RiderFlow.Since2021_2
@@ -23,7 +25,7 @@ namespace JetBrains.RiderFlow.Since2021_2
             SearchEverywhereWindow.Settings = SearchWindowSettings.instance;
             RecentFilesCacheController.Cache = RecentFilesCache.instance;
             ProgressManagerOwner.ProgressManager = new ProgressManager();
-            EditorApplication.delayCall += OnEnable;
+            UnityEditorUtils.ExecuteOnceOnUpdateCall(OnEnable);
             SceneIntegrationSettings.IsClassicToolboxEnabled = false;
         }
         
@@ -31,6 +33,7 @@ namespace JetBrains.RiderFlow.Since2021_2
         {
             if (!IsPrimaryUnityProcess())
                 return;
+            
             InstallBackendRequirement.Instance.IsReady.AdviseUntil(Lifetime.Eternal, v =>
             {
                 if (v)
@@ -79,7 +82,18 @@ namespace JetBrains.RiderFlow.Since2021_2
                 toolbox.displayed = true;
                 toolbox.Undock();
                 toolbox.floatingPosition = new Vector2(150, 150);
+
+                UpdateLayout(toolbox);
             }
+        }
+
+        private static void UpdateLayout(Overlay toolbox)
+        {
+            var layoutSetter = typeof(Overlay).GetProperty(nameof(Overlay.layout))?.GetSetMethod(true);
+            if (layoutSetter == null)
+                return;
+
+            layoutSetter.Invoke(toolbox, new object[] { Layout.HorizontalToolbar });
         }
     }    
 }
