@@ -22,11 +22,13 @@ namespace EditorExtensions
 			GetFolderFromSelection(selection, $"/{newClassName}.cs", out string newPath);
 
 			ProjectWindowUtil.StartNameEditingIfProjectWindowExists(
-				0,
-				ScriptableObject.CreateInstance<EndNameActionForScript>(),
-				newPath,
-				AssetPreview.GetMiniTypeThumbnail(typeof(MonoScript)),
-				$"{nameSpace}|{baseClassName}");
+																	0,
+																	ScriptableObject
+																		.CreateInstance<EndNameActionForScript>(),
+																	newPath,
+																	AssetPreview
+																		.GetMiniTypeThumbnail(typeof(MonoScript)),
+																	$"{nameSpace}|{baseClassName}");
 		}
 
 		private static void GetFolderFromSelection(Object selection, string pathSuffix, out string newPath)
@@ -44,9 +46,13 @@ namespace EditorExtensions
 		public static bool CreateSubclass()
 		{
 			var objects = Selection.objects;
+			if (objects.Length < 1)
+				return false;
+			var selection = objects[0];
 			return objects.Length < 2
-			       && objects[0] is MonoScript
-			       && !(objects[0] as MonoScript).GetClass().IsSealed;
+					&& selection is MonoScript script
+					&& script.GetClass() != null
+					&& !script.GetClass().IsSealed;
 		}
 
 		internal class EndNameActionForScript : EndNameEditAction
@@ -64,6 +70,7 @@ namespace EditorExtensions
 				{
 					Debug.Log(s);
 				}
+
 				var baseClassName = data[1];
 				string fileData = "using UnityEngine;\n\n";
 				bool isInNamespace = !string.IsNullOrEmpty(nameSpace);

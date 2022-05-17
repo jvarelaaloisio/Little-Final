@@ -59,11 +59,6 @@ namespace Player.States
 				PP_Climb.MaxClimbAngle,
 				out var hit);
 
-			if (hit.point == Vector3.zero)
-			{
-				Debug.Log("POINT WAS ZERO");
-				Debug.Break();
-			}
 			_getInPosition =
 				new ActionOverTime(
 					PP_Climb.ClimbPositioningTime,
@@ -78,6 +73,12 @@ namespace Player.States
 					controller.ChangeState<Jump>,
 					sceneIndex
 				);
+			//TODO: Solve this bug
+			if (hit.point == Vector3.zero)
+			{
+				Debug.LogError("CLIMB POINT WAS ZERO");
+				controller.ChangeState<Walk>();
+			}
 		}
 
 		public override void OnStateUpdate()

@@ -11,13 +11,15 @@ namespace Core.Movement
 		public float Speed { get; set; }
 
 		private readonly Rigidbody _rigidbody;
+		private readonly float _torque;
 		private readonly WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
 		private readonly MonoBehaviour _mono;
 
-		public MovementThroughForce(MonoBehaviour mono, Rigidbody rigidbody, float speed)
+		public MovementThroughForce(MonoBehaviour mono, Rigidbody rigidbody, float speed, float torque)
 		{
 			_mono = mono;
 			_rigidbody = rigidbody;
+			_torque = torque;
 			Speed = speed;
 		}
 
@@ -29,6 +31,9 @@ namespace Core.Movement
 			Debug.DrawRay(transform.position, transform.forward * Speed, Color.white);
 			_mono.StartCoroutine(MoveInFixedUpdate(new MovementRequest(transform.forward, Speed)));
 		}
+
+		public void Rotate(Transform transform, Vector3 direction)
+			=> Rotate(transform, direction, _torque);
 
 		public void Rotate(Transform transform, Vector3 direction, float torque)
 		{

@@ -1,7 +1,6 @@
 ﻿using System;
-using AI.DecisionTree;
 
-namespace IA.DecisionTree
+namespace AI.DecisionTree
 {
 	public class TreeQuestion : IQuestion
 	{
@@ -11,6 +10,8 @@ namespace IA.DecisionTree
 		private readonly INode _trueOutcome;
 		private readonly INode _falseOutcome;
 
+		public string Name => _question.Method.Name;
+		
 		public TreeQuestion(Func<bool> question,
 							INode trueOutcome,
 							INode falseOutcome)

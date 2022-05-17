@@ -88,7 +88,7 @@ namespace Player.States
 					if (isRunning)
 						Controller.ThrowItem(PP_Walk.ThrowForce);
 					else
-						Controller.ReleaseItem();
+						Controller.PutDownItem();
 				}
 				else if (Controller.CanInteract(out var interactable))
 				{
@@ -127,7 +127,7 @@ namespace Player.States
 			coyoteEffect.StopTimer();
 			_runningConsumer.Stop();
 			if (Controller.HasItem())
-				Controller.ReleaseItem();
+				Controller.PutDownItem();
 		}
 
 		private void OnCoyoteFinished()

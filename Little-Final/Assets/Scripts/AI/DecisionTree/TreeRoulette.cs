@@ -5,12 +5,23 @@ using AI.DecisionTree;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace IA.DecisionTree
+namespace AI.DecisionTree
 {
 	public class TreeRoulette : IQuestion
 	{
 		public event Action<INode> ChangeNode;
 		private readonly Dictionary<INode, int> _outcomesWithChance;
+
+		public string Name
+		{
+			get
+			{
+				string outcomes = _outcomesWithChance
+					.Aggregate(string.Empty,
+								(current, outcome) => current + $" {outcome.Key.Name} ");
+				return $"Roulette: ({outcomes})";
+			}
+		}
 
 		public TreeRoulette(Dictionary<INode, int> outcomesWithChance)
 		{

@@ -5,12 +5,13 @@ using Player.Abilities;
 using Player.Collectables;
 using Player.States;
 using UnityEngine;
+using UnityEngine.Events;
 using VarelaAloisio.UpdateManagement.Runtime;
 using Void = Player.States.Void;
 
 namespace Player
 {
-	public class PlayerController : MonoBehaviour, IUpdateable, IDamageable
+	public class PlayerController : MonoBehaviour, IUpdateable, IDamageHandler, IPlayer
 	{
 		public delegate void StateCallback(State state);
 
@@ -44,8 +45,11 @@ namespace Player
 		public Action OnJump = delegate { };
 		public Action OnLand = delegate { };
 		public Action OnClimb = delegate { };
-		public Action OnMount = delegate { };
-		public Action OnDismount = delegate { };
+		public UnityEvent OnMount;
+		public UnityEvent OnDismount;
+		public UnityEvent onPick;
+		public UnityEvent onPutDown;
+		public UnityEvent onThrow;
 		public Action OnDeath = delegate { };
 
 		public Action<bool> OnGlideChanges = delegate { };
@@ -70,7 +74,7 @@ namespace Player
 		[SerializeField]
 		private bool shouldLogTransitions = false;
 
-		IPickable _itemPicked;
+		private IPickable _itemPicked;
 		IBody body;
 		DamageHandler damageHandler;
 		private Stamina.Stamina stamina;
@@ -99,6 +103,8 @@ namespace Player
 
 		public float InteractionCheckRadius => interactionCheckRadius;
 		public IRideable Rideable { get; private set; }
+
+		public Transform Transform => transform;
 
 		#endregion
 
@@ -248,47 +254,27 @@ namespace Player
 			return false;
 		}
 
-		[Obsolete]
-		public bool CanPick(out IPickable pickable)
-		{
-			Collider[] results = new Collider[5];
-			if (Physics.OverlapSphereNonAlloc(interactionHelper.position,
-											interactionCheckRadius,
-											results,
-											interactableLayer,
-											QueryTriggerInteraction.Collide) > 0)
-			{
-				foreach (Collider current in results)
-				{
-					if (!current)
-						break;
-					if (current.TryGetComponent(out pickable))
-						return true;
-				}
-			}
-
-			pickable = null;
-			return false;
-		}
-
 		public void Pick(IPickable pickable)
 		{
 			_itemPicked = pickable;
 			pickable.Interact(_myTransform);
+			onPick.Invoke();
 		}
 
 		public bool HasItem() => _itemPicked != null;
 
-		public void ReleaseItem()
+		public void PutDownItem()
 		{
-			_itemPicked.Leave();
+			_itemPicked.PutDown();
 			_itemPicked = null;
+			onPutDown.Invoke();
 		}
 
 		public void ThrowItem(float force)
 		{
 			_itemPicked.Throw(force, _myTransform.forward + _myTransform.up);
 			_itemPicked = null;
+			onThrow.Invoke();
 		}
 
 		public void Mount(IRideable rideable)
@@ -298,14 +284,16 @@ namespace Player
 			rideable.Interact(_myTransform);
 			_myTransform.SetParent(mount);
 			_myTransform.SetPositionAndRotation(mount.position, mount.rotation);
-			OnMount();
+			OnMount.Invoke();
 		}
 
 		public void Dismount()
 		{
 			transform.SetParent(null);
-			Rideable.Leave();
-			OnDismount();
+			Quaternion rotation = transform.rotation;
+			transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
+			Rideable.PutDown();
+			OnDismount.Invoke();
 		}
 	}
 }
