@@ -11,6 +11,7 @@ namespace AI.DecisionTree
 		private string _trace;
 		private T _lastResponse;
 		private readonly ILogger _logger;
+		public string Tag { get; set; } = "";
 
 		public bool LogTrace { get; set; }
 		public bool LogRepeatedResponses { get; set; } = true;
@@ -49,7 +50,7 @@ namespace AI.DecisionTree
 			if (LogTrace && (LogRepeatedResponses || !response.Equals(_lastResponse)))
 			{
 				_trace += $"\nResponse: <color=green>{response.ToString()}</color>";
-				_logger.Log(_trace);
+				_logger.Log(Tag, _trace);
 			}
 
 			_lastResponse = response;

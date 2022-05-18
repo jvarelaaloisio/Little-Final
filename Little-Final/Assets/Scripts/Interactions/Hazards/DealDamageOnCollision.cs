@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.LifeSystem;
 using UnityEngine;
 
 namespace Interactions.Hazards

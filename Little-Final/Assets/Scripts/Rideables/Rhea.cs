@@ -2,6 +2,8 @@
 using Core;
 using Core.Extensions;
 using Core.Helpers;
+using Core.Interactions;
+using Core.LifeSystem;
 using Core.Movement;
 using FSM;
 using Player;
@@ -215,13 +217,13 @@ namespace Rideables
 
 		protected abstract void Break();
 
-		public void Interact(Transform user)
+		public void Interact(IUser user)
 		{
 			_isMounted = true;
 			onMounted.Invoke();
 		}
 
-		public void PutDown()
+		public void Leave()
 		{
 			_isMounted = false;
 			Movement.Speed = speed;

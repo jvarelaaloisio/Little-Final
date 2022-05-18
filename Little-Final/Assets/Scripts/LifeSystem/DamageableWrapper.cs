@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.LifeSystem;
 using Events.UnityEvents;
 using LS;
 using UnityEngine;

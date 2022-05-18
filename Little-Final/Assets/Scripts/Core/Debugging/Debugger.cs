@@ -13,26 +13,28 @@ namespace Core.Debugging
 		[Header("Log enabling")]
 		[SerializeField]
 		private bool enabled = true;
-		
+
+		[Space]
 		[SerializeField]
 		private bool allowLog = true;
-		
+
 		[SerializeField]
 		private bool allowWarning = true;
-		
+
 		[SerializeField]
 		private bool allowError = true;
-		
+
 		[SerializeField]
 		private bool allowAssert = true;
-		
+
 		[SerializeField]
 		private bool allowException = true;
 
+		[Space]
 		[SerializeField]
 		[Tooltip("Tags to be excluded in logging")]
 		private List<string> filteredTags;
-		
+
 		public ILogHandler logHandler { get; set; }
 
 		private Dictionary<LogType, bool> _logTypesAllowed;
@@ -42,7 +44,7 @@ namespace Core.Debugging
 			get => enabled;
 			set => enabled = value;
 		}
-		
+
 		//TODO: Find out what this does
 		public LogType filterLogType { get; set; }
 
@@ -86,7 +88,7 @@ namespace Core.Debugging
 
 		public void LogError(string tag, object message)
 			=> Log(LogType.Error, tag, message);
-		
+
 		public void LogError(string tag, object message, Object context)
 			=> LogInternal(LogType.Error, tag, message, context);
 
@@ -101,17 +103,20 @@ namespace Core.Debugging
 
 		private void LogInternal(LogType logType, string tag, object message, Object context = null)
 		{
+			bool tagIsEmpty = tag == string.Empty;
+			if (!tagIsEmpty)
+				message = tag + ": " + message;
 			if (enabled && filteredTags.Contains(tag))
 				return;
 			switch (context != null)
 			{
-				case true when tag == string.Empty:
+				case true when tagIsEmpty:
 					_logger.Log(logType, tag, message, context);
 					break;
 				case true:
 					_logger.Log(logType, message, context);
 					break;
-				case false when tag == string.Empty:
+				case false when tagIsEmpty:
 					_logger.Log(logType, message);
 					break;
 				case false:

@@ -1,4 +1,5 @@
 using CharacterMovement;
+using Core.Interactions;
 using Player.PlayerInput;
 using UnityEngine;
 

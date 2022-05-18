@@ -1,33 +1,46 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace Interactions.Pickable
 {
 	public class FruitFeedbackTest : MonoBehaviour
 	{
 		[SerializeField]
-		private Color[] colors = new Color[5];
+		private float[] scales = new float[5];
 
 		[SerializeField]
-		private Material material;
+		private float scaleDuration;
+		
+		[SerializeField]
+		private float resetDuration;
 
-		private void Start()
+		private Vector3 _originalScale;
+
+		private void Awake()
 		{
-			if (!TryGetComponent(out Renderer renderer))
-				return;
-			material = new Material(material);
-			renderer.material = material;
+			_originalScale = transform.localScale;
+		}
+		
+		public void UpdateScale(int pos)
+		{
+			pos = Mathf.Clamp(0, pos, scales.Length - 1);
+			StartCoroutine(TransitionScale(transform.localScale, Vector3.one * scales[pos], scaleDuration));
 		}
 
-		public void UpdateColor(int pos)
+		public void ResetScale()
 		{
-			pos = Mathf.Clamp(0, pos, colors.Length - 1);
-
-			material.color = colors[pos];
+			StartCoroutine(TransitionScale(transform.localScale, _originalScale, resetDuration));
 		}
 
-		public void ResetColor()
+		private IEnumerator TransitionScale(Vector3 from, Vector3 to, float duration)
 		{
-			material.color = colors[colors.Length - 1];
+			float start = Time.time;
+			float current;
+			while ((current = Time.time) < start + duration)
+			{
+				transform.localScale = Vector3.Lerp(from, to, (current - start) / duration);
+				yield return null;
+			}
 		}
 	}
 }

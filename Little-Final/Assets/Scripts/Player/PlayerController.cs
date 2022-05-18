@@ -11,7 +11,7 @@ using Void = Player.States.Void;
 
 namespace Player
 {
-	public class PlayerController : MonoBehaviour, IUpdateable, IDamageHandler, IPlayer
+	public class PlayerController : MonoBehaviour, IUpdateable, IDamageHandler, IPlayer, IUser
 	{
 		public delegate void StateCallback(State state);
 
@@ -257,7 +257,7 @@ namespace Player
 		public void Pick(IPickable pickable)
 		{
 			_itemPicked = pickable;
-			pickable.Interact(_myTransform);
+			pickable.Interact(this);
 			onPick.Invoke();
 		}
 
@@ -265,9 +265,8 @@ namespace Player
 
 		public void PutDownItem()
 		{
-			_itemPicked.PutDown();
-			_itemPicked = null;
-			onPutDown.Invoke();
+			_itemPicked.Leave();
+			LoseInteraction();
 		}
 
 		public void ThrowItem(float force)
@@ -277,11 +276,17 @@ namespace Player
 			onThrow.Invoke();
 		}
 
+		public void LoseInteraction()
+		{
+			_itemPicked = null;
+			onPutDown.Invoke();
+		}
+
 		public void Mount(IRideable rideable)
 		{
 			Rideable = rideable;
 			Transform mount = rideable.GetMount();
-			rideable.Interact(_myTransform);
+			rideable.Interact(this);
 			_myTransform.SetParent(mount);
 			_myTransform.SetPositionAndRotation(mount.position, mount.rotation);
 			OnMount.Invoke();
@@ -292,7 +297,7 @@ namespace Player
 			transform.SetParent(null);
 			Quaternion rotation = transform.rotation;
 			transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
-			Rideable.PutDown();
+			Rideable.Leave();
 			OnDismount.Invoke();
 		}
 	}

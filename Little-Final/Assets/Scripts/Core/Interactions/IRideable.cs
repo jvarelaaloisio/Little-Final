@@ -1,7 +1,6 @@
-﻿using Core.Interactions;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Player
+namespace Core.Interactions
 {
 	public interface IRideable : IInteractable
 	{

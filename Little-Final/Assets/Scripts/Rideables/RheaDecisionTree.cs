@@ -93,9 +93,13 @@ namespace Rideables
 
 			#endregion
 
-			_decisionTree = new DecisionTree<Id>(questions, actions, onDecision.Invoke, isAwareOfFruit, debugger)
+			_decisionTree = new DecisionTree<Id>(questions,
+												actions,
+												onDecision.Invoke,
+												isAwareOfFruit, debugger)
 							{
-								LogRepeatedResponses = logRepeatedResponsesOnDecisionTree
+								Tag = name,
+								LogRepeatedResponses = logRepeatedResponsesOnDecisionTree,
 							};
 		}
 

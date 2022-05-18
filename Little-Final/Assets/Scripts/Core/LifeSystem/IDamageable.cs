@@ -1,4 +1,4 @@
-﻿namespace Core
+﻿namespace Core.LifeSystem
 {
 	public interface IDamageable
 	{

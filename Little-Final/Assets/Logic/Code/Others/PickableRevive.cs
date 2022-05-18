@@ -1,6 +1,6 @@
 ﻿using Core;
-using Events.UnityEvents;
-using Interactables;
+// using Events.UnityEvents;
+using Interactions.Pickable;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -20,9 +20,9 @@ namespace Logic.Code.Others
 		[SerializeField]
 		private Rigidbody rigidbody;
 
-		[Header("Events")]
-		[SerializeField]
-		private IntUnityEvent onLifeChanged;
+		// [Header("Events")]
+		// [SerializeField]
+		// private IntUnityEvent onLifeChanged;
 
 		[SerializeField]
 		private UnityEvent onDeath;
@@ -47,7 +47,7 @@ namespace Logic.Code.Others
 
 		private void LifeChanged(float lifePoints)
 		{
-			onLifeChanged.Invoke((int) DamageHandler.lifePoints);
+			// onLifeChanged.Invoke((int) DamageHandler.lifePoints);
 			Debug.Log(DamageHandler.lifePoints);
 			if (DamageHandler.lifePoints > 0)
 				return;
