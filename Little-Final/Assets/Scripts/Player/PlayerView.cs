@@ -56,7 +56,7 @@ namespace Player
 
 		[SerializeField]
 		private Material poncho;
-		
+
 		public float ponchoTurnOffTime;
 		private ActionOverTime ponchoTurnOff;
 		public Vector3 playerShadowOffset;
@@ -115,6 +115,8 @@ namespace Player
 			controller.OnJump += ShowJumpFeedback;
 			controller.OnLand += ShowLandFeedback;
 			controller.OnClimb += ShowClimbFeedback;
+			controller.OnMount.AddListener(() => animator.Play(jumpAnimation));
+			controller.OnDismount.AddListener(() => animator.Play(jumpAnimation));
 			controller.OnDeath += ShowDeathFeedback;
 			controller.OnGlideChanges += SetFlying;
 			audioManager = FindObjectOfType<AudioManager>();

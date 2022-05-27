@@ -2,6 +2,7 @@
 using JetBrains.RiderFlow.Core.ReEditor.Notifications;
 using JetBrains.RiderFlow.Core.Services.Caches.RecentFiles;
 using JetBrains.RiderFlow.Core.UI.SearchEverywhere;
+using JetBrains.RiderFlow.Core.Utils;
 using UnityEditor;
 
 namespace JetBrains.RiderFlow.Since2020_2
@@ -15,7 +16,7 @@ namespace JetBrains.RiderFlow.Since2020_2
             SearchEverywhereWindow.Settings = SearchWindowSettings.instance;
             RecentFilesCacheController.Cache = RecentFilesCache.instance;
             ProgressManagerOwner.ProgressManager = new ProgressManager();
-            EditorApplication.delayCall += OnEnable;
+            UnityEditorUtils.ExecuteOnceOnUpdateCall(OnEnable);
         }
         
         protected static void OnEnable()

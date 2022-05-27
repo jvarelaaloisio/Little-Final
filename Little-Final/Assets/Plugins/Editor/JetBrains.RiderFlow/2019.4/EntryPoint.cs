@@ -1,6 +1,7 @@
 ﻿using JetBrains.RiderFlow.Core.Launchers;
 using JetBrains.RiderFlow.Core.ReEditor.Notifications;
 using JetBrains.RiderFlow.Core.UI.SearchEverywhere;
+using JetBrains.RiderFlow.Core.Utils;
 using UnityEditor;
 
 namespace JetBrains.RiderFlow.Since2019_4
@@ -13,7 +14,7 @@ namespace JetBrains.RiderFlow.Since2019_4
         {
             SearchEverywhereWindow.Settings = new SearchWindowSettings();
             ProgressManagerOwner.ProgressManager = new LogProgressManager();
-            EditorApplication.delayCall += OnEnable;
+            UnityEditorUtils.ExecuteOnceOnUpdateCall(OnEnable);
         }
         
         protected static void OnEnable()

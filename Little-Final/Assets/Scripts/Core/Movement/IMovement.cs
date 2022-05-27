@@ -6,6 +6,7 @@ namespace Core.Movement
     {
         float Speed { get; set; }
         void Move(Transform transform, Vector3 direction);
+        void Rotate(Transform transform, Vector3 direction);
         void Rotate(Transform transform, Vector3 direction, float torque);
     }
 }

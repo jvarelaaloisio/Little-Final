@@ -1,10 +1,8 @@
-﻿using UnityEngine;
-
-namespace Core.Interactions
+﻿namespace Core.Interactions
 {
 	public interface IInteractable
 	{
-		void Interact(Transform user);
+		void Interact(IUser user);
 		void Leave();
 	}
 }

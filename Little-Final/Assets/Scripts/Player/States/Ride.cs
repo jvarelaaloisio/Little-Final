@@ -1,4 +1,5 @@
 using CharacterMovement;
+using Core.Interactions;
 using Player.PlayerInput;
 using UnityEngine;
 
@@ -28,9 +29,7 @@ namespace Player.States
 			var direction = MoveHelper.GetDirection(input);
 			Controller.Rideable.Move(direction);
 			if (InputManager.CheckRunInput())
-			{
 				_rideable.UseAbility();
-			}
 			if (InputManager.CheckInteractInput())
 			{
 				Controller.Body.Jump(Vector3.up * PP_Jump.JumpForce - MyTransform.forward * PP_Jump.JumpForce);

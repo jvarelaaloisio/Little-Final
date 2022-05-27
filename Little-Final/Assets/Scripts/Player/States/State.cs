@@ -86,7 +86,7 @@ namespace Player.States
 			{
 				if (!Physics.Raycast(climbCheckPosition, -MyTransform.up, out RaycastHit hit,
 									PP_Climb.MaxClimbDistanceFromCorners,
-									LayerMask.GetMask("Floor", "NonClimbable", "Default")))
+									LayerMask.GetMask("Floor", "Default")))
 					return MyTransform.forward;
 				Vector3 newForward = Vector3.Cross(MyTransform.right, hit.normal);
 				return newForward;

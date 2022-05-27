@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Core;
+using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
 
 namespace Platforms
