@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Events.Channels;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +9,8 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
 {
     public GameObject loadingScreen;
     public LevelDataContainer titleScreen;
+
+    public StringEventChannel sceneDataChannel;
 
     private List<AsyncOperation> _scenesLoading = new List<AsyncOperation>();
     private Slider _progressBar;
@@ -26,6 +30,16 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
         _currentLevel.Load();
         _progressBar = loadingScreen.GetComponentInChildren<Slider>();
         _levelData = Resources.LoadAll<LevelDataContainer>("SceneData");
+    }
+
+    private void OnEnable()
+    {
+        sceneDataChannel.Subscribe(LoadLevel);
+    }
+
+    private void OnDisable()
+    {
+        sceneDataChannel.Unsubscribe(LoadLevel);
     }
 
     public void LoadLevel(string levelName)
