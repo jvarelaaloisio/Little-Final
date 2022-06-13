@@ -734,6 +734,9 @@ MonoBehaviour:
   AbilitiesOnLand: []
   AbilitiesInAir: []
   AbilitiesOnWall: []
+  onLand:
+    m_PersistentCalls:
+      m_Calls: []
   OnMount:
     m_PersistentCalls:
       m_Calls:
@@ -770,7 +773,18 @@ MonoBehaviour:
       m_Calls: []
   onThrow:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 9139742939227431884}
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: throw
+          m_BoolArgument: 0
+        m_CallState: 2
   climbCheckPivot: {fileID: 7574792402906395099}
   interactionHelper: {fileID: 1878497753004393544}
   interactionCheckRadius: 0.47
@@ -834,10 +848,12 @@ MonoBehaviour:
   - {fileID: 4729562666732804594}
   runningBlendTree: Running BlendTree
   jumpAnimation: Jump
+  longJumpAnimation: 
   climbAnimation: Climb
   deathAnimation: Death
   speedParameter: Speed
   isFlyingParameter: isFlying
+  pickBool: isPicking
   transitionDuration: 0.2
   playerShadow: {fileID: 1119814554}
   playerShadowMaterial: {fileID: 2100000, guid: 821e82f08d18a3c458688987108864d9,
@@ -866,6 +882,9 @@ MonoBehaviour:
   onJump:
     m_PersistentCalls:
       m_Calls: []
+  onLongJump:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7950584731832542066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -879,9 +898,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walk: {fileID: 8300000, guid: 5e5c6cdc8361f0142ad7655c32b7a2a6, type: 3}
-  jump: {fileID: 8300000, guid: 572f4756300a99348912908f36a838ed, type: 3}
   fly: {fileID: 8300000, guid: 3ac742220f7f6574aa6f2e234ed85d89, type: 3}
+  jumpSfx: []
+  walkSfx: []
   loopingSfx: {fileID: 2722491085779822242}
+  debugger: {fileID: 0}
 --- !u!54 &3453220764534881402
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1251,6 +1272,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a3d8f15efa1ca44e997d847eb633fe0, type: 3}
+--- !u!95 &9139742939227431884 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
+    type: 3}
+  m_PrefabInstance: {fileID: 3439754432987373149}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2897731094435920310 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
