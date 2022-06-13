@@ -15,7 +15,10 @@ namespace Core.Movement
 		private readonly WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
 		private readonly MonoBehaviour _mono;
 
-		public MovementThroughForce(MonoBehaviour mono, Rigidbody rigidbody, float speed, float torque)
+		public MovementThroughForce(MonoBehaviour mono,
+									Rigidbody rigidbody,
+									float speed,
+									float torque)
 		{
 			_mono = mono;
 			_rigidbody = rigidbody;

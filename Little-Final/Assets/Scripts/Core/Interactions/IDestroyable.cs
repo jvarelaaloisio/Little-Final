@@ -4,7 +4,7 @@ namespace Core.Interactions
 {
 	public interface IDestroyable
 	{
-		UnityEvent OnDestroy { get; }
+		UnityEvent OnBeingDestroyed { get; }
 		void Destroy();
 	}
 }

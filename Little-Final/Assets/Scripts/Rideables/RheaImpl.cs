@@ -1,16 +1,21 @@
 ﻿using System.Collections;
 using Core.Extensions;
+using Core.Interactions;
 using Core.Movement;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Rideables
 {
 	[RequireComponent(typeof(Rigidbody))]
-	public class RheaAcceleration : Rhea
+	public class RheaImpl : Rhea
 	{
 		[SerializeField]
 		private Rigidbody rigidBody;
 
+		[SerializeField]
+		private NavMeshAgent agent;
+		
 		[SerializeField]
 		private float breakForce;
 
@@ -21,14 +26,16 @@ namespace Rideables
 		{
 			base.OnValidate();
 			if (!rigidBody) gameObject.TryGetComponent(out rigidBody);
+			if (!agent) gameObject.TryGetComponent(out agent);
 		}
 
 		protected override void InitializeMovement(out IMovement movement, float speed)
-		{
-			movement = new MovementThroughForce(this, rigidBody, speed, torque);
-		}
+			=> movement = new MovementThroughForce(this, rigidBody, speed, torque);
 
-		protected override void Break()
+		protected override void InitializeNavigator(out INavigator navigator)
+			=> navigator = new NavMeshNavigator(agent, arrivalDistance);
+
+		protected override void Brake()
 		{
 			StopCoroutine(AddBreakForce());
 			StartCoroutine(AddBreakForce());
@@ -40,6 +47,25 @@ namespace Rideables
 				Debug.DrawRay(transform.position, force, Color.white);
 				rigidBody.AddForce(force, ForceMode.Force);
 			}
+		}
+
+		public override void Interact(IUser user)
+		{
+			base.Interact(user);
+			agent.enabled = false;
+		}
+
+		public override void Leave()
+		{
+			base.Leave();
+			agent.enabled = true;
+		}
+
+		protected override Vector3 GetCurrentVelocity()
+		{
+			return IsMounted
+						? rigidBody.velocity
+						: agent.velocity;
 		}
 
 #if UNITY_EDITOR

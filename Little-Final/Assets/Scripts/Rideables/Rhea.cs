@@ -1,15 +1,16 @@
-﻿using System.Collections;
-using Core;
+﻿using System;
+using System.Collections.Generic;
+using Core.Debugging;
 using Core.Extensions;
 using Core.Helpers;
 using Core.Interactions;
-using Core.LifeSystem;
 using Core.Movement;
 using FSM;
-using Player;
 using Rideables.States;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace Rideables
 {
@@ -26,9 +27,6 @@ namespace Rideables
 		private RheaModel rheaModel;
 
 		[SerializeField]
-		private float arrivalDistance;
-
-		[SerializeField]
 		private float eatingPeriod;
 
 		[SerializeField]
@@ -40,6 +38,12 @@ namespace Rideables
 		[Header("Movement")]
 		[SerializeField]
 		private float speed;
+
+		[SerializeField]
+		protected float arrivalDistance;
+
+		[SerializeField]
+		private AnimationCurve runningSpeedControl = AnimationCurve.Linear(0, 0, 1, 1);
 
 		[SerializeField]
 		private AnimationCurve speedControlWhenApproachingWall = AnimationCurve.Linear(0, 0, 1, 1);
@@ -87,7 +91,7 @@ namespace Rideables
 
 		[Header("Events")]
 		[SerializeField]
-		private UnityEvent OnCompletedObjective;
+		private UnityEvent onCompletedObjective;
 
 		[SerializeField]
 		private UnityEvent onMounted;
@@ -95,11 +99,26 @@ namespace Rideables
 		[SerializeField]
 		private UnityEvent onDismounted;
 
-		protected IMovement Movement;
+		[Header("Debug")]
+		[SerializeField]
+		private Debugger debugger;
 
-		private bool _isMounted;
+		protected IMovement Movement;
+		protected INavigator Navigator;
+
+		protected bool IsMounted;
+		private float _runningStart;
 
 		private FiniteStateMachine<Id> _stateMachine;
+		private CharacterState<Id> _idle;
+		private Eat<Id> _eat;
+		private Navigate<Id> _goToFruit;
+		private Navigate<Id> _fleeFromPlayer;
+		private Navigate<Id> _patrol;
+
+		public event Action OnCompletedObjective = delegate { };
+		public event Action OnMounted = delegate { };
+		public event Action OnDismounted = delegate { };
 
 		public float Speed => speed;
 
@@ -119,93 +138,120 @@ namespace Rideables
 		protected virtual void Awake()
 		{
 			InitializeMovement(out Movement, Speed);
-			var idle = new CharacterState<Id>("Idle", transform, OnCompletedObjective.Invoke);
+			InitializeNavigator(out Navigator);
+			awareness.OnEnvironmentChanged += OnEnvironmentChanged;
+			_idle = new CharacterState<Id>(idleId.Name, transform, OnStateCompletedObjective, debugger);
 
-			var eat = new CharacterState<Id>("Eat", transform, OnCompletedObjective.Invoke);
-			eat.OnAwake += () => StartCoroutine(Eat());
-			eat.OnSleep += () => StopCoroutine(Eat());
+			_eat = new Eat<Id>(eatId.Name,
+								transform,
+								OnStateCompletedObjective,
+								debugger,
+								awareness,
+								eatingPeriod,
+								eatingFirstDelay,
+								eatingDamage,
+								this);
 
-			IEnumerator Eat()
-			{
-				WaitForSeconds waitForPeriod = new WaitForSeconds(eatingPeriod);
-				yield return new WaitForSeconds(eatingFirstDelay);
-				while (true)
-				{
-					if (awareness.Fruit)
-					{
-						if (awareness.Fruit.TryGetComponent(out IDamageable damageable))
-							damageable.TakeDamage(eatingDamage);
-					}
-
-					yield return waitForPeriod;
-				}
-			}
-
-			var goToFruit = new Walk<Id>("go to fruit",
+			_goToFruit = new Navigate<Id>(goToFruitId.Name,
 										transform,
-										OnCompletedObjective.Invoke,
-										Movement,
-										() => awareness.Fruit
-												? awareness.Fruit.position
-												: transform.position,
-										rheaModel.EatDistance);
+										OnStateCompletedObjective,
+										debugger,
+										Navigator);
 
-			var fleeFromPlayer =
-				new Walk<Id>("flee from player",
-							transform,
-							OnCompletedObjective.Invoke,
-							Movement,
-							() =>
-							{
-								Vector3 myPos = transform.position;
-								return awareness.Player
-											? myPos + (myPos - awareness.Player.position).IgnoreY().normalized *
-											rheaModel.FleeDistance / 2
-											: myPos;
-							},
-							arrivalDistance);
+			_fleeFromPlayer = new Navigate<Id>(fleeFromPlayerId.Name,
+												transform,
+												OnStateCompletedObjective,
+												debugger,
+												Navigator);
 
-			var patrol = new Walk<Id>("patrol",
-									transform,
-									OnCompletedObjective.Invoke,
-									Movement,
-									() => transform.position,
-									arrivalDistance);
-			patrol.OnAwake += () => Debug.LogError("Patrol objective not set", this);
+			_patrol = new Navigate<Id>(fleeFromPlayerId.Name,
+										transform,
+										OnStateCompletedObjective,
+										debugger,
+										Navigator);
+			_patrol.OnAwake += () => _patrol.NavigateTo(GetPatrolCandidates());
 
-			idle.AddTransition(eatId, eat);
-			idle.AddTransition(goToFruitId, goToFruit);
-			idle.AddTransition(fleeFromPlayerId, fleeFromPlayer);
-			idle.AddTransition(patrolId, patrol);
+			_idle.AddTransition(eatId, _eat);
+			_idle.AddTransition(goToFruitId, _goToFruit);
+			_idle.AddTransition(fleeFromPlayerId, _fleeFromPlayer);
+			_idle.AddTransition(patrolId, _patrol);
 
-			eat.AddTransition(idleId, idle);
-			eat.AddTransition(goToFruitId, goToFruit);
-			eat.AddTransition(fleeFromPlayerId, fleeFromPlayer);
-			eat.AddTransition(patrolId, patrol);
+			_eat.AddTransition(idleId, _idle);
+			_eat.AddTransition(goToFruitId, _goToFruit);
+			_eat.AddTransition(fleeFromPlayerId, _fleeFromPlayer);
+			_eat.AddTransition(patrolId, _patrol);
 
-			goToFruit.AddTransition(idleId, idle);
-			goToFruit.AddTransition(eatId, eat);
-			goToFruit.AddTransition(fleeFromPlayerId, fleeFromPlayer);
-			goToFruit.AddTransition(patrolId, patrol);
+			_goToFruit.AddTransition(idleId, _idle);
+			_goToFruit.AddTransition(eatId, _eat);
+			_goToFruit.AddTransition(fleeFromPlayerId, _fleeFromPlayer);
+			_goToFruit.AddTransition(patrolId, _patrol);
 
-			fleeFromPlayer.AddTransition(idleId, idle);
-			fleeFromPlayer.AddTransition(eatId, eat);
-			fleeFromPlayer.AddTransition(goToFruitId, goToFruit);
-			fleeFromPlayer.AddTransition(patrolId, patrol);
+			_fleeFromPlayer.AddTransition(idleId, _idle);
+			_fleeFromPlayer.AddTransition(eatId, _eat);
+			_fleeFromPlayer.AddTransition(goToFruitId, _goToFruit);
+			_fleeFromPlayer.AddTransition(patrolId, _patrol);
 
-			patrol.AddTransition(idleId, idle);
-			patrol.AddTransition(eatId, eat);
-			patrol.AddTransition(goToFruitId, goToFruit);
-			patrol.AddTransition(fleeFromPlayerId, fleeFromPlayer);
-			_stateMachine = FiniteStateMachine<Id>.Build(idle, tag)
+			_patrol.AddTransition(idleId, _idle);
+			_patrol.AddTransition(eatId, _eat);
+			_patrol.AddTransition(goToFruitId, _goToFruit);
+			_patrol.AddTransition(fleeFromPlayerId, _fleeFromPlayer);
+			_stateMachine = FiniteStateMachine<Id>.Build(_idle, name)
 				.ThatLogsTransitions(Debug.unityLogger)
 				.Done();
+		}
+
+		private void OnEnvironmentChanged()
+		{
+			string currentStateName = _stateMachine.CurrentState.Name;
+			if (currentStateName == goToFruitId.Name)
+			{
+				_goToFruit.NavigateTo(new[]
+									{
+										awareness.Fruit
+											? awareness.Fruit.position
+											: transform.position
+									});
+			}
+			else if (currentStateName == fleeFromPlayerId.Name
+					&& awareness.Player)
+			{
+				_fleeFromPlayer.NavigateTo(GetFleeCandidates(awareness.Player.position));
+			}
+		}
+
+		private void OnStateCompletedObjective()
+		{
+			onCompletedObjective.Invoke();
+			OnCompletedObjective();
+		}
+
+		private Vector3[] GetFleeCandidates(Vector3 fleeFromPosition)
+		{
+			Vector3[] candidates = new Vector3[1];
+			Vector3 fleeDirection = (transform.position - fleeFromPosition).IgnoreY().normalized;
+			candidates[0] = transform.position + fleeDirection * rheaModel.FleeDistance;
+			//TODO: Populate with multiple possible destinations
+			return candidates;
+		}
+
+		private Vector3[] GetPatrolCandidates()
+		{
+			Vector3[] candidates = new Vector3[4];
+			Vector3 myPos = transform.position;
+			Vector3 forward = transform.forward;
+			candidates[0] = myPos + forward * rheaModel.PatrolDistance;
+			candidates[1] = myPos - forward * rheaModel.PatrolDistance;
+			Vector3 right = transform.right;
+			candidates[2] = myPos + right * rheaModel.PatrolDistance;
+			candidates[3] = myPos - right * rheaModel.PatrolDistance;
+			//TODO: Populate with multiple possible destinations
+			return candidates;
 		}
 
 		protected virtual void Update()
 		{
 			//TODO: Mounted should be a state
-			if (_isMounted)
+			if (IsMounted)
 				return;
 			_stateMachine.Update(Time.deltaTime);
 		}
@@ -214,26 +260,33 @@ namespace Rideables
 			=> _stateMachine.TransitionTo(id);
 
 		protected abstract void InitializeMovement(out IMovement movement, float speed);
+		protected abstract void InitializeNavigator(out INavigator navigator);
 
-		protected abstract void Break();
+		protected abstract void Brake();
 
-		public void Interact(IUser user)
+		public virtual void Interact(IUser user)
 		{
-			_isMounted = true;
+			IsMounted = true;
+			TransitionTo(idleId);
+			_runningStart = Time.time;
 			onMounted.Invoke();
+			OnMounted();
 		}
 
-		public void Leave()
+		public virtual void Leave()
 		{
-			_isMounted = false;
+			IsMounted = false;
 			Movement.Speed = speed;
 			onDismounted.Invoke();
+			OnDismounted();
 		}
 
 		public void Move(Vector3 direction)
 		{
-			if (!_isMounted)
-				return;
+			if (GetCurrentVelocity().magnitude < .01f)
+			{
+				_runningStart = Time.time;
+			}
 
 			float currentTorque = torqueWhenMounted;
 			float currentSpeed = speed;
@@ -251,17 +304,20 @@ namespace Rideables
 
 			bool IsNotSlope()
 			{
-				Debug.DrawRay(wallHit.point, wallHit.normal, Color.blue);
+				debugger.DrawRay(name + "_Slopes", wallHit.point, wallHit.normal, Color.blue);
 				float angle = Vector3.Angle(wallHit.normal, Vector3.up);
 				return angle > 45;
 			}
 
+			currentSpeed *= runningSpeedControl.Evaluate(Time.time - _runningStart);
 			Movement.Speed = currentSpeed;
 			Movement.Move(transform, direction);
 			Movement.Rotate(transform,
 							direction,
 							currentTorque);
 		}
+
+		protected abstract Vector3 GetCurrentVelocity();
 
 		private bool IsApproachingWall(float awareDistance, LayerMask layer, out RaycastHit hit)
 		{
@@ -274,7 +330,7 @@ namespace Rideables
 
 		public void UseAbility()
 		{
-			Break();
+			Brake();
 		}
 
 		private void OnDrawGizmosSelected()

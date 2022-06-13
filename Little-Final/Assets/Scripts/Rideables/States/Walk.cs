@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Debugging;
 using Core.Extensions;
 using Core.Movement;
 using UnityEngine;
@@ -15,10 +16,11 @@ namespace Rideables.States
 		public Walk(string name,
 					Transform transform,
 					Action onCompletedObjective,
+					Debugger debugger,
 					IMovement movement,
 					Func<Vector3> getObjectivePosition,
 					float arrivalDistance)
-			: base(name, transform, onCompletedObjective)
+			: base(name, transform, onCompletedObjective, debugger)
 		{
 			_movement = movement;
 			_getObjectivePosition = getObjectivePosition;

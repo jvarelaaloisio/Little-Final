@@ -69,7 +69,7 @@ namespace Interactions.Pickable
 
 		public void ForceLoseInteraction()
 		{
-			_picker.LoseInteraction();
+			_picker?.LoseInteraction();
 		}
 		
 		private void PutDownInternal()

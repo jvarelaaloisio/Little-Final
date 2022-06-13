@@ -32,12 +32,36 @@ namespace Core.Debugging
 
 		[Space]
 		[SerializeField]
+		private bool drawLines = true;
+
+		[SerializeField]
+		private bool drawRays = true;
+
+		[Space]
+		[SerializeField]
 		[Tooltip("Tags to be excluded in logging")]
 		private List<string> filteredTags;
 
 		public ILogHandler logHandler { get; set; }
 
 		private Dictionary<LogType, bool> _logTypesAllowed;
+
+		//TODO: Esto solo funca en un DLL
+		private static string CurrentClass
+		{
+			get {
+				var st = new System.Diagnostics.StackTrace();
+				
+				var index = Mathf.Min(st.FrameCount - 1, 3);
+ 
+				if (index < 0)
+					return "{NoClass}";
+ 
+				return "{" + st.GetFrame(index).GetMethod().DeclaringType.Name + "}";
+			}
+		}
+		
+		#region ILogger
 
 		public bool logEnabled
 		{
@@ -49,6 +73,11 @@ namespace Core.Debugging
 		public LogType filterLogType { get; set; }
 
 		private void OnValidate()
+		{
+			SetupAllowedLogsDictionary();
+		}
+
+		private void SetupAllowedLogsDictionary()
 		{
 			_logTypesAllowed = new Dictionary<LogType, bool>()
 								{
@@ -63,6 +92,7 @@ namespace Core.Debugging
 		private void OnEnable()
 		{
 			_logger = Debug.unityLogger;
+			SetupAllowedLogsDictionary();
 		}
 
 		public bool IsLogTypeAllowed(LogType logType)
@@ -101,30 +131,6 @@ namespace Core.Debugging
 		public void Log(LogType logType, object message, Object context)
 			=> LogInternal(logType, string.Empty, message, context);
 
-		private void LogInternal(LogType logType, string tag, object message, Object context = null)
-		{
-			bool tagIsEmpty = tag == string.Empty;
-			if (!tagIsEmpty)
-				message = tag + ": " + message;
-			if (enabled && filteredTags.Contains(tag))
-				return;
-			switch (context != null)
-			{
-				case true when tagIsEmpty:
-					_logger.Log(logType, tag, message, context);
-					break;
-				case true:
-					_logger.Log(logType, message, context);
-					break;
-				case false when tagIsEmpty:
-					_logger.Log(logType, message);
-					break;
-				case false:
-					_logger.Log(logType, tag, message);
-					break;
-			}
-		}
-
 		//TODO: Try to get it to work with logInternal
 		public void LogFormat(LogType logType, Object context, string format, params object[] args)
 			=> _logger.LogFormat(logType, context, format, args);
@@ -139,5 +145,66 @@ namespace Core.Debugging
 
 		public void LogException(Exception exception)
 			=> _logger.LogException(exception);
+
+		private void LogInternal(LogType logType, string tag, object message, Object context = null)
+		{
+			if (!enabled || !IsLogTypeAllowed(logType) || filteredTags.Contains(tag))
+				return;
+			bool tagIsEmpty = tag == string.Empty;
+			switch (context != null)
+			{
+				case true when tagIsEmpty:
+					_logger.Log(logType, tag, $"{message}:{CurrentClass}", context);
+					break;
+				case true:
+					_logger.Log(logType, (object)$"{message}:{CurrentClass}", context);
+					break;
+				case false when tagIsEmpty:
+					_logger.Log(logType, message);
+					break;
+				case false:
+					_logger.Log(logType, tag, message);
+					break;
+			}
+		}
+		#endregion
+
+		#region Draws
+
+		public void DrawLine(string tag, Vector3 start, Vector3 end)
+		{
+			DrawLine(tag, start, end, Color.white);
+		}
+
+		public void DrawLine(string tag, Vector3 start, Vector3 end, Color color)
+		{
+			DrawLine(tag, start, end, color, 0);
+		}
+
+		public void DrawLine(string tag, Vector3 start, Vector3 end, Color color, float duration)
+		{
+			if (!enabled || !drawLines || filteredTags.Contains(tag))
+				return;
+			Debug.DrawLine(start, end, color, duration);
+		}
+
+		public void DrawRay(string tag, Vector3 start, Vector3 dir)
+		{
+			DrawRay(tag, start, dir, Color.white);
+		}
+
+		public void DrawRay(string tag, Vector3 start, Vector3 dir, Color color)
+		{
+			DrawRay(tag, start, dir, color, 0);
+		}
+
+		public void DrawRay(string tag, Vector3 start, Vector3 dir, Color color, float duration)
+		{
+			if (!enabled || !drawRays || filteredTags.Contains(tag))
+				return;
+			Debug.DrawRay(start, dir, color, duration);
+		}
+
+		#endregion
 	}
 }

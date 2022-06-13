@@ -112,14 +112,17 @@ namespace Player.States
 		private void Jump()
 		{
 			body.Jump(Vector3.up * (isRunning ? PP_Jump.LongJumpForce : PP_Jump.JumpForce));
-			Controller.OnJump();
 			if (isRunning)
 			{
 				Controller.Stamina.ConsumeStamina(PP_Jump.LongJumpStaminaCost);
+				Controller.OnLongJump();
 				Controller.ChangeState<LongJump>();
 			}
 			else
+			{
+				Controller.OnJump();
 				Controller.ChangeState<Jump>();
+			}
 		}
 
 		public override void OnStateExit()

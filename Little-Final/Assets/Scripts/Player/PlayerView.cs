@@ -42,10 +42,14 @@ namespace Player
 		public List<Image> staminaUI;
 		public string runningBlendTree;
 		public string jumpAnimation;
+		public string longJumpAnimation;
 		public string climbAnimation;
 		public string deathAnimation;
 		public string speedParameter = "Speed";
 		public string isFlyingParameter = "isFlying";
+		
+		[SerializeField]
+		private string pickBool = "isPicking";
 		public float transitionDuration;
 		public Transform playerShadow;
 		public Material playerShadowMaterial;
@@ -95,6 +99,9 @@ namespace Player
 		[Header("Events")]
 		[SerializeField]
 		private UnityEvent onJump;
+		
+		[SerializeField]
+		private UnityEvent onLongJump;
 
 		private static readonly int Activate = Shader.PropertyToID(PONCHO_ACTIVATE_FLOAT);
 
@@ -113,10 +120,14 @@ namespace Player
 			controller.OnChangeSpeed += SetSpeed;
 			controller.OnSpecificAction += PlaySpecificAnimation;
 			controller.OnJump += ShowJumpFeedback;
+			controller.OnLongJump += ShowLongJumpFeedback;
 			controller.OnLand += ShowLandFeedback;
 			controller.OnClimb += ShowClimbFeedback;
-			controller.OnMount.AddListener(() => animator.Play(jumpAnimation));
-			controller.OnDismount.AddListener(() => animator.Play(jumpAnimation));
+			controller.onPick.AddListener(ShowPickFeedback);
+			controller.onPutDown.AddListener(ShowPutDownFeedback);
+			controller.onThrow.AddListener(ShowThrowFeedback);
+			// controller.OnMount.AddListener(() => animator.Play(jumpAnimation));
+			// controller.OnDismount.AddListener(() => animator.Play(jumpAnimation));
 			controller.OnDeath += ShowDeathFeedback;
 			controller.OnGlideChanges += SetFlying;
 			audioManager = FindObjectOfType<AudioManager>();
@@ -235,6 +246,12 @@ namespace Player
 			onJump.Invoke();
 			animator.Play(jumpAnimation);
 		}
+		
+		public void ShowLongJumpFeedback()
+		{
+			onLongJump.Invoke();
+			animator.Play(longJumpAnimation);
+		}
 
 		public void ShowClimbFeedback()
 		{
@@ -243,6 +260,21 @@ namespace Player
 			animator.CrossFade(climbAnimation, transitionDuration);
 		}
 
+		private void ShowPickFeedback()
+		{
+			animator.SetBool(pickBool, true);
+		}
+
+		private void ShowPutDownFeedback()
+		{
+			animator.SetBool(pickBool, false);
+		}
+
+		private void ShowThrowFeedback()
+		{
+			animator.SetBool(pickBool, false);
+		}
+		
 		public void ShowDeathFeedback()
 		{
 			animator.CrossFade(deathAnimation, transitionDuration);

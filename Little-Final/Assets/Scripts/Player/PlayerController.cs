@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CharacterMovement;
 using Core.Interactions;
 using Player.Abilities;
 using Player.Collectables;
@@ -43,8 +44,11 @@ namespace Player
 		public Action<float> OnChangeSpeed = delegate { };
 		public Action<string> OnSpecificAction = delegate { };
 		public Action OnJump = delegate { };
+		public Action OnLongJump = delegate { };
 		public Action OnLand = delegate { };
 		public Action OnClimb = delegate { };
+		[SerializeField]
+		private UnityEvent onLand;
 		public UnityEvent OnMount;
 		public UnityEvent OnDismount;
 		public UnityEvent onPick;
@@ -117,11 +121,22 @@ namespace Player
 			collectableBag = new CollectableBag(PP_Stats.CollectablesForReward,
 												UpgradeStamina);
 			body = GetComponent<IBody>();
+			body.BodyEvents += OnBodyEvent;
 			damageHandler = new DamageHandler(PP_Stats.LifePoints, PP_Stats.ImmunityTime, OnLifeChanged, _sceneIndex);
 			stamina = new Stamina.Stamina(PP_Stats.InitialStamina,
 										PP_Stats.StaminaRefillDelay,
 										PP_Stats.StaminaRefillSpeed,
 										SceneIndex);
+		}
+
+		private void OnBodyEvent(BodyEvent eventType)
+		{
+			if (eventType.Equals(BodyEvent.LAND)
+				&& FallHelper.IsGrounded)
+			{
+				OnLand();
+				onLand.Invoke();
+			}
 		}
 
 		private void Start()

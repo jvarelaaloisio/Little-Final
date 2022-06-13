@@ -100,6 +100,7 @@ namespace Rideables
 							{
 								Tag = name,
 								LogRepeatedResponses = logRepeatedResponsesOnDecisionTree,
+								LogTrace = true,
 							};
 		}
 

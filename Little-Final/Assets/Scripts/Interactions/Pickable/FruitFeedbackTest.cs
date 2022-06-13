@@ -10,26 +10,16 @@ namespace Interactions.Pickable
 
 		[SerializeField]
 		private float scaleDuration;
-		
+
 		[SerializeField]
-		private float resetDuration;
+		private AnimationCurve scaling = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
-		private Vector3 _originalScale;
-
-		private void Awake()
-		{
-			_originalScale = transform.localScale;
-		}
-		
 		public void UpdateScale(int pos)
 		{
+			Keyframe[] scalingKeys = scaling.keys;
+			float duration = scalingKeys[scalingKeys.Length - 1].time - scalingKeys[0].time;
 			pos = Mathf.Clamp(0, pos, scales.Length - 1);
-			StartCoroutine(TransitionScale(transform.localScale, Vector3.one * scales[pos], scaleDuration));
-		}
-
-		public void ResetScale()
-		{
-			StartCoroutine(TransitionScale(transform.localScale, _originalScale, resetDuration));
+			StartCoroutine(TransitionScale(transform.localScale, Vector3.one * scales[pos], duration));
 		}
 
 		private IEnumerator TransitionScale(Vector3 from, Vector3 to, float duration)
@@ -38,7 +28,9 @@ namespace Interactions.Pickable
 			float current;
 			while ((current = Time.time) < start + duration)
 			{
-				transform.localScale = Vector3.Lerp(from, to, (current - start) / duration);
+				float lerp = (current - start) / duration;
+				float smoothLerp = scaling.Evaluate(lerp);
+				transform.localScale = Vector3.Lerp(from, to, smoothLerp);
 				yield return null;
 			}
 		}
