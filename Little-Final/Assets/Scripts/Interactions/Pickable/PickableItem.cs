@@ -18,6 +18,9 @@ namespace Interactions.Pickable
 		[SerializeField]
 		private Vector3 pickPositionOffset = new Vector3(0, 1, 1);
 		
+		[SerializeField]
+		private string userHandName;
+		
 		[Header("Events")]
 		[SerializeField]
 		private TransformUnityEvent onPick;
@@ -45,8 +48,19 @@ namespace Interactions.Pickable
 			Transform userTransform = user.Transform;
 			debugger.Log(name, $"item picked by {userTransform.name}", this);
 			_picker = user;
-			transform.SetParent(userTransform);
-			transform.position = userTransform.position + userTransform.TransformDirection(pickPositionOffset);
+			if (userTransform.TryGetComponent(out HandContainer handContainer))
+			{
+				Transform userHand = handContainer.Hand;
+				transform.SetParent(userHand);
+				transform.localPosition = Vector3.zero;
+				transform.localRotation = Quaternion.identity;
+				
+			}
+			else
+			{
+				debugger.LogError(name, $"No hand container found on user.\nuser: {userTransform.name}", this);
+			}
+			// transform.position = userTransform.position + userTransform.TransformDirection(pickPositionOffset);
 			rigidBody.isKinematic = true;
 			onPick.Invoke(_picker.Transform);
 		}
@@ -74,9 +88,6 @@ namespace Interactions.Pickable
 		
 		private void PutDownInternal()
 		{
-			Transform pickerTransform = _picker.Transform;
-			if (pickerTransform)
-				transform.position = pickerTransform.position + pickerTransform.TransformDirection(pickPositionOffset);
 			transform.SetParent(null);
 			rigidBody.isKinematic = false;
 		}

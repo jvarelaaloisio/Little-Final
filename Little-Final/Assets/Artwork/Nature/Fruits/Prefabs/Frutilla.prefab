@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 334674762602676672}
   - component: {fileID: 781928539219432362}
   - component: {fileID: 5671817175804219044}
+  - component: {fileID: 7088276369633447600}
   m_Layer: 18
   m_Name: Frutilla
   m_TagString: Untagged
@@ -52,15 +53,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 334674762602676672}
   pickPositionOffset: {x: 0, y: 0.5, z: 0.5}
+  userHandName: pick_helper
   onPick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 949294646476430903}
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onPutDown:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 949294646476430903}
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   onThrow:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 949294646476430903}
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   debugger: {fileID: 11400000, guid: fb371d2ca97c8124d9d4abd8daeff14c, type: 2}
 --- !u!114 &2766274092703511596
 MonoBehaviour:
@@ -208,6 +243,19 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 7252795065413581681, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
+--- !u!135 &7088276369633447600
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3908558111288673973}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.15
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!64 &949294646476430903
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -374,7 +422,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ec0b2a71d4911df449b956bce853369a,
         type: 3}
       propertyPath: m_Layer
-      value: 18
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ec0b2a71d4911df449b956bce853369a,
         type: 3}

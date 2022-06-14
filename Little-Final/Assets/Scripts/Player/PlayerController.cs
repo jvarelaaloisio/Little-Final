@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using CharacterMovement;
 using Core.Interactions;
@@ -7,6 +8,7 @@ using Player.Collectables;
 using Player.States;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 using VarelaAloisio.UpdateManagement.Runtime;
 using Void = Player.States.Void;
 
@@ -47,13 +49,17 @@ namespace Player
 		public Action OnLongJump = delegate { };
 		public Action OnLand = delegate { };
 		public Action OnClimb = delegate { };
+
 		[SerializeField]
 		private UnityEvent onLand;
+
 		public UnityEvent OnMount;
 		public UnityEvent OnDismount;
 		public UnityEvent onPick;
 		public UnityEvent onPutDown;
-		public UnityEvent onThrow;
+		[FormerlySerializedAs("onThrow")]
+		public UnityEvent onThrowing;
+		public UnityEvent onThrew;
 		public Action OnDeath = delegate { };
 
 		public Action<bool> OnGlideChanges = delegate { };
@@ -73,6 +79,9 @@ namespace Player
 
 		[SerializeField]
 		private LayerMask interactableLayer;
+
+		[SerializeField]
+		private float throwDelay;
 
 		[Header("Debug")]
 		[SerializeField]
@@ -120,8 +129,9 @@ namespace Player
 			_sceneIndex = gameObject.scene.buildIndex;
 			collectableBag = new CollectableBag(PP_Stats.CollectablesForReward,
 												UpgradeStamina);
+			OnLand += onLand.Invoke;
 			body = GetComponent<IBody>();
-			body.BodyEvents += OnBodyEvent;
+			// body.BodyEvents += OnBodyEvent;
 			damageHandler = new DamageHandler(PP_Stats.LifePoints, PP_Stats.ImmunityTime, OnLifeChanged, _sceneIndex);
 			stamina = new Stamina.Stamina(PP_Stats.InitialStamina,
 										PP_Stats.StaminaRefillDelay,
@@ -129,15 +139,16 @@ namespace Player
 										SceneIndex);
 		}
 
-		private void OnBodyEvent(BodyEvent eventType)
-		{
-			if (eventType.Equals(BodyEvent.LAND)
-				&& FallHelper.IsGrounded)
-			{
-				OnLand();
-				onLand.Invoke();
-			}
-		}
+		// private void OnBodyEvent(BodyEvent eventType)
+		// {
+		// 	if (eventType.Equals(BodyEvent.LAND)
+		// 		&& FallHelper.IsGrounded
+		// 		&& State.GetType() != typeof(Walk))
+		// 	{
+		// 		OnLand();
+		// 		onLand.Invoke();
+		// 	}
+		// }
 
 		private void Start()
 		{
@@ -286,9 +297,19 @@ namespace Player
 
 		public void ThrowItem(float force)
 		{
-			_itemPicked.Throw(force, _myTransform.forward + _myTransform.up);
-			_itemPicked = null;
-			onThrow.Invoke();
+			onThrowing.Invoke();
+			StartCoroutine(ThrowItemAfterDelay(throwDelay));
+
+			IEnumerator ThrowItemAfterDelay(float delay)
+			{
+				yield return new WaitForSeconds(delay);
+				if (_itemPicked != null)
+				{
+					_itemPicked.Throw(force, _myTransform.forward + _myTransform.up);
+					_itemPicked = null;
+					onThrew.Invoke();
+				}
+			}
 		}
 
 		public void LoseInteraction()

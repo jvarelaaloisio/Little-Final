@@ -47,7 +47,10 @@ namespace Player.States
 			//------- MOVEMENT ------- 
 			Vector2 input = InputManager.GetHorInput();
 
-			Controller.OnChangeSpeed(Mathf.Abs(input.normalized.magnitude / 2));
+			bool runInput = InputManager.CheckRunInput();
+			//Speed is halved when walking 
+			float moveSpeed = Mathf.Abs(input.normalized.magnitude * (runInput? 1 : 0.5f));
+			Controller.OnChangeSpeed(moveSpeed);
 
 			Vector3 desiredDirection = MoveHelper.GetDirection(input);
 			Debug.DrawRay(MyTransform.position, desiredDirection.normalized / 3, Color.green);
@@ -55,7 +58,7 @@ namespace Player.States
 			if (MoveHelper.IsSafeAngle(MyTransform.position, desiredDirection.normalized, .3f,
 										PP_Walk.MinSafeAngle))
 			{
-				if (input.magnitude > .1f && InputManager.CheckRunInput() && Controller.Stamina.FillState > 0)
+				if (input.magnitude > .1f && runInput && Controller.Stamina.FillState > 0)
 				{
 					if (!_runningConsumer.IsConsuming)
 						_runningConsumer.Start();

@@ -50,6 +50,10 @@ namespace Player
 		
 		[SerializeField]
 		private string pickBool = "isPicking";
+		
+		[SerializeField]
+		private string throwTrigger = "throw";
+
 		public float transitionDuration;
 		public Transform playerShadow;
 		public Material playerShadowMaterial;
@@ -104,7 +108,6 @@ namespace Player
 		private UnityEvent onLongJump;
 
 		private static readonly int Activate = Shader.PropertyToID(PONCHO_ACTIVATE_FLOAT);
-
 		private void Start()
 		{
 			//CREATE TEMPORAL MATERIAL INSTANCES SO WE DON'T GET UNWANTED GIT CHANGES.
@@ -125,7 +128,8 @@ namespace Player
 			controller.OnClimb += ShowClimbFeedback;
 			controller.onPick.AddListener(ShowPickFeedback);
 			controller.onPutDown.AddListener(ShowPutDownFeedback);
-			controller.onThrow.AddListener(ShowThrowFeedback);
+			controller.onThrowing.AddListener(ShowThrowingFeedback);
+			controller.onThrew.AddListener(ShowThrewFeedback);
 			// controller.OnMount.AddListener(() => animator.Play(jumpAnimation));
 			// controller.OnDismount.AddListener(() => animator.Play(jumpAnimation));
 			controller.OnDeath += ShowDeathFeedback;
@@ -270,7 +274,12 @@ namespace Player
 			animator.SetBool(pickBool, false);
 		}
 
-		private void ShowThrowFeedback()
+		private void ShowThrowingFeedback()
+		{
+			animator.SetTrigger(throwTrigger);
+		}
+		
+		private void ShowThrewFeedback()
 		{
 			animator.SetBool(pickBool, false);
 		}
