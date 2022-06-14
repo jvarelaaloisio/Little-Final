@@ -60,7 +60,6 @@ namespace Interactions.Pickable
 			{
 				debugger.LogError(name, $"No hand container found on user.\nuser: {userTransform.name}", this);
 			}
-			// transform.position = userTransform.position + userTransform.TransformDirection(pickPositionOffset);
 			rigidBody.isKinematic = true;
 			onPick.Invoke(_picker.Transform);
 		}
