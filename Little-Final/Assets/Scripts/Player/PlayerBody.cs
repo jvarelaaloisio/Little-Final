@@ -105,10 +105,19 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	void Start()
 	{
 		//TODO:Delete this
-		UpdateManager.Subscribe(this);
 		rb = GetComponent<Rigidbody>();
 
 		SetupFlags();
+	}
+
+	private void OnEnable()
+	{
+		UpdateManager.Subscribe(this);
+	}
+
+	private void OnDisable()
+	{
+		UpdateManager.UnSubscribe(this);
 	}
 
 	[Obsolete]

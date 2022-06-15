@@ -27,7 +27,16 @@ namespace Platforms
 			_current = 0;
 			_next = 1;
 			_myTransform = transform;
+		}
+
+		private void OnEnable()
+		{
 			UpdateManager.Subscribe(this);
+		}
+
+		private void OnDisable()
+		{
+			UpdateManager.UnSubscribe(this);
 		}
 
 		public void OnUpdate()
