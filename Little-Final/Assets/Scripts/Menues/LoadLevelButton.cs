@@ -5,7 +5,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
 public class LoadLevelButton : MonoBehaviour
 {
-    public string sceneToLoad;
+    public LevelDataContainer sceneToLoad;
     public StringEventChannel sceneDataChannel;
 
     private Button Button
@@ -32,6 +32,6 @@ public class LoadLevelButton : MonoBehaviour
 
     private void RaiseEvent()
     {
-        sceneDataChannel.RaiseEvent(sceneToLoad);
+        sceneDataChannel.RaiseEvent(sceneToLoad.name);
     }
 }
