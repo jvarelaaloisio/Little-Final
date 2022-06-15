@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AI.DecisionTree;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace AI.DecisionTree
@@ -42,7 +40,7 @@ namespace AI.DecisionTree
 				return;
 			}
 
-			throw new ArgumentOutOfRangeException("outcomesWithChance",
+			throw new ArgumentOutOfRangeException(nameof(_outcomesWithChance),
 												"Roulette couldn't make a decision");
 		}
 	}

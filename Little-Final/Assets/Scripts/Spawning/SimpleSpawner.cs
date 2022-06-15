@@ -25,7 +25,7 @@ namespace Spawning
 			if (!instance.TryGetComponent(out IDestroyable destroyable))
 				destroyable = instance.AddComponent<Destroyable>();
 
-			destroyable.OnDestroy.AddListener(Spawn);
+			destroyable.OnBeingDestroyed.AddListener(Spawn);
 		}
 
 		private void OnDrawGizmosSelected()

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -29,10 +30,13 @@ namespace Rideables
 
 		public Transform Fruit => _fruit;
 
+		public event Action OnEnvironmentChanged = delegate { };
+
 		private void OnEnable()
 		{
 			StartCoroutine(MaintainAwareness());
 		}
+		
 		private void OnDisable()
 		{
 			StopCoroutine(MaintainAwareness());
@@ -76,7 +80,10 @@ namespace Rideables
 			_fruit = fruit;
 
 			if (shouldFireChangedEvent)
+			{
 				onEnvironmentChanged.Invoke();
+				OnEnvironmentChanged.Invoke();
+			}
 		}
 
 #if UNITY_EDITOR
