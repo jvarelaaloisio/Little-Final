@@ -1,16 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Events.Channels;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
 {
     public GameObject loadingScreen;
+    public LevelDataContainer titleScreen;
+
+    public StringEventChannel sceneDataChannel;
 
     private List<AsyncOperation> _scenesLoading = new List<AsyncOperation>();
     private Slider _progressBar;
     private float _totalSceneProgress;
+    private LevelDataContainer[] _levelData;
+    private LevelDataContainer _currentLevel;
 
     private void Awake()
     {
@@ -20,17 +26,31 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
             return;
         }
         Instance = this;
-        SceneManager.LoadSceneAsync(ScenesDataContainer.TitleScreen, LoadSceneMode.Additive);
+        _currentLevel = titleScreen;
+        _currentLevel.Load();
         _progressBar = loadingScreen.GetComponentInChildren<Slider>();
+        _levelData = Resources.LoadAll<LevelDataContainer>("SceneData");
     }
 
-    public void LoadGame()
+    private void OnEnable()
+    {
+        sceneDataChannel.Subscribe(LoadLevel);
+    }
+
+    private void OnDisable()
+    {
+        sceneDataChannel.Unsubscribe(LoadLevel);
+    }
+
+    public void LoadLevel(string levelName)
     {
         loadingScreen.gameObject.SetActive(true);
-        SceneManager.UnloadSceneAsync(ScenesDataContainer.TitleScreen);
-        foreach (var sceneBuildIndex in ScenesDataContainer.LevelOneScenes)
+        _currentLevel.Unload();
+        foreach (var data in _levelData)
         {
-            _scenesLoading.Add(SceneManager.LoadSceneAsync(sceneBuildIndex, LoadSceneMode.Additive));
+            if (data.name != levelName) continue;
+            _scenesLoading = data.Load();
+            _currentLevel = data;
         }
         StartCoroutine(UpdateSceneLoadProgress());
     }

@@ -152,9 +152,18 @@ namespace Player
 
 		private void Start()
 		{
-			UpdateManager.Subscribe(this);
 			state = new Walk();
 			state.OnStateEnter(this, SceneIndex);
+		}
+
+		private void OnEnable()
+		{
+			UpdateManager.Subscribe(this);
+		}
+
+		private void OnDisable()
+		{
+			UpdateManager.UnSubscribe(this);
 		}
 
 		public void ChangeState<T>() where T : State, new()

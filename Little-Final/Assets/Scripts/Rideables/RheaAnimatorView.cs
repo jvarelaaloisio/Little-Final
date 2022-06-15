@@ -42,9 +42,18 @@ namespace Rideables
 
 		private void Start()
 		{
-			UpdateManager.Subscribe(this);
 			rhea.OnMounted += () => SetMountedParameter(true);
 			rhea.OnDismounted += () => SetMountedParameter(false);
+		}
+
+		private void OnEnable()
+		{
+			UpdateManager.Subscribe(this);
+		}
+
+		private void OnDisable()
+		{
+			UpdateManager.UnSubscribe(this);
 		}
 
 		private void SetMountedParameter(bool value)

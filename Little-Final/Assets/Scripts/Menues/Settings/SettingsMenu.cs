@@ -1,34 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SettingsMenu : MonoBehaviour
 {
+    [Header("Graphics")] 
+    public Toggle isFullScreen;
+    public TMP_Dropdown resolutions;
+    public TMP_Dropdown qualities;
+    [Header("Audio")]
     public List<VolumeSlider> volumeSliders;
 
-    public void OnEnable()
-    {
-        foreach (var entry in volumeSliders)
-        {
-            entry.slider.value = SavedData.Instance.GetMixerChannelData(entry.channel);
+    private List<IGenericSettings> _settings;
 
-            entry.slider.onValueChanged.AddListener(
-                value => SettingsManager.Instance.SetChannelVolume(entry.channel, value)
-            );
-        }
+    private void Awake()
+    {
+        _settings = new List<IGenericSettings>
+        {
+            new GraphicsSettings(isFullScreen, resolutions, qualities),
+            new AudioSettings(volumeSliders),
+        };
+    }
+
+    private void OnEnable()
+    {
+        foreach (var setting in _settings) setting.Init();
     }
 
     private void OnDisable()
     {
-        foreach (var entry in volumeSliders)
-            SavedData.Instance.SaveMixerChannelData(entry.channel, entry.slider.value);
+        foreach (var setting in _settings) setting.Save();
     }
 }
 
 [Serializable]
 public struct VolumeSlider
 {
-    public MixerChannels channel;
+    public string channel;
     public Slider slider;
 }

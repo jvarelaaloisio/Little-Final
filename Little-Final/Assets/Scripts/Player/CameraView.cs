@@ -17,7 +17,16 @@ namespace Player
 		private void Start()
 		{
 			view.Controller.OnStateChanges += HandleStateChange;
+		}
+
+		private void OnEnable()
+		{
 			UpdateManager.Subscribe(this);
+		}
+
+		private void OnDisable()
+		{
+			UpdateManager.UnSubscribe(this);
 		}
 
 		private void HandleStateChange(State state) =>

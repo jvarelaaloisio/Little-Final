@@ -4,10 +4,17 @@ using VarelaAloisio.UpdateManagement.Runtime;
 public class RotateAroundSelf : MonoBehaviour, IUpdateable
 {
 	public float rotationSpeed;
-	void Start()
-    {
+
+	private void OnEnable()
+	{
 		UpdateManager.Subscribe(this);
-    }
+	}
+
+	private void OnDisable()
+	{
+		UpdateManager.UnSubscribe(this);
+	}
+
 	public void OnUpdate()
 	{
 		transform.Rotate(Vector3.up * Mathf.Sin(rotationSpeed * Time.deltaTime));

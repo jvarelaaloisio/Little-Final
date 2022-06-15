@@ -12,11 +12,14 @@ public class LightProbePositioning : MonoBehaviour, IUpdateable
 		UpdateProbe();
 	}
 
-	private void Start()
+	private void OnEnable()
 	{
 		UpdateManager.Subscribe(this);
-		//updatePositionPeriod = new CountDownTimer(period, UpdateProbe);
-		//updatePositionPeriod.StartTimer();
+	}
+
+	private void OnDisable()
+	{
+		UpdateManager.UnSubscribe(this);
 	}
 
 	private void UpdateProbe()

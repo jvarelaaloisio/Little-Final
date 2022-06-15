@@ -10,19 +10,8 @@ public class SettingsManager : MonobehaviourSingleton<SettingsManager>
         _mixer = Resources.Load<AudioMixer>("Audio/MainMixer");
     }
 
-    public void SetChannelVolume(MixerChannels channel, float volume)
+    public void SetChannelVolume(string channel, float volume)
     {
-        _mixer.SetFloat(channel.ToString(), volume);
+        _mixer.SetFloat(channel, volume);
     }
-}
-
-public enum MixerChannels
-{
-    MasterVolume,
-    MusicVolume,
-    AmbientVolume,
-    CharacterVolume,
-    SFXVolume,
-    BGVolume,
-    CutsceneVolume
 }

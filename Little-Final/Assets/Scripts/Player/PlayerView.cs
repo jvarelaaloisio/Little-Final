@@ -151,7 +151,16 @@ namespace Player
 
 			FadePoncho(0);
 			ponchoTurnOff = new ActionOverTime(ponchoTurnOffTime, FadePoncho, _sceneIndex);
+		}
+
+		private void OnEnable()
+		{
 			UpdateManager.Subscribe(this);
+		}
+
+		private void OnDisable()
+		{
+			UpdateManager.UnSubscribe(this);
 		}
 
 		public void OnUpdate()
