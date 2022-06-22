@@ -7,6 +7,7 @@ public class LevelDataContainer : ScriptableObject
 {
     public string name;
     public int[] buildIndexes;
+    public int activeSceneIndex;
 
     public List<AsyncOperation> Load()
     {
