@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Events.Channels;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
@@ -25,6 +25,7 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
         _currentLevel = titleScreen;
         _currentLevel.Load();
@@ -52,27 +53,28 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
             _scenesLoading = data.Load();
             _currentLevel = data;
         }
+
         StartCoroutine(UpdateSceneLoadProgress());
     }
 
     private IEnumerator UpdateSceneLoadProgress()
     {
         for (var i = 0; i < _scenesLoading.Count; i++)
-        {
             while (!_scenesLoading[i].isDone)
             {
                 _totalSceneProgress = 0;
 
                 foreach (var op in _scenesLoading) _totalSceneProgress += op.progress;
 
-                _totalSceneProgress = (_totalSceneProgress / _scenesLoading.Count) * 100f;
+                _totalSceneProgress = _totalSceneProgress / _scenesLoading.Count * 100f;
 
                 _progressBar.value = Mathf.RoundToInt(_totalSceneProgress);
 
                 yield return null;
             }
-        }
 
+        var activeScene = SceneManager.GetSceneByBuildIndex(_currentLevel.activeSceneIndex);
+        SceneManager.SetActiveScene(activeScene);
         loadingScreen.gameObject.SetActive(false);
     }
 }
