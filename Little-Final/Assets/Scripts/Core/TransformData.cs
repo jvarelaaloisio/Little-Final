@@ -7,6 +7,7 @@ namespace Core
 	public struct TransformData
 	{
 		[SerializeField]
+		//TODO: Shouldn't be called position if it's LocalPosition.
 		public Vector3 position;
 
 		[SerializeField]

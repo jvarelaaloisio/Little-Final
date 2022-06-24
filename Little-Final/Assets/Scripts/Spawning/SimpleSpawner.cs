@@ -1,6 +1,7 @@
 ﻿using Core.Debugging;
 using Core.Interactions;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Spawning
 {
@@ -22,6 +23,7 @@ namespace Spawning
 		{
 			debugger.Log(name, $"Spawning\nPrefab: {prefab.name}");
 			GameObject instance = Instantiate(prefab, transform.position, transform.rotation);
+			SceneManager.MoveGameObjectToScene(instance, gameObject.scene);
 			if (!instance.TryGetComponent(out IDestroyable destroyable))
 				destroyable = instance.AddComponent<Destroyable>();
 

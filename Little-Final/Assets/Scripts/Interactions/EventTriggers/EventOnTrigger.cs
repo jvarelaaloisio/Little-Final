@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Interactions.EventTriggers
 {
 	public class EventOnTrigger : MonoBehaviour
 	{
+		[SerializeField]
+		private List<string> tagBlackList;
+		
 		[System.Serializable]
 		public class ColliderUnityEvent : UnityEvent<Collider> { }
 		[SerializeField] private ColliderUnityEvent onTriggerEnter;
@@ -26,8 +30,16 @@ namespace Interactions.EventTriggers
 		{
 			onTriggerExit.RemoveListener(listener);
 		}
-		private void OnTriggerEnter(Collider other) => onTriggerEnter.Invoke(other);
+		private void OnTriggerEnter(Collider other)
+		{
+			if (!tagBlackList.Contains(other.tag))
+				onTriggerEnter.Invoke(other);
+		}
 
-		private void OnTriggerExit(Collider other) => onTriggerExit.Invoke(other);
+		private void OnTriggerExit(Collider other)
+		{
+			if (!tagBlackList.Contains(other.tag))
+				onTriggerExit.Invoke(other);
+		}
 	}
 }

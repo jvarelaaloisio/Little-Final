@@ -1,4 +1,3 @@
-using System;
 using Core.Interactions;
 using UnityEngine;
 using UnityEngine.Events;
