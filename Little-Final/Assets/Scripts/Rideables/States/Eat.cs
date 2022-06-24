@@ -13,6 +13,7 @@ namespace Rideables.States
 		private readonly float _firstDelay;
 		private readonly int _byteDamage;
 		private readonly MonoBehaviour _mono;
+		private Coroutine eatingCoroutine;
 
 		public Eat(string name,
 					Transform transform,
@@ -34,7 +35,18 @@ namespace Rideables.States
 		public override void Awake()
 		{
 			base.Awake();
-			_mono.StartCoroutine(ByteFruit());
+			if (eatingCoroutine != null)
+			{
+				_mono.StopCoroutine(eatingCoroutine);
+			}
+			eatingCoroutine = _mono.StartCoroutine(ByteFruit());
+		}
+
+		public override void Sleep()
+		{
+			_mono.StopCoroutine(eatingCoroutine);
+			eatingCoroutine = null;
+			base.Sleep();
 		}
 
 		private IEnumerator ByteFruit()

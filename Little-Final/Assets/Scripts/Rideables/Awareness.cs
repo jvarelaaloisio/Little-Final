@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace Rideables
 {
@@ -10,8 +11,12 @@ namespace Rideables
 		[SerializeField]
 		private float updatePeriod = 1;
 
+		[FormerlySerializedAs("awarenessRadius")]
 		[SerializeField]
-		private float awarenessRadius = 1;
+		private float playerAwarenessRadius = 1;
+		
+		[SerializeField]
+		private float fruitAwarenessRadius = 1;
 
 		[SerializeField]
 		private LayerMask players;
@@ -59,14 +64,15 @@ namespace Rideables
 			Collider[] candidates = new Collider[1];
 
 			Transform fruit = Physics.OverlapSphereNonAlloc(transform.position,
-															awarenessRadius,
+															fruitAwarenessRadius,
 															candidates,
-															fruits)
+															fruits,
+															QueryTriggerInteraction.Collide)
 							> 0
 								? candidates[0].transform
 								: null;
 			Transform player = Physics.OverlapSphereNonAlloc(transform.position,
-															awarenessRadius,
+															playerAwarenessRadius,
 															candidates,
 															players)
 								> 0
@@ -98,13 +104,17 @@ namespace Rideables
 		private void OnDrawGizmos()
 		{
 			Gizmos.color = Color.yellow;
-			Gizmos.DrawWireSphere(transform.position, awarenessRadius);
+			Gizmos.DrawWireSphere(transform.position, playerAwarenessRadius);
+			Gizmos.color = Color.green;
+			Gizmos.DrawWireSphere(transform.position, fruitAwarenessRadius);
 		}
 
 		private void OnDrawGizmosSelected()
 		{
 			Gizmos.color = new Color(1, 1, .15f, .25f);
-			Gizmos.DrawSphere(transform.position, awarenessRadius);
+			Gizmos.DrawSphere(transform.position, playerAwarenessRadius);
+			Gizmos.color = new Color(.35f, 1, .15f, .1f);
+			Gizmos.DrawSphere(transform.position, fruitAwarenessRadius);
 		}
 #endif
 	}

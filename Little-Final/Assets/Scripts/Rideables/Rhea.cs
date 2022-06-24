@@ -5,6 +5,7 @@ using Core.Extensions;
 using Core.Helpers;
 using Core.Interactions;
 using Core.Movement;
+using Events.Channels;
 using FSM;
 using Rideables.States;
 using UnityEngine;
@@ -34,6 +35,9 @@ namespace Rideables
 
 		[SerializeField]
 		private int eatingDamage;
+		
+		[SerializeField]
+		private float goToFruitTolerance = .25f;
 
 		[Header("Movement")]
 		[SerializeField]
@@ -89,6 +93,11 @@ namespace Rideables
 		[SerializeField]
 		private Id patrolId;
 
+		[Header("Event channels listened")]
+		[Tooltip("Can be null")]
+		[SerializeField]
+		private VoidChannelSo playerDeathChannel;
+
 		[Header("Events")]
 		[SerializeField]
 		private UnityEvent onCompletedObjective;
@@ -98,6 +107,12 @@ namespace Rideables
 
 		[SerializeField]
 		private UnityEvent onDismounted;
+
+		[SerializeField]
+		private UnityEvent onEating;
+
+		[SerializeField]
+		private UnityEvent onStoppedEating;
 
 		[Header("Debug")]
 		[SerializeField]
@@ -119,6 +134,9 @@ namespace Rideables
 		public event Action OnCompletedObjective = delegate { };
 		public event Action OnMounted = delegate { };
 		public event Action OnDismounted = delegate { };
+
+		public event Action OnEating = delegate { };
+		public event Action OnStoppedEating = delegate { };
 
 		public float Speed => speed;
 
@@ -151,6 +169,8 @@ namespace Rideables
 								eatingFirstDelay,
 								eatingDamage,
 								this);
+			_eat.OnAwake += FireOnEating;
+			_eat.OnSleep += FireOnStoppedEating;
 
 			_goToFruit = new Navigate<Id>(goToFruitId.Name,
 										transform,
@@ -164,7 +184,7 @@ namespace Rideables
 												debugger,
 												Navigator);
 
-			_patrol = new Navigate<Id>(fleeFromPlayerId.Name,
+			_patrol = new Navigate<Id>(patrolId.Name,
 										transform,
 										OnStateCompletedObjective,
 										debugger,
@@ -198,19 +218,45 @@ namespace Rideables
 			_stateMachine = FiniteStateMachine<Id>.Build(_idle, name)
 				.ThatLogsTransitions(Debug.unityLogger)
 				.Done();
+
+			playerDeathChannel.SubscribeSafely(OnPlayerDies);
 		}
+		
+		private void FireOnEating()
+		{
+			onEating.Invoke();
+			OnEating();
+		}
+
+		private void FireOnStoppedEating()
+		{
+			onStoppedEating.Invoke();
+			OnStoppedEating();
+		}
+
+
+		protected abstract void OnPlayerDies();
 
 		private void OnEnvironmentChanged()
 		{
 			string currentStateName = _stateMachine.CurrentState.Name;
 			if (currentStateName == goToFruitId.Name)
 			{
-				_goToFruit.NavigateTo(new[]
-									{
-										awareness.Fruit
-											? awareness.Fruit.position
-											: transform.position
-									});
+				Transform fruit = awareness.Fruit;
+				Vector3 fruitDestination;
+				if (!fruit)
+				{
+					debugger.LogError(name, $"fruit not found when trying to set destination");
+					fruitDestination = transform.position;
+				}
+				else
+				{
+					Vector3 fruitPosition = fruit.position;
+					Vector3 directionToFruit = (fruitPosition - transform.position).normalized;
+					fruitDestination = fruitPosition - directionToFruit * (rheaModel.EatDistance - goToFruitTolerance);
+				}
+
+				_goToFruit.NavigateTo(new[] {fruitDestination});
 			}
 			else if (currentStateName == fleeFromPlayerId.Name
 					&& awareness.Player)
@@ -219,7 +265,7 @@ namespace Rideables
 			}
 		}
 
-		private void OnStateCompletedObjective()
+		protected void OnStateCompletedObjective()
 		{
 			onCompletedObjective.Invoke();
 			OnCompletedObjective();

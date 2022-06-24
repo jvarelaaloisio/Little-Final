@@ -20,6 +20,7 @@ namespace Rideables
 		private float breakForce;
 
 		private readonly WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
+		private Vector3 _origin;
 
 
 		protected override void OnValidate()
@@ -27,6 +28,21 @@ namespace Rideables
 			base.OnValidate();
 			if (!rigidBody) gameObject.TryGetComponent(out rigidBody);
 			if (!agent) gameObject.TryGetComponent(out agent);
+		}
+
+		protected override void Awake()
+		{
+			base.Awake();
+			_origin = transform.position;
+		}
+
+		protected override void OnPlayerDies()
+		{
+			OnStateCompletedObjective();
+			if (!agent.SetDestination(_origin))
+			{
+				agent.Warp(_origin);
+			}
 		}
 
 		protected override void InitializeMovement(out IMovement movement, float speed)

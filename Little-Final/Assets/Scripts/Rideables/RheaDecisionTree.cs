@@ -4,6 +4,7 @@ using Core.Debugging;
 using Core.Extensions;
 using Core.Helpers;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Rideables
 {
@@ -15,6 +16,9 @@ namespace Rideables
 
 		[SerializeField]
 		private Awareness awareness;
+		
+		[SerializeField]
+		private NavMeshAgent agent;
 
 		[Header("Decision result keys")]
 		[SerializeField]
@@ -51,19 +55,20 @@ namespace Rideables
 		private bool logRepeatedResponsesOnDecisionTree;
 
 		private DecisionTree<Id> _decisionTree;
+		
+		private string DebugTag => name + " (IA)";
 
 		private void OnValidate()
 		{
-			if (!awareness) awareness = GetComponent<Awareness>();
+			// if (!awareness) awareness = GetComponent<Awareness>();
 			if (!awareness
 				&& !TryGetComponent(out awareness))
 				awareness = transform.GetComponentInChildren<Awareness>();
+			if (!agent) TryGetComponent(out agent);
 		}
 
 		private void Awake()
 		{
-			debugger.LogError(name, "CanGetToFruit Method not defined", this);
-
 			#region Actions
 
 			var eatFruit = new TreeAction<Id>(eatFruitId);
@@ -98,7 +103,7 @@ namespace Rideables
 												onDecision.Invoke,
 												isAwareOfFruit, debugger)
 							{
-								Tag = name,
+								Tag = DebugTag,
 								LogRepeatedResponses = logRepeatedResponsesOnDecisionTree,
 								LogTrace = true,
 							};
@@ -122,13 +127,15 @@ namespace Rideables
 			Vector3 myPos = transform.position;
 			Vector3 playerPos;
 			return awareness.Player
-					&& (playerPos = awareness.Player.position).y < myPos.y
-					&& (playerPos - myPos).IgnoreY().magnitude <= rheaModel.FleeDistance;
+					&& (playerPos = awareness.Player.position).y < myPos.y;
+			// && (playerPos - myPos).IgnoreY().magnitude <= rheaModel.FleeDistance;
 		}
 
 		private bool CanGetToFruit()
 		{
-			return true;
+			NavMeshPath path = new NavMeshPath();
+			agent.CalculatePath(awareness.Fruit.position, path);
+			return path.status == NavMeshPathStatus.PathComplete;
 		}
 
 		private bool IsAwareOfFruit()

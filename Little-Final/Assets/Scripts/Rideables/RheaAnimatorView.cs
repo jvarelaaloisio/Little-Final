@@ -26,6 +26,9 @@ namespace Rideables
 		[SerializeField]
 		private string mountedParameter = "is_mounted";
 
+		[SerializeField]
+		private string eatingParameter = "is_eating";
+
 		[Header("Debug")]
 		[SerializeField]
 		protected Debugger debugger;
@@ -42,8 +45,10 @@ namespace Rideables
 
 		private void Start()
 		{
-			rhea.OnMounted += () => SetMountedParameter(true);
-			rhea.OnDismounted += () => SetMountedParameter(false);
+			rhea.OnMounted += () => SetBool(mountedParameter, true);
+			rhea.OnDismounted += () => SetBool(mountedParameter, false);
+			rhea.OnEating += () => SetBool(eatingParameter, true);
+			rhea.OnStoppedEating += () => SetBool(eatingParameter, false);
 		}
 
 		private void OnEnable()
@@ -56,9 +61,9 @@ namespace Rideables
 			UpdateManager.UnSubscribe(this);
 		}
 
-		private void SetMountedParameter(bool value)
+		private void SetBool(string paramName, bool value)
 		{
-			animator.SetBool(mountedParameter, value);
+			animator.SetBool(paramName, value);
 		}
 
 		public void OnLateUpdate()

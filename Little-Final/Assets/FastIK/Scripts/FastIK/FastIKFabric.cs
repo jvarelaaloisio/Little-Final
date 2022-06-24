@@ -125,6 +125,11 @@ namespace DitzelGames.FastIK
                 ResolveIK();
         }
 
+        public void SetIKEnabled(bool value)
+        {
+            IK_Enable = value;
+        }
+        
         private void ResolveIK()
         {
             if (Target == null)
