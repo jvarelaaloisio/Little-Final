@@ -57,9 +57,10 @@ namespace Player
 		public UnityEvent OnDismount;
 		public UnityEvent onPick;
 		public UnityEvent onPutDown;
-		[FormerlySerializedAs("onThrow")]
 		public UnityEvent onThrowing;
 		public UnityEvent onThrew;
+		[SerializeField]
+		private UnityEvent onDeath;
 		public Action OnDeath = delegate { };
 
 		public Action<bool> OnGlideChanges = delegate { };
@@ -130,25 +131,14 @@ namespace Player
 			collectableBag = new CollectableBag(PP_Stats.CollectablesForReward,
 												UpgradeStamina);
 			OnLand += onLand.Invoke;
+			OnDeath += onDeath.Invoke;
 			body = GetComponent<IBody>();
-			// body.BodyEvents += OnBodyEvent;
 			damageHandler = new DamageHandler(PP_Stats.LifePoints, PP_Stats.ImmunityTime, OnLifeChanged, _sceneIndex);
 			stamina = new Stamina.Stamina(PP_Stats.InitialStamina,
 										PP_Stats.StaminaRefillDelay,
 										PP_Stats.StaminaRefillSpeed,
 										SceneIndex);
 		}
-
-		// private void OnBodyEvent(BodyEvent eventType)
-		// {
-		// 	if (eventType.Equals(BodyEvent.LAND)
-		// 		&& FallHelper.IsGrounded
-		// 		&& State.GetType() != typeof(Walk))
-		// 	{
-		// 		OnLand();
-		// 		onLand.Invoke();
-		// 	}
-		// }
 
 		private void Start()
 		{
