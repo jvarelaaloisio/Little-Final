@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace FSM
@@ -48,7 +47,7 @@ namespace FSM
 			CurrentState?.Sleep();
 
 			if (_shouldLogTransitions)
-				_logger.Log(_tag, $"transitioned: {CurrentState.Name} -> {transition.Name}");
+				_logger.Log(_tag, $"transitioned: {Colored(CurrentState.Name, "yellow")} -> {Colored(transition.Name, "green")}");
 
 			CurrentState = transition;
 			CurrentState.Awake();
@@ -71,7 +70,9 @@ namespace FSM
 									string ownerTag = "")
 			=> new Builder(initialState,
 							ownerTag);
-
+		
+		private static string Colored(object message, string color) => $"<color={color}>{message}</color>";
+		
 		public class Builder
 		{
 			private readonly FiniteStateMachine<T> _finiteStateMachine;
