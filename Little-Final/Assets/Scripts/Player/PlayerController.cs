@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using CharacterMovement;
 using Core.Interactions;
+using Core.Stamina;
 using Player.Abilities;
 using Player.Collectables;
 using Player.States;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 using VarelaAloisio.UpdateManagement.Runtime;
 using Void = Player.States.Void;
 
 namespace Player
 {
-	public class PlayerController : MonoBehaviour, IUpdateable, IDamageHandler, IPlayer, IUser
+	public class PlayerController : MonoBehaviour, IUpdateable, IDamageHandler, IPlayer, IInteractor, IStaminaContainer
 	{
 		public delegate void StateCallback(State state);
 
@@ -59,9 +58,8 @@ namespace Player
 		public UnityEvent onPutDown;
 		public UnityEvent onThrowing;
 		public UnityEvent onThrew;
-		[SerializeField]
-		private UnityEvent onDeath;
-		public Action OnDeath = delegate { };
+
+		public SmartEvent onDeath;
 
 		public Action<bool> OnGlideChanges = delegate { };
 
@@ -124,6 +122,7 @@ namespace Player
 
 		#endregion
 
+
 		private void Awake()
 		{
 			_myTransform = transform;
@@ -131,7 +130,6 @@ namespace Player
 			collectableBag = new CollectableBag(PP_Stats.CollectablesForReward,
 												UpgradeStamina);
 			OnLand += onLand.Invoke;
-			OnDeath += onDeath.Invoke;
 			body = GetComponent<IBody>();
 			damageHandler = new DamageHandler(PP_Stats.LifePoints, PP_Stats.ImmunityTime, OnLifeChanged, _sceneIndex);
 			stamina = new Stamina.Stamina(PP_Stats.InitialStamina,
@@ -227,7 +225,7 @@ namespace Player
 		{
 			if (isDead || !(lifePoints < 0)) return;
 			isDead = true;
-			OnDeath();
+			onDeath.Invoke();
 			ChangeState<Void>();
 			new CountDownTimer(PP_Stats.DeadTime, Revive, SceneIndex).StartTimer();
 		}

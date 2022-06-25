@@ -130,9 +130,8 @@ namespace Player
 			controller.onPutDown.AddListener(ShowPutDownFeedback);
 			controller.onThrowing.AddListener(ShowThrowingFeedback);
 			controller.onThrew.AddListener(ShowThrewFeedback);
-			// controller.OnMount.AddListener(() => animator.Play(jumpAnimation));
-			// controller.OnDismount.AddListener(() => animator.Play(jumpAnimation));
-			controller.OnDeath += ShowDeathFeedback;
+			// controller.OnDeath_OLD += ShowDeathFeedback;
+			controller.onDeath += ShowDeathFeedback;
 			controller.OnGlideChanges += SetFlying;
 			audioManager = FindObjectOfType<AudioManager>();
 			_sceneIndex = gameObject.scene.buildIndex;
