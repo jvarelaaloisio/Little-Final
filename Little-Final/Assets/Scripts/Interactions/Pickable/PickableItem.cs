@@ -15,12 +15,6 @@ namespace Interactions.Pickable
 		[SerializeField]
 		private Rigidbody rigidBody;
 
-		[SerializeField]
-		private Vector3 pickPositionOffset = new Vector3(0, 1, 1);
-		
-		[SerializeField]
-		private string userHandName;
-		
 		[Header("Events")]
 		[SerializeField]
 		private TransformUnityEvent onPick;
@@ -35,7 +29,7 @@ namespace Interactions.Pickable
 		[SerializeField]
 		private Debugger debugger;
 
-		private IUser _picker;
+		private IInteractor _picker;
 
 		private void OnValidate()
 		{
@@ -43,11 +37,11 @@ namespace Interactions.Pickable
 				rigidBody = GetComponent<Rigidbody>();
 		}
 
-		public void Interact(IUser user)
+		public void Interact(IInteractor interactor)
 		{
-			Transform userTransform = user.Transform;
+			Transform userTransform = interactor.Transform;
 			debugger.Log(name, $"item picked by {userTransform.name}", this);
-			_picker = user;
+			_picker = interactor;
 			if (userTransform.TryGetComponent(out HandContainer handContainer))
 			{
 				Transform userHand = handContainer.Hand;
