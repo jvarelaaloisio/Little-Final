@@ -1,5 +1,7 @@
-﻿using Player;
+﻿using System;
+using Player;
 using UnityEngine;
+using UnityEngine.Events;
 using VarelaAloisio.UpdateManagement.Runtime;
 
 namespace Interactions
@@ -12,7 +14,7 @@ namespace Interactions
 		public float distanceFromGround;
 		public bool isRePositioningAtStart;
 		private int _sceneIndex;
-
+		
 		private void Start()
 		{
 			_sceneIndex = gameObject.scene.buildIndex;
