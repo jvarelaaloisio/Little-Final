@@ -5062,13 +5062,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 7479286579825301209}
-  pickPositionOffset: {x: 0, y: 1, z: 1}
-  userHandName: 
   onPick:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7479286579825301214}
-        m_MethodName: TryRefillStamina
+        m_MethodName: StartRefillTimer
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5077,28 +5075,6 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 7358954079394748345}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 7479286579825301209}
-        m_MethodName: set_isKinematic
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 2387756466388776839}
         m_MethodName: Play
@@ -5141,7 +5117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42dc93a7a180ae14c89de86231abc4a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugger: {fileID: 0}
+  debugger: {fileID: 11400000, guid: fb371d2ca97c8124d9d4abd8daeff14c, type: 2}
   refillCompletely: 1
   refillAmount: 100
   onConsumed:
@@ -5154,11 +5130,11 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
-          m_FloatArgument: 1.5
+          m_FloatArgument: 1
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  refillDelay: 0.25
+  refillDelay: 1
 --- !u!114 &7479286579825301215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5174,13 +5150,13 @@ MonoBehaviour:
   onEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7479286579825301208}
-        m_MethodName: Destroy
-        m_Mode: 1
+      - m_Target: {fileID: 583647608977723768}
+        m_MethodName: TakeDamage
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 100
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -5207,6 +5183,17 @@ MonoBehaviour:
   onDeath:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 7479286579825301213}
+        m_MethodName: ForceLoseInteraction
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 7479286579825301208}
         m_MethodName: Destroy
         m_Mode: 1
@@ -5218,7 +5205,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  debugger: {fileID: 0}
+  debugger: {fileID: 11400000, guid: fb371d2ca97c8124d9d4abd8daeff14c, type: 2}
 --- !u!114 &7479286579825301208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5234,6 +5221,7 @@ MonoBehaviour:
   onBeingDestroyed:
     m_PersistentCalls:
       m_Calls: []
+  debugger: {fileID: 11400000, guid: fb371d2ca97c8124d9d4abd8daeff14c, type: 2}
 --- !u!54 &7479286579825301209
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5347,12 +5335,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be8ea3c1ad85824418a7a8ebc3f18ae7, type: 3}
---- !u!1 &7358954079394748345 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 138347403227713343, guid: be8ea3c1ad85824418a7a8ebc3f18ae7,
-    type: 3}
-  m_PrefabInstance: {fileID: 7479286578355902598}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7884555081118125315 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 765702742634927493, guid: be8ea3c1ad85824418a7a8ebc3f18ae7,
