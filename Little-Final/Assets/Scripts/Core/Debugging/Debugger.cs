@@ -101,6 +101,9 @@ namespace Core.Debugging
 		public void Log(LogType logType, string tag, object message, Object context)
 			=> LogInternal(logType, tag, message, context);
 
+		public void Log(string message)
+			=> Log(LogType.Log, string.Empty, message);
+		
 		public void Log(object message)
 			=> Log(LogType.Log, string.Empty, message);
 
