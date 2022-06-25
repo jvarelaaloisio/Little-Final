@@ -8,330 +8,331 @@ using Player.Collectables;
 using Player.States;
 using UnityEngine;
 using UnityEngine.Events;
+using Events.UnityEvents;
 using VarelaAloisio.UpdateManagement.Runtime;
 using Void = Player.States.Void;
 
 namespace Player
 {
-	public class PlayerController : MonoBehaviour, IUpdateable, IDamageHandler, IPlayer, IInteractor, IStaminaContainer
-	{
-		public delegate void StateCallback(State state);
+    public class PlayerController : MonoBehaviour, IUpdateable, IDamageHandler, IPlayer, IInteractor, IStaminaContainer
+    {
+        public delegate void StateCallback(State state);
 
-		#region Variables
+        #region Variables
 
-		private Transform _myTransform;
-		public PlayerView view;
-		public Transform collectablePivot;
-		public CollectableBag collectableBag;
+        private Transform _myTransform;
+        public PlayerView view;
+        public Transform collectablePivot;
+        public CollectableBag collectableBag;
 
-		public List<Ability> AbilitiesOnLand,
-			AbilitiesInAir,
-			AbilitiesOnWall;
+        public List<Ability> AbilitiesOnLand,
+            AbilitiesInAir,
+            AbilitiesOnWall;
 
-		public event StateCallback OnStateChanges = delegate { };
+        public event StateCallback OnStateChanges = delegate { };
 
-		public Action<float> OnPickCollectable
-		{
-			get => collectableBag.OnCollectableAdded;
-			set => collectableBag.OnCollectableAdded = value;
-		}
+        public Action<float> OnPickCollectable
+        {
+            get => collectableBag.OnCollectableAdded;
+            set => collectableBag.OnCollectableAdded = value;
+        }
 
-		public Action<float> onStaminaChange
-		{
-			get => stamina.OnStaminaChange;
-			set => stamina.OnStaminaChange = value;
-		}
+        public Action<float> onStaminaChange
+        {
+            get => stamina.OnStaminaChange;
+            set => stamina.OnStaminaChange = value;
+        }
 
-		public Action<float> OnChangeSpeed = delegate { };
-		public Action<string> OnSpecificAction = delegate { };
-		public Action OnJump = delegate { };
-		public Action OnLongJump = delegate { };
-		public Action OnLand = delegate { };
-		public Action OnClimb = delegate { };
+        public Action<float> OnChangeSpeed = delegate { };
+        public Action<string> OnSpecificAction = delegate { };
+        public Action OnJump = delegate { };
+        public Action OnLongJump = delegate { };
+        public Action OnLand = delegate { };
+        public Action OnClimb = delegate { };
 
-		[SerializeField]
-		private UnityEvent onLand;
+        [SerializeField]
+        private UnityEvent onLand;
 
-		public UnityEvent OnMount;
-		public UnityEvent OnDismount;
-		public UnityEvent onPick;
-		public UnityEvent onPutDown;
-		public UnityEvent onThrowing;
-		public UnityEvent onThrew;
+        public UnityEvent OnMount;
+        public UnityEvent OnDismount;
+        public UnityEvent onPick;
+        public UnityEvent onPutDown;
+        public UnityEvent onThrowing;
+        public UnityEvent onThrew;
 
-		public SmartEvent onDeath;
+        public SmartEvent onDeath;
 
-		public Action<bool> OnGlideChanges = delegate { };
+        public Action<bool> OnGlideChanges = delegate { };
 
-		//TODO implement prediction logic that fires this event when the direction is towards a cliff
-		public Action OnFallFromCliff;
+        //TODO implement prediction logic that fires this event when the direction is towards a cliff
+        public Action OnFallFromCliff;
 
-		[SerializeField]
-		private Transform climbCheckPivot;
+        [SerializeField]
+        private Transform climbCheckPivot;
 
-		[Header("Interactions")]
-		[SerializeField]
-		private Transform interactionHelper;
+        [Header("Interactions")]
+        [SerializeField]
+        private Transform interactionHelper;
 
-		[SerializeField]
-		private float interactionCheckRadius;
+        [SerializeField]
+        private float interactionCheckRadius;
 
-		[SerializeField]
-		private LayerMask interactableLayer;
+        [SerializeField]
+        private LayerMask interactableLayer;
 
-		[SerializeField]
-		private float throwDelay;
+        [SerializeField]
+        private float throwDelay;
 
-		[Header("Debug")]
-		[SerializeField]
-		private bool shouldLogTransitions = false;
+        [Header("Debug")]
+        [SerializeField]
+        private bool shouldLogTransitions = false;
 
-		private IPickable _itemPicked;
-		IBody body;
-		DamageHandler damageHandler;
-		private Stamina.Stamina stamina;
-		State state;
-		private Vector3 _lastSafePosition;
-		private Quaternion _lastSafeRotation;
-		private bool isDead;
-		private int _sceneIndex;
+        private IPickable _itemPicked;
+        IBody body;
+        DamageHandler damageHandler;
+        private Stamina.Stamina stamina;
+        State state;
+        private Vector3 _lastSafePosition;
+        private Quaternion _lastSafeRotation;
+        private bool isDead;
+        private int _sceneIndex;
 
-		#region Properties
+        #region Properties
 
-		public IBody Body => body;
-		public bool JumpBuffer { get; set; }
-		public bool LongJumpBuffer { get; set; }
-		public Stamina.Stamina Stamina => stamina;
-		public State State => state;
-		public DamageHandler DamageHandler => damageHandler;
+        public IBody Body => body;
+        public bool JumpBuffer { get; set; }
+        public bool LongJumpBuffer { get; set; }
+        public Stamina.Stamina Stamina => stamina;
+        public State State => state;
+        public DamageHandler DamageHandler => damageHandler;
 
-		public int SceneIndex => _sceneIndex;
+        public int SceneIndex => _sceneIndex;
 
-		public Vector3 LastSafePosition => _lastSafePosition;
+        public Vector3 LastSafePosition => _lastSafePosition;
 
-		public Transform ClimbCheckPivot => climbCheckPivot;
+        public Transform ClimbCheckPivot => climbCheckPivot;
 
-		public Transform InteractionHelper => interactionHelper;
+        public Transform InteractionHelper => interactionHelper;
 
-		public float InteractionCheckRadius => interactionCheckRadius;
-		public IRideable Rideable { get; private set; }
+        public float InteractionCheckRadius => interactionCheckRadius;
+        public IRideable Rideable { get; private set; }
 
-		public Transform Transform => transform;
+        public Transform Transform => transform;
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
 
-		private void Awake()
-		{
-			_myTransform = transform;
-			_sceneIndex = gameObject.scene.buildIndex;
-			collectableBag = new CollectableBag(PP_Stats.CollectablesForReward,
-												UpgradeStamina);
-			OnLand += onLand.Invoke;
-			body = GetComponent<IBody>();
-			damageHandler = new DamageHandler(PP_Stats.LifePoints, PP_Stats.ImmunityTime, OnLifeChanged, _sceneIndex);
-			stamina = new Stamina.Stamina(PP_Stats.InitialStamina,
-										PP_Stats.StaminaRefillDelay,
-										PP_Stats.StaminaRefillSpeed,
-										SceneIndex);
-		}
+        private void Awake()
+        {
+            _myTransform = transform;
+            _sceneIndex = gameObject.scene.buildIndex;
+            collectableBag = new CollectableBag(PP_Stats.CollectablesForReward,
+                                                UpgradeStamina);
+            OnLand += onLand.Invoke;
+            body = GetComponent<IBody>();
+            damageHandler = new DamageHandler(PP_Stats.LifePoints, PP_Stats.ImmunityTime, OnLifeChanged, _sceneIndex);
+            stamina = new Stamina.Stamina(PP_Stats.InitialStamina,
+                                        PP_Stats.StaminaRefillDelay,
+                                        PP_Stats.StaminaRefillSpeed,
+                                        SceneIndex);
+        }
 
-		private void Start()
-		{
-			state = new Walk();
-			state.OnStateEnter(this, SceneIndex);
-		}
+        private void Start()
+        {
+            state = new Walk();
+            state.OnStateEnter(this, SceneIndex);
+        }
 
-		private void OnEnable()
-		{
-			UpdateManager.Subscribe(this);
-		}
+        private void OnEnable()
+        {
+            UpdateManager.Subscribe(this);
+        }
 
-		private void OnDisable()
-		{
-			UpdateManager.UnSubscribe(this);
-		}
+        private void OnDisable()
+        {
+            UpdateManager.UnSubscribe(this);
+        }
 
-		public void ChangeState<T>() where T : State, new()
-		{
-			state.OnStateExit();
-			state = new T();
-			if (shouldLogTransitions)
-				Debug.Log($"{name}changed to state: {state.GetType()}");
-			OnStateChanges(state);
-			state.OnStateEnter(this, SceneIndex);
-		}
+        public void ChangeState<T>() where T : State, new()
+        {
+            state.OnStateExit();
+            state = new T();
+            if (shouldLogTransitions)
+                Debug.Log($"{name}changed to state: {state.GetType()}");
+            OnStateChanges(state);
+            state.OnStateEnter(this, SceneIndex);
+        }
 
-		public void RunAbilityList(in IEnumerable<Ability> abilities)
-		{
-			foreach (var ability in abilities)
-			{
-				if (!ability.ValidateTrigger(this))
-					continue;
-				ability.Use(this);
-				stamina.ConsumeStamina(ability.Stamina);
-			}
-		}
+        public void RunAbilityList(in IEnumerable<Ability> abilities)
+        {
+            foreach (var ability in abilities)
+            {
+                if (!ability.ValidateTrigger(this))
+                    continue;
+                ability.Use(this);
+                stamina.ConsumeStamina(ability.Stamina);
+            }
+        }
 
-		public void OnUpdate()
-		{
+        public void OnUpdate()
+        {
 #if UNITY_EDITOR
-			if (Input.GetKeyDown(KeyCode.O))
-			{
-				stamina.UpgradeMaxStamina(400);
-				stamina.RefillCompletely();
-			}
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                stamina.UpgradeMaxStamina(400);
+                stamina.RefillCompletely();
+            }
 #endif
 
-			state.OnStateUpdate();
-		}
+            state.OnStateUpdate();
+        }
 
-		public void SaveSafeState(Vector3 position, Quaternion rotation)
-		{
-			if (isDead)
-				return;
-			_lastSafePosition = position;
-			_lastSafeRotation = rotation;
-		}
+        public void SaveSafeState(Vector3 position, Quaternion rotation)
+        {
+            if (isDead)
+                return;
+            _lastSafePosition = position;
+            _lastSafeRotation = rotation;
+        }
 
-		public void Revive()
-		{
-			isDead = false;
-			stamina.RefillCompletely();
-			ChangeState<Walk>();
-			damageHandler.ResetLifePoints();
-			_myTransform.position = LastSafePosition;
-			_myTransform.rotation = _lastSafeRotation;
-			body.Push(body.Velocity * -1);
-		}
+        public void Revive()
+        {
+            isDead = false;
+            stamina.RefillCompletely();
+            ChangeState<Walk>();
+            damageHandler.ResetLifePoints();
+            _myTransform.position = LastSafePosition;
+            _myTransform.rotation = _lastSafeRotation;
+            body.Push(body.Velocity * -1);
+        }
 
-		public void ResetJumpBuffers()
-		{
-			JumpBuffer = false;
-			LongJumpBuffer = false;
-		}
+        public void ResetJumpBuffers()
+        {
+            JumpBuffer = false;
+            LongJumpBuffer = false;
+        }
 
-		#region EventHandlers
+        #region EventHandlers
 
-		private void UpgradeStamina()
-		{
-			stamina.UpgradeMaxStamina(stamina.MaxStamina + PP_Stats.StaminaUpgrade);
-			stamina.RefillCompletely();
-		}
+        private void UpgradeStamina()
+        {
+            stamina.UpgradeMaxStamina(stamina.MaxStamina + PP_Stats.StaminaUpgrade);
+            stamina.RefillCompletely();
+        }
 
-		private void OnLifeChanged(float lifePoints)
-		{
-			if (isDead || !(lifePoints < 0)) return;
-			isDead = true;
-			onDeath.Invoke();
-			ChangeState<Void>();
-			new CountDownTimer(PP_Stats.DeadTime, Revive, SceneIndex).StartTimer();
-		}
+        private void OnLifeChanged(float lifePoints)
+        {
+            if (isDead || !(lifePoints < 0)) return;
+            isDead = true;
+            onDeath.Invoke();
+            ChangeState<Void>();
+            new CountDownTimer(PP_Stats.DeadTime, Revive, SceneIndex).StartTimer();
+        }
 
-		#endregion
+        #endregion
 
-		public bool CanInteract(out IInteractable interactable)
-		{
-			Collider[] results = new Collider[5];
-			if (Physics.OverlapSphereNonAlloc(interactionHelper.position,
-											interactionCheckRadius,
-											results,
-											interactableLayer,
-											QueryTriggerInteraction.Collide) > 0)
-			{
-				foreach (Collider current in results)
-				{
-					if (!current)
-						break;
-					if (current.TryGetComponent(out interactable))
-						return true;
-				}
-			}
+        public bool CanInteract(out IInteractable interactable)
+        {
+            Collider[] results = new Collider[5];
+            if (Physics.OverlapSphereNonAlloc(interactionHelper.position,
+                                            interactionCheckRadius,
+                                            results,
+                                            interactableLayer,
+                                            QueryTriggerInteraction.Collide) > 0)
+            {
+                foreach (Collider current in results)
+                {
+                    if (!current)
+                        break;
+                    if (current.TryGetComponent(out interactable))
+                        return true;
+                }
+            }
 
-			interactable = null;
-			return false;
-		}
+            interactable = null;
+            return false;
+        }
 
-		[Obsolete]
-		public bool CanMount(out IRideable rideable)
-		{
-			Collider[] results = new Collider[5];
-			if (Physics.OverlapSphereNonAlloc(interactionHelper.position,
-											interactionCheckRadius,
-											results,
-											interactableLayer,
-											QueryTriggerInteraction.Collide) > 0)
-			{
-				foreach (Collider current in results)
-				{
-					if (!current)
-						break;
-					if (current.TryGetComponent(out rideable))
-						return true;
-				}
-			}
+        [Obsolete]
+        public bool CanMount(out IRideable rideable)
+        {
+            Collider[] results = new Collider[5];
+            if (Physics.OverlapSphereNonAlloc(interactionHelper.position,
+                                            interactionCheckRadius,
+                                            results,
+                                            interactableLayer,
+                                            QueryTriggerInteraction.Collide) > 0)
+            {
+                foreach (Collider current in results)
+                {
+                    if (!current)
+                        break;
+                    if (current.TryGetComponent(out rideable))
+                        return true;
+                }
+            }
 
-			rideable = null;
-			return false;
-		}
+            rideable = null;
+            return false;
+        }
 
-		public void Pick(IPickable pickable)
-		{
-			_itemPicked = pickable;
-			pickable.Interact(this);
-			onPick.Invoke();
-		}
+        public void Pick(IPickable pickable)
+        {
+            _itemPicked = pickable;
+            pickable.Interact(this);
+            onPick.Invoke();
+        }
 
-		public bool HasItem() => _itemPicked != null;
+        public bool HasItem() => _itemPicked != null;
 
-		public void PutDownItem()
-		{
-			_itemPicked.Leave();
-			LoseInteraction();
-		}
+        public void PutDownItem()
+        {
+            _itemPicked.Leave();
+            LoseInteraction();
+        }
 
-		public void ThrowItem(float force)
-		{
-			onThrowing.Invoke();
-			StartCoroutine(ThrowItemAfterDelay(throwDelay));
+        public void ThrowItem(float force)
+        {
+            onThrowing.Invoke();
+            StartCoroutine(ThrowItemAfterDelay(throwDelay));
 
-			IEnumerator ThrowItemAfterDelay(float delay)
-			{
-				yield return new WaitForSeconds(delay);
-				if (_itemPicked != null)
-				{
-					_itemPicked.Throw(force, _myTransform.forward + _myTransform.up);
-					_itemPicked = null;
-					onThrew.Invoke();
-				}
-			}
-		}
+            IEnumerator ThrowItemAfterDelay(float delay)
+            {
+                yield return new WaitForSeconds(delay);
+                if (_itemPicked != null)
+                {
+                    _itemPicked.Throw(force, _myTransform.forward + _myTransform.up);
+                    _itemPicked = null;
+                    onThrew.Invoke();
+                }
+            }
+        }
 
-		public void LoseInteraction()
-		{
-			_itemPicked = null;
-			onPutDown.Invoke();
-		}
+        public void LoseInteraction()
+        {
+            _itemPicked = null;
+            onPutDown.Invoke();
+        }
 
-		public void Mount(IRideable rideable)
-		{
-			Rideable = rideable;
-			Transform mount = rideable.GetMount();
-			rideable.Interact(this);
-			_myTransform.SetParent(mount);
-			_myTransform.SetPositionAndRotation(mount.position, mount.rotation);
-			OnMount.Invoke();
-		}
+        public void Mount(IRideable rideable)
+        {
+            Rideable = rideable;
+            Transform mount = rideable.GetMount();
+            rideable.Interact(this);
+            _myTransform.SetParent(mount);
+            _myTransform.SetPositionAndRotation(mount.position, mount.rotation);
+            OnMount.Invoke();
+        }
 
-		public void Dismount()
-		{
-			transform.SetParent(null);
-			Quaternion rotation = transform.rotation;
-			transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
-			Rideable.Leave();
-			OnDismount.Invoke();
-		}
-	}
+        public void Dismount()
+        {
+            transform.SetParent(null);
+            Quaternion rotation = transform.rotation;
+            transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
+            Rideable.Leave();
+            OnDismount.Invoke();
+        }
+    }
 }
