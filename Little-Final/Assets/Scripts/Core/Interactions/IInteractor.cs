@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Core.Interactions
 {
-	public interface IUser
+	public interface IInteractor
 	{
 		Transform Transform { get; }
 		void LoseInteraction();

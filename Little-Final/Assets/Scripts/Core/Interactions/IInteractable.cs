@@ -2,7 +2,7 @@
 {
 	public interface IInteractable
 	{
-		void Interact(IUser user);
+		void Interact(IInteractor interactor);
 		void Leave();
 	}
 }
