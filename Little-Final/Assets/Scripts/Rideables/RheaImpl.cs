@@ -15,7 +15,7 @@ namespace Rideables
 
 		[SerializeField]
 		private NavMeshAgent agent;
-		
+
 		[SerializeField]
 		private float breakForce;
 
@@ -39,10 +39,7 @@ namespace Rideables
 		protected override void OnPlayerDies()
 		{
 			OnStateCompletedObjective();
-			if (!agent.SetDestination(_origin))
-			{
-				agent.Warp(_origin);
-			}
+			agent.Warp(_origin);
 		}
 
 		protected override void InitializeMovement(out IMovement movement, float speed)
@@ -65,9 +62,9 @@ namespace Rideables
 			}
 		}
 
-		public override void Interact(IUser user)
+		public override void Interact(IInteractor interactor)
 		{
-			base.Interact(user);
+			base.Interact(interactor);
 			agent.enabled = false;
 		}
 

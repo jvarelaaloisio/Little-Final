@@ -310,7 +310,7 @@ namespace Rideables
 
 		protected abstract void Brake();
 
-		public virtual void Interact(IUser user)
+		public virtual void Interact(IInteractor interactor)
 		{
 			IsMounted = true;
 			TransitionTo(idleId);
