@@ -38,12 +38,12 @@ namespace FSM
 		/// </summary>
 		public virtual void Awake()
 			=> OnAwake();
-
+		
 		/// <summary>
 		/// Update method for the State.
 		/// Always call base method so the corresponding event is raised
 		/// </summary>
-		public virtual void Update(float deltaTime)
+		protected virtual void Update(float deltaTime)
 			=> OnUpdate(deltaTime);
 
 		/// <summary>
@@ -61,7 +61,9 @@ namespace FSM
 
 		public bool TryGetTransition(T key, out State<T> transition)
 			=> _transitions.TryGetValue(key, out transition);
-		
+
+		internal void UpdateState(float deltaTime) => Update(deltaTime);
+
 		//TODO: Find a better name
 		public static void CreateReciprocalTransition((State<T> state, T key)[] statesWithKeys){
 			foreach (var current in statesWithKeys)

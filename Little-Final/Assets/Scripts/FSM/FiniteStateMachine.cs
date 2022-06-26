@@ -58,7 +58,7 @@ namespace FSM
 		/// Update method that runs the current state's Update.
 		/// </summary>
 		public void Update(float deltaTime)
-			=> CurrentState.Update(deltaTime);
+			=> CurrentState.UpdateState(deltaTime);
 
 		/// <summary>
 		/// Builder method to simplify code.

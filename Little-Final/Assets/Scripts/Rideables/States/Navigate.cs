@@ -46,7 +46,7 @@ namespace Rideables.States
 			CompletedObjective();
 		}
 
-		public override void Update(float deltaTime)
+		protected override void Update(float deltaTime)
 		{
 			base.Update(deltaTime);
 			if (_navigator.HasArrived)

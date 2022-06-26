@@ -215,10 +215,11 @@ namespace Rideables
 			_patrol.AddTransition(eatId, _eat);
 			_patrol.AddTransition(goToFruitId, _goToFruit);
 			_patrol.AddTransition(fleeFromPlayerId, _fleeFromPlayer);
+			
 			_stateMachine = FiniteStateMachine<Id>.Build(_idle, name)
 				.ThatLogsTransitions(Debug.unityLogger)
 				.Done();
-
+			
 			playerDeathChannel.SubscribeSafely(OnPlayerDies);
 		}
 		

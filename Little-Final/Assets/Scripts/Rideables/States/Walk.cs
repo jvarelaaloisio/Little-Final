@@ -33,7 +33,7 @@ namespace Rideables.States
 			_originalSpeed = _movement.Speed;
 		}
 
-		public override void Update(float deltaTime)
+		protected override void Update(float deltaTime)
 		{
 			base.Update(deltaTime);
 			Vector3 objPos = _getObjectivePosition();
