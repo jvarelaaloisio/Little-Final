@@ -31,13 +31,6 @@ namespace Rideables
 		[SerializeField]
 		private AnimationCurve headUp = AnimationCurve.Linear(0, 0, 1, 1);
 
-		[Header("Events")]
-		[SerializeField]
-		private UnityEvent onStartedEating;
-
-		[SerializeField]
-		private UnityEvent onFinishedEating;
-
 		[Header("Debug")]
 		[SerializeField]
 		private Debugger debugger;
@@ -95,10 +88,10 @@ namespace Rideables
 		public void ResetIk()
 		{
 			_isEating = false;
-			_followTarget = ikTip;
 			if (_lerpIkWeight != null)
 				StopCoroutine(_lerpIkWeight);
-			_lerpIkWeight = StartCoroutine(LerpIkWeight(1, 0, headUp));
+			_lerpIkWeight = StartCoroutine(LerpIkWeight(1, 0, headUp,
+														() => _followTarget = ikTip));
 		}
 		
 		private IEnumerator LerpIkWeight(float initIKValue,
