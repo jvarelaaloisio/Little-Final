@@ -6,6 +6,9 @@ namespace EditorExtensions
 {
 	public static class TransformTools
 	{
+		private const string NEW_PARENT_NAME = "New Parent";
+		private const string CREATE_NEW_PARENT_UNDO_COMMAND = "Create New Parent";
+
 		[MenuItem("GameObject/Reset Transform (Ignore children)", true, 49)]
 		private static bool Validate_ResetTransform()
 		{
@@ -76,6 +79,35 @@ namespace EditorExtensions
 			{
 				current.transform.parent = null;
 			}
+		}
+
+		[MenuItem("GameObject/Create Parent", true, 0)]
+		private static bool Validate_CreateParent()
+		{
+			GameObject activeGameObject = Selection.activeGameObject;
+			return (activeGameObject != null
+					&& activeGameObject.name != NEW_PARENT_NAME);
+		}
+
+		[MenuItem("GameObject/Create Parent", false, 0)]
+		private static void CreateParent()
+		{
+			var activeGameObject = Selection.activeGameObject;
+			if (activeGameObject.name == NEW_PARENT_NAME)
+				return;
+			var selection = Selection.gameObjects;
+			GameObject newParent = new GameObject(NEW_PARENT_NAME);
+			Undo.RegisterCreatedObjectUndo(newParent, CREATE_NEW_PARENT_UNDO_COMMAND);
+			Transform newParentTransform = newParent.transform;
+			Transform activeTransform = activeGameObject.transform;
+			newParentTransform.SetPositionAndRotation(activeTransform.position, activeTransform.rotation);
+
+			foreach (GameObject current in selection)
+			{
+				Undo.SetTransformParent(current.transform, newParentTransform, CREATE_NEW_PARENT_UNDO_COMMAND);
+			}
+
+			Selection.activeGameObject = newParent.gameObject;
 		}
 	}
 }
