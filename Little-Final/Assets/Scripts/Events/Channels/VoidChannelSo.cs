@@ -14,7 +14,7 @@ namespace Events.Channels
 			voidEvent += handler;
 		}
 
-		public void UnSubscribe(in Action handler)
+		public void Unsubscribe(in Action handler)
 		{
 			voidEvent -= handler;
 		}
