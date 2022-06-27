@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4428775972755807247}
   - component: {fileID: 1751770390443398240}
+  - component: {fileID: 8862498661953189405}
   - component: {fileID: 2766274092703511596}
   - component: {fileID: 5343002128493634020}
   - component: {fileID: 4959676027531261015}
@@ -52,8 +53,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 334674762602676672}
-  pickPositionOffset: {x: 0, y: 0.5, z: 0.5}
-  userHandName: pick_helper
   onPick:
     m_PersistentCalls:
       m_Calls:
@@ -97,6 +96,65 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   debugger: {fileID: 11400000, guid: fb371d2ca97c8124d9d4abd8daeff14c, type: 2}
+--- !u!114 &8862498661953189405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3908558111288673973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15fc413b63856044a844951176c1c758, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rigidBody: {fileID: 334674762602676672}
+  onPick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 949294646476430903}
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onPutDown:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 949294646476430903}
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  onThrow:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 949294646476430903}
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  debugger: {fileID: 11400000, guid: fb371d2ca97c8124d9d4abd8daeff14c, type: 2}
+  resetAfterSeconds: 60
+  resetDamage: 1000
+  forceReset: {fileID: 11400000, guid: f1bee943a3bdb9f459fda8de8a196ea5, type: 2}
 --- !u!114 &2766274092703511596
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2,7 +2,6 @@
 using Core.Interactions;
 using Events.UnityEvents;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Interactions.Pickable
 {
@@ -16,18 +15,15 @@ namespace Interactions.Pickable
 		private Rigidbody rigidBody;
 
 		[Header("Events")]
-		[SerializeField]
-		private TransformUnityEvent onPick;
+		public TransformUnityEvent onPick;
+
+		public SmartEvent onPutDown;
 		
-		[SerializeField]
-		private UnityEvent onPutDown;
-		
-		[SerializeField]
-		private TransformUnityEvent onThrow;
+		public TransformUnityEvent onThrow;
 
 		[Header("Debug")]
 		[SerializeField]
-		private Debugger debugger;
+		protected Debugger debugger;
 
 		private IInteractor _picker;
 
@@ -37,7 +33,7 @@ namespace Interactions.Pickable
 				rigidBody = GetComponent<Rigidbody>();
 		}
 
-		public void Interact(IInteractor interactor)
+		public virtual void Interact(IInteractor interactor)
 		{
 			Transform userTransform = interactor.Transform;
 			debugger.Log(name, $"item picked by {userTransform.name}", this);
@@ -58,14 +54,14 @@ namespace Interactions.Pickable
 			onPick.Invoke(_picker.Transform);
 		}
 
-		public void Leave()
+		public virtual void Leave()
 		{
 			debugger.Log(name, $"item put down by {_picker.Transform.name}", this);
 			PutDownInternal();
 			onPutDown.Invoke();
 		}
 
-		public void Throw(float force, Vector3 direction)
+		public virtual void Throw(float force, Vector3 direction)
 		{
 			debugger.Log(name, $"item thrown by {_picker.Transform.name}" +
 								$"\nForce: {force}; Direction: {direction} ", this);
@@ -79,7 +75,7 @@ namespace Interactions.Pickable
 			_picker?.LoseInteraction();
 		}
 		
-		private void PutDownInternal()
+		protected virtual void PutDownInternal()
 		{
 			transform.SetParent(null);
 			rigidBody.isKinematic = false;
