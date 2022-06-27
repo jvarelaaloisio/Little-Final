@@ -46,7 +46,7 @@ namespace Rideables
 			=> movement = new MovementThroughForce(this, rigidBody, speed, torque);
 
 		protected override void InitializeNavigator(out INavigator navigator)
-			=> navigator = new NavMeshNavigator(agent, arrivalDistance);
+			=> navigator = new NavMeshNavigator(agent, agent.stoppingDistance);
 
 		protected override void Brake()
 		{

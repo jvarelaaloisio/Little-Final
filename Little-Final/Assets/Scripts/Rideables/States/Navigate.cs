@@ -30,8 +30,6 @@ namespace Rideables.States
 			{
 				float distance = Vector3.Distance(destination, Destination);
 				Debugger.DrawLine(Name, MyTransform.position, Destination, Color.red, .5f);
-				if(distance < ArrivalDistance)
-					return;
 				if (_navigator.TrySetDestination(destination))
 				{
 					Debugger.Log(Name, $"dest: {destination}, Dest: {Destination}, distance: {distance}");

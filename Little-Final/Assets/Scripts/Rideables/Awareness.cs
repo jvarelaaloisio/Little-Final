@@ -11,7 +11,6 @@ namespace Rideables
 		[SerializeField]
 		private float updatePeriod = 1;
 
-		[FormerlySerializedAs("awarenessRadius")]
 		[SerializeField]
 		private float playerAwarenessRadius = 1;
 		
@@ -23,6 +22,9 @@ namespace Rideables
 
 		[SerializeField]
 		private LayerMask fruits;
+		
+		[SerializeField]
+		private float minimumMovement;
 
 		[Header("Events")]
 		[SerializeField]
@@ -30,6 +32,8 @@ namespace Rideables
 
 		private Transform _player;
 		private Transform _fruit;
+		private Vector3 _lastPlayerPosition;
+		private Vector3 _lastFruitPosition;
 
 		public Transform Player => _player;
 
@@ -81,7 +85,13 @@ namespace Rideables
 			bool hasChangedFlag = (_player && _player.hasChanged) || (_fruit && _fruit.hasChanged);
 			if (_player) _player.hasChanged = false;
 			if (_fruit) _fruit.hasChanged = false;
-			bool shouldFireChangedEvent = _player != player || _fruit != fruit || hasChangedFlag;
+
+			bool playerMoved = Vector3.Distance(_player? _player.position : _lastPlayerPosition, _lastPlayerPosition) > minimumMovement;
+			bool fruitMoved = Vector3.Distance(_fruit? _fruit.position : _lastFruitPosition, _lastFruitPosition) > minimumMovement;
+			if(_player && playerMoved) _lastPlayerPosition = _player.position;
+			if(_fruit && fruitMoved) _lastFruitPosition = _fruit.position;
+			
+			bool shouldFireChangedEvent = _player != player || _fruit != fruit /*|| hasChangedFlag*/ || playerMoved || fruitMoved;
 			_player = player;
 			_fruit = fruit;
 

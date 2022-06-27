@@ -41,7 +41,7 @@ namespace AI.DecisionTree
 
 		private void ChangeNode(INode newNode)
 		{
-			if (LogTrace) _trace += $" -> ({newNode.Name})";
+			if (LogTrace) _trace += $" -> {newNode.Name}";
 			newNode.Execute();
 		}
 
