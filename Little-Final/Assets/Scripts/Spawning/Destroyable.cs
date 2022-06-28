@@ -37,7 +37,7 @@ namespace Spawning
 		[ContextMenu("Destroy")]
 		public void Destroy()
 		{
-			debugger.Log(DebugTag, $"Destroying gameObject {gameObject.name}", this);
+			debugger.LogSafely(DebugTag, $"Destroying gameObject {gameObject.name}", this);
 			Destroy(gameObject);
 		}
 	}

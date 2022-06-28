@@ -49,18 +49,19 @@ namespace Core.Debugging
 		//TODO: Esto solo funca en un DLL
 		private static string CurrentClass
 		{
-			get {
+			get
+			{
 				var st = new System.Diagnostics.StackTrace();
-				
+
 				var index = Mathf.Min(st.FrameCount - 1, 3);
- 
+
 				if (index < 0)
 					return "{NoClass}";
- 
+
 				return "{" + st.GetFrame(index).GetMethod().DeclaringType.Name + "}";
 			}
 		}
-		
+
 		#region ILogger
 
 		public bool logEnabled
@@ -103,7 +104,7 @@ namespace Core.Debugging
 
 		public void Log(string message)
 			=> Log(LogType.Log, string.Empty, message);
-		
+
 		public void Log(object message)
 			=> Log(LogType.Log, string.Empty, message);
 
@@ -157,10 +158,12 @@ namespace Core.Debugging
 			switch (context != null)
 			{
 				case true when tagIsEmpty:
-					_logger.Log(logType, tag, $"{message}:{CurrentClass}", context);
+					// _logger.Log(logType, tag, $"{message}:{CurrentClass}", context);
+					_logger.Log(logType, tag, $"{message}", context);
 					break;
 				case true:
-					_logger.Log(logType, (object)$"{message}:{CurrentClass}", context);
+					// _logger.Log(logType, (object) $"{message}:{CurrentClass}", context);
+					_logger.Log(logType, (object) $"{message}", context);
 					break;
 				case false when tagIsEmpty:
 					_logger.Log(logType, message);
@@ -170,6 +173,7 @@ namespace Core.Debugging
 					break;
 			}
 		}
+
 		#endregion
 
 		#region Draws
@@ -209,5 +213,18 @@ namespace Core.Debugging
 		}
 
 		#endregion
+	}
+
+	public static class DebuggerHelper
+	{
+		public static void LogSafely(this Debugger debugger, string tag, object message, Object context)
+		{
+			if (debugger == null)
+				Debug.LogError("Debugger is null", context);
+			else
+			{
+				debugger.Log(tag, message, context);
+			}
+		}
 	}
 }
