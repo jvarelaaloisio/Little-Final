@@ -227,12 +227,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  onStartedEating:
-    m_PersistentCalls:
-      m_Calls: []
-  onFinishedEating:
-    m_PersistentCalls:
-      m_Calls: []
   debugger: {fileID: 11400000, guid: 4963e834741ec6841b98f9ea2bb094ba, type: 2}
 --- !u!1 &60089653403914997
 GameObject:
@@ -542,7 +536,7 @@ MonoBehaviour:
   eatingPeriod: 2
   eatingFirstDelay: 2
   eatingDamage: 1
-  goToFruitTolerance: 0.75
+  goToFruitTolerance: 0.5
   speed: 9
   arrivalDistance: 3
   runningSpeedControl:
@@ -932,7 +926,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.75
-  m_Speed: 9
+  m_Speed: 12
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -988,7 +982,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updatePeriod: 0.25
-  playerAwarenessRadius: 5
+  playerAwarenessRadius: 7
   fruitAwarenessRadius: 20
   players:
     serializedVersion: 2
@@ -996,6 +990,7 @@ MonoBehaviour:
   fruits:
     serializedVersion: 2
     m_Bits: 262144
+  minimumMovement: 0.5
   onEnvironmentChanged:
     m_PersistentCalls:
       m_Calls:
