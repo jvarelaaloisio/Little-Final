@@ -18,8 +18,6 @@ public class WindVegetationController : MonoBehaviour
     public Transform WaterfallEnd_2;
     public Transform WaterfallEnd_3; 
     
-    public Transform player;
-
     [Header("TODO Rework")]
     public float windIntensity = 0.8f;
     [Range(0, 1)]
@@ -54,8 +52,12 @@ public class WindVegetationController : MonoBehaviour
         Shader.SetGlobalFloat(WindSpeed, windSpeed);
         Shader.SetGlobalFloat(WindTurbulence, windTurbulence);
         Shader.SetGlobalFloat(BigWindScale, bigWindScale);
-        Shader.SetGlobalVector(Cascade_1,WaterfallEnd_1.position);
-        Shader.SetGlobalVector(Cascade_2,WaterfallEnd_2.position);
-        Shader.SetGlobalVector(Cascade_3,WaterfallEnd_3.position);
+        
+        if(WaterfallEnd_1)
+            Shader.SetGlobalVector(Cascade_1,WaterfallEnd_1.position);
+        if(WaterfallEnd_2)
+            Shader.SetGlobalVector(Cascade_2,WaterfallEnd_2.position);
+        if (WaterfallEnd_3)
+            Shader.SetGlobalVector(Cascade_3,WaterfallEnd_3.position);
     }
 }
