@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,11 @@ public class WindVegetationController : MonoBehaviour
     [Range(0, 1)]
     public float bigWindFactor = 0.8f;
 
+    public Transform WaterfallEnd_1;
+    public Transform WaterfallEnd_2;
+    public Transform WaterfallEnd_3; 
+    
+    public Transform player;
 
     [Header("TODO Rework")]
     public float windIntensity = 0.8f;
@@ -34,6 +40,10 @@ public class WindVegetationController : MonoBehaviour
     private static readonly int WindTurbulence = Shader.PropertyToID("WindTurbulence");
     private static readonly int BigWindScale = Shader.PropertyToID("BigWindScale");
     
+    private static readonly int Cascade_1 = Shader.PropertyToID("Cascade_1");
+    private static readonly int Cascade_2 = Shader.PropertyToID("Cascade_2");
+    private static readonly int Cascade_3 = Shader.PropertyToID("Cascade_3");
+    
     private void Update()
     {
         Shader.SetGlobalFloat(BigWindFactor, bigWindFactor);
@@ -44,5 +54,8 @@ public class WindVegetationController : MonoBehaviour
         Shader.SetGlobalFloat(WindSpeed, windSpeed);
         Shader.SetGlobalFloat(WindTurbulence, windTurbulence);
         Shader.SetGlobalFloat(BigWindScale, bigWindScale);
+        Shader.SetGlobalVector(Cascade_1,WaterfallEnd_1.position);
+        Shader.SetGlobalVector(Cascade_2,WaterfallEnd_2.position);
+        Shader.SetGlobalVector(Cascade_3,WaterfallEnd_3.position);
     }
 }
