@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core.Attributes;
 using Core.Debugging;
 using Core.Extensions;
 using Core.Helpers;
@@ -25,6 +26,7 @@ namespace Rideables
 		private Awareness awareness;
 
 		[SerializeField]
+		[ExposeScriptableObject]
 		private RheaModel rheaModel;
 
 		[SerializeField]

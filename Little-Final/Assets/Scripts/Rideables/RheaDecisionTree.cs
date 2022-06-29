@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using AI.DecisionTree;
+using Core.Attributes;
 using Core.Debugging;
-using Core.Extensions;
 using Core.Helpers;
 using UnityEngine;
 using UnityEngine.AI;
@@ -12,6 +12,7 @@ namespace Rideables
 	{
 		[Header("Setup")]
 		[SerializeField]
+		[ExposeScriptableObject]
 		private RheaModel rheaModel;
 
 		[SerializeField]
@@ -60,7 +61,6 @@ namespace Rideables
 
 		private void OnValidate()
 		{
-			// if (!awareness) awareness = GetComponent<Awareness>();
 			if (!awareness
 				&& !TryGetComponent(out awareness))
 				awareness = transform.GetComponentInChildren<Awareness>();
@@ -127,8 +127,7 @@ namespace Rideables
 			Vector3 myPos = transform.position;
 			Vector3 playerPos;
 			return awareness.Player
-					&& (playerPos = awareness.Player.position).y < myPos.y;
-			// && (playerPos - myPos).IgnoreY().magnitude <= rheaModel.FleeDistance;
+					&& awareness.Player.position.y < myPos.y + rheaModel.HeightDifferenceToAllowPlayerMount;
 		}
 
 		private bool CanGetToFruit()
@@ -146,6 +145,14 @@ namespace Rideables
 		private bool CanEatFruit()
 		{
 			return Vector3.Distance(transform.position, awareness.Fruit.position) <= rheaModel.EatDistance;
+		}
+
+		private void OnDrawGizmosSelected()
+		{
+			if (!rheaModel)
+				return;
+			Gizmos.color = new Color(1, .0f, .0f, 1f);
+			Gizmos.DrawRay(transform.position, Vector3.up * rheaModel.HeightDifferenceToAllowPlayerMount);
 		}
 	}
 }

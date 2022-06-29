@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using System.Linq;
+
 [CustomEditor(typeof(MeshRenderer)), CanEditMultipleObjects]
-public class MeshRendererEditor : Editor
+public class MeshRendererEditor : UnityEditor.Editor
 {
 	List<MeshRenderer> _targets;
 	private void OnEnable()

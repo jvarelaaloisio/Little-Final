@@ -17,9 +17,14 @@ namespace Rideables
 		[Range(0, 10, step: .25f)]
 		private float patrolDistance;
 
+		[SerializeField]
+		[Range(0, 10, step: .25f)]
+		private float heightDifferenceToAllowPlayerMount = 0;
+
 		public float EatDistance => eatDistance;
 
 		public float FleeDistance => fleeDistance;
 		public float PatrolDistance => patrolDistance;
+		public float HeightDifferenceToAllowPlayerMount => heightDifferenceToAllowPlayerMount;
 	}
 }
