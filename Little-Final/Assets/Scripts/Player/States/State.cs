@@ -71,24 +71,27 @@ namespace Player.States
 		/// </summary>
 		protected void CheckClimb()
 		{
-			Vector3 climbCheckPosition = Controller.ClimbCheckPivot.position;
+			var climbCheckPosition = Controller.ClimbCheckPivot.position;
 			if (InputManager.CheckClimbInput()
-				&& Controller.Stamina.FillState > 0
-				&& ClimbHelper.CanClimb(
-										climbCheckPosition,
-										GetForwardDirectionBasedOnGroundAngle(),
-										PP_Climb.MaxDistanceToTriggerClimb,
-										PP_Climb.MaxClimbAngle,
-										out _))
+			    && Controller.Stamina.FillState > 0
+			    && ClimbHelper.CanClimb(
+				    climbCheckPosition,
+				    GetForwardDirectionBasedOnGroundAngle(),
+				    PP_Climb.MaxDistanceToTriggerClimb,
+				    PP_Climb.MaxClimbAngle,
+				    out var climbHit))
+			{
+				Controller.LastClimbHit = climbHit;
 				Controller.ChangeState<Climb>();
+			}
 
 			Vector3 GetForwardDirectionBasedOnGroundAngle()
 			{
-				if (!Physics.Raycast(climbCheckPosition, -MyTransform.up, out RaycastHit hit,
-									PP_Climb.MaxClimbDistanceFromCorners,
-									LayerMask.GetMask("Floor", "Default")))
+				if (!Physics.Raycast(climbCheckPosition, -MyTransform.up, out var hit,
+					    PP_Climb.MaxClimbDistanceFromCorners,
+					    LayerMask.GetMask("Floor", "Default")))
 					return MyTransform.forward;
-				Vector3 newForward = Vector3.Cross(MyTransform.right, hit.normal);
+				var newForward = Vector3.Cross(MyTransform.right, hit.normal);
 				return newForward;
 			}
 		}

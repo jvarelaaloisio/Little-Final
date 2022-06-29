@@ -52,13 +52,6 @@ namespace Player.States
 			controller.OnClimb();
 			controller.GetComponent<Rigidbody>().isKinematic = true;
 
-			ClimbHelper.CanClimb(
-				MyTransform.position,
-				MyTransform.forward,
-				PP_Climb.MaxDistanceToTriggerClimb,
-				PP_Climb.MaxClimbAngle,
-				out var hit);
-
 			_getInPosition =
 				new ActionOverTime(
 					PP_Climb.ClimbPositioningTime,
@@ -66,19 +59,18 @@ namespace Player.States
 					sceneIndex,
 					true
 				);
-			ResetPosition(hit);
+			ResetPosition(Controller.LastClimbHit);
 			_afterCliff =
 				new CountDownTimer(
 					PP_Climb.ClimbPositioningTime,
 					controller.ChangeState<Jump>,
 					sceneIndex
 				);
+
 			//TODO: Solve this bug
-			if (hit.point == Vector3.zero)
-			{
-				Debug.LogError("CLIMB POINT WAS ZERO");
-				controller.ChangeState<Walk>();
-			}
+			if (Controller.LastClimbHit.point != Vector3.zero) return;
+			Debug.LogError("CLIMB POINT WAS ZERO");
+			controller.ChangeState<Walk>();
 		}
 
 		public override void OnStateUpdate()

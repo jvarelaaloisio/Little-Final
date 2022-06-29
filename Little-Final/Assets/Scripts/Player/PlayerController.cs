@@ -119,6 +119,8 @@ namespace Player
 
         public Transform Transform => transform;
 
+        public RaycastHit LastClimbHit { get; set; }
+
         #endregion
 
         #endregion
