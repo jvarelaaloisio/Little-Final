@@ -11,6 +11,7 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
     public LevelDataContainer titleScreen;
 
     public StringEventChannel sceneDataChannel;
+    public VoidChannelSo quitGameChannel;
 
     private List<AsyncOperation> _scenesLoading = new List<AsyncOperation>();
     private Slider _progressBar;
@@ -36,11 +37,13 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
     private void OnEnable()
     {
         sceneDataChannel.Subscribe(LoadLevel);
+        quitGameChannel.Subscribe(QuitGame);
     }
 
     private void OnDisable()
     {
         sceneDataChannel.Unsubscribe(LoadLevel);
+        quitGameChannel.Unsubscribe(QuitGame);
     }
 
     public void LoadLevel(string levelName)
@@ -76,5 +79,11 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
         var activeScene = SceneManager.GetSceneByBuildIndex(_currentLevel.activeSceneIndex);
         SceneManager.SetActiveScene(activeScene);
         loadingScreen.gameObject.SetActive(false);
+    }
+
+    private static void QuitGame()
+    {
+        Debug.Log("Quitting game...Bye!");
+        Application.Quit();
     }
 }
