@@ -29,17 +29,18 @@ namespace Player
 
 		private void Start()
 		{
-			pauseChannel.SubscribeSafely(SetPause);
 			view.Controller.OnStateChanges += HandleStateChange;
 		}
 
 		private void OnEnable()
 		{
+			pauseChannel.SubscribeSafely(SetPause);
 			UpdateManager.Subscribe(this);
 		}
 
 		private void OnDisable()
 		{
+			pauseChannel.Unsubscribe(SetPause);
 			UpdateManager.UnSubscribe(this);
 		}
 

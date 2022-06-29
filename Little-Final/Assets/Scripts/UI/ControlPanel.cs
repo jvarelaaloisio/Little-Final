@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿using Events.Channels;
+using UnityEngine;
 
 namespace UI
 {
     public class ControlPanel : MonoBehaviour
     {
         [SerializeField] private GameObject container;
+
+        [SerializeField]
+        private BoolEventChannel pauseChannel;
 
         private bool _isOn = false;
 
@@ -22,6 +26,7 @@ namespace UI
         {
             _isOn = !_isOn;
             container.SetActive(_isOn);
+            if (pauseChannel) pauseChannel.RaiseEvent(_isOn);
         }
     }
 }
