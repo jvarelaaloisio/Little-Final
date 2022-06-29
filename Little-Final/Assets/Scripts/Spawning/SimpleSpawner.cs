@@ -13,22 +13,27 @@ namespace Spawning
 		private GameObject prefab;
 
 		[SerializeField]
+		private float spawnDelay;
+		
+		[SerializeField]
 		private Debugger debugger;
 
 		private void Start()
 		{
-			Spawn();
+			StartCoroutine(Spawn());
 		}
 
-		private void Spawn()
+		private IEnumerator Spawn()
 		{
+			yield return new WaitForSeconds(spawnDelay);
 			debugger.Log(name, $"Spawning\nPrefab: {prefab.name}");
 			GameObject instance = Instantiate(prefab, transform.position, transform.rotation);
 			SceneManager.MoveGameObjectToScene(instance, gameObject.scene);
 			if (!instance.TryGetComponent(out IDestroyable destroyable))
 				destroyable = instance.AddComponent<Destroyable>();
 
-			destroyable.OnBeingDestroyed.AddListener(Spawn);
+			destroyable.OnBeingDestroyed.AddListener(() => StartCoroutine(Spawn()));
+			yield break;
 		}
 
 		private void OnDrawGizmosSelected()
