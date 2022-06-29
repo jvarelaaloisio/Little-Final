@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 7479286579825301210}
   - component: {fileID: 7479286579825301213}
   - component: {fileID: 7479286579825301214}
+  - component: {fileID: 4541264253569638831}
   - component: {fileID: 583647608977723768}
   - component: {fileID: 7479286579825301208}
   - component: {fileID: 3857734844727572585}
@@ -128,6 +129,34 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   refillDelay: 0.25
+--- !u!114 &4541264253569638831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7479286579825301158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 624639713c4696f43ac9c8d92bb1a241, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7479286579825301209}
+        m_MethodName: set_isKinematic
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  fireOnStart: 1
+  delay: 2
 --- !u!114 &583647608977723768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,7 +242,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
