@@ -334,6 +334,7 @@ namespace Rideables
 		{
 			if (GetCurrentVelocity().magnitude < .01f)
 			{
+				Debug.LogWarning("starting timer");
 				_runningStart = Time.time;
 			}
 
@@ -343,12 +344,17 @@ namespace Rideables
 				&& IsNotSlope())
 			{
 				float lerp = wallHit.distance / viewDistance;
+				Debug.Log($"lerp: {lerp}",this);
 				currentTorque = Mathf.Lerp(torque,
 											torqueWhenMounted,
 											torqueTransitionToAvoidCrash.Evaluate(lerp));
 				currentSpeed = Mathf.Lerp(0,
 										speed,
 										speedControlWhenApproachingWall.Evaluate(lerp));
+			}
+			else
+			{
+				Debug.LogError("Is not approaching wall", this);
 			}
 
 			bool IsNotSlope()
