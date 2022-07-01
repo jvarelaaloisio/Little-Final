@@ -7,21 +7,34 @@ namespace Player.Properties
 	public class PP_Glide : SingletonScriptable<PP_Glide>
 	{
 		[FormerlySerializedAs("acceleration")]
-		[Range(0, 500, step: .5f), SerializeField]
+		[Range(0, 500, step: .5f)]
+		[SerializeField]
 		private float accelerationFactor;
 	
 		[FormerlySerializedAs("peakSpeed")]
 		[SerializeField]
 		[Range(0, 100, step: .5f)]
 		private float speed;
-		[Range(0, 100, step: .5f), SerializeField]
+
+		[Range(0, 100, step: .5f)]
+		[SerializeField]
 		private float turnSpeed;
-	
-		[Range(0, 100, step: .5f), SerializeField]
-		private float drag,
-			staminaPerSecond,
-			staminaConsumptionDelay,
-			timeBeforeFlight;
+
+		[Range(0, 100, step: .5f)]
+		[SerializeField]
+		private float drag;
+
+		[Range(0, 100, step: .5f)]
+		[SerializeField]
+		private float staminaPerSecond;
+
+		[Range(0, 100, step: .5f)]
+		[SerializeField]
+		private float staminaConsumptionDelay;
+
+		[Range(0, 100, step: .5f)]
+		[SerializeField]
+		private float timeBeforeFlight;
 
 
 		#region Getters

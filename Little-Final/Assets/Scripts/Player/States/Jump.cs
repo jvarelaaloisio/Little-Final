@@ -1,6 +1,7 @@
 ﻿using CharacterMovement;
 using Core.Interactions;
 using Player.PlayerInput;
+using Player.Properties;
 using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
 
@@ -38,6 +39,17 @@ namespace Player.States
 
 		public override void OnStateUpdate()
 		{
+			float currentSpeed = PP_Jump.Speed;
+			if (MoveHelper.IsApproachingWall(MyTransform,
+											PP_Jump.AwareDistance,
+											PP_Jump.Walls,
+											out var hit))
+			{
+				Debug.DrawLine(MyTransform.position, hit.point, Color.blue);
+
+				currentSpeed = Mathf.Lerp(0, PP_Jump.Speed, hit.distance / PP_Jump.AwareDistance);
+			}
+
 			//TODO: Delete this and only use moveByForce once the movement tests are finished
 			if (Input.GetKey(KeyCode.RightControl))
 			{
@@ -48,19 +60,19 @@ namespace Player.States
 				Vector2 input = InputManager.GetHorInput();
 				Vector3 direction = MoveHelper.GetDirection(input);
 				MoveHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedInTheAir);
-				Body.RequestMovement(new MovementRequest(MyTransform.forward * input.magnitude, PP_Jump.Speed));
+				Body.RequestMovement(new MovementRequest(MyTransform.forward * input.magnitude, currentSpeed));
 			}
 
 			CheckForJumpBuffer();
 			CheckClimb();
 			Controller.RunAbilityList(Controller.AbilitiesInAir);
 			CheckGlide();
-			
+
 			if (InputManager.CheckInteractInput()
 				&& Controller.CanMount(out var interactable)
 				&& interactable is IRideable)
 			{
-				IRideable rideable = (IRideable)interactable;
+				IRideable rideable = (IRideable) interactable;
 				Controller.Mount(rideable);
 				Controller.ChangeState<Ride>();
 			}

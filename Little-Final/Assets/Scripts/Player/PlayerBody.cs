@@ -54,7 +54,6 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	private MovementRequest _nextMovement;
 	private Vector3 _jumpForce;
 	private GameObject lastFloor;
-	ContactPoint lastContact;
 	Vector3 _collisionAngles;
 	public float safeDot;
 
@@ -325,11 +324,6 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 		FallHelper.RemoveFloor(other.gameObject);
 		flags[Flag.IN_THE_AIR] = true;
 		BodyEvents?.Invoke(BodyEvent.JUMP);
-	}
-
-	private void OnCollisionStay(Collision collision)
-	{
-		lastContact = collision.contacts[0];
 	}
 
 	#endregion

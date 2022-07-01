@@ -35,7 +35,13 @@ namespace Player.States
 			Physics.Raycast(MyTransform.position, -MyTransform.up, out RaycastHit hit, 10,
 							~LayerMask.GetMask("Interactable"));
 			body.LastFloorNormal = hit.normal;
-			if (controller.JumpBuffer)
+			if (controller.LongJumpBuffer)
+			{
+				controller.ResetJumpBuffers();
+				isRunning = true;
+				Jump();
+			}
+			else if (controller.JumpBuffer)
 			{
 				controller.ResetJumpBuffers();
 				Jump();

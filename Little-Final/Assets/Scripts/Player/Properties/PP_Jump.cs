@@ -73,6 +73,14 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	[UnityEngine.Range(0, 3)]
 	private float distanceToGround;
 
+	[Header("wall awareness")]
+	[SerializeField]
+	[Range(0, 100, step: .25f)]
+	private float awareDistance;
+
+	[SerializeField]
+	private LayerMask walls;
+
 	#region Getters
 
 	public static float JumpForce => Instance.jumpForce;
@@ -90,6 +98,8 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	public static float CoyoteTime => Instance.coyoteTime;
 	public static float DistanceToGround => Instance.distanceToGround;
 	public static float LongJumpStaminaCost => Instance.longJumpStaminaCost;
+	public static float AwareDistance => Instance.awareDistance;
+	public static LayerMask Walls => Instance.walls;
 
 	#endregion
 }

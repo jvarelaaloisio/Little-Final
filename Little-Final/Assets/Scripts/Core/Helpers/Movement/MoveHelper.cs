@@ -77,5 +77,17 @@ namespace CharacterMovement
 			Debug.DrawRay(position, direction * maxDistance, Color.green);
 			return true;
 		}
+
+		public static bool IsApproachingWall(Transform transform,
+											float awareDistance,
+											LayerMask walls,
+											out RaycastHit hit)
+		{
+			return Physics.Raycast(transform.position,
+									transform.forward,
+									out hit,
+									awareDistance,
+									walls);
+		}
 	}
 }
