@@ -11,7 +11,7 @@ Material:
   m_Shader: {fileID: 4800000, guid: 5061cc9ee5023b542b88d07b4eaea777, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -126,6 +126,9 @@ Material:
     - _SpeedDirX: 0.8
     - _SpeedDirY: 0.8
     - _SrcBlend: 1
+    - _Tess__Factor: 32
+    - _Tess__MaxDistance: 110
+    - _Tess__MinDistance: 100
     - _UVSec: 0
     - _VertexOffsetFactor: 0.1
     - _VertexOffsetFactor_: 0.003
@@ -158,7 +161,7 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DepthColor: {r: 0.426193, g: 0, b: 0.8490566, a: 1}
-    - _Depth__Color: {r: 0.43943435, g: 0.745283, b: 0.6508056, a: 1}
+    - _Depth__Color: {r: 0.43943432, g: 0.745283, b: 0.6508056, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 0}
     - _Foam__Color: {r: 1, g: 1, b: 1, a: 0}
@@ -171,5 +174,5 @@ Material:
     - _WatherColor_2: {r: 0.14509805, g: 0.7254902, b: 0.79215693, a: 1}
     - _WaveTransform: {r: 0.86, g: 1.12, b: 1.07, a: 0}
     - _WavesLevelsMinMax: {r: 0.89, g: -1.98, b: 0, a: 0}
-    - _Waves__ColorPrimary: {r: 0.14177209, g: 0.21974671, b: 0.56, a: 0}
-    - _Waves__ColorSecondary: {r: 0.34509808, g: 0.6219615, b: 0.7058824, a: 1}
+    - _Waves__ColorPrimary: {r: 0.14177206, g: 0.21974668, b: 0.56, a: 0}
+    - _Waves__ColorSecondary: {r: 0.34509805, g: 0.6219615, b: 0.7058823, a: 1}
