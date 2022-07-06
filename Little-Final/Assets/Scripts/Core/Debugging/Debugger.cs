@@ -14,6 +14,9 @@ namespace Core.Debugging
 		[SerializeField]
 		private bool enabled = true;
 
+		[SerializeField]
+		private bool logNames;
+
 		[Space]
 		[SerializeField]
 		private bool allowLog = true;
@@ -154,6 +157,7 @@ namespace Core.Debugging
 		{
 			if (!enabled || !IsLogTypeAllowed(logType) || filteredTags.Contains(tag))
 				return;
+			if (logNames && context) tag += context.name;
 			bool tagIsEmpty = tag == string.Empty;
 			switch (context != null)
 			{

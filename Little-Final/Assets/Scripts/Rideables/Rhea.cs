@@ -343,7 +343,7 @@ namespace Rideables
 			if (direction.magnitude < .01f
 				&& Time.time - _runningStart > .25f)
 			{
-				debugger.LogError(MOVEMENT_DEBUG_TAG, "running start", this);
+				debugger.Log(MOVEMENT_DEBUG_TAG, "Started moving", this);
 
 				_runningStart = Time.time;
 			}
@@ -371,7 +371,6 @@ namespace Rideables
 			}
 
 			currentSpeed *= runningSpeedControl.Evaluate(Time.time - _runningStart);
-			debugger.Log(MOVEMENT_DEBUG_TAG, currentSpeed, this);
 			Movement.Speed = currentSpeed;
 			Movement.Move(transform, direction);
 			Movement.Rotate(transform,
