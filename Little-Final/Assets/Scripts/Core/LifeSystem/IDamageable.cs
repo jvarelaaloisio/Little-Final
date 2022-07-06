@@ -1,4 +1,6 @@
-﻿namespace Core.LifeSystem
+﻿using System;
+
+namespace Core.LifeSystem
 {
 	public interface IDamageable
 	{
@@ -6,5 +8,6 @@
 		bool AllowOverFlow { get; }
 		int LifePoints { get; }
 		void TakeDamage(int damagePoints);
+		event Action OnDeath;
 	}
 }

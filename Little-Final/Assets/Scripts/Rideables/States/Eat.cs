@@ -8,12 +8,15 @@ namespace Rideables.States
 {
 	public class Eat<T> : CharacterState<T>
 	{
+		public event Action OnFinishedFruit = delegate { };
 		private readonly Awareness _awareness;
 		private readonly float _bytePeriod;
 		private readonly float _firstDelay;
 		private readonly int _byteDamage;
 		private readonly MonoBehaviour _mono;
-		private Coroutine eatingCoroutine;
+		private Coroutine _eatingCoroutine;
+		private Transform _fruit;
+		private IDamageable _fruitDamageable;
 
 		public Eat(string name,
 					Transform transform,
@@ -34,18 +37,34 @@ namespace Rideables.States
 
 		public override void Awake()
 		{
+			_fruit = _awareness.Fruit;
 			base.Awake();
-			if (eatingCoroutine != null)
+			if (_fruit && _fruit.TryGetComponent(out _fruitDamageable))
 			{
-				_mono.StopCoroutine(eatingCoroutine);
+				_fruitDamageable.OnDeath += OnFruitDeath;
 			}
-			eatingCoroutine = _mono.StartCoroutine(ByteFruit());
+			if (_eatingCoroutine != null)
+			{
+				_mono.StopCoroutine(_eatingCoroutine);
+			}
+			_eatingCoroutine = _mono.StartCoroutine(ByteFruit());
+		}
+
+		private void OnFruitDeath()
+		{
+			if (_eatingCoroutine != null)
+			{
+				_mono.StopCoroutine(_eatingCoroutine);
+			}
+			OnFinishedFruit();
 		}
 
 		public override void Sleep()
 		{
-			_mono.StopCoroutine(eatingCoroutine);
-			eatingCoroutine = null;
+			if (_fruitDamageable != null)
+				_fruitDamageable.OnDeath -= OnFruitDeath;
+			_mono.StopCoroutine(_eatingCoroutine);
+			_eatingCoroutine = null;
 			base.Sleep();
 		}
 
@@ -55,13 +74,13 @@ namespace Rideables.States
 			yield return new WaitForSeconds(_firstDelay);
 			while (true)
 			{
-				if (!_awareness.Fruit)
+				if (!_fruit)
 				{
 					CompletedObjective();
 					yield break;
 				}
 
-				if (_awareness.Fruit.TryGetComponent(out IDamageable damageable))
+				if (_fruit.TryGetComponent(out IDamageable damageable))
 					damageable.TakeDamage(_byteDamage);
 
 				yield return waitForPeriod;

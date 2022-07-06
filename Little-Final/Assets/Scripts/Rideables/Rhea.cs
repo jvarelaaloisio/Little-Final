@@ -7,6 +7,7 @@ using Core.Helpers;
 using Core.Interactions;
 using Core.Movement;
 using Events.Channels;
+using Events.UnityEvents;
 using FSM;
 using Rideables.States;
 using UnityEngine;
@@ -18,6 +19,10 @@ namespace Rideables
 {
 	public abstract class Rhea : MonoBehaviour, IRideable
 	{
+		private const string MOVEMENT_DEBUG_TAG = "Movement";
+
+		#region Variables
+
 		[Header("Setup")]
 		[SerializeField]
 		private Transform mount;
@@ -37,16 +42,13 @@ namespace Rideables
 
 		[SerializeField]
 		private int eatingDamage;
-		
+
 		[SerializeField]
 		private float goToFruitTolerance = .25f;
 
 		[Header("Movement")]
 		[SerializeField]
 		private float speed;
-
-		[SerializeField]
-		protected float arrivalDistance;
 
 		[SerializeField]
 		private AnimationCurve runningSpeedControl = AnimationCurve.Linear(0, 0, 1, 1);
@@ -114,6 +116,9 @@ namespace Rideables
 		private UnityEvent onEating;
 
 		[SerializeField]
+		private SmartEvent onFinishedFruit;
+
+		[SerializeField]
 		private UnityEvent onStoppedEating;
 
 		[Header("Debug")]
@@ -125,6 +130,7 @@ namespace Rideables
 
 		protected bool IsMounted;
 		private float _runningStart;
+		private Vector3 _lastMoveDirection;
 
 		private FiniteStateMachine<Id> _stateMachine;
 		private CharacterState<Id> _idle;
@@ -143,6 +149,8 @@ namespace Rideables
 		public float Speed => speed;
 
 		public Transform GetMount() => mount;
+
+		#endregion
 
 		protected virtual void OnValidate()
 		{
@@ -173,6 +181,7 @@ namespace Rideables
 								this);
 			_eat.OnAwake += FireOnEating;
 			_eat.OnSleep += FireOnStoppedEating;
+			_eat.OnFinishedFruit += onFinishedFruit.Invoke;
 
 			_goToFruit = new Navigate<Id>(goToFruitId.Name,
 										transform,
@@ -217,14 +226,14 @@ namespace Rideables
 			_patrol.AddTransition(eatId, _eat);
 			_patrol.AddTransition(goToFruitId, _goToFruit);
 			_patrol.AddTransition(fleeFromPlayerId, _fleeFromPlayer);
-			
+
 			_stateMachine = FiniteStateMachine<Id>.Build(_idle, name)
 				.ThatLogsTransitions(Debug.unityLogger)
 				.Done();
-			
+
 			playerDeathChannel.SubscribeSafely(OnPlayerDies);
 		}
-		
+
 		private void FireOnEating()
 		{
 			onEating.Invoke();
@@ -236,7 +245,6 @@ namespace Rideables
 			onStoppedEating.Invoke();
 			OnStoppedEating();
 		}
-
 
 		protected abstract void OnPlayerDies();
 
@@ -332,11 +340,14 @@ namespace Rideables
 
 		public void Move(Vector3 direction)
 		{
-			if (GetCurrentVelocity().magnitude < .01f)
+			if (direction.magnitude < .01f
+				&& Time.time - _runningStart > .25f)
 			{
-				Debug.LogWarning("starting timer");
+				debugger.LogError(MOVEMENT_DEBUG_TAG, "running start", this);
+
 				_runningStart = Time.time;
 			}
+			_lastMoveDirection = direction;
 
 			float currentTorque = torqueWhenMounted;
 			float currentSpeed = speed;
@@ -344,7 +355,6 @@ namespace Rideables
 				&& IsNotSlope())
 			{
 				float lerp = wallHit.distance / viewDistance;
-				Debug.Log($"lerp: {lerp}",this);
 				currentTorque = Mathf.Lerp(torque,
 											torqueWhenMounted,
 											torqueTransitionToAvoidCrash.Evaluate(lerp));
@@ -352,19 +362,16 @@ namespace Rideables
 										speed,
 										speedControlWhenApproachingWall.Evaluate(lerp));
 			}
-			else
-			{
-				Debug.LogError("Is not approaching wall", this);
-			}
 
 			bool IsNotSlope()
 			{
-				debugger.DrawRay(name + "_Slopes", wallHit.point, wallHit.normal, Color.blue);
+				debugger.DrawRay(MOVEMENT_DEBUG_TAG, wallHit.point, wallHit.normal, Color.blue);
 				float angle = Vector3.Angle(wallHit.normal, Vector3.up);
 				return angle > 45;
 			}
 
 			currentSpeed *= runningSpeedControl.Evaluate(Time.time - _runningStart);
+			debugger.Log(MOVEMENT_DEBUG_TAG, currentSpeed, this);
 			Movement.Speed = currentSpeed;
 			Movement.Move(transform, direction);
 			Movement.Rotate(transform,

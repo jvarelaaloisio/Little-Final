@@ -10,6 +10,8 @@ namespace Rideables
 {
 	public class RheaDecisionTree : MonoBehaviour
 	{
+		private const string DEBUG_TAG = "IA";
+
 		[Header("Setup")]
 		[SerializeField]
 		[ExposeScriptableObject]
@@ -17,7 +19,7 @@ namespace Rideables
 
 		[SerializeField]
 		private Awareness awareness;
-		
+
 		[SerializeField]
 		private NavMeshAgent agent;
 
@@ -56,8 +58,8 @@ namespace Rideables
 		private bool logRepeatedResponsesOnDecisionTree;
 
 		private DecisionTree<Id> _decisionTree;
-		
-		private string DebugTag => name + " (IA)";
+
+		private float _lastRecoverStart;
 
 		private void OnValidate()
 		{
@@ -93,17 +95,19 @@ namespace Rideables
 			var canGetToFruit = new TreeQuestion(CanGetToFruit, goToFruit, isPlayerClose);
 			var canEatFruit = new TreeQuestion(CanEatFruit, eatFruit, canGetToFruit);
 			var isAwareOfFruit = new TreeQuestion(IsAwareOfFruit, canEatFruit, isPlayerClose);
+			var isRecovering = new TreeQuestion(IsRecovering, idle, isAwareOfFruit);
 
-			IQuestion[] questions = {roulette, isPlayerClose, canGetToFruit, canEatFruit, isAwareOfFruit};
+			IQuestion[] questions = {roulette, isPlayerClose, canGetToFruit, canEatFruit, isAwareOfFruit, isRecovering};
 
 			#endregion
 
 			_decisionTree = new DecisionTree<Id>(questions,
 												actions,
-												onDecision.Invoke,
-												isAwareOfFruit, debugger)
+												OnDecision,
+												isRecovering,
+												debugger)
 							{
-								Tag = DebugTag,
+								Tag = DEBUG_TAG,
 								LogRepeatedResponses = logRepeatedResponsesOnDecisionTree,
 								LogTrace = true,
 							};
@@ -122,10 +126,19 @@ namespace Rideables
 			_decisionTree.RunTree();
 		}
 
+		public void StartRecovering()
+		{
+			_lastRecoverStart = Time.time;
+		}
+
+		private void OnDecision(Id id)
+		{
+			onDecision.Invoke(id);
+		}
+
 		private bool IsPlayerClose()
 		{
 			Vector3 myPos = transform.position;
-			Vector3 playerPos;
 			return awareness.Player
 					&& awareness.Player.position.y < myPos.y + rheaModel.HeightDifferenceToAllowPlayerMount;
 		}
@@ -135,6 +148,13 @@ namespace Rideables
 			NavMeshPath path = new NavMeshPath();
 			agent.CalculatePath(awareness.Fruit.position, path);
 			return path.status == NavMeshPathStatus.PathComplete;
+		}
+
+
+		private bool IsRecovering()
+		{
+			var isRecovering = Time.time - _lastRecoverStart < rheaModel.RecoverTime;
+			return isRecovering;
 		}
 
 		private bool IsAwareOfFruit()
@@ -154,5 +174,6 @@ namespace Rideables
 			Gizmos.color = new Color(1, .0f, .0f, 1f);
 			Gizmos.DrawRay(transform.position, Vector3.up * rheaModel.HeightDifferenceToAllowPlayerMount);
 		}
+		
 	}
 }

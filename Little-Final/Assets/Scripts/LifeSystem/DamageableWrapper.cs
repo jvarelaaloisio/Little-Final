@@ -1,8 +1,8 @@
-﻿using Core.LifeSystem;
+﻿using System;
+using Core.LifeSystem;
 using Events.UnityEvents;
 using LS;
 using UnityEngine;
-using UnityEngine.Events;
 using Debugger = Core.Debugging.Debugger;
 
 namespace LifeSystem
@@ -21,12 +21,11 @@ namespace LifeSystem
 		private IntUnityEvent onLifeChanged;
 
 		[SerializeField]
-		private UnityEvent onDeath;
+		private SmartEvent onDeath;
 
 		[Header("Debug")]
 		[SerializeField]
 		private Debugger debugger;
-
 
 		private Damageable _damageable;
 
@@ -35,6 +34,7 @@ namespace LifeSystem
 		public bool AllowOverFlow => _damageable.AllowOverflow;
 
 		public int LifePoints => _damageable.LifePoints;
+		public Action OnDeath => onDeath;
 
 		[ContextMenu("Run Awake (if serialized values have changed)")]
 		private void Awake()
@@ -51,6 +51,12 @@ namespace LifeSystem
 			onLifeChanged.Invoke(LifePoints);
 			debugger.Log(name, $"Took {damagePoints} points of damage." +
 								$"\nCurrent HP: {LifePoints}/{MaxLifePoints}", this);
+		}
+
+		event Action IDamageable.OnDeath
+		{
+			add => onDeath += value;
+			remove => onDeath -= value;
 		}
 	}
 }

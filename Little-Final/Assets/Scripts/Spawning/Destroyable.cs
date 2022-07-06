@@ -9,6 +9,8 @@ namespace Spawning
 	[AddComponentMenu("Spawning/Destroyable")]
 	public class Destroyable : MonoBehaviour, IDestroyable
 	{
+		private const string DEBUG_TAG = "Destroyable";
+
 		[FormerlySerializedAs("onDestroy")]
 		[SerializeField]
 		private UnityEvent onBeingDestroyed;
@@ -20,8 +22,6 @@ namespace Spawning
 		private bool _applicationIsQuitting = false;
 
 		public UnityEvent OnBeingDestroyed => onBeingDestroyed;
-
-		private string DebugTag => name + " (Destroyable)";
 
 		private void OnApplicationQuit()
 		{
@@ -37,7 +37,7 @@ namespace Spawning
 		[ContextMenu("Destroy")]
 		public void Destroy()
 		{
-			debugger.LogSafely(DebugTag, $"Destroying gameObject {gameObject.name}", this);
+			debugger.LogSafely(DEBUG_TAG, $"Destroying gameObject {gameObject.name}", this);
 			Destroy(gameObject);
 		}
 	}

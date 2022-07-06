@@ -21,10 +21,16 @@ namespace Rideables
 		[Range(0, 10, step: .25f)]
 		private float heightDifferenceToAllowPlayerMount = 0;
 
+		[SerializeField]
+		[Range(0, 25, step: .25f)]
+		[Tooltip("Seconds to wait after eating or being dismounted")]
+		private float recoverTime = 1;
+
 		public float EatDistance => eatDistance;
 
 		public float FleeDistance => fleeDistance;
 		public float PatrolDistance => patrolDistance;
 		public float HeightDifferenceToAllowPlayerMount => heightDifferenceToAllowPlayerMount;
+		public float RecoverTime => recoverTime;
 	}
 }
