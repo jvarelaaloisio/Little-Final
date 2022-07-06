@@ -18,7 +18,7 @@ namespace Player.States
 		public override void OnStateEnter(PlayerController controller, int sceneIndex)
 		{
 			base.OnStateEnter(controller, sceneIndex);
-			controller.OnLand();
+			controller.OnLand.Invoke();
 			body = controller.GetComponent<PlayerBody>();
 			isRunning = false;
 
@@ -124,12 +124,12 @@ namespace Player.States
 			if (isRunning)
 			{
 				Controller.Stamina.ConsumeStamina(PP_Jump.LongJumpStaminaCost);
-				Controller.OnLongJump();
+				Controller.OnLongJump.Invoke();
 				Controller.ChangeState<LongJump>();
 			}
 			else
 			{
-				Controller.OnJump();
+				Controller.OnJump.Invoke();
 				Controller.ChangeState<Jump>();
 			}
 		}
@@ -147,7 +147,7 @@ namespace Player.States
 			if (FallHelper.IsGrounded)
 				return;
 			Controller.ChangeState<Jump>();
-			Controller.OnJump();
+			Controller.OnJump.Invoke();
 		}
 
 		protected virtual void ValidateGround()

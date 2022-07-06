@@ -29,40 +29,6 @@ namespace Player
             AbilitiesInAir,
             AbilitiesOnWall;
 
-        public event StateCallback OnStateChanges = delegate { };
-
-        public Action<float> OnPickCollectable
-        {
-            get => collectableBag.OnCollectableAdded;
-            set => collectableBag.OnCollectableAdded = value;
-        }
-
-        public Action<float> onStaminaChange
-        {
-            get => stamina.OnStaminaChange;
-            set => stamina.OnStaminaChange = value;
-        }
-
-        public Action<float> OnChangeSpeed = delegate { };
-        public Action<string> OnSpecificAction = delegate { };
-        public Action OnJump = delegate { };
-        public Action OnLongJump = delegate { };
-        public Action OnLand = delegate { };
-        public Action OnClimb = delegate { };
-
-        [SerializeField]
-        private UnityEvent onLand;
-
-        public UnityEvent OnMount;
-        public UnityEvent OnDismount;
-        public UnityEvent onPick;
-        public UnityEvent onPutDown;
-        public UnityEvent onThrowing;
-        public UnityEvent onThrew;
-
-        public SmartEvent onDeath;
-
-        public Action<bool> OnGlideChanges = delegate { };
 
         //TODO implement prediction logic that fires this event when the direction is towards a cliff
         public Action OnFallFromCliff;
@@ -97,6 +63,38 @@ namespace Player
         private bool isDead;
         private int _sceneIndex;
 
+        public event StateCallback OnStateChanges = delegate { };
+
+        public Action<float> OnPickCollectable
+        {
+            get => collectableBag.OnCollectableAdded;
+            set => collectableBag.OnCollectableAdded = value;
+        }
+
+        public Action<float> onStaminaChange
+        {
+            get => stamina.OnStaminaChange;
+            set => stamina.OnStaminaChange = value;
+        }
+
+        public Action<float> OnChangeSpeed = delegate { };
+        public Action<string> OnSpecificAction = delegate { };
+        public SmartEvent OnJump;
+        public SmartEvent OnLongJump;
+        public SmartEvent OnLand;
+        public SmartEvent OnClimb;
+
+        public UnityEvent OnMount;
+        public UnityEvent OnDismount;
+        public UnityEvent onPick;
+        public UnityEvent onPutDown;
+        public UnityEvent onThrowing;
+        public UnityEvent onThrew;
+
+        public SmartEvent onDeath;
+
+        public Action<bool> OnGlideChanges = delegate { };
+        
         #region Properties
 
         public IBody Body => body;
@@ -132,7 +130,6 @@ namespace Player
             _sceneIndex = gameObject.scene.buildIndex;
             collectableBag = new CollectableBag(PP_Stats.CollectablesForReward,
                                                 UpgradeStamina);
-            OnLand += onLand.Invoke;
             body = GetComponent<IBody>();
             damageHandler = new DamageHandler(PP_Stats.LifePoints, PP_Stats.ImmunityTime, OnLifeChanged, _sceneIndex);
             stamina = new Stamina.Stamina(PP_Stats.InitialStamina,

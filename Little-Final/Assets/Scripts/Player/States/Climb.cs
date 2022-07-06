@@ -49,7 +49,7 @@ namespace Player.States
 			
 			controller.Stamina.StopRefilling();
 
-			controller.OnClimb();
+			controller.OnClimb.Invoke();
 			controller.GetComponent<Rigidbody>().isKinematic = true;
 
 			_getInPosition =
@@ -129,7 +129,7 @@ namespace Player.States
 			    || Controller.Stamina.FillState < 1)
 			{
 				Controller.ChangeState<Jump>();
-				Controller.OnJump();
+				Controller.OnJump.Invoke();
 			}
 
 			Controller.RunAbilityList(Controller.AbilitiesOnWall);

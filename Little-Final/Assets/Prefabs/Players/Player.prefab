@@ -998,11 +998,61 @@ MonoBehaviour:
   AbilitiesOnLand: []
   AbilitiesInAir: []
   AbilitiesOnWall: []
-  onLand:
+  climbCheckPivot: {fileID: 7574792402906395099}
+  interactionHelper: {fileID: 1878497753004393544}
+  interactionCheckRadius: 0.47
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 270336
+  throwDelay: 0.5
+  shouldLogTransitions: 0
+  OnJump:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2083778038608978300}
-        m_MethodName: Play
+      - m_Target: {fileID: 11400000, guid: 0eb30601edd1c3d4d91dd298cbc708d9, type: 2}
+        m_MethodName: RaiseEvent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnLongJump:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 3436ef5b679e7544da5bebf47d3ac847, type: 2}
+        m_MethodName: RaiseEvent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnLand:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 3581a1b9381e7eb49a0ef06663228cfb, type: 2}
+        m_MethodName: RaiseEvent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnClimb:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 97b7cad158e114341a5f4e5dcb35825e, type: 2}
+        m_MethodName: RaiseEvent
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1037,6 +1087,17 @@ MonoBehaviour:
           m_StringArgument: Mounted_Start
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: afced9143c493f54c9e9bc5a8224064e, type: 2}
+        m_MethodName: RaiseEvent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnDismount:
     m_PersistentCalls:
       m_Calls:
@@ -1060,6 +1121,17 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Dismount
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 09c07d1fa42513c499ae4dc35f83b438, type: 2}
+        m_MethodName: RaiseEvent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
   onPick:
@@ -1088,14 +1160,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  climbCheckPivot: {fileID: 7574792402906395099}
-  interactionHelper: {fileID: 1878497753004393544}
-  interactionCheckRadius: 0.47
-  interactableLayer:
-    serializedVersion: 2
-    m_Bits: 270336
-  throwDelay: 0.5
-  shouldLogTransitions: 0
 --- !u!114 &6687177953548559737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1721,12 +1785,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 594884555743523257}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &2083778038608978300 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 1489114020894544069, guid: bd577e02d1a7f1d4282f8668ae3a56f0,
-    type: 3}
-  m_PrefabInstance: {fileID: 594884555743523257}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &717016157726862729
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2337,15 +2395,21 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 386c1fb07a965c5458577d0305c2de23, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a3d8f15efa1ca44e997d847eb633fe0, type: 3}
---- !u!4 &2120880640155889333 stripped
+--- !u!4 &5586718511630560294 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: -2923862917204581000, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
     type: 3}
   m_PrefabInstance: {fileID: 5333031202606271437}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &3372483625764772333 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7264249448672006688, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
+    type: 3}
+  m_PrefabInstance: {fileID: 5333031202606271437}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2120880640155889333 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -2923862917204581000, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
     type: 3}
   m_PrefabInstance: {fileID: 5333031202606271437}
   m_PrefabAsset: {fileID: 0}
@@ -2358,12 +2422,6 @@ Animator:
 --- !u!137 &1909967389973753508 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: -3421844393972406935, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
-    type: 3}
-  m_PrefabInstance: {fileID: 5333031202606271437}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &5586718511630560294 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
     type: 3}
   m_PrefabInstance: {fileID: 5333031202606271437}
   m_PrefabAsset: {fileID: 0}
