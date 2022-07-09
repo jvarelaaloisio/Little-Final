@@ -163,6 +163,16 @@ namespace Rideables
 				awareness = transform.GetComponentInChildren<Awareness>();
 		}
 
+		private void OnEnable()
+		{
+			playerDeathChannel.SubscribeSafely(OnPlayerDies);
+		}
+
+		private void OnDisable()
+		{
+			playerDeathChannel.UnsubscribeSafely(OnPlayerDies);
+		}
+
 		protected virtual void Awake()
 		{
 			InitializeMovement(out Movement, Speed);
@@ -230,8 +240,6 @@ namespace Rideables
 			_stateMachine = FiniteStateMachine<Id>.Build(_idle, name)
 				.ThatLogsTransitions(Debug.unityLogger)
 				.Done();
-
-			playerDeathChannel.SubscribeSafely(OnPlayerDies);
 		}
 
 		private void FireOnEating()
