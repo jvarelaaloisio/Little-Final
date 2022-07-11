@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7185806292720053065}
   - component: {fileID: 3427611929761122480}
   - component: {fileID: 7366150410898698088}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: CheckPoint
   m_TagString: Untagged
   m_Icon: {fileID: 4422084297763085224, guid: 0000000000000000d000000000000000, type: 0}
@@ -46,6 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distanceFromFloor: 0.3
   safePoint: {x: 66.63901, y: 15.591259, z: 53.26846}
+  safeRotation: {x: 0, y: 0, z: 0, w: 1}
+  shouldLogCheckpointUpdate: 0
 --- !u!65 &7366150410898698088
 BoxCollider:
   m_ObjectHideFlags: 0
