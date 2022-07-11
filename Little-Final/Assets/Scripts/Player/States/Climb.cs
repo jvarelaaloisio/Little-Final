@@ -108,15 +108,15 @@ namespace Player.States
 				}
 			}
 			//Cliff
-			else if (Mathf.Approximately(Vector3.Dot(moveDirection, MyTransform.up), 1)
-			         &&
-			         ClimbHelper.CanClimbUp(
-				         myPosition,
-				         MyTransform.up,
-				         MyTransform.forward,
-				         PP_Climb.MaxClimbDistanceFromCorners,
-				         PP_Climb.MaxDistanceToTriggerClimb,
-				         out var cliffHit))
+			else if (Vector3.Dot(moveDirection, MyTransform.up) > .5f
+					&&
+					ClimbHelper.CanClimbUp(
+											myPosition,
+											MyTransform.up,
+											MyTransform.forward,
+											PP_Climb.MaxClimbDistanceFromCorners,
+											PP_Climb.MaxDistanceToTriggerClimb,
+											out var cliffHit))
 			{
 				Debug.DrawRay(cliffHit.point, cliffHit.normal / 4, Color.blue, 2);
 				GetOverCliff(cliffHit);
