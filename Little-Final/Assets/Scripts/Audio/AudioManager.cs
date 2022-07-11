@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Audio;
 using VarelaAloisio.UpdateManagement.Runtime;
+using Random = UnityEngine.Random;
+
 public class AudioManager : MonoBehaviour
 {
 	#region Variables
@@ -39,6 +42,13 @@ public class AudioManager : MonoBehaviour
 		Sources = GetComponentsInChildren<AudioSource>();
 		SelectMainMusic();
 	}
+
+	private void OnDestroy()
+	{
+		randomCut.StopTimer();
+		playNextSong.StopTimer();
+	}
+
 	#endregion
 
 	#region Private
