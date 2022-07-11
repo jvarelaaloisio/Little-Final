@@ -119,6 +119,8 @@ namespace Player
 
         public RaycastHit LastClimbHit { get; set; }
 
+        public IPickable ItemPicked => _itemPicked;
+
         #endregion
 
         #endregion
@@ -284,11 +286,11 @@ namespace Player
             onPick.Invoke();
         }
 
-        public bool HasItem() => _itemPicked != null;
+        public bool HasItem() => ItemPicked != null;
 
         public void PutDownItem()
         {
-            _itemPicked.Leave();
+            ItemPicked.Leave();
             LoseInteraction();
         }
 
@@ -300,9 +302,9 @@ namespace Player
             IEnumerator ThrowItemAfterDelay(float delay)
             {
                 yield return new WaitForSeconds(delay);
-                if (_itemPicked != null)
+                if (ItemPicked != null)
                 {
-                    _itemPicked.Throw(force, _myTransform.forward + _myTransform.up);
+                    ItemPicked.Throw(force, _myTransform.forward + _myTransform.up);
                     _itemPicked = null;
                     onThrew.Invoke();
                 }

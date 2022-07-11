@@ -55,7 +55,7 @@ namespace Player.States
 
 			bool runInput = InputManager.CheckRunInput();
 			//Speed is halved when walking 
-			float moveSpeed = Mathf.Abs(input.normalized.magnitude * (runInput? 1 : 0.5f));
+			float moveSpeed = Mathf.Abs(input.normalized.magnitude * (runInput ? 1 : 0.5f));
 			Controller.OnChangeSpeed(moveSpeed);
 
 			Vector3 desiredDirection = MoveHelper.GetDirection(input);
@@ -88,7 +88,10 @@ namespace Player.States
 
 			if (InputManager.CheckJumpInput())
 				Jump();
-			CheckClimb();
+			if (Controller.ItemPicked == null)
+			{
+				CheckClimb();
+			}
 
 			if (InputManager.CheckInteractInput())
 			{
