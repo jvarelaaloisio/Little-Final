@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Events;
 using Events.Channels;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,7 +11,7 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
     public GameObject loadingScreen;
     public LevelDataContainer titleScreen;
 
-    public StringEventChannel sceneDataChannel;
+    public LevelDataContainerChannel sceneDataChannel;
     public VoidChannelSo quitGameChannel;
 
     private List<AsyncOperation> _scenesLoading = new List<AsyncOperation>();
@@ -46,13 +47,13 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
         quitGameChannel.Unsubscribe(QuitGame);
     }
 
-    public void LoadLevel(string levelName)
+    public void LoadLevel(LevelDataContainer levelData)
     {
         loadingScreen.gameObject.SetActive(true);
         _currentLevel.Unload();
         foreach (var data in _levelData)
         {
-            if (data.name != levelName) continue;
+            if (!data.Equals(levelData)) continue;
             _scenesLoading = data.Load();
             _currentLevel = data;
         }
