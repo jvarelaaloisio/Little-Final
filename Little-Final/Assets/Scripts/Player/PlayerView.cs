@@ -130,6 +130,7 @@ namespace Player
 			controller.onPutDown.AddListener(ShowPutDownFeedback);
 			controller.onThrowing.AddListener(ShowThrowingFeedback);
 			controller.onThrew.AddListener(ShowThrewFeedback);
+			controller.OnMount.AddListener(() => GetComponent<PlayerSound>().StopWalk());
 			// controller.OnDeath_OLD += ShowDeathFeedback;
 			controller.onDeath += ShowDeathFeedback;
 			controller.OnGlideChanges += SetFlying;
