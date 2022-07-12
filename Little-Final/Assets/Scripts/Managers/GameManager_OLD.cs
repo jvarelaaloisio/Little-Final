@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
-public class GameManager : MonoBehaviour
+[Obsolete]
+public class GameManager_OLD : MonoBehaviour
 {
 	#region Variables
 

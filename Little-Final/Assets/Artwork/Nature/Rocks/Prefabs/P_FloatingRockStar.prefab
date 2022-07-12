@@ -104,6 +104,26 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 7254282163011368190, guid: a074f44ae7a7ece46955e706e1a9b62b, type: 3}
+--- !u!114 &8704597165119288148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4202583964188716887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f93c76165c43114479016413bb4c68ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minimumDistance: 1
+  maximumDistance: 3
+  ignoreDistance: 8
+  periodWhenPlayerIsAway: 0.5
+  checkIfThereIsPlayerPeriod: 5
+  emissionFactorProperty: _EmissionFac
+  gameManager: {fileID: 11400000, guid: c0c945cf52106ca4c8e76034c77df292, type: 2}
+  renderer: {fileID: 2401104324367683202}
 --- !u!1001 &3932761814042251782
 PrefabInstance:
   m_ObjectHideFlags: 0

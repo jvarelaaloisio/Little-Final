@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core;
 using Core.Interactions;
 using Core.Stamina;
 using Player.Abilities;
@@ -33,6 +34,9 @@ namespace Player
         //TODO implement prediction logic that fires this event when the direction is towards a cliff
         public Action OnFallFromCliff;
 
+        [SerializeField]
+        private GameManager gameManager;
+        
         [SerializeField]
         private Transform climbCheckPivot;
 
@@ -138,6 +142,7 @@ namespace Player
                                         PP_Stats.StaminaRefillDelay,
                                         PP_Stats.StaminaRefillSpeed,
                                         SceneIndex);
+            gameManager.Player = _myTransform;
         }
 
         private void Start()
