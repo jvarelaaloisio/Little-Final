@@ -1,4 +1,5 @@
-﻿using Events.Channels;
+﻿using Events;
+using Events.Channels;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 public class LoadLevelButton : MonoBehaviour
 {
     public LevelDataContainer sceneToLoad;
-    public StringEventChannel sceneDataChannel;
+    public LevelDataContainerChannel sceneDataChannel;
 
     private Button Button
     {
@@ -32,6 +33,6 @@ public class LoadLevelButton : MonoBehaviour
 
     private void RaiseEvent()
     {
-        sceneDataChannel.RaiseEvent(sceneToLoad.name);
+        sceneDataChannel.RaiseEvent(sceneToLoad);
     }
 }
