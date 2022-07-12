@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: araucaria_leaf
-  m_Shader: {fileID: 4800000, guid: a5b0c7073a4d439488c24e99457c9dbe, type: 3}
+  m_Shader: {fileID: 4800000, guid: 03e54434780ca084faa27474fcc2a54d, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -37,6 +37,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Leaves_AlphaLeaf:
+        m_Texture: {fileID: 2800000, guid: 1b0a55a12792e92469e6b8e06fe4c01a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -71,17 +75,40 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _Light__Factor: 0.3
+    - _Light__MaskScale: 1
+    - _LocalVertexOffsetFactor: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Shadow__Factor: 1
+    - _Shadow__MaskScale: 0.3
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _TransAmbient: 0.2
+    - _TransDirect: 1
+    - _TransNormalDistortion: 0.1
+    - _TransScattering: 2
+    - _TransShadow: 0.9
+    - _Translucency: 1
+    - _TranslucencyFactor: 0
     - _UVSec: 0
+    - _Wind__BaseSpeed: 0
+    - _Wind__NoiseAnimationScale: 0.3
+    - _Wind__NoiseFactor: 2
+    - _Wind__PrimarySpeed: 0.2
+    - _Wind__SecondarySpeed: 0
+    - _Wind__WorldNoiseScale: 1
+    - _Wind__WorldNoiseSpeedX: 1
+    - _Wind__WorldNoiseSpeedY: 0
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Leaves__BaseColor: {r: 0.25918922, g: 0.31132078, b: 0.20705768, a: 0}
+    - _Light__Color: {r: 0.17649707, g: 0.2264151, b: 0.14845142, a: 0}
+    - _Shadow__Color: {r: 0.10008009, g: 0.122641504, b: 0.08503916, a: 0}
     - _leaf_color: {r: 0.1995641, g: 0.36200002, b: 0.18796155, a: 0}
