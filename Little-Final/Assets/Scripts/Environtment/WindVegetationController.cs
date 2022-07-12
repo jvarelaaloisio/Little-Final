@@ -16,7 +16,10 @@ public class WindVegetationController : MonoBehaviour
 
     public Transform WaterfallEnd_1;
     public Transform WaterfallEnd_2;
-    public Transform WaterfallEnd_3; 
+    public Transform WaterfallEnd_3;
+    
+    public Transform ClearWaterPoint_1;
+    public Transform ClearWaterPoint_2;
     
     [Header("TODO Rework")]
     public float windIntensity = 0.8f;
@@ -42,6 +45,9 @@ public class WindVegetationController : MonoBehaviour
     private static readonly int Cascade_2 = Shader.PropertyToID("Cascade_2");
     private static readonly int Cascade_3 = Shader.PropertyToID("Cascade_3");
     
+    private static readonly int ClearWater_1 = Shader.PropertyToID("ClearWater_1");
+    private static readonly int ClearWater_2 = Shader.PropertyToID("ClearWater_2");
+    
     private void Update()
     {
         Shader.SetGlobalFloat(BigWindFactor, bigWindFactor);
@@ -59,5 +65,9 @@ public class WindVegetationController : MonoBehaviour
             Shader.SetGlobalVector(Cascade_2,WaterfallEnd_2.position);
         if (WaterfallEnd_3)
             Shader.SetGlobalVector(Cascade_3,WaterfallEnd_3.position);
+        if(ClearWaterPoint_1)
+            Shader.SetGlobalVector(ClearWater_1,ClearWaterPoint_1.position);
+        if(ClearWaterPoint_2)
+            Shader.SetGlobalVector(ClearWater_2,ClearWaterPoint_2.position);
     }
 }
