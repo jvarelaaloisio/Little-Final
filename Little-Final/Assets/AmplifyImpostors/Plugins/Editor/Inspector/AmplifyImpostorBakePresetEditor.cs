@@ -115,7 +115,7 @@ namespace AmplifyImpostors
 			EditorGUI.LabelField( optionRect, CompressionStr );
 			optionRect.x += optionRect.width;
 			EditorGUI.LabelField( optionRect, FormatStr );
-			
+
 			EditorGUI.LabelField( alphaRect, AlphaIcon );
 		}
 
@@ -183,7 +183,7 @@ namespace AmplifyImpostors
 
 			instance.RuntimeShader = EditorGUILayout.ObjectField( RuntimeShaderStr, instance.RuntimeShader, typeof( Shader ), false ) as Shader;
 
-			instance.Pipeline = (PresetPipeline)EditorGUILayout.EnumPopup( PipelineStr, instance.Pipeline );
+			//instance.Pipeline = (PresetPipeline)EditorGUILayout.EnumPopup( PipelineStr, instance.Pipeline );
 
 			m_usingStandard = instance.BakeShader == null;
 			bool check = false;
@@ -197,29 +197,14 @@ namespace AmplifyImpostors
 				check = false;
 				if( m_usingStandard )
 				{
-					if( instance.Pipeline == PresetPipeline.HighDefinition )
+					instance.Output.Clear();
+					instance.Output = new List<TextureOutput>()
 					{
-						instance.Output.Clear();
-						instance.Output = new List<TextureOutput>()
-						{
-							new TextureOutput(true, ImpostorBakingTools.GlobalAlbedoAlpha, TextureScale.Full, true, TextureChannels.RGBA, TextureCompression.Normal, ImageFormat.TGA ),
-							new TextureOutput(true, ImpostorBakingTools.GlobalSpecularSmoothness, TextureScale.Full, true, TextureChannels.RGBA, TextureCompression.Normal, ImageFormat.TGA ),
-							new TextureOutput(true, ImpostorBakingTools.GlobalNormalDepth, TextureScale.Full, false, TextureChannels.RGBA, TextureCompression.Normal, ImageFormat.TGA ),
-							new TextureOutput(true, ImpostorBakingTools.GlobalEmissionOcclusion, TextureScale.Full, false, TextureChannels.RGBA, TextureCompression.Normal, ImageFormat.EXR ),
-							new TextureOutput(true, "_DiffusionFeatures", TextureScale.Full, false, TextureChannels.RGBA, TextureCompression.None, ImageFormat.TGA ),
-						};
-					} 
-					else
-					{
-						instance.Output.Clear();
-						instance.Output = new List<TextureOutput>()
-						{
-							new TextureOutput(true, ImpostorBakingTools.GlobalAlbedoAlpha, TextureScale.Full, true, TextureChannels.RGBA, TextureCompression.Normal, ImageFormat.TGA ),
-							new TextureOutput(true, ImpostorBakingTools.GlobalSpecularSmoothness, TextureScale.Full, true, TextureChannels.RGBA, TextureCompression.Normal, ImageFormat.TGA ),
-							new TextureOutput(true, ImpostorBakingTools.GlobalNormalDepth, TextureScale.Full, false, TextureChannels.RGBA, TextureCompression.Normal, ImageFormat.TGA ),
-							new TextureOutput(true, ImpostorBakingTools.GlobalEmissionOcclusion, TextureScale.Full, false, TextureChannels.RGBA, TextureCompression.Normal, ImageFormat.TGA ),
-						};
-					}
+						new TextureOutput(true, ImpostorBakingTools.GlobalAlbedoAlpha, TextureScale.Full, true, TextureChannels.RGBA, TextureCompression.Normal, ImageFormat.TGA ),
+						new TextureOutput(true, ImpostorBakingTools.GlobalSpecularSmoothness, TextureScale.Full, true, TextureChannels.RGBA, TextureCompression.Normal, ImageFormat.TGA ),
+						new TextureOutput(true, ImpostorBakingTools.GlobalNormalDepth, TextureScale.Full, false, TextureChannels.RGBA, TextureCompression.Normal, ImageFormat.TGA ),
+						new TextureOutput(true, ImpostorBakingTools.GlobalEmissionOcclusion, TextureScale.Full, false, TextureChannels.RGBA, TextureCompression.Normal, ImageFormat.TGA ),
+					};
 				}
 
 				RefreshList();

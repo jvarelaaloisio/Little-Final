@@ -41,10 +41,19 @@ namespace AmplifyImpostors
 	public enum RenderPipelineInUse
 	{
 		None = 0,
-		LW = 1,
-		HD = 2,
-		URP = 3,
+		HDRP = 1,
+		URP = 2,
 		Custom = 3
+	}
+
+	public enum AISRPBaseline
+	{
+		AI_SRP_INVALID = 0,
+		AI_SRP_10 = 100000,
+		AI_SRP_11 = 110000,
+		AI_SRP_12 = 120000,
+		AI_SRP_13 = 130000,
+		AI_SRP_14 = 140000
 	}
 
 #if UNITY_EDITOR
@@ -88,25 +97,23 @@ namespace AmplifyImpostors
 		}
 	}
 #endif
+
 	public class AmplifyImpostor : MonoBehaviour
 	{
-		private const string ShaderGUID = "e82933f4c0eb9ba42aab0739f48efe21";
-		private const string DilateGUID = "57c23892d43bc9f458360024c5985405";
-		private const string PackerGUID = "31bd3cd74692f384a916d9d7ea87710d";
-		private const string ShaderOctaGUID = "572f9be5706148142b8da6e9de53acdb";
-		private const string StandardPreset = "e4786beb7716da54dbb02a632681cc37";
+		public const string Preset = "e4786beb7716da54dbb02a632681cc37";
+		public const string Shader = "e82933f4c0eb9ba42aab0739f48efe21";
+		public const string ShaderOcta = "572f9be5706148142b8da6e9de53acdb";
 
-		private const string LWPreset = "089f3a2f6b5f48348a48c755f8d9a7a2";
-		private const string LWShaderOctaGUID = "94e2ddcdfb3257a43872042f97e2fb01";
-		private const string LWShaderGUID = "990451a2073f6994ebf9fd6f90a842b3";
+		public const string PresetHDRP = "47b6b3dcefe0eaf4997acf89caf8c75e";
+		public const string ShaderHDRP = "175c951fec709c44fa2f26b8ab78b8dd";
+		public const string ShaderOctaHDRP = "56236dc63ad9b7949b63a27f0ad180b3";
 
-		private const string HDPreset = "47b6b3dcefe0eaf4997acf89caf8c75e";
-		private const string HDShaderOctaGUID = "56236dc63ad9b7949b63a27f0ad180b3";
-		private const string HDShaderGUID = "175c951fec709c44fa2f26b8ab78b8dd";
+		public const string PresetURP = "0403878495ffa3c4e9d4bcb3eac9b559";
+		public const string ShaderOctaURP = "83dd8de9a5c14874884f9012def4fdcc";
+		public const string ShaderURP = "da79d698f4bf0164e910ad798d07efdf";
 
-		private const string UPreset = "0403878495ffa3c4e9d4bcb3eac9b559";
-		private const string UShaderOctaGUID = "83dd8de9a5c14874884f9012def4fdcc";
-		private const string UShaderGUID = "da79d698f4bf0164e910ad798d07efdf";
+		public const string DilateGUID = "57c23892d43bc9f458360024c5985405";
+		public const string PackerGUID = "31bd3cd74692f384a916d9d7ea87710d";
 
 		[SerializeField]
 		private AmplifyImpostorAsset m_data;
@@ -200,19 +207,12 @@ namespace AmplifyImpostors
 		private void GenerateTextures( List<TextureOutput> outputList, bool standardRendering )
 		{
 			m_rtGBuffers = new RenderTexture[ outputList.Count ];
-			
-#if UNITY_2018_1_OR_NEWER
-			if( standardRendering && m_renderPipelineInUse == RenderPipelineInUse.HD )
+
+			if( standardRendering && m_renderPipelineInUse == RenderPipelineInUse.HDRP )
 			{
-#if UNITY_2019_1_OR_NEWER
 				var sformat = UnityEngine.Experimental.Rendering.GraphicsFormat.R8G8B8A8_SRGB;
 				var uformat = UnityEngine.Experimental.Rendering.GraphicsFormat.R8G8B8A8_UNorm;
 				var fformat = UnityEngine.Experimental.Rendering.GraphicsFormat.R16G16B16A16_SFloat;
-#elif UNITY_2018_1_OR_NEWER
-				var sformat = RenderTextureFormat.ARGB32;
-				var uformat = RenderTextureFormat.ARGB32;
-				var fformat = RenderTextureFormat.ARGBFloat;
-#endif
 				m_rtGBuffers[ 0 ] = new RenderTexture( (int)m_data.TexSize.x, (int)m_data.TexSize.y, 16, sformat );
 				m_rtGBuffers[ 0 ].Create();
 				m_rtGBuffers[ 1 ] = new RenderTexture( (int)m_data.TexSize.x, (int)m_data.TexSize.y, 16, uformat );
@@ -225,7 +225,6 @@ namespace AmplifyImpostors
 				m_rtGBuffers[ 4 ].Create();
 			}
 			else
-#endif
 			{
 				for( int i = 0; i < m_rtGBuffers.Length; i++ )
 				{
@@ -275,126 +274,85 @@ namespace AmplifyImpostors
 #if UNITY_EDITOR
 		private const string ImpostorsGCincGUID = "806d6cc0f22ee994f8cd901b6718f08d";
 
-		public enum AISRPVersions
-		{
-			AI_SRP_4_9_0 = 040900,
-			AI_SRP_4_10_0 = 041000,
-			AI_SRP_5_7_2 = 050702,
-			AI_SRP_5_8_2 = 050802,
-			AI_SRP_5_9_0 = 050900,
-			AI_SRP_5_10_0 = 051000,
-			AI_SRP_5_13_0 = 051300,
-			AI_SRP_5_16_1 = 051601,
-			AI_SRP_6_9_0 = 060900,
-			AI_SRP_6_9_1 = 060901,
-			AI_SRP_6_9_2 = 060902,
-			AI_SRP_7_0_1 = 070001,
-			AI_SRP_7_1_1 = 070101,
-			AI_SRP_7_1_2 = 070102,
-			AI_SRP_7_1_5 = 070105,
-			AI_SRP_7_1_6 = 070106,
-			AI_SRP_7_1_8 = 070108,
-			AI_SRP_7_2_0 = 070200,
-			AI_SRP_7_2_1 = 070201,
-			AI_SRP_7_3_1 = 070301,
-			AI_SRP_7_4_1 = 070401,
-			AI_SRP_7_4_2 = 070402,
-			AI_SRP_7_4_3 = 070403,
-			AI_SRP_7_5_1 = 070501,
-			AI_SRP_7_5_2 = 070502,
-			AI_SRP_8_2_0 = 080200,
-			AI_SRP_8_3_1 = 080301,
-			AI_SRP_9_0_0 = 090000,
-			AI_SRP_10_0_0 = 100000,
-			AI_SRP_10_1_0 = 100100,
-			AI_SRP_10_2_2 = 100202,
-			AI_SRP_LATEST = 999999,
-		}
+		UnityEditor.PackageManager.Requests.ListRequest m_packageListRequest;
 
-#if UNITY_2018_3_OR_NEWER
-		private static Dictionary<string, AISRPVersions> m_srpVersionConverter = new Dictionary<string, AISRPVersions>()
+		private static AISRPBaseline m_currentURPBaseline = AISRPBaseline.AI_SRP_INVALID;
+		private static AISRPBaseline m_currentHDRPBaseline = AISRPBaseline.AI_SRP_INVALID;
+		public static AISRPBaseline CurrentURPBaseline { get { return m_currentURPBaseline; } }
+		public static AISRPBaseline CurrentHDRPBaseline { get { return m_currentHDRPBaseline; } }
+
+		private static int m_packageURPVersion = 0; // @diogo: starts as missing
+		private static int m_packageHDRPVersion = 0;
+		public static int PackageURPVersion { get { return m_packageURPVersion; } }
+		public static int PackageHDRPVersion { get { return m_packageHDRPVersion; } }
+
+		private static HashSet<int> m_srpPackageSupport = new HashSet<int>()
 		{
-			{"4.9.0",           AISRPVersions.AI_SRP_4_9_0},
-			{"4.10.0",          AISRPVersions.AI_SRP_4_10_0},
-			{"5.7.2",           AISRPVersions.AI_SRP_5_7_2},
-			{"5.8.2",           AISRPVersions.AI_SRP_5_8_2},
-			{"5.9.0",           AISRPVersions.AI_SRP_5_9_0},
-			{"5.10.0",          AISRPVersions.AI_SRP_5_10_0},
-			{"5.13.0",          AISRPVersions.AI_SRP_5_13_0},
-			{"5.16.1",          AISRPVersions.AI_SRP_5_16_1},
-			{"6.9.0",           AISRPVersions.AI_SRP_6_9_0},
-			{"6.9.1",           AISRPVersions.AI_SRP_6_9_1},
-			{"6.9.2",           AISRPVersions.AI_SRP_6_9_2},
-			{"7.0.1",           AISRPVersions.AI_SRP_7_0_1},
-			{"7.1.1",           AISRPVersions.AI_SRP_7_1_1},
-			{"7.1.2",           AISRPVersions.AI_SRP_7_1_2},
-			{"7.1.5",           AISRPVersions.AI_SRP_7_1_5},
-			{"7.1.6",           AISRPVersions.AI_SRP_7_1_6},
-			{"7.1.8",           AISRPVersions.AI_SRP_7_1_8},
-			{"7.2.0",           AISRPVersions.AI_SRP_7_2_0},
-			{"7.2.1",           AISRPVersions.AI_SRP_7_2_1},
-			{"7.3.1",           AISRPVersions.AI_SRP_7_3_1},
-			{"7.4.1",			AISRPVersions.AI_SRP_7_4_1},
-			{"7.4.2",			AISRPVersions.AI_SRP_7_4_2},
-			{"7.4.3",			AISRPVersions.AI_SRP_7_4_3},
-			{"7.5.1",           AISRPVersions.AI_SRP_7_5_1},
-			{"7.5.2",           AISRPVersions.AI_SRP_7_5_2},
-			{"8.2.0",			AISRPVersions.AI_SRP_8_2_0},
-			{"8.3.1",           AISRPVersions.AI_SRP_8_3_1},
-			{"9.0.0",			AISRPVersions.AI_SRP_9_0_0},
-			{"10.0.0",			AISRPVersions.AI_SRP_10_0_0},
-			{"10.1.0",			AISRPVersions.AI_SRP_10_1_0},
-			{"10.2.2",          AISRPVersions.AI_SRP_10_2_2},
+			{ ( int )AISRPBaseline.AI_SRP_10 },
+			{ ( int )AISRPBaseline.AI_SRP_11 },
+			{ ( int )AISRPBaseline.AI_SRP_12 },
+			{ ( int )AISRPBaseline.AI_SRP_13 },
+			{ ( int )AISRPBaseline.AI_SRP_14 },
 		};
 
-		UnityEditor.PackageManager.Requests.ListRequest m_packageListRequest;
-#endif
-		AISRPVersions m_LWversion = AISRPVersions.AI_SRP_LATEST;
-		AISRPVersions m_HDversion = AISRPVersions.AI_SRP_LATEST;
+		private static readonly string SemVerPattern = @"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$";
+
+		private static int PackageVersionStringToCode( string version, out int major, out int minor, out int patch )
+		{
+			MatchCollection matches = Regex.Matches( version, SemVerPattern, RegexOptions.Multiline );
+
+			bool validMatch = ( matches.Count > 0 && matches[ 0 ].Groups.Count >= 4 );
+			major = validMatch ? int.Parse( matches[ 0 ].Groups[ 1 ].Value ) : 99;
+			minor = validMatch ? int.Parse( matches[ 0 ].Groups[ 2 ].Value ) : 99;
+			patch = validMatch ? int.Parse( matches[ 0 ].Groups[ 3 ].Value ) : 99;
+
+			int versionCode;
+			versionCode = major * 10000;
+			versionCode += minor * 100;
+			versionCode += patch;
+			return versionCode;
+		}
+
+		private static int PackageVersionElementsToCode( int major, int minor, int patch )
+		{
+			return major * 10000 + minor * 100 + patch;
+		}
 
 		public void CheckSRPVerionAndApply()
 		{
-#if UNITY_2018_3_OR_NEWER
 			m_packageListRequest = UnityEditor.PackageManager.Client.List( true );
-#endif
 			EditorApplication.delayCall += ApplySRP;
 		}
 
 		public void ApplySRP()
 		{
-#if UNITY_2018_3_OR_NEWER
 			if( !( m_packageListRequest != null && m_packageListRequest.IsCompleted ) )
 			{
 				EditorApplication.delayCall += ApplySRP;
 				return;
 			}
-#endif
 
-			m_LWversion = AISRPVersions.AI_SRP_LATEST;
-			m_HDversion = AISRPVersions.AI_SRP_LATEST;
+			m_packageURPVersion = 0;
+			m_packageHDRPVersion = 0;
 
-#if UNITY_2018_3_OR_NEWER
 			foreach( UnityEditor.PackageManager.PackageInfo pi in m_packageListRequest.Result )
 			{
-				if( pi.name.Equals( "com.unity.render-pipelines.lightweight" ) || pi.name.Equals( "com.unity.render-pipelines.universal" ) )
+				int version = PackageVersionStringToCode( pi.version, out int major, out int minor, out int patch );
+				int baseline = PackageVersionElementsToCode( major, 0, 0 );
+
+				if ( pi.name.Equals( "com.unity.render-pipelines.universal" ) )
 				{
-					string version = pi.version.Replace( "-preview", "" );
-					if( m_srpVersionConverter.ContainsKey( version ) )
-					{
-						m_LWversion = m_srpVersionConverter[ version ];
-					}
+					m_currentURPBaseline = ( AISRPBaseline )baseline;
+					m_packageURPVersion = m_srpPackageSupport.Contains( baseline ) ? version : 0;
 				}
 
 				if( pi.name.Equals( "com.unity.render-pipelines.high-definition" ) )
 				{
-					string version = pi.version.Replace( "-preview", "" );
-					if( m_srpVersionConverter.ContainsKey( version ) )
-					{
-						m_HDversion = m_srpVersionConverter[ version ];
-					}
+					m_currentHDRPBaseline = ( AISRPBaseline )baseline;
+					m_packageHDRPVersion = m_srpPackageSupport.Contains( baseline ) ? version : 0;
 				}
 			}
-#endif
+
 			string impostorCGincPath = AssetDatabase.GUIDToAssetPath( ImpostorsGCincGUID );
 			if( string.IsNullOrEmpty( impostorCGincPath ) )
 				return;
@@ -425,20 +383,20 @@ namespace AmplifyImpostors
 			if( cgincMatch.Success )
 			{
 				string cgincSRPversion = cgincMatch.Groups[ 1 ].Value;
-				if( cgincSRPversion != ((int)m_HDversion).ToString() )
+				if( cgincSRPversion != ((int)m_packageHDRPVersion).ToString() )
 				{
-					cginc = cginc.Replace( cgincMatch.Groups[ 0 ].Value, "#define AI_HDRP_VERSION "+ ( (int)m_HDversion ).ToString() );
+					cginc = cginc.Replace( cgincMatch.Groups[ 0 ].Value, "#define AI_HDRP_VERSION "+ ( (int)m_packageHDRPVersion ).ToString() );
 					saveAndRefresh = true;
 				}
 			}
 
-			cgincMatch = Regex.Match( cginc, @"#define AI_LWRP_VERSION (\d*)", RegexOptions.Multiline );
+			cgincMatch = Regex.Match( cginc, @"#define AI_URP_VERSION (\d*)", RegexOptions.Multiline );
 			if( cgincMatch.Success )
 			{
 				string cgincSRPversion = cgincMatch.Groups[ 1 ].Value;
-				if( cgincSRPversion != ( (int)m_LWversion ).ToString() )
+				if( cgincSRPversion != ( (int)m_packageURPVersion ).ToString() )
 				{
-					cginc = cginc.Replace( cgincMatch.Groups[ 0 ].Value, "#define AI_LWRP_VERSION " + ( (int)m_LWversion ).ToString() );
+					cginc = cginc.Replace( cgincMatch.Groups[ 0 ].Value, "#define AI_URP_VERSION " + ( (int)m_packageURPVersion ).ToString() );
 					saveAndRefresh = true;
 				}
 			}
@@ -465,47 +423,30 @@ namespace AmplifyImpostors
 			AssetDatabase.Refresh();
 		}
 
+		private static readonly List<KeyValuePair<string, int>> m_hdrpStencilCheck = new List<KeyValuePair<string, int>> {
+			new KeyValuePair<string,int>( "_StencilForwardRef", 0 ),
+			new KeyValuePair<string,int>( "_StencilForwardMask", 6 ),
+			new KeyValuePair<string,int>( "_StencilMotionRef", 40 ),
+			new KeyValuePair<string,int>( "_StencilMotionMask", 40 ),
+			new KeyValuePair<string,int>( "_StencilDepthRef", 8 ),
+			new KeyValuePair<string,int>( "_StencilDepthMask", 8 ),
+			new KeyValuePair<string,int>( "_StencilGBufferRef", 10 ),
+			new KeyValuePair<string,int>( "_StencilGBufferMask", 14 )
+		};
+
 		public void CheckHDRPMaterial()
 		{
-			if( m_renderPipelineInUse != RenderPipelineInUse.HD )
+			if( m_renderPipelineInUse != RenderPipelineInUse.HDRP )
 				return;
 
 			if( m_data == null || m_data.Preset == null || m_data.Material == null )
 				return;
 
-			bool standardRendering = m_data.Preset.BakeShader == null;
-			if( !standardRendering )
-				return;
-
-			string StencilForwardMaskId = "_StencilForwardMask";
-
-			int forwardMask = m_data.Material.HasProperty( StencilForwardMaskId ) ? m_data.Material.GetInt( StencilForwardMaskId ) : 0;
-			if( m_HDversion > AISRPVersions.AI_SRP_7_1_8 )
+			foreach ( var pair in m_hdrpStencilCheck )
 			{
-				if( forwardMask != 6 )
+				if ( m_data.Material.HasProperty( pair.Key ) && m_data.Material.GetInt( pair.Key ) != pair.Value )
 				{
-					m_data.Material.SetInt( "_StencilForwardRef", 0 );
-					m_data.Material.SetInt( "_StencilForwardMask", 6 );
-					m_data.Material.SetInt( "_StencilMotionRef", 40 );
-					m_data.Material.SetInt( "_StencilMotionMask", 40 );
-					m_data.Material.SetInt( "_StencilDepthRef", 8 );
-					m_data.Material.SetInt( "_StencilDepthMask", 8 );
-					m_data.Material.SetInt( "_StencilGBufferRef", 10 );
-					m_data.Material.SetInt( "_StencilGBufferMask", 14 );
-				}
-			}
-			else
-			{
-				if( forwardMask != 51 )
-				{
-					m_data.Material.SetInt( "_StencilForwardRef", 1 );
-					m_data.Material.SetInt( "_StencilForwardMask", 51 );
-					m_data.Material.SetInt( "_StencilMotionRef", 128 );
-					m_data.Material.SetInt( "_StencilMotionMask", 176 );
-					m_data.Material.SetInt( "_StencilDepthRef", 0 );
-					m_data.Material.SetInt( "_StencilDepthMask", 48 );
-					m_data.Material.SetInt( "_StencilGBufferRef", 1 );
-					m_data.Material.SetInt( "_StencilGBufferMask", 51 );
+					m_data.Material.SetInt( pair.Key, pair.Value );
 				}
 			}
 		}
@@ -620,7 +561,7 @@ namespace AmplifyImpostors
 
 					if( x == 0 && y == 0 )
 						m_originalBound = frameBounds;//.Transform( m_rootTransform.worldToLocalMatrix );
-					
+
 					frameBounds = frameBounds.Transform( camMatrixRot /** m_rootTransform.worldToLocalMatrix*/ );
 					m_xyFitSize = Mathf.Max( m_xyFitSize, frameBounds.size.x, frameBounds.size.y );
 					m_depthFitSize = Mathf.Max( m_depthFitSize, frameBounds.size.z );
@@ -740,7 +681,7 @@ namespace AmplifyImpostors
 
 			CalculateSheetBounds( m_data.ImpostorType );
 			GenerateAlphaTextures( m_data.Preset.Output );
-			
+
 			GL.sRGBWrite = true;
 
 			m_pixelOffset = Vector2.zero;
@@ -763,7 +704,7 @@ namespace AmplifyImpostors
 
 			bool standardRendering = m_data.Preset.BakeShader == null;
 			int alphaIndex = m_data.Preset.AlphaIndex;
-			if( standardRendering && m_renderPipelineInUse == RenderPipelineInUse.HD )
+			if( standardRendering && m_renderPipelineInUse == RenderPipelineInUse.HDRP )
 				alphaIndex = 3;
 			else if( standardRendering )
 				alphaIndex = 2;
@@ -772,7 +713,7 @@ namespace AmplifyImpostors
 			Shader packerShader = AssetDatabase.LoadAssetAtPath<Shader>( AssetDatabase.GUIDToAssetPath( PackerGUID ) );
 			Material packerMat = new Material( packerShader );
 
-			if( m_renderPipelineInUse == RenderPipelineInUse.HD && standardRendering )
+			if( m_renderPipelineInUse == RenderPipelineInUse.HDRP && standardRendering )
 			{
 				// getting alpha
 				{
@@ -877,15 +818,15 @@ namespace AmplifyImpostors
 
 			bool standardRendering = m_data.Preset.BakeShader == null;
 			int alphaIndex = m_data.Preset.AlphaIndex;
-			if( standardRendering && m_renderPipelineInUse == RenderPipelineInUse.HD )
+			if( standardRendering && m_renderPipelineInUse == RenderPipelineInUse.HDRP )
 				alphaIndex = 3;
 			else if( standardRendering )
 				alphaIndex = 2;
 
 			Shader packerShader = AssetDatabase.LoadAssetAtPath<Shader>( AssetDatabase.GUIDToAssetPath( PackerGUID ) );
 			Material packerMat = new Material( packerShader );
-			
-			if( m_renderPipelineInUse == RenderPipelineInUse.HD && standardRendering )
+
+			if( m_renderPipelineInUse == RenderPipelineInUse.HDRP && standardRendering )
 			{
 				// getting alpha
 				{
@@ -970,28 +911,20 @@ namespace AmplifyImpostors
 			string pipelineName = string.Empty;
 			try
 			{
-#if UNITY_2019_1_OR_NEWER
 				pipelineName = UnityEngine.Rendering.RenderPipelineManager.currentPipeline.ToString();
-#else
-				pipelineName = UnityEngine.Experimental.Rendering.RenderPipelineManager.currentPipeline.ToString();
-#endif
 			}
 			catch( Exception )
 			{
 				pipelineName = "";
 			}
 
-			if( pipelineName.Contains( "LightweightRenderPipeline" ) )
-			{
-				m_renderPipelineInUse = RenderPipelineInUse.LW;
-			}
-			else if( pipelineName.Contains( "UniversalRenderPipeline" ) )
+			if( pipelineName.Contains( "UniversalRenderPipeline" ) )
 			{
 				m_renderPipelineInUse = RenderPipelineInUse.URP;
 			}
 			else if( pipelineName.Contains( "HDRenderPipeline" ) )
 			{
-				m_renderPipelineInUse = RenderPipelineInUse.HD;
+				m_renderPipelineInUse = RenderPipelineInUse.HDRP;
 			}
 			else if( pipelineName.Equals( "" ) )
 			{
@@ -1005,16 +938,12 @@ namespace AmplifyImpostors
 			bool missingFiles = false;
 			try
 			{
-				AmplifyImpostorBakePreset check = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( LWPreset ) );
-				if( check == null && m_renderPipelineInUse == RenderPipelineInUse.LW )
-					missingFiles = true;
-
-				check = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( UPreset ) );
+				AmplifyImpostorBakePreset check = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( PresetURP ) );
 				if( check == null && m_renderPipelineInUse == RenderPipelineInUse.URP )
 					missingFiles = true;
 
-				check = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( HDPreset ) );
-				if( check == null && m_renderPipelineInUse == RenderPipelineInUse.HD )
+				check = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( PresetHDRP ) );
+				if( check == null && m_renderPipelineInUse == RenderPipelineInUse.HDRP )
 					missingFiles = true;
 			}
 			catch( Exception )
@@ -1064,15 +993,9 @@ namespace AmplifyImpostors
 			if( m_data == null )
 			{
 				AmplifyImpostorAsset existingAsset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorAsset>( folderPath + fileName + ".asset" );
-				if( existingAsset != null )
-				{
-					m_data = existingAsset;
-				}
-				else
-				{
-					m_data = ScriptableObject.CreateInstance<AmplifyImpostorAsset>();
-					AssetDatabase.CreateAsset( m_data, folderPath + fileName + ".asset" );
-				}
+
+				m_data = ScriptableObject.CreateInstance<AmplifyImpostorAsset>();
+				AssetDatabase.CreateAsset( m_data, folderPath + fileName + ".asset" );
 
 				if( data != null )
 				{
@@ -1092,14 +1015,12 @@ namespace AmplifyImpostors
 
 			if( m_data.Preset == null )
 			{
-				if( m_renderPipelineInUse == RenderPipelineInUse.HD )
-					m_data.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( HDPreset ) );
-				else if( m_renderPipelineInUse == RenderPipelineInUse.LW )
-					m_data.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( LWPreset ) );
+				if( m_renderPipelineInUse == RenderPipelineInUse.HDRP )
+					m_data.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( PresetHDRP ) );
 				else if( m_renderPipelineInUse == RenderPipelineInUse.URP )
-					m_data.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( UPreset ) );
+					m_data.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( PresetURP ) );
 				else
-					m_data.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( StandardPreset ) );
+					m_data.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( Preset ) );
 			}
 
 			bool standardRendering = false;
@@ -1126,16 +1047,14 @@ namespace AmplifyImpostors
 					outputList[ m_data.OverrideOutput[ i ].Index ].ImageFormat = m_data.OverrideOutput[ i ].ImageFormat;
 			}
 			m_fileNames = new string[ outputList.Count ];
-			
+
 			string guid = string.Empty;
-			if( m_renderPipelineInUse == RenderPipelineInUse.HD )
-				guid = m_data.ImpostorType == ImpostorType.Spherical ? HDShaderGUID : HDShaderOctaGUID;
-			else if( m_renderPipelineInUse == RenderPipelineInUse.LW )
-				guid = m_data.ImpostorType == ImpostorType.Spherical ? LWShaderGUID : LWShaderOctaGUID;
+			if( m_renderPipelineInUse == RenderPipelineInUse.HDRP )
+				guid = m_data.ImpostorType == ImpostorType.Spherical ? ShaderHDRP : ShaderOctaHDRP;
 			else if( m_renderPipelineInUse == RenderPipelineInUse.URP )
-				guid = m_data.ImpostorType == ImpostorType.Spherical ? UShaderGUID : UShaderOctaGUID;
+				guid = m_data.ImpostorType == ImpostorType.Spherical ? ShaderURP : ShaderOctaURP;
 			else
-				guid = m_data.ImpostorType == ImpostorType.Spherical ? ShaderGUID : ShaderOctaGUID;
+				guid = m_data.ImpostorType == ImpostorType.Spherical ? Shader : ShaderOcta;
 
 
 			CalculatePixelBounds( outputList.Count );
@@ -1171,7 +1090,7 @@ namespace AmplifyImpostors
 				//Shader packerShader = AssetDatabase.LoadAssetAtPath<Shader>( AssetDatabase.GUIDToAssetPath( PackerGUID ) );
 				//Material packerMat = new Material( packerShader );
 
-				if( m_renderPipelineInUse == RenderPipelineInUse.HD )
+				if( m_renderPipelineInUse == RenderPipelineInUse.HDRP )
 				{
 					// getting features and diffusion profile
 					PackingRemapping( ref m_rtGBuffers[ 2 ], ref m_rtGBuffers[ 4 ], 13, packerMat );
@@ -1260,11 +1179,6 @@ namespace AmplifyImpostors
 					//Shader.SetGlobalMatrix( "_Matrix", m_rootTransform.worldToLocalMatrix );
 					//PackingRemapping( ref m_rtGBuffers[ 2 ], ref m_rtGBuffers[ 2 ], 9, packerMat );
 				}
-
-				// Fix Emission
-#if UNITY_2017_3_OR_NEWER && !UNITY_2018_3_OR_NEWER
-				PackingRemapping( ref m_rtGBuffers[ 3 ], ref m_rtGBuffers[ 3 ], 1, packerMat );
-#endif
 			}
 
 			// TGA
@@ -1297,21 +1211,13 @@ namespace AmplifyImpostors
 			{
 				if( outputList[ i ].Scale != TextureScale.Full )
 				{
-#if UNITY_2019_1_OR_NEWER
 					RenderTexture resTex = RenderTexture.GetTemporary( m_rtGBuffers[ i ].width / (int)outputList[ i ].Scale, m_rtGBuffers[ i ].height / (int)outputList[ i ].Scale, m_rtGBuffers[ i ].depth, m_rtGBuffers[ i ].graphicsFormat );
-#else
-					RenderTexture resTex = RenderTexture.GetTemporary( m_rtGBuffers[ i ].width / (int)outputList[ i ].Scale, m_rtGBuffers[ i ].height / (int)outputList[ i ].Scale, m_rtGBuffers[ i ].depth, m_rtGBuffers[ i ].format );
-#endif
-					if( i == 4 && standardRendering && m_renderPipelineInUse == RenderPipelineInUse.HD )
+					if( i == 4 && standardRendering && m_renderPipelineInUse == RenderPipelineInUse.HDRP )
 						Graphics.Blit( m_rtGBuffers[ i ], resTex, packerMat, 14 );
 					else
 						Graphics.Blit( m_rtGBuffers[ i ], resTex );
 					m_rtGBuffers[ i ].Release();
-#if UNITY_2019_1_OR_NEWER
 					m_rtGBuffers[ i ] = new RenderTexture( resTex.width, resTex.height, m_rtGBuffers[ i ].depth, m_rtGBuffers[ i ].graphicsFormat );
-#else
-					m_rtGBuffers[ i ] = new RenderTexture( resTex.width, resTex.height, m_rtGBuffers[ i ].depth, m_rtGBuffers[ i ].format );
-#endif
 					m_rtGBuffers[ i ].Create();
 					Graphics.Blit( resTex, m_rtGBuffers[ i ] );
 					RenderTexture.ReleaseTemporary( resTex );
@@ -1324,14 +1230,9 @@ namespace AmplifyImpostors
 			DisplayProgress( 0.6f, "Please Wait... Creating Asset and Textures" );
 
 			bool isPrefab = false;
-			
-#if UNITY_2018_3_OR_NEWER
+
 			if( PrefabUtility.GetPrefabAssetType( this.gameObject ) == PrefabAssetType.Regular && PrefabUtility.GetPrefabInstanceHandle( this.gameObject ) == null )
 				isPrefab = true;
-#else
-			if( PrefabUtility.GetPrefabType( this.gameObject ) == PrefabType.Prefab )
-				isPrefab = true;
-#endif
 
 			// Create billboard
 			Shader defaultShader = null;
@@ -1471,11 +1372,7 @@ namespace AmplifyImpostors
 
 			if( isPrefab )
 			{
-#if UNITY_2018_3_OR_NEWER
 				if( m_lastImpostor != null && PrefabUtility.GetPrefabAssetType( m_lastImpostor ) == PrefabAssetType.Regular )
-#else
-				if( m_lastImpostor != null && PrefabUtility.GetPrefabType( m_lastImpostor ) == PrefabType.Prefab )
-#endif
 				{
 					impostorObject = m_lastImpostor;
 				}
@@ -1514,22 +1411,14 @@ namespace AmplifyImpostors
 				{
 					if( isPrefab )
 					{
-#if UNITY_2018_3_OR_NEWER
 						targetPrefab = PrefabUtility.GetPrefabInstanceHandle( ( Selection.activeObject as GameObject ).transform.root.gameObject );
-#else
-						targetPrefab = PrefabUtility.GetPrefabObject( ( Selection.activeObject as GameObject ).transform.root.gameObject );
-#endif
 						GameObject targetGO = AssetDatabase.LoadAssetAtPath( folderPath + ( Selection.activeObject as GameObject ).transform.root.gameObject.name + ".prefab", typeof( GameObject ) ) as GameObject;
 						UnityEngine.Object inst = PrefabUtility.InstantiatePrefab( targetGO );
 						tempGO = inst as GameObject;
 						AmplifyImpostor ai = tempGO.GetComponentInChildren<AmplifyImpostor>();
 						impostorObject.transform.SetParent( ai.LodGroup.transform );
 						ai.m_lastImpostor = impostorObject;
-#if UNITY_2018_3_OR_NEWER
 						PrefabUtility.SaveAsPrefabAssetAndConnect( tempGO, AssetDatabase.GetAssetPath( targetPrefab ), InteractionMode.AutomatedAction );
-#else
-						PrefabUtility.ReplacePrefab( tempGO, targetPrefab, ReplacePrefabOptions.ConnectToPrefab );
-#endif
 						ai = targetGO.GetComponentInChildren<AmplifyImpostor>();
 						impostorObject = ai.m_lastImpostor;
 						DestroyImmediate( tempGO );
@@ -1623,7 +1512,7 @@ namespace AmplifyImpostors
 								lods[ i ].fadeTransitionWidth = lods[ i - 1 ].fadeTransitionWidth;
 								lods[ i ].renderers = lods[ i - 1 ].renderers;
 							}
-							
+
 							float firstTransition = 1;
 							if( m_insertIndex > 0 )
 								firstTransition = lods[ m_insertIndex - 1 ].screenRelativeTransitionHeight;
@@ -1774,7 +1663,7 @@ namespace AmplifyImpostors
 
 			CheckHDRPMaterial();
 
-			if( standardRendering && m_renderPipelineInUse == RenderPipelineInUse.HD )
+			if( standardRendering && m_renderPipelineInUse == RenderPipelineInUse.HDRP )
 				material.SetShaderPassEnabled( "MotionVectors", true );
 
 			EditorUtility.SetDirty( material );
@@ -1900,7 +1789,7 @@ namespace AmplifyImpostors
 					Matrix4x4 P = Matrix4x4.Ortho( -fitSize+ m_pixelOffset.x, fitSize + m_pixelOffset.x, -fitSize + m_pixelOffset.y, fitSize + m_pixelOffset.y, 0, -m_depthFitSize );
 					V = V.inverse * m_rootTransform.worldToLocalMatrix;
 
-					if( standardrendering && m_renderPipelineInUse == RenderPipelineInUse.HD )
+					if( standardrendering && m_renderPipelineInUse == RenderPipelineInUse.HDRP )
 						P = GL.GetGPUProjectionMatrix( P, true );
 
 					if( impostorMaps )
@@ -1908,14 +1797,13 @@ namespace AmplifyImpostors
 						commandBuffer.SetViewProjectionMatrices( V, P );
 						commandBuffer.SetViewport( new Rect( ( m_data.TexSize.x / hframes ) * x, ( m_data.TexSize.y / ( vframes + ( impostorType == ImpostorType.Spherical ? 1 : 0 ) ) ) * y, ( m_data.TexSize.x / m_data.HorizontalFrames ), ( m_data.TexSize.y / m_data.VerticalFrames ) ) );
 
-						if( standardrendering && m_renderPipelineInUse == RenderPipelineInUse.HD )
+						if( standardrendering && m_renderPipelineInUse == RenderPipelineInUse.HDRP )
 						{
-							BakeHDRPTool.SetupShaderVariableGlobals( V, P, commandBuffer );
 							commandBuffer.SetGlobalMatrix( "_ViewMatrix", V );
 							commandBuffer.SetGlobalMatrix( "_InvViewMatrix", V.inverse );
 							commandBuffer.SetGlobalMatrix( "_ProjMatrix", P );
 							commandBuffer.SetGlobalMatrix( "_ViewProjMatrix", P * V );
-							commandBuffer.SetGlobalVector( "_WorldSpaceCameraPos", Vector4.zero );	
+							commandBuffer.SetGlobalVector( "_WorldSpaceCameraPos", Vector4.zero );
 						}
 					}
 
@@ -1924,9 +1812,8 @@ namespace AmplifyImpostors
 						commandAlphaBuffer.SetViewProjectionMatrices( V, P );
 						commandAlphaBuffer.SetViewport( new Rect( 0, 0, MinAlphaResolution, MinAlphaResolution ) );
 
-						if( standardrendering && m_renderPipelineInUse == RenderPipelineInUse.HD )
+						if( standardrendering && m_renderPipelineInUse == RenderPipelineInUse.HDRP )
 						{
-							BakeHDRPTool.SetupShaderVariableGlobals( V, P, commandAlphaBuffer );
 							commandAlphaBuffer.SetGlobalMatrix( "_ViewMatrix", V );
 							commandAlphaBuffer.SetGlobalMatrix( "_InvViewMatrix", V.inverse );
 							commandAlphaBuffer.SetGlobalMatrix( "_ProjMatrix", P );
@@ -2035,7 +1922,7 @@ namespace AmplifyImpostors
 							}
 
 							commandBuffer.DisableShaderKeyword( "LIGHTPROBE_SH" );
-							
+
 							if( impostorMaps )
 							{
 								if( prePass > -1 )

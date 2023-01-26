@@ -1,8 +1,15 @@
-Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
+Shader /*ase_name*/ "Hidden/Impostors/Lit"/*end*/
 {
 	Properties
 	{
 		/*ase_props*/
+		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
+		//_TransStrength( "Trans Strength", Range( 0, 50 ) ) = 1
+		//_TransNormal( "Trans Normal Distortion", Range( 0, 1 ) ) = 0.5
+		//_TransScattering( "Trans Scattering", Range( 1, 50 ) ) = 2
+		//_TransDirect( "Trans Direct", Range( 0, 1 ) ) = 0.9
+		//_TransAmbient( "Trans Ambient", Range( 0, 1 ) ) = 0.1
+		//_TransShadow( "Trans Shadow", Range( 0, 1 ) ) = 0.5
 	}
 
 	SubShader
@@ -14,8 +21,73 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 				Specular Color:SetDefine:_SPECULAR_SETUP 1
 			Port:ForwardBase:Alpha Clip Threshold
 				On:SetDefine:_ALPHATEST_ON 1
-			Port:ForwardBase:Local Vertex
-				On:SetDefine:_VERTEX_OFFSET 1
+			Option:Transmission:false,true:false
+				false:RemoveDefine:_TRANSMISSION_ASE 1
+				false:HidePort:ForwardBase:Transmission
+				false:HideOption:  Transmission Shadow
+				true:SetDefine:_TRANSMISSION_ASE 1
+				true:ShowPort:ForwardBase:Transmission
+				true:ShowOption:  Transmission Shadow
+				true:SetOption:Deferred Pass,0
+			Field:  Transmission Shadow:Float:0.5:0:1:_TransmissionShadow
+				Change:SetMaterialProperty:_TransmissionShadow
+				Change:SetShaderProperty:_TransmissionShadow,_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
+				Inline,disable:SetShaderProperty:_TransmissionShadow,//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
+			Option:Translucency:false,true:false
+				false:RemoveDefine:_TRANSLUCENCY_ASE 1
+				false:HidePort:ForwardBase:Translucency
+				false:HideOption:  Translucency Strength
+				false:HideOption:  Normal Distortion
+				false:HideOption:  Scattering
+				false:HideOption:  Direct
+				false:HideOption:  Ambient
+				false:HideOption:  Shadow
+				true:SetDefine:_TRANSLUCENCY_ASE 1
+				true:ShowPort:ForwardBase:Translucency
+				true:ShowOption:  Translucency Strength
+				true:ShowOption:  Normal Distortion
+				true:ShowOption:  Scattering
+				true:ShowOption:  Direct
+				true:ShowOption:  Ambient
+				true:ShowOption:  Shadow
+				true:SetOption:Deferred Pass,0
+			Field:  Translucency Strength:Float:1:0:50:_TransStrength
+				Change:SetMaterialProperty:_TransStrength
+				Change:SetShaderProperty:_TransStrength,_TransStrength( "Strength", Range( 0, 50 ) ) = 1
+				Inline,disable:SetShaderProperty:_TransStrength,//_TransStrength( "Strength", Range( 0, 50 ) ) = 1
+			Field:  Normal Distortion:Float:0.5:0:1:_TransNormal
+				Change:SetMaterialProperty:_TransNormal
+				Change:SetShaderProperty:_TransNormal,_TransNormal( "Normal Distortion", Range( 0, 1 ) ) = 0.5
+				Inline,disable:SetShaderProperty:_TransNormal,//_TransNormal( "Normal Distortion", Range( 0, 1 ) ) = 0.5
+			Field:  Scattering:Float:2:1:50:_TransScattering
+				Change:SetMaterialProperty:_TransScattering
+				Change:SetShaderProperty:_TransScattering,_TransScattering( "Scattering", Range( 1, 50 ) ) = 2
+				Inline,disable:SetShaderProperty:_TransScattering,//_TransScattering( "Scattering", Range( 1, 50 ) ) = 2
+			Field:  Direct:Float:0.9:0:1:_TransDirect
+				Change:SetMaterialProperty:_TransDirect
+				Change:SetShaderProperty:_TransDirect,_TransDirect( "Direct", Range( 0, 1 ) ) = 0.9
+				Inline,disable:SetShaderProperty:_TransDirect,//_TransDirect( "Direct", Range( 0, 1 ) ) = 0.9
+			Field:  Ambient:Float:0.1:0:1:_TransAmbient
+				Change:SetMaterialProperty:_TransAmbient
+				Change:SetShaderProperty:_TransAmbient,_TransAmbient( "Ambient", Range( 0, 1 ) ) = 0.1
+				Inline,disable:SetShaderProperty:_TransAmbient,//_TransAmbient( "Ambient", Range( 0, 1 ) ) = 0.1
+			Field:  Shadow:Float:0.5:0:1:_TransShadow
+				Change:SetMaterialProperty:_TransShadow
+				Change:SetShaderProperty:_TransShadow,_TransShadow( "Shadow", Range( 0, 1 ) ) = 0.5
+				Inline,disable:SetShaderProperty:_TransShadow,//_TransShadow( "Shadow", Range( 0, 1 ) ) = 0.5
+			Option:Cast Shadows:false,true:true
+				true:IncludePass:ShadowCaster
+				false,disable:ExcludePass:ShadowCaster
+			Option:Deferred Pass:false,true:true
+				true:IncludePass:Deferred
+				false:ExcludePass:Deferred
+			Option:Add Pass:false,true:true
+				true:IncludePass:ForwardAdd
+				false,disable:ExcludePass:ForwardAdd
+			Option:Meta Pass:false,true:true
+				true:IncludePass:Meta
+				false,disable:ExcludePass:Meta
+
 		*/
 		CGINCLUDE
 		#pragma target 3.0
@@ -40,8 +112,9 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 			CGPROGRAM
 			#pragma vertex vert_surf
 			#pragma fragment frag_surf
-			#pragma multi_compile_fog
 			#pragma multi_compile_fwdbase
+
+			#pragma multi_compile_fog
 			#pragma multi_compile_instancing
 			#pragma multi_compile __ LOD_FADE_CROSSFADE
 			#include "HLSLSupport.cginc"
@@ -64,8 +137,22 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 			#include "UnityPBSLighting.cginc"
 			#include "AutoLight.cginc"
 			#include "UnityStandardUtils.cginc"
+
 			/*ase_pragma*/
 			/*ase_globals*/
+
+			#ifdef _TRANSMISSION_ASE
+				float _TransmissionShadow;
+			#endif
+			#ifdef _TRANSLUCENCY_ASE
+				float _TransStrength;
+				float _TransNormal;
+				float _TransScattering;
+				float _TransDirect;
+				float _TransAmbient;
+				float _TransShadow;
+			#endif
+
 			/*struct appdata_full {
 				float4 vertex : POSITION;
 				float4 tangent : TANGENT;
@@ -159,10 +246,16 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 				fixed metallic = /*ase_frag_out:Metallic;Float;7;-1;_Metallic*/0/*end*/;
 				half smoothness = /*ase_frag_out:Smoothness;Float;4;-1;_Smoothness*/0/*end*/;
 				half occlusion = /*ase_frag_out:Occlusion;Float;5;-1;_Occlusion*/1/*end*/;
+
+				float3 Transmission = /*ase_frag_out:Transmission;Float3;13;-1;_Transmission*/1/*end*/;
+				float3 Translucency = /*ase_frag_out:Translucency;Float3;14;-1;_Translucency*/1/*end*/;
+
 				fixed alpha = /*ase_frag_out:Alpha;Float;6;-1;_Alpha*/1/*end*/;
 				fixed alphaClipThreshold = /*ase_frag_out:Alpha Clip Threshold;Float;9;-1;_AlphaClipThreshold*/0/*end*/;
 				float4 bakedGI = /*ase_frag_out:Baked GI;Float4;8;-1;_BakedGI*/float4( 0, 0, 0, 0 )/*end*/;
-				
+
+
+
 				o.Albedo = albedo;
 				o.Normal = normal;
 				o.Emission = emission;
@@ -242,6 +335,44 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 					#endif
 					c += LightingStandard( o, worldViewDir, gi );
 				#endif
+
+				#ifdef _TRANSMISSION_ASE
+				{
+					float shadow = /*ase_inline_begin*/_TransmissionShadow/*ase_inline_end*/;
+
+					#ifdef DIRECTIONAL
+						float3 lightAtten = lerp(_LightColor0.rgb, gi.light.color, shadow);
+					#else
+						float3 lightAtten = gi.light.color;
+					#endif
+
+					half3 transmission = max(0, -dot(o.Normal, gi.light.dir)) * lightAtten * Transmission;
+					c.rgb += o.Albedo * transmission;
+				}
+				#endif
+
+				#ifdef _TRANSLUCENCY_ASE
+				{
+					float shadow = /*ase_inline_begin*/_TransShadow/*ase_inline_end*/;
+					float normal = /*ase_inline_begin*/_TransNormal/*ase_inline_end*/;
+					float scattering = /*ase_inline_begin*/_TransScattering/*ase_inline_end*/;
+					float direct = /*ase_inline_begin*/_TransDirect/*ase_inline_end*/;
+					float ambient = /*ase_inline_begin*/_TransAmbient/*ase_inline_end*/;
+					float strength = /*ase_inline_begin*/_TransStrength/*ase_inline_end*/;
+
+					#ifdef DIRECTIONAL
+						float3 lightAtten = lerp(_LightColor0.rgb, gi.light.color, shadow);
+					#else
+						float3 lightAtten = gi.light.color;
+					#endif
+
+					half3 lightDir = gi.light.dir + o.Normal * normal;
+					half transVdotL = pow(saturate(dot(worldViewDir, -lightDir)), scattering);
+					half3 translucency = lightAtten * (transVdotL * direct + gi.indirect.diffuse * ambient) * Translucency;
+					c.rgb += o.Albedo * translucency * strength;
+				}
+				#endif
+
 				c.rgb += o.Emission;
 				UNITY_APPLY_FOG(IN.fogCoord, c);
 				return c;
@@ -260,11 +391,11 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 			CGPROGRAM
 			#pragma vertex vert_surf
 			#pragma fragment frag_surf
-			#pragma multi_compile_fog
-			#pragma multi_compile_instancing
 			#pragma multi_compile_fwdadd_fullshadows
+
+			#pragma multi_compile_fog
 			#pragma multi_compile __ LOD_FADE_CROSSFADE
-			#pragma skip_variants INSTANCING_ON
+			#pragma multi_compile_instancing
 			#include "HLSLSupport.cginc"
 			#if !defined( UNITY_INSTANCED_LOD_FADE )
 				#define UNITY_INSTANCED_LOD_FADE
@@ -285,8 +416,22 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 			#include "UnityPBSLighting.cginc"
 			#include "AutoLight.cginc"
 			#include "UnityStandardUtils.cginc"
+
 			/*ase_pragma*/
 			/*ase_globals*/
+
+			#ifdef _TRANSMISSION_ASE
+				float _TransmissionShadow;
+			#endif
+			#ifdef _TRANSLUCENCY_ASE
+				float _TransStrength;
+				float _TransNormal;
+				float _TransScattering;
+				float _TransDirect;
+				float _TransAmbient;
+				float _TransShadow;
+			#endif
+
 			/*struct appdata_full {
 				float4 vertex : POSITION;
 				float4 tangent : TANGENT;
@@ -351,6 +496,10 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 				fixed metallic = /*ase_frag_out:Metallic;Float;7;-1;_Metallic*/0/*end*/;
 				half smoothness = /*ase_frag_out:Smoothness;Float;4;-1;_Smoothness*/0/*end*/;
 				half occlusion = /*ase_frag_out:Occlusion;Float;5;-1;_Occlusion*/1/*end*/;
+
+				float3 Transmission = /*ase_frag_out:Transmission;Float3;13;-1;_Transmission*/1/*end*/;
+				float3 Translucency = /*ase_frag_out:Translucency;Float3;14;-1;_Translucency*/1/*end*/;
+
 				fixed alpha = /*ase_frag_out:Alpha;Float;6;-1;_Alpha*/1/*end*/;
 				fixed alphaClipThreshold = /*ase_frag_out:Alpha Clip Threshold;Float;8;-1;_AlphaClipThreshold*/0/*end*/;
 
@@ -396,6 +545,44 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 				#else
 					c += LightingStandard( o, worldViewDir, gi );
 				#endif
+
+				#ifdef _TRANSMISSION_ASE
+				{
+					float shadow = /*ase_inline_begin*/_TransmissionShadow/*ase_inline_end*/;
+
+					#ifdef DIRECTIONAL
+						float3 lightAtten = lerp(_LightColor0.rgb, gi.light.color, shadow);
+					#else
+						float3 lightAtten = gi.light.color;
+					#endif
+
+					half3 transmission = max(0, -dot(o.Normal, gi.light.dir)) * lightAtten * Transmission;
+					c.rgb += o.Albedo * transmission;
+				}
+				#endif
+
+				#ifdef _TRANSLUCENCY_ASE
+				{
+					float shadow = /*ase_inline_begin*/_TransShadow/*ase_inline_end*/;
+					float normal = /*ase_inline_begin*/_TransNormal/*ase_inline_end*/;
+					float scattering = /*ase_inline_begin*/_TransScattering/*ase_inline_end*/;
+					float direct = /*ase_inline_begin*/_TransDirect/*ase_inline_end*/;
+					float ambient = /*ase_inline_begin*/_TransAmbient/*ase_inline_end*/;
+					float strength = /*ase_inline_begin*/_TransStrength/*ase_inline_end*/;
+
+					#ifdef DIRECTIONAL
+						float3 lightAtten = lerp(_LightColor0.rgb, gi.light.color, shadow);
+					#else
+						float3 lightAtten = gi.light.color;
+					#endif
+
+					half3 lightDir = gi.light.dir + o.Normal * normal;
+					half transVdotL = pow(saturate(dot(worldViewDir, -lightDir)), scattering);
+					half3 translucency = lightAtten * (transVdotL * direct + gi.indirect.diffuse * ambient) * Translucency;
+					c.rgb += o.Albedo * translucency * strength;
+				}
+				#endif
+
 				UNITY_APPLY_FOG(IN.fogCoord, c);
 				return c;
 			}
@@ -446,8 +633,10 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 			float4 unity_LightmapFade;
 			#endif
 			fixed4 unity_Ambient;
+
 			/*ase_pragma*/
 			/*ase_globals*/
+
 			/*struct appdata_full {
 				float4 vertex : POSITION;
 				float4 tangent : TANGENT;
@@ -546,7 +735,7 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 				fixed alpha = /*ase_frag_out:Alpha;Float;6;-1;_Alpha*/1/*end*/;
 				fixed alphaClipThreshold = /*ase_frag_out:Alpha Clip Threshold;Float;9;-1;_AlphaClipThreshold*/0/*end*/;
 				float4 bakedGI = /*ase_frag_out:Baked GI;Float4;8;-1;_BakedGI*/float4( 0, 0, 0, 0 )/*end*/;
-				
+
 				o.Albedo = albedo;
 				o.Normal = normal;
 				o.Emission = emission;
@@ -646,7 +835,7 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 			#pragma vertex vert_surf
 			#pragma fragment frag_surf
 			#pragma skip_variants FOG_LINEAR FOG_EXP FOG_EXP2
-			#pragma skip_variants INSTANCING_ON
+			#pragma multi_compile_instancing
 			#pragma shader_feature EDITOR_VISUALIZATION
 			#include "HLSLSupport.cginc"
 			#if !defined( UNITY_INSTANCED_LOD_FADE )
@@ -668,8 +857,10 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 			#include "UnityPBSLighting.cginc"
 			#include "UnityStandardUtils.cginc"
 			#include "UnityMetaPass.cginc"
+
 			/*ase_pragma*/
 			/*ase_globals*/
+
 			/*struct appdata_full {
 				float4 vertex : POSITION;
 				float4 tangent : TANGENT;
@@ -787,8 +978,10 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 			#include "Lighting.cginc"
 			#include "UnityPBSLighting.cginc"
 			#include "UnityStandardUtils.cginc"
+
 			/*ase_pragma*/
 			/*ase_globals*/
+
 			/*struct appdata_full {
 				float4 vertex : POSITION;
 				float4 tangent : TANGENT;
@@ -819,11 +1012,10 @@ Shader /*ase_name*/ "Hidden/Impostors/Runtime/Standard Legacy"/*end*/
 				/*ase_vert_code:v=appdata_full;o=v2f_surf*/
 
 				v.vertex.xyz += /*ase_vert_out:Local Vertex;Float3;_Vertex*/ float3(0,0,0) /*end*/;
-#if defined( _VERTEX_OFFSET )
-				TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
-#else
+
+				// TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
 				TRANSFER_SHADOW_CASTER(o)
-#endif
+
 				return o;
 			}
 

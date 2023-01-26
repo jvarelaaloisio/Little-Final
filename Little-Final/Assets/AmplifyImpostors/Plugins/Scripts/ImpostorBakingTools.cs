@@ -58,11 +58,7 @@ namespace AmplifyImpostors
 			// Find Path next to prefab
 			if( string.IsNullOrEmpty( objectPath ) )
 			{
-#if UNITY_2018_2_OR_NEWER
 				objectPath = AssetDatabase.GetAssetPath( PrefabUtility.GetCorrespondingObjectFromSource( instance.RootTransform ) );
-#else
-				objectPath = AssetDatabase.GetAssetPath( PrefabUtility.GetPrefabParent( instance.RootTransform ) );
-#endif
 			}
 
 			GlobalRelativeFolder = EditorPrefs.GetString( PrefGlobalRelativeFolder, "" );
@@ -118,11 +114,11 @@ namespace AmplifyImpostors
 
 		private static bool PrefsLoaded = false;
 		private static GUIContent PathButtonContent = new GUIContent();
-#if UNITY_2019_1_OR_NEWER
+
 		[SettingsProvider]
 		public static SettingsProvider ImpostorsSettings()
 		{
-			var provider = new SettingsProvider( "Preferences/Impostors", SettingsScope.User )
+			var provider = new SettingsProvider( "Preferences/Amplify Impostors", SettingsScope.User )
 			{
 				guiHandler = ( string searchContext ) => {
 					PreferencesGUI();
@@ -130,9 +126,7 @@ namespace AmplifyImpostors
 			};
 			return provider;
 		}
-#else
-		[PreferenceItem( "Impostors" )]
-#endif
+
 		public static void PreferencesGUI()
 		{
 			if( !PrefsLoaded )

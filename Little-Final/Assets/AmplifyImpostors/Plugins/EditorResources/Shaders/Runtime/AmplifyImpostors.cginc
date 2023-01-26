@@ -55,13 +55,11 @@ sampler2D _Emission;
 	sampler2D _Specular;
 #endif
 
-#if defined(AI_HD_RENDERPIPELINE) && ( AI_HDRP_VERSION >= 50702 )
+#if defined(AI_HD_RENDERPIPELINE)
 	TEXTURE2D(_Features);
 #endif
 
-#if defined(AI_RENDERPIPELINE) && ( AI_HDRP_VERSION >= 50702 || AI_LWRP_VERSION >= 50702 ) 
 CBUFFER_START(UnityPerMaterial)
-#endif
 float _FramesX;
 float _FramesY;
 float _Frames;
@@ -79,9 +77,7 @@ float _EnergyConservingSpecularColor;
 #ifdef EFFECT_HUE_VARIATION
 	half4 _HueVariation;
 #endif
-#if defined(AI_RENDERPIPELINE) && ( AI_HDRP_VERSION >= 50702 || AI_LWRP_VERSION >= 50702 ) 
 CBUFFER_END
-#endif
 
 
 #ifdef AI_RENDERPIPELINE
@@ -130,12 +126,12 @@ inline void RayPlaneIntersectionUV( float3 normal, float3 rayPosition, float3 ra
 
 	if( t <= 0.0 ) // not intersecting
 		uvs = 0;
-	
+
 	float3x3 worldToLocal = float3x3( tangent, bitangent, normal ); // TBN (same as doing separate dots?, assembly looks the same)
 	localNormal = normalize( mul( worldToLocal, rayDirection ) );
 }
 
-inline void OctaImpostorVertex( inout float4 vertex, inout float3 normal, inout float4 uvsFrame1, inout float4 uvsFrame2, inout float4 uvsFrame3, inout float4 octaFrame, inout float4 viewPos )
+inline void OctaImpostorVertex( inout float3 vertex, inout float3 normal, inout float4 uvsFrame1, inout float4 uvsFrame2, inout float4 uvsFrame3, inout float4 octaFrame, inout float4 viewPos )
 {
 	// Inputs
 	float2 uvOffset = _AI_SizeOffset.zw;
@@ -152,7 +148,7 @@ inline void OctaImpostorVertex( inout float4 vertex, inout float3 normal, inout 
 	float3 worldOrigin = 0;
 	float4 perspective = float4( 0, 0, 0, 1 );
 	// if there is no perspective we offset world origin with a 5000 view dir vector, otherwise we use the original world position
-	if( UNITY_MATRIX_P[ 3 ][ 3 ] == 1 ) 
+	if( UNITY_MATRIX_P[ 3 ][ 3 ] == 1 )
 	{
 		perspective = float4( 0, 0, 5000, 0 );
 		worldOrigin = ai_ObjectToWorld._m03_m13_m23;
@@ -260,6 +256,11 @@ inline void OctaImpostorVertex( inout float4 vertex, inout float3 normal, inout 
 	#endif
 }
 
+inline void OctaImpostorVertex( inout float4 vertex, inout float3 normal, inout float4 uvsFrame1, inout float4 uvsFrame2, inout float4 uvsFrame3, inout float4 octaFrame, inout float4 viewPos )
+{
+	OctaImpostorVertex( vertex.xyz, normal, uvsFrame1, uvsFrame2, uvsFrame3, octaFrame, viewPos );
+}
+
 inline void OctaImpostorFragment( inout SurfaceOutputStandardSpecular o, out float4 clipPos, out float3 worldPos, float4 uvsFrame1, float4 uvsFrame2, float4 uvsFrame3, float4 octaFrame, float4 interpViewPos )
 {
 	float depthBias = -1.0;
@@ -305,7 +306,7 @@ inline void OctaImpostorFragment( inout SurfaceOutputStandardSpecular o, out flo
 		steps.y = step23.x * step23.y;
 		steps.z = step23.z * step23.w;
 		steps = step(-steps, 0);
-	
+
 		float final = dot( steps, weights );
 
 		clip( final - 0.5 );
@@ -339,14 +340,14 @@ inline void OctaImpostorFragment( inout SurfaceOutputStandardSpecular o, out flo
 	o.Smoothness = blendedSpec.a;
 
 	// Diffusion Features
-	#if defined(AI_HD_RENDERPIPELINE) && ( AI_HDRP_VERSION >= 50702 )
+	#if defined(AI_HD_RENDERPIPELINE)
 	float4 feat1 = _Features.SampleLevel( SamplerState_Point_Repeat, parallax1, 0);
 	o.Diffusion = feat1.rgb;
 	o.Features = feat1.a;
 	float4 test1 = _Specular.SampleLevel( SamplerState_Point_Repeat, parallax1, 0);
 	o.MetalTangent = test1.b;
 	#endif
-	
+
 	// normal depth
 	float4 normals1 = tex2Dbias( _Normals, float4( parallax1, 0, textureBias) );
 	float4 normals2 = tex2Dbias( _Normals, float4( parallax2, 0, textureBias) );
@@ -359,7 +360,7 @@ inline void OctaImpostorFragment( inout SurfaceOutputStandardSpecular o, out flo
 
 	float3 viewPos = interpViewPos.xyz;
 	float depthOffset = ( ( parallaxSample1.a * weights.x + parallaxSample2.a * weights.y + parallaxSample3.a * weights.z ) - 0.5 /** 2.0 - 1.0*/ ) /** 0.5*/ * _DepthSize * length( ai_ObjectToWorld[ 2 ].xyz );
-	
+
 	#if !defined(AI_RENDERPIPELINE) // no SRP
 		#if defined(SHADOWS_DEPTH)
 			if( unity_LightShadowBias.y == 1.0 ) // get only the shadowcaster, this is a hack
@@ -375,7 +376,7 @@ inline void OctaImpostorFragment( inout SurfaceOutputStandardSpecular o, out flo
 			viewPos.z += depthOffset;
 		#endif
 	#elif defined(AI_RENDERPIPELINE) // SRP
-		#if ( defined(SHADERPASS) && (SHADERPASS == SHADERPASS_SHADOWS) ) || defined(UNITY_PASS_SHADOWCASTER)
+		#if ( defined(SHADERPASS) && ((defined(SHADERPASS_SHADOWS) && SHADERPASS == SHADERPASS_SHADOWS) || (defined(SHADERPASS_SHADOWCASTER) && SHADERPASS == SHADERPASS_SHADOWCASTER)) ) || defined(UNITY_PASS_SHADOWCASTER)
 			viewPos.z += depthOffset * _AI_ShadowView;
 			viewPos.z += -_AI_ShadowBias;
 		#else // else add offset normally
@@ -385,7 +386,7 @@ inline void OctaImpostorFragment( inout SurfaceOutputStandardSpecular o, out flo
 
 	worldPos = mul( UNITY_MATRIX_I_V, float4( viewPos.xyz, 1 ) ).xyz;
 	clipPos = mul( UNITY_MATRIX_P, float4( viewPos, 1 ) );
-	
+
 	#if !defined(AI_RENDERPIPELINE) // no SRP
 		#if defined(SHADOWS_DEPTH)
 			clipPos = UnityApplyLinearShadowBias( clipPos );
@@ -399,14 +400,14 @@ inline void OctaImpostorFragment( inout SurfaceOutputStandardSpecular o, out flo
 			#endif
 		#endif
 	#endif
-	
+
 	clipPos.xyz /= clipPos.w;
-	
+
 	if( UNITY_NEAR_CLIP_VALUE < 0 )
 		clipPos = clipPos * 0.5 + 0.5;
 }
 
-inline void SphereImpostorVertex( inout float4 vertex, inout float3 normal, inout float4 frameUVs, inout float4 viewPos )
+inline void SphereImpostorVertex( inout float3 vertex, inout float3 normal, inout float4 frameUVs, inout float4 viewPos )
 {
 	// INPUTS
 	float2 uvOffset = _AI_SizeOffset.zw;
@@ -459,7 +460,7 @@ inline void SphereImpostorVertex( inout float4 vertex, inout float3 normal, inou
 	float2 frameUV = ( ( uvExpansion * fractionsUVscale + 0.5 ) + relativeCoords ) * sizeFraction;
 
 	frameUVs.xy = frameUV - uvOffset;
-	
+
 	// Parallax
 	#if _USE_PARALLAX_ON
 		float3 objectNormalVector = cross( objectHorizontalVector, -objectVerticalVector );
@@ -469,7 +470,7 @@ inline void SphereImpostorVertex( inout float4 vertex, inout float3 normal, inou
 	#else
 		frameUVs.zw = 0;
 	#endif
-	
+
 	viewPos.w = 0;
 	#ifdef AI_RENDERPIPELINE
 		viewPos.xyz = TransformWorldToView( TransformObjectToWorld( billboard ) );
@@ -484,6 +485,11 @@ inline void SphereImpostorVertex( inout float4 vertex, inout float3 normal, inou
 
 	vertex.xyz = billboard;
 	normal.xyz = objectCameraDirection;
+}
+
+inline void SphereImpostorVertex( inout float4 vertex, inout float3 normal, inout float4 frameUVs, inout float4 viewPos )
+{
+	SphereImpostorVertex( vertex.xyz, normal, frameUVs, viewPos );
 }
 
 inline void SphereImpostorFragment( inout SurfaceOutputStandardSpecular o, out float4 clipPos, out float3 worldPos, float4 frameUV, float4 viewPos )
@@ -510,7 +516,7 @@ inline void SphereImpostorFragment( inout SurfaceOutputStandardSpecular o, out f
 		albedoSample.rgb = saturate(shiftedColor);
 	#endif
 	o.Albedo = albedoSample.rgb;
-	
+
 	// Specular Smoothness
 	float4 specularSample = AI_SAMPLEBIAS( _Specular, sampler_Specular, frameUV.xy, _TextureBias );
 	o.Specular = specularSample.rgb;
@@ -522,7 +528,7 @@ inline void SphereImpostorFragment( inout SurfaceOutputStandardSpecular o, out f
 	o.Occlusion = emissionSample.a;
 
 	// Diffusion Features
-	#if defined(AI_HD_RENDERPIPELINE) && ( AI_HDRP_VERSION >= 50702 )
+	#if defined(AI_HD_RENDERPIPELINE)
 	float4 feat1 = _Features.SampleLevel( SamplerState_Point_Repeat, frameUV.xy, 0);
 	o.Diffusion = feat1.rgb;
 	o.Features = feat1.a;
@@ -554,7 +560,7 @@ inline void SphereImpostorFragment( inout SurfaceOutputStandardSpecular o, out f
 			viewPos.z += depth;
 		#endif
 	#elif defined(AI_RENDERPIPELINE) // SRP
-		#if ( defined(SHADERPASS) && (SHADERPASS == SHADERPASS_SHADOWS) ) || defined(UNITY_PASS_SHADOWCASTER)
+	#if ( defined(SHADERPASS) && ((defined(SHADERPASS_SHADOWS) && SHADERPASS == SHADERPASS_SHADOWS) || (defined(SHADERPASS_SHADOWCASTER) && SHADERPASS == SHADERPASS_SHADOWCASTER)) ) || defined(UNITY_PASS_SHADOWCASTER)
 			viewPos.z += depth * _AI_ShadowView;
 			viewPos.z += -_AI_ShadowBias;
 		#else // else add offset normally
@@ -564,7 +570,7 @@ inline void SphereImpostorFragment( inout SurfaceOutputStandardSpecular o, out f
 
 	worldPos = mul( UNITY_MATRIX_I_V, float4( viewPos.xyz, 1 ) ).xyz;
 	clipPos = mul( UNITY_MATRIX_P, float4( viewPos.xyz, 1 ) );
-	
+
 	#if !defined(AI_RENDERPIPELINE) // no SRP
 		#if defined(SHADOWS_DEPTH)
 			clipPos = UnityApplyLinearShadowBias( clipPos );
@@ -578,9 +584,9 @@ inline void SphereImpostorFragment( inout SurfaceOutputStandardSpecular o, out f
 			#endif
 		#endif
 	#endif
-	
+
 	clipPos.xyz /= clipPos.w;
-	
+
 	if( UNITY_NEAR_CLIP_VALUE < 0 )
 		clipPos = clipPos * 0.5 + 0.5;
 }

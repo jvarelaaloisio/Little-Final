@@ -1,7 +1,7 @@
 // Amplify Impostors
 // Copyright (c) Amplify Creations, Lda <info@amplify.pt>
 
-#if AMPLIFY_SHADER_EDITOR && UNITY_EDITOR
+#if AMPLIFY_SHADER_EDITOR
 using UnityEngine;
 using UnityEditor;
 using System;
@@ -897,6 +897,8 @@ namespace AmplifyShaderEditor
 
 			dataCollector.PortCategory = portCategory;
 
+			bool isHDRP = ( dataCollector.IsSRP && dataCollector.CurrentSRPType == TemplateSRPType.HDRP );
+
 			if( dataCollector.IsFragmentCategory )
 			{
 				string extraHeader = string.Empty;
@@ -952,7 +954,7 @@ namespace AmplifyShaderEditor
 					case 6:
 					return "o.Alpha";
 					case 7:
-					return "worldPos";
+					return isHDRP ? "GetAbsolutePositionWS( worldPos )" : "worldPos";
 					case 16:
 					dataCollector.AddLocalVariable( UniqueId, "float3 viewPosOut" + OutputId + " = mul( UNITY_MATRIX_V, float4( worldPos.xyz, 1.0 ) ).xyz;" );
 					return "viewPosOut" + OutputId;
@@ -965,7 +967,9 @@ namespace AmplifyShaderEditor
 				switch( outputId )
 				{
 					case 7:
-					dataCollector.AddLocalVariable( UniqueId, "float3 worldPosOut" + OutputId + " = mul( UNITY_MATRIX_I_V, float4( " + vertOut + "." + viewPosName + ".xyz, 1.0 ) ).xyz;" );
+					string worldPos = "mul( UNITY_MATRIX_I_V, float4( " + vertOut + "." + viewPosName + ".xyz, 1.0 ) ).xyz";
+					worldPos = isHDRP ? "GetAbsolutePositionWS( " + worldPos + " )" : worldPos;
+					dataCollector.AddLocalVariable( UniqueId, "float3 worldPosOut" + OutputId + " = " + worldPos + ";" );
 					return "worldPosOut" + OutputId;
 					case 16:
 					return vertOut + "." + viewPosName + ".xyz";
@@ -1262,7 +1266,7 @@ namespace AmplifyShaderEditor
 				{
 					dataCollector.AddToDirectives( DielecticSRPFix[ i ] );
 				}
-				IOUtils.AddFunctionLine( ref m_functionBody, "#if defined(AI_HD_RENDERPIPELINE) && ( AI_HDRP_VERSION >= 50702 )" );
+				IOUtils.AddFunctionLine( ref m_functionBody, "#if defined(AI_HD_RENDERPIPELINE)" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "float4 feat1 = _Features.SampleLevel( SamplerState_Point_Repeat, frameUV.xy, 0);" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "o.Diffusion = feat1.rgb;" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "o.Features = feat1.a;" );
@@ -1310,21 +1314,14 @@ namespace AmplifyShaderEditor
 			}
 			else
 			{
-				IOUtils.AddFunctionLine( ref m_functionBody, "#if ( defined(SHADERPASS) && (SHADERPASS == SHADERPASS_SHADOWS) ) || defined(UNITY_PASS_SHADOWCASTER)" );
+				IOUtils.AddFunctionLine( ref m_functionBody, "#if ( defined(SHADERPASS) && ((defined(SHADERPASS_SHADOWS) && SHADERPASS == SHADERPASS_SHADOWS) || (defined(SHADERPASS_SHADOWCASTER) && SHADERPASS == SHADERPASS_SHADOWCASTER)) ) || defined(UNITY_PASS_SHADOWCASTER)" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "viewPos.z += depth * _AI_ShadowView;" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "viewPos.z += -_AI_ShadowBias;" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "#else " );
 				IOUtils.AddFunctionLine( ref m_functionBody, "viewPos.z += depth;" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "#endif" );
 			}
-			if( isSRP && dataCollector.CurrentSRPType == TemplateSRPType.HD )
-			{
-				IOUtils.AddFunctionLine( ref m_functionBody , "worldPos = GetAbsolutePositionWS( mul( UNITY_MATRIX_I_V, float4( viewPos.xyz, 1 ) )).xyz;" );
-			}
-			else
-			{
-				IOUtils.AddFunctionLine( ref m_functionBody , "worldPos = mul( UNITY_MATRIX_I_V, float4( viewPos.xyz, 1 ) ).xyz;" );
-			}
+			IOUtils.AddFunctionLine( ref m_functionBody , "worldPos = mul( UNITY_MATRIX_I_V, float4( viewPos.xyz, 1 ) ).xyz;" );
 			IOUtils.AddFunctionLine( ref m_functionBody, "clipPos = mul( UNITY_MATRIX_P, float4( viewPos.xyz, 1 ) );" );
 			if( !isSRP )
 			{
@@ -1600,7 +1597,7 @@ namespace AmplifyShaderEditor
 					dataCollector.AddToDirectives( DielecticSRPFix[ i ] );
 				}
 
-				IOUtils.AddFunctionLine( ref m_functionBody, "#if defined(AI_HD_RENDERPIPELINE) && ( AI_HDRP_VERSION >= 50702 )" );
+				IOUtils.AddFunctionLine( ref m_functionBody, "#if defined(AI_HD_RENDERPIPELINE)" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "float4 feat1 = _Features.SampleLevel( SamplerState_Point_Repeat, parallax1, 0);" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "o.Diffusion = feat1.rgb;" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "o.Features = feat1.a;" );
@@ -1659,11 +1656,11 @@ namespace AmplifyShaderEditor
 			IOUtils.AddFunctionLine( ref m_functionBody, "o.Normal = worldNormal;" );
 			IOUtils.AddFunctionLine( ref m_functionBody, "float3 viewPos = interpViewPos.xyz;" );
 
-			IOUtils.AddFunctionLine(ref m_functionBody, "#if defined(UNITY_PASS_SHADOWCASTER) // Standard RP fix for deferred path");
+			IOUtils.AddFunctionLine( ref m_functionBody, "#if ( defined(SHADERPASS) && (defined(SHADERPASS_DEPTHNORMALSONLY) && SHADERPASS == SHADERPASS_DEPTHNORMALSONLY) ) || defined(UNITY_PASS_SHADOWCASTER)" );
 			IOUtils.AddFunctionLine( ref m_functionBody, "float depthOffset = ( ( parallaxSample1.a * weights.x + parallaxSample2.a * weights.y + parallaxSample3.a * weights.z ) - 0.5001 /** 2.0 - 1.0*/ ) /** 0.5*/ * "+ m_depthProp.PropertyName + " * length( ai_ObjectToWorld[ 2 ].xyz );" );
-			IOUtils.AddFunctionLine(ref m_functionBody, "#else");
-			IOUtils.AddFunctionLine(ref m_functionBody, "float depthOffset = ( ( parallaxSample1.a * weights.x + parallaxSample2.a * weights.y + parallaxSample3.a * weights.z ) - 0.5 /** 2.0 - 1.0*/ ) /** 0.5*/ * " + m_depthProp.PropertyName + " * length( ai_ObjectToWorld[ 2 ].xyz );");
-			IOUtils.AddFunctionLine(ref m_functionBody, "#endif");
+			IOUtils.AddFunctionLine( ref m_functionBody, "#else" );
+			IOUtils.AddFunctionLine( ref m_functionBody, "float depthOffset = ( ( parallaxSample1.a * weights.x + parallaxSample2.a * weights.y + parallaxSample3.a * weights.z ) - 0.5 /** 2.0 - 1.0*/ ) /** 0.5*/ * " + m_depthProp.PropertyName + " * length( ai_ObjectToWorld[ 2 ].xyz );" );
+			IOUtils.AddFunctionLine( ref m_functionBody, "#endif" );
 			if ( !isSRP )
 			{
 				IOUtils.AddFunctionLine( ref m_functionBody, "#if defined(SHADOWS_DEPTH)" );
@@ -1682,23 +1679,14 @@ namespace AmplifyShaderEditor
 			}
 			else
 			{
-				IOUtils.AddFunctionLine( ref m_functionBody, "#if ( defined(SHADERPASS) && (SHADERPASS == SHADERPASS_SHADOWS) ) || defined(UNITY_PASS_SHADOWCASTER)" );
+				IOUtils.AddFunctionLine( ref m_functionBody, "#if ( defined(SHADERPASS) && ((defined(SHADERPASS_SHADOWS) && SHADERPASS == SHADERPASS_SHADOWS) || (defined(SHADERPASS_SHADOWCASTER) && SHADERPASS == SHADERPASS_SHADOWCASTER)) ) || defined(UNITY_PASS_SHADOWCASTER)" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "viewPos.z += depthOffset * _AI_ShadowView;" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "viewPos.z += -_AI_ShadowBias;" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "#else " );
 				IOUtils.AddFunctionLine( ref m_functionBody, "viewPos.z += depthOffset;" );
 				IOUtils.AddFunctionLine( ref m_functionBody, "#endif" );
 			}
-
-			if( isSRP && dataCollector.CurrentSRPType == TemplateSRPType.HD )
-			{
-				IOUtils.AddFunctionLine( ref m_functionBody , "worldPos = GetAbsolutePositionWS( mul( UNITY_MATRIX_I_V, float4( viewPos.xyz, 1 ) )).xyz;" );
-			}
-			else
-			{
-				IOUtils.AddFunctionLine( ref m_functionBody , "worldPos = mul( UNITY_MATRIX_I_V, float4( viewPos.xyz, 1 ) ).xyz;" );
-			}
-
+			IOUtils.AddFunctionLine( ref m_functionBody , "worldPos = mul( UNITY_MATRIX_I_V, float4( viewPos.xyz, 1 ) ).xyz;" );
 			IOUtils.AddFunctionLine( ref m_functionBody, "clipPos = mul( UNITY_MATRIX_P, float4( viewPos, 1 ) );" );
 			if( !isSRP )
 			{

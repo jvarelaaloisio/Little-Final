@@ -1,4 +1,63 @@
-Release Notes:
+
+v0.9.8.3
+
+   Fixes
+      * Fixed AmplifyImpostorNode errors during build
+
+v0.9.8.2
+
+   Fixes
+      * Fixed multi-second delay selecting BiRP impostors when URP/HDRP packages are missing
+      * Fixed URP depth primming, depth normals and deferred passes
+      * Fixed HDRP subsurface scattering and transmission port issues
+      * Fixed AmplifyImpostorNode errors during build
+
+   Changes
+      * Added Transmission and Translucency to BiRP and URP ASE templates
+
+v0.9.8.1
+
+   Fixes
+      * Fixed unity version upgrade and deferred rendering issues in URP templates for ASE
+      * Fixed shadow issues in AmplifyImpostors.cginc
+      * Fixed Amplify Impostor Node shadows in URP 12x and 14x
+      * Fixed Amplify Impostor Node WorldPos output
+
+   Changes
+      * Added Transmission and Translucency to BiRP+URP ASE templates
+      * Updated BiRP Lit template
+      * Updated URP and HDRP packages
+
+v0.9.8
+
+   Highlights
+      * Added support for SRP 14
+      * Added support for SRP 12
+      * Added support for Forward+ in URP 14      
+      * Improved support for SRP 10+ package (10xx to 11xx)
+      * Updated SRP samples to work with all SRP versions
+      * Updated minimum Unity version to 2019.4.31f1
+
+   Fixes
+      * Fixed HDRP material check
+      * Fixed SRP version detection
+      * Fixed worldPos not RWS in HDRP
+      * Fixed Amplify Impostor Node to apply normal correction
+
+   Changes
+      * Changed "Preferences/Impostors" to "Preferences/Amplify Impostors"
+      * Moved and renamed packages for consistency
+      * Updated URP and HDRP presets
+      * Removed Pipeline option from Bake Preset
+      * Unpacked "Universal Surface Output" shader function
+      * Removed all references to Lightweight RP
+      * Removed all packages for URP/HDRP below 10x
+
+v0.9.7 rev014
+* Fixes:
+    * Fixed script compilation error with ASE v1.9.1
+    * Raised minimum Unity support to 2019.4 LTS
+
 v0.9.7 rev013
 * Fixes:
     * Fixed issue on editor code trying to be incorrectly added to builds

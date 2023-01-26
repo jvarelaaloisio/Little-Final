@@ -46,20 +46,24 @@ namespace AmplifyShaderEditor
 		AllModules,
 		VControl,
 		ControlData,
-		DomainData
+		DomainData,
+		ModuleRenderPlatforms
 		//EndPass
 	}
 
 	public enum TemplateSRPType
 	{
-		BuiltIn,
-		HD,
-		Lightweight
+		BiRP,
+		HDRP,
+		URP
 	}
 
 	[Serializable]
 	public class TemplateModulesData
 	{
+		[SerializeField]
+		TemplateRenderPlatformHelper m_renderPlatformHelper;
+
 		[SerializeField]
 		private TemplateBlendData m_blendData = new TemplateBlendData();
 
@@ -130,7 +134,7 @@ namespace AmplifyShaderEditor
 		private TemplateShaderModelData m_shaderModel = new TemplateShaderModelData();
 
 		[SerializeField]
-		private TemplateSRPType m_srpType = TemplateSRPType.BuiltIn;
+		private TemplateSRPType m_srpType = TemplateSRPType.BiRP;
 
 		[SerializeField]
 		private bool m_srpIsPBR = false;
@@ -149,6 +153,9 @@ namespace AmplifyShaderEditor
 
 		public void Destroy()
 		{
+			m_renderPlatformHelper.Destroy();
+			m_renderPlatformHelper = null;
+
 			m_blendData = null;
 			m_blendData1 = null;
 			m_blendData2 = null;
@@ -193,6 +200,16 @@ namespace AmplifyShaderEditor
 				return;
 
 			m_uniquePrefix = uniquePrefix;
+			
+			//RENDERING PLATFORMS
+			m_renderPlatformHelper = new TemplateRenderPlatformHelper();
+			TemplateHelperFunctions.FillRenderingPlatform( m_renderPlatformHelper , subBody );
+			if( m_renderPlatformHelper.IsValid )
+			{
+				m_renderPlatformHelper.Index = offsetIdx + m_renderPlatformHelper.Index;
+				idManager.RegisterId( m_renderPlatformHelper.Index , uniquePrefix + m_renderPlatformHelper.ID , m_renderPlatformHelper.ID );
+			}
+
 			//PRAGMAS AND INCLUDES
 			TemplateHelperFunctions.CreatePragmaIncludeList( subBody, m_includePragmaContainer );
 
@@ -761,7 +778,8 @@ namespace AmplifyShaderEditor
 						m_pragmaBeforeTag.IsValid ||
 						m_passTag.IsValid ||
 						m_inputsVertTag.IsValid ||
-						m_inputsFragTag.IsValid;
+						m_inputsFragTag.IsValid ||
+						m_renderPlatformHelper.IsValid;
 			}
 		}
 
@@ -790,11 +808,12 @@ namespace AmplifyShaderEditor
 		public TemplateShaderModelData ShaderModel { get { return m_shaderModel; } }
 		public TemplateSRPType SRPType { get { return m_srpType; } set { m_srpType = value; } }
 		public bool SRPIsPBR { get { return m_srpIsPBR; } set { m_srpIsPBR = value; } }
-		public bool SRPIsPBRHD { get { return m_srpIsPBR && m_srpType == TemplateSRPType.HD; }  }
+		public bool SRPIsPBRHD { get { return m_srpIsPBR && m_srpType == TemplateSRPType.HDRP; }  }
 		public string UniquePrefix { get { return m_uniquePrefix; } }
 		public string PassUniqueName { get { return m_passUniqueName; } }
 		public bool HasPassUniqueName { get { return !string.IsNullOrEmpty( m_passUniqueName ); } }
 		public TemplateIncludePragmaContainter IncludePragmaContainer { get { return m_includePragmaContainer; } }
+		public TemplateRenderPlatformHelper RenderPlatformHelper { get { return m_renderPlatformHelper; } }
 		public bool AllModulesMode { get { return m_allModulesMode; } }
 	}
 }

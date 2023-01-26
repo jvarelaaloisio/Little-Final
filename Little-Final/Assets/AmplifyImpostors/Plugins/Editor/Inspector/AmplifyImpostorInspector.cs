@@ -54,11 +54,6 @@ namespace AmplifyImpostors
 		private string m_shaderTag = "";
 
 		private Material m_alphaMaterial;
-		private const string AlphaGUID = "31bd3cd74692f384a916d9d7ea87710d";
-		private const string StandardPreset = "e4786beb7716da54dbb02a632681cc37";
-		private const string LWPreset = "089f3a2f6b5f48348a48c755f8d9a7a2";
-		private const string UPreset = "0403878495ffa3c4e9d4bcb3eac9b559";
-		private const string HDPreset = "47b6b3dcefe0eaf4997acf89caf8c75e";
 
 		private static readonly GUIContent AssetFieldStr = new GUIContent( "Impostor Asset", "Asset that will hold most of the impostor data" );
 		private static readonly GUIContent LODGroupStr = new GUIContent( "LOD Group", "If it exists this allows to automatically setup the impostor in the given LOD Group" );
@@ -130,7 +125,7 @@ namespace AmplifyImpostors
 
 			ImpostorBakingTools.LoadDefaults();
 
-			Shader alphaShader = AssetDatabase.LoadAssetAtPath<Shader>( AssetDatabase.GUIDToAssetPath( AlphaGUID ) );
+			Shader alphaShader = AssetDatabase.LoadAssetAtPath<Shader>( AssetDatabase.GUIDToAssetPath( AmplifyImpostor.PackerGUID ) );
 			m_alphaMaterial = new Material( alphaShader );
 
 			if( m_instance.m_cutMode == CutMode.Automatic )
@@ -203,14 +198,12 @@ namespace AmplifyImpostors
 			if( m_currentData.Preset == null )
 			{
 				m_instance.DetectRenderPipeline();
-				if( m_instance.m_renderPipelineInUse == RenderPipelineInUse.HD )
-					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( HDPreset ) );
-				else if( m_instance.m_renderPipelineInUse == RenderPipelineInUse.LW )
-					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( LWPreset ) );
+				if( m_instance.m_renderPipelineInUse == RenderPipelineInUse.HDRP )
+					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( AmplifyImpostor.PresetHDRP ) );
 				else if( m_instance.m_renderPipelineInUse == RenderPipelineInUse.URP )
-					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( UPreset ) );
+					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( AmplifyImpostor.PresetURP ) );
 				else
-					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( StandardPreset ) );
+					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( AmplifyImpostor.Preset ) );
 
 				if( m_currentData.Version < 8500 )
 				{
@@ -387,7 +380,7 @@ namespace AmplifyImpostors
 			Rect labelRect = rect;
 			labelRect.width = 16;
 			labelRect.height = EditorGUIUtility.singleLineHeight;
-			
+
 			TextureOutput drawElem = m_currentData.OverrideOutput.Find( ( x ) => { return x.Index == index; } );
 			bool overrideExists = drawElem != null;
 
@@ -505,32 +498,15 @@ namespace AmplifyImpostors
 				EditorGUI.EndDisabledGroup();
 
 			maskRect.x += 1;
-			GUI.color = new Color( 0.0f, 0.0f, 0.0f, 0.4f );
-#if !UNITY_2019_3_OR_NEWER
-			GUI.Label( maskRect, "", "AssetLabel" );
-			maskRect.x += 1;
-			maskRect.y += 4;
-#endif
 			GUI.color = Color.white;
 			EditorGUI.BeginChangeCheck();
 			OverrideMask mask = 0;
 
-#if UNITY_2019_3_OR_NEWER
 			if( overrideExists )
 				mask = (OverrideMask)EditorGUI.EnumFlagsField( maskRect, drawElem.OverrideMask );
 			else
 				mask = (OverrideMask)EditorGUI.EnumFlagsField( maskRect, m_currentData.Preset.Output[ index ].OverrideMask );
-#elif UNITY_2017_3_OR_NEWER
-			if( overrideExists )
-				mask = (OverrideMask)EditorGUI.EnumFlagsField( maskRect, drawElem.OverrideMask, "Icon.TrackOptions" );
-			else
-				mask = (OverrideMask)EditorGUI.EnumFlagsField( maskRect, m_currentData.Preset.Output[ index ].OverrideMask, "Icon.TrackOptions" );
-#else
-			if( overrideExists )
-				mask = (OverrideMask)EditorGUI.EnumMaskField( maskRect, drawElem.OverrideMask, "Icon.TrackOptions" );
-			else
-				mask = (OverrideMask)EditorGUI.EnumMaskField( maskRect, m_currentData.Preset.Output[ index ].OverrideMask, "Icon.TrackOptions" );
-#endif
+
 			if( EditorGUI.EndChangeCheck() )
 			{
 				if( mask != 0 && drawElem == null )
@@ -782,7 +758,7 @@ namespace AmplifyImpostors
 					if( m_billboardMesh )
 					{
 						DrawBillboardMesh( ref triangulateMesh, ref autoChangeToManual );
-						
+
 						EditorGUILayout.BeginVertical();
 						{
 							EditorGUI.BeginChangeCheck();
@@ -869,14 +845,12 @@ namespace AmplifyImpostors
 					if( m_currentData.Preset == null )
 					{
 						m_instance.DetectRenderPipeline();
-						if( m_instance.m_renderPipelineInUse == RenderPipelineInUse.HD )
-							m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( HDPreset ) );
-						else if( m_instance.m_renderPipelineInUse == RenderPipelineInUse.LW )
-							m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( LWPreset ) );
+						if( m_instance.m_renderPipelineInUse == RenderPipelineInUse.HDRP )
+							m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( AmplifyImpostor.PresetHDRP ) );
 						else if( m_instance.m_renderPipelineInUse == RenderPipelineInUse.URP )
-							m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( UPreset ) );
+							m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( AmplifyImpostor.PresetURP ) );
 						else
-							m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( StandardPreset ) );
+							m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( AmplifyImpostor.Preset ) );
 					}
 
 					if( m_presetOptions )
@@ -899,18 +873,16 @@ namespace AmplifyImpostors
 				}
 				EditorGUILayout.EndVertical();
 			}
-			
+
 			if( m_currentData.Preset == null )
 			{
 				m_instance.DetectRenderPipeline();
-				if( m_instance.m_renderPipelineInUse == RenderPipelineInUse.HD )
-					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( HDPreset ) );
-				else if( m_instance.m_renderPipelineInUse == RenderPipelineInUse.LW )
-					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( LWPreset ) );
+				if( m_instance.m_renderPipelineInUse == RenderPipelineInUse.HDRP )
+					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( AmplifyImpostor.PresetHDRP ) );
 				else if( m_instance.m_renderPipelineInUse == RenderPipelineInUse.URP )
-					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( UPreset ) );
+					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( AmplifyImpostor.PresetURP ) );
 				else
-					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( StandardPreset ) );
+					m_currentData.Preset = AssetDatabase.LoadAssetAtPath<AmplifyImpostorBakePreset>( AssetDatabase.GUIDToAssetPath( AmplifyImpostor.Preset ) );
 			}
 
 			if( ( ( m_billboardMesh || m_recalculatePreviewTexture ) && m_instance.m_alphaTex == null ) || ( bakeTextures && m_recalculatePreviewTexture ) )
@@ -992,7 +964,7 @@ namespace AmplifyImpostors
 				EditorUtility.ClearProgressBar();
 				Debug.LogWarning( "[AmplifyImpostors] Something went wrong with the baking process, please contact support@amplify.pt with this log message.\n" + e.Message + e.StackTrace );
 			}
-			
+
 			bool createLodGroup = false;
 			if( ImpostorBakingTools.GlobalCreateLodGroup )
 			{
@@ -1444,7 +1416,7 @@ namespace AmplifyImpostors
 			var renderers = new List<Renderer>();
 			foreach( var go in selectedGameObjects )
 			{
-				if( isPer && !EditorUtility.IsPersistent( go ) ) 
+				if( isPer && !EditorUtility.IsPersistent( go ) )
 					continue;
 
 				if( searchChildren )

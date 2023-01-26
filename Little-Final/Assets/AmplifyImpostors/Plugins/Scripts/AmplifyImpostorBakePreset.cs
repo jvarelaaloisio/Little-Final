@@ -99,9 +99,6 @@ namespace AmplifyImpostors
 		public Shader RuntimeShader = null;
 
 		[SerializeField]
-		public PresetPipeline Pipeline = PresetPipeline.Legacy;
-
-		[SerializeField]
 		public int AlphaIndex = 0;
 
 		[SerializeField]

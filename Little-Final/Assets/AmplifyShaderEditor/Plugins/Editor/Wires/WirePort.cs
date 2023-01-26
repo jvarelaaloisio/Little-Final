@@ -25,7 +25,8 @@ namespace AmplifyShaderEditor
 		SAMPLERCUBE = 1 << 13,
 		UINT = 1 << 14,
 		SAMPLER2DARRAY = 1 << 15,
-		SAMPLERSTATE = 1 << 16
+		SAMPLERSTATE = 1 << 16,
+		UINT4 = 1 << 17
 	}
 
 	public enum VariableQualifiers
@@ -275,8 +276,8 @@ namespace AmplifyShaderEditor
 				//ParentNode node = UIUtils.GetNode( m_nodeId );
 				//if ( node )
 				//{
-				//	Undo.RegisterCompleteObjectUndo( node.ContainerGraph.ParentWindow, Constants.UndoChangeTypeNodesId );
-				//	Undo.RecordObject( node, Constants.UndoChangeTypeNodesId );
+				//	UndoUtils.RegisterCompleteObjectUndo( node.ContainerGraph.ParentWindow, Constants.UndoChangeTypeNodesId );
+				//	UndoUtils.RecordObject( node, Constants.UndoChangeTypeNodesId );
 				//}
 				DataType = newType;
 				if( invalidateConnections )

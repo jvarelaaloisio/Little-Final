@@ -1,4 +1,4 @@
-Shader /*ase_name*/ "Hidden/Impostors/Bake/Legacy"/*end*/
+Shader /*ase_name*/ "Hidden/Impostors/Baking/Bake"/*end*/
 {
 	Properties
 	{
@@ -57,16 +57,16 @@ Shader /*ase_name*/ "Hidden/Impostors/Bake/Legacy"/*end*/
 
 
 			void frag(v2f i /*ase_frag_input*/,
-				out half4 outGBuffer0 : SV_Target0, 
-				out half4 outGBuffer1 : SV_Target1, 
-				out half4 outGBuffer2 : SV_Target2, 
+				out half4 outGBuffer0 : SV_Target0,
+				out half4 outGBuffer1 : SV_Target1,
+				out half4 outGBuffer2 : SV_Target2,
 				out half4 outGBuffer3 : SV_Target3,
 				out half4 outGBuffer4 : SV_Target4,
 				out half4 outGBuffer5 : SV_Target5,
 				out half4 outGBuffer6 : SV_Target6,
 				out half4 outGBuffer7 : SV_Target7,
 				out float outDepth : SV_Depth
-			) 
+			)
 			{
 				UNITY_SETUP_INSTANCE_ID( i );
 				/*ase_frag_code:i=v2f*/

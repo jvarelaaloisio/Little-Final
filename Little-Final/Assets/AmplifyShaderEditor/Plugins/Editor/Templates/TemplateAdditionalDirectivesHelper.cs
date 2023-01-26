@@ -388,9 +388,7 @@ namespace AmplifyShaderEditor
 							if( m_additionalDirectives[ index ].Origin == AdditionalContainerOrigin.Native )
 							{
 								m_nativeRect = rect;
-#if UNITY_2019_3_OR_NEWER
 								m_nativeRect.y -= ( m_nativeRect.height - ( EditorGUIUtility.singleLineHeight + 5 ) ) * 0.5f;
-#endif
 								m_nativeRect.xMin += 2;
 								m_nativeRect.xMax -= 2;
 								m_nativeRect.yMax -= 2;

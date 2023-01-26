@@ -294,7 +294,7 @@ namespace AmplifyShaderEditor
 
 				if( UIUtils.IsNumericName( m_propertyName ) )
 				{
-					UIUtils.ShowMessage( UniqueId, string.Format( "Invalid property name '{0}' as it cannot start with numbers. Reverting to previous name.", m_propertyName ), MessageSeverity.Warning );
+					UIUtils.ShowMessage( UniqueId, string.Format( "Invalid property name '{0}' as it cannot start with numbers. Reverting to last valid name '{1}'", m_propertyName, m_oldName ), MessageSeverity.Warning );
 					m_propertyName = m_oldName;
 					GUI.FocusControl( string.Empty );
 					return;
@@ -316,7 +316,7 @@ namespace AmplifyShaderEditor
 					{
 						GUI.FocusControl( string.Empty );
 						RegisterFirstAvailablePropertyName( true, true );
-						UIUtils.ShowMessage( UniqueId, string.Format( "Duplicate property name found on edited node.\nAssigning first valid one {0}", m_propertyName ) );
+						UIUtils.ShowMessage( UniqueId, string.Format( "Property name '{0}' is already in use. Reverting to last valid name '{1}'", m_propertyName, m_oldName ) );
 					}
 				}
 			}
@@ -373,9 +373,9 @@ namespace AmplifyShaderEditor
 
 		public void ChangeParameterType( PropertyType parameterType )
 		{
-			Undo.RegisterCompleteObjectUndo( m_containerGraph.ParentWindow, Constants.UndoChangePropertyTypeNodesId );
-			Undo.RegisterCompleteObjectUndo( m_containerGraph, Constants.UndoChangePropertyTypeNodesId );
-			Undo.RecordObject( this, Constants.UndoChangePropertyTypeNodesId );
+			UndoUtils.RegisterCompleteObjectUndo( m_containerGraph.ParentWindow, Constants.UndoChangePropertyTypeNodesId );
+			UndoUtils.RegisterCompleteObjectUndo( m_containerGraph, Constants.UndoChangePropertyTypeNodesId );
+			UndoUtils.RecordObject( this, Constants.UndoChangePropertyTypeNodesId );
 
 			if( m_currentParameterType == PropertyType.Constant || m_currentParameterType == PropertyType.Global )
 			{
@@ -1283,7 +1283,7 @@ namespace AmplifyShaderEditor
 			{
 				GUI.FocusControl( string.Empty );
 				RegisterFirstAvailablePropertyName( releaseOldOne );
-				UIUtils.ShowMessage( UniqueId, string.Format( "Duplicate name found on edited node.\nAssigning first valid one {0}", m_propertyInspectorName ) );
+				UIUtils.ShowMessage( UniqueId, string.Format( "Property name '{0}' is already in use. Reverting to last valid name '{1}'", propertyName, m_oldName ) );
 			}
 		}
 
@@ -1756,9 +1756,10 @@ namespace AmplifyShaderEditor
 
 		public virtual void ReleaseRansomedProperty()
 		{
-			if( m_variableMode == VariableMode.Fetch && m_autoGlobalName )
+			if( m_variableMode == VariableMode.Fetch/* && m_autoGlobalName */)
 			{
-				CurrentVariableMode = VariableMode.Create;
+				//Fooling setter to have a different value 
+				m_variableMode = VariableMode.Create;
 				CurrentVariableMode = VariableMode.Fetch;
 			}
 		}
@@ -1824,6 +1825,11 @@ namespace AmplifyShaderEditor
 					m_variableMode = value;
 					if( value == VariableMode.Fetch )
 					{
+						// Release ownership on name
+						if( UIUtils.CheckUniformNameOwner( m_oldName ) == UniqueId )
+						{
+							UIUtils.ReleaseUniformName( UniqueId , m_oldName );
+						}
 						m_oldName = m_propertyName;
 					}
 					else
@@ -1843,11 +1849,18 @@ namespace AmplifyShaderEditor
 							m_propertyNameIsDirty = true;
 							OnPropertyNameChanged();
 						}
-						else if( UIUtils.CheckUniformNameOwner( m_propertyName ) != UniqueId )
+						else
 						{
-							string oldProperty = m_propertyName;
-							RegisterFirstAvailablePropertyName( false );
-							UIUtils.ShowMessage( UniqueId, string.Format( FetchToCreateOnDuplicateNodeMsg, m_propertyName, oldProperty ), MessageSeverity.Warning );
+							if( UIUtils.IsUniformNameAvailable( m_propertyName ) )
+							{
+								UIUtils.RegisterUniformName( UniqueId , m_propertyName );
+							}
+							else if( UIUtils.CheckUniformNameOwner( m_propertyName ) != UniqueId )
+							{
+								string oldProperty = m_propertyName;
+								RegisterFirstAvailablePropertyName( false );
+								UIUtils.ShowMessage( UniqueId, string.Format( FetchToCreateOnDuplicateNodeMsg, m_propertyName, oldProperty ), MessageSeverity.Warning );
+							}
 						}
 					}
 				}
