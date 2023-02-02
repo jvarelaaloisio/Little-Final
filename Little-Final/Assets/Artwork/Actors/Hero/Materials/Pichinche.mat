@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BranchKid_v1
+  m_Name: Pichinche
   m_Shader: {fileID: 4800000, guid: f2e6c1694f57d614aad15748854fddc8, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 0
@@ -47,6 +47,14 @@ Material:
         m_Texture: {fileID: 2800000, guid: 9e8e306d5b8e2794587eb5031502a77c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Magic__Distortion:
+        m_Texture: {fileID: 2800000, guid: ccd44a7950132444fb0dc8b9102739e0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Magic__Mask:
+        m_Texture: {fileID: 2800000, guid: 4c51f2036ac9ae74a9a6b0299220edf7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -61,6 +69,30 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PBR_Albedo:
+        m_Texture: {fileID: 2800000, guid: 0d823bc15b3011f4fa70263c4b9da4a2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PBR_Normal:
+        m_Texture: {fileID: 2800000, guid: 3d22ecf38274270428c1139ffca03e44, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PBR__Albedo:
+        m_Texture: {fileID: 2800000, guid: 0d823bc15b3011f4fa70263c4b9da4a2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PBR__BaseColor:
+        m_Texture: {fileID: 2800000, guid: 0d823bc15b3011f4fa70263c4b9da4a2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PBR__Emissive:
+        m_Texture: {fileID: 2800000, guid: 9e8e306d5b8e2794587eb5031502a77c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PBR__Normal:
+        m_Texture: {fileID: 2800000, guid: 3d22ecf38274270428c1139ffca03e44, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -80,21 +112,30 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Activate: 0
+    - _Activate: 0.83
     - _BigWindScale1: 1.5
     - _BumpScale: 1
     - _CloudShadowSpeed2: 0.1
     - _CloudsShadowScale2: 0.01
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
+    - _Distortion__Factor: 0.005
+    - _Distortion__Scale: 0.1
+    - _Distortion___Speed: 0.1
     - _DstBlend: 0
     - _EdgeLength: 15
     - _FallOff: 1.08
+    - _Float0: 0.005
+    - _Float1: 0.1
+    - _Float2: 0.1
+    - _Float3: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _LineWidth: 0.08
     - _LinesAmount: 1
+    - _MagicActiveValue: 1
+    - _Magic__ActiveValue: 1
     - _Metallic: 0
     - _Mode: 0
     - _NoiseScale: 20
@@ -108,6 +149,9 @@ Material:
     - _Scan_Radius: 11.3
     - _Scan_Speed: 2
     - _SmoothnessTextureChannel: 0
+    - _SparksScale: 100
+    - _Sparks__Scale: 100
+    - _Sparks__Speed: 0.1
     - _SpecularHighlights: 1
     - _Speed: 3
     - _SrcBlend: 1
@@ -119,6 +163,10 @@ Material:
     - _ColorPonchoMagic: {r: 0, g: 0.99056596, b: 0.7631484, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _MagicColor: {r: 0, g: 1, b: 0.8446779, a: 0}
-    - _NoiseColor: {r: 0.3301886, g: 0.13849285, b: 0.04516729, a: 0}
+    - _Magic__ActiveColor: {r: 0.9963673, g: 1, b: 0, a: 0}
+    - _Magic__InactiveColor: {r: 1, g: 1, b: 1, a: 0}
+    - _NoiseColor: {r: 0.33018857, g: 0.13849282, b: 0.045167275, a: 0}
     - _Scan_Color: {r: 0.9963673, g: 1, b: 0, a: 0}
+    - _SparksColor: {r: 1, g: 0.67765254, b: 0, a: 0}
+    - _Sparks__Color: {r: 1, g: 0.67765254, b: 0, a: 0}
     - _Vector2: {r: 0, g: -1.6, b: 1, a: 0}
