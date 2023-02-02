@@ -7,11 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Flowers
-  m_Shader: {fileID: 4800000, guid: f342aacd45082fe4da92cd042f7f2f17, type: 3}
+  m_Name: WaterNormalRecontructionTest
+  m_Shader: {fileID: 4800000, guid: f4f54b59ff1e7944a846f2de735a6ab9, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -19,10 +19,6 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BaseColor:
-        m_Texture: {fileID: 2800000, guid: 852f669b694eac3409836bde276c937e, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -43,23 +39,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _GrassAlpha:
-        m_Texture: {fileID: 2800000, guid: 853d88a3f48bcca4c9c5d4dd8a1342c2, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _GrassAtlas:
-        m_Texture: {fileID: 2800000, guid: 852f669b694eac3409836bde276c937e, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Leaves_v3:
-        m_Texture: {fileID: 2800000, guid: f89f6ec5b6b4e5f4d853c114c6920858, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Metallic:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -75,16 +55,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Roughness:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _TextureSample0:
-        m_Texture: {fileID: 2800000, guid: f89f6ec5b6b4e5f4d853c114c6920858, type: 3}
+        m_Texture: {fileID: 2800000, guid: 70a6f2c61c88aa942b0c51b1f8150960, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _TopTexture0:
-        m_Texture: {fileID: 2800000, guid: f89f6ec5b6b4e5f4d853c114c6920858, type: 3}
+    - _checkermap_horizontal_tho:
+        m_Texture: {fileID: 2800000, guid: 70a6f2c61c88aa942b0c51b1f8150960, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -92,44 +68,78 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _Amplitude: 0.1
+    - _Angle: 45
+    - _Angulo: 144.49843
+    - _BigWavesHeightFactor: 1
+    - _BigWavesTiling: 0.2
     - _BumpScale: 1
+    - _CollisionlWavesOffset: 0.5
+    - _CollisionlWavesOffsetX: 0.1
+    - _CollisionlWavesOffsetY: 0.1
     - _Cutoff: 0.5
+    - _Depth__DistortionFactor: 0.005
     - _DetailNormalMapScale: 1
+    - _Deviation: 2
     - _DstBlend: 0
+    - _EdgeLength: 15
+    - _Floam__Range: 0.96
+    - _Floam__Scale: 1
+    - _Float0: 0.28563157
+    - _Float1: 1.83
+    - _Float2: -5
+    - _Float3: 5
+    - _Float4: 8.62
+    - _Foam_SpeedFactor: 0.5
+    - _Foam__Border: 0.4
+    - _Foam__BorderScale: 0.30845588
+    - _Foam__DefinitionFactor: 5
+    - _Foam__Scale: 0.4
+    - _Foam__SpeedFactor: 0.5
+    - _Fog__Depth: 5.67
+    - _Fog__Factor: 1
+    - _Frecuecy: 2
+    - _Frecuency: 2
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _HUE: 0
-    - _Hue: 0
+    - _Light__Factor: 1
+    - _Light__MaskScale: 3.62
     - _Metallic: 0
-    - _MetallicMultiply: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _RoughnessMultiply: 0
-    - _Satura: 0
-    - _Saturation: 0
+    - _SecondSmallWavesOffset: -0.2
+    - _SmallHeightFactor: 1
+    - _SmoothnessFac: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Tiling: 0
-    - _TransAmbient: 0.2
-    - _TransDirect: 1
-    - _TransNormalDistortion: 0.1
-    - _TransScattering: 2
-    - _TransShadow: 0.9
-    - _Translucency: 2
-    - _TranslucencyFac: 0.1
     - _UVSec: 0
-    - _Value: 0
+    - _WavesTiling: 1
+    - _Waves__BigHeightFactor: 2
+    - _Waves__BigTiling: 0.2
+    - _Waves__CollisionlOffsetX: -0.2
+    - _Waves__CollisionlOffsetY: -0.1
+    - _Waves__HeightFactorBig: 2
+    - _Waves__HeightMax: 0.22
+    - _Waves__HeightSmallFactor: 0.4
+    - _Waves__MaxHeight: 0.1
+    - _Waves__SmallHeightFactor: 0.8
+    - _Waves__SmallTiling: 1
+    - _Waves__TilingBig: 0.2
+    - _Waves__TilingSmall: 1
+    - _WindDirectionAngle: 0
+    - _WindSpeedFactor: 1
+    - _Wind__DirectionAngle: 97
+    - _Wind__SpeedFactor: 0.5
     - _ZWrite: 1
     - __dirty: 0
-    - _valu: 0
-    - _value: 0
     m_Colors:
-    - _Color: {r: 0.76005316, g: 0.764151, b: 0.28475437, a: 1}
-    - _ColorMultiplier: {r: 0.8584906, g: 0.8001849, b: 0.21462265, a: 0}
-    - _ColorMultiplierBottom: {r: 0.07450981, g: 0.18431373, b: 0.14117648, a: 1}
-    - _ColorMultiplierTop: {r: 0.36320752, g: 0.5505178, b: 1, a: 1}
-    - _ColorMultiply: {r: 0.7169812, g: 0.30776078, b: 0.30776078, a: 0}
+    - _Color: {r: 0, g: 0.3585695, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Foam__Color: {r: 1, g: 1, b: 1, a: 0}
+    - _MainColor: {r: 0.39215687, g: 0.39215687, b: 0.39215687, a: 1}
+    - _Vector0: {r: 0.2, g: 0.2, b: 0, a: 0}
+    - _WaterColor: {r: 0, g: 0.38643974, b: 1, a: 0}
+    - _Waves__TilingBigXY: {r: 0.4, g: 0.2, b: 0, a: 0}
