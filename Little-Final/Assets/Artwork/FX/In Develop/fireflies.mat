@@ -7,14 +7,15 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GodRays
-  m_Shader: {fileID: 4800000, guid: 9e570c63c7707bd46b97417fec06f7d3, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 0
-  m_EnableInstancingVariants: 1
+  m_Name: fireflies
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: _ALPHABLEND_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Transparent
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -39,12 +40,8 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _GodRaysTex:
-        m_Texture: {fileID: 2800000, guid: 947f156c58359d548821336d2544b404, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: fb80f9ee333fbe34a9362ea115ebb9da, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -59,54 +56,23 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _texcoord:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _BaseOpacity: 1
     - _BumpScale: 1
-    - _Camera__DistanceMaskFactor: 5
     - _Cutoff: 0.5
-    - _DepthFadeFactor: 5.5
     - _DetailNormalMapScale: 1
-    - _DistanceMask_LvMax: 1.8
-    - _DistanceMask_LvMin: -1.7
-    - _DistanceMask__Length: 8
-    - _DstBlend: 0
-    - _Emissive_Factor: 1
-    - _Float0: 8
-    - _Float1: -1.7
-    - _Float2: 1.8
-    - _Float3: 0
-    - _Float4: 7.76
-    - _Float5: 5
-    - _FresnelPower: 0.26
-    - _FresnelScale: 1.1
-    - _Fresnel__Power: 0.2
-    - _Fresnel__Scale: 1.1
+    - _DstBlend: 10
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Metallic: 0
-    - _Mode: 0
+    - _Mode: 2
     - _OcclusionStrength: 1
-    - _Opacity: 1
-    - _Opacity__Factor: 0.624
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SrcBlend: 1
+    - _SrcBlend: 5
     - _UVSec: 0
-    - _VerticalGrad__LvMax: 7.76
-    - _VerticalGrad__LvMin: 0.3
-    - _VerticalGradient: 0.3
-    - _VerticalGradient__Mask: 0.515
-    - _VolumenMask__Factor: 9
-    - _ZWrite: 1
-    - __dirty: 0
+    - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 0.588, g: 0.588, b: 0.588, a: 1}
-    - _Emission: {r: 0.99594945, g: 1, b: 0.75, a: 0}
+    - _Color: {r: 0.9691214, g: 0.990566, b: 0.7989943, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Emission__Color: {r: 0.9898166, g: 1, b: 0.6367924, a: 0}
