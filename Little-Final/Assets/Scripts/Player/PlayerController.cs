@@ -89,6 +89,7 @@ namespace Player
         public SmartEvent OnClimb;
 
         public UnityEvent OnMount;
+        public UnityEvent OnRide;
         public UnityEvent OnDismount;
         public UnityEvent onPick;
         public UnityEvent onPutDown;
@@ -117,7 +118,7 @@ namespace Player
         public Transform InteractionHelper => interactionHelper;
 
         public float InteractionCheckRadius => interactionCheckRadius;
-        public IRideable Rideable { get; private set; }
+        public IRideable Rideable { get; set; }
 
         public Transform Transform => transform;
 
@@ -322,11 +323,10 @@ namespace Player
             onPutDown.Invoke();
         }
 
-        public void Mount(IRideable rideable)
+        public void Mount()
         {
-            Rideable = rideable;
-            Transform mount = rideable.GetMount();
-            rideable.Interact(this);
+            Transform mount = Rideable.GetMount();
+            Rideable.Interact(this);
             _myTransform.SetParent(mount);
             _myTransform.SetPositionAndRotation(mount.position, mount.rotation);
             OnMount.Invoke();

@@ -110,8 +110,8 @@ namespace Player.States
 							Controller.Pick(pickable);
 							break;
 						case IRideable rideable:
-							Controller.Mount(rideable);
-							Controller.ChangeState<Ride>();
+							Controller.Rideable = rideable;
+							Controller.ChangeState<Mount>();
 							break;
 					}
 				}

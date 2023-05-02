@@ -23,6 +23,8 @@ public sealed class PP_SpeedLinesPPSSettings : PostProcessEffectSettings
 	public FloatParameter _LineFalloff = new FloatParameter { value = 0.1836318f };
 	[Tooltip( "Speed" )]
 	public FloatParameter _Speed = new FloatParameter { value = 1f };
+	[Tooltip( "Frames Per Second" )]
+	public FloatParameter _FramesPerSecond = new FloatParameter { value = 12f };
 }
 
 public sealed class M_SpeedLinesPPSRenderer : PostProcessEffectRenderer<PP_SpeedLinesPPSSettings>
@@ -37,6 +39,7 @@ public sealed class M_SpeedLinesPPSRenderer : PostProcessEffectRenderer<PP_Speed
 		sheet.properties.SetFloat( "_LineDensity", settings._LineDensity );
 		sheet.properties.SetFloat( "_LineFalloff", settings._LineFalloff );
 		sheet.properties.SetFloat( "_Speed", settings._Speed );
+		sheet.properties.SetFloat( "_FramesPerSecond", settings._FramesPerSecond );
 		context.command.BlitFullscreenTriangle( context.source, context.destination, sheet, 0 );
 	}
 }

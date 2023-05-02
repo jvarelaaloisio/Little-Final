@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42a54d5348ab448991ee4eb7ce649458, type: 3}
   m_Name: LevelOneWhitebox
   m_EditorClassIdentifier: 
-  name: LevelOneWhitebox
-  buildIndexes: 020000000300000005000000060000000700000008000000090000000a00000012000000
+  immediateLoadBuildIndexes: 020000000300000005000000060000000700000012000000
   activeSceneIndex: 0
+  batchedLoads:
+  - buildIndexes: 0800000009000000
+    priority: 1
+  - buildIndexes: 0a000000
+    priority: 0
