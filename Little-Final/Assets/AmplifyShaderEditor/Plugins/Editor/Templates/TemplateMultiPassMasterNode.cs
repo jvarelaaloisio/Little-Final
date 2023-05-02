@@ -2713,7 +2713,8 @@ namespace AmplifyShaderEditor
 
 			if( linkedModule.AdditionalDirectives.ValidData )
 			{
-				linkedModule.AdditionalDirectives.AddAllToDataCollector( ref m_currentDataCollector , m_templateMultiPass.SubShaders[ m_subShaderIdx ].Passes[ m_passIdx ].Modules.IncludePragmaContainer );
+				var pass = m_templateMultiPass.SubShaders[ m_subShaderIdx ].Passes[ m_passIdx ];
+				linkedModule.AdditionalDirectives.AddAllToDataCollector( ref m_currentDataCollector , pass, pass.Modules.IncludePragmaContainer );
 			}
 		}
 
@@ -2739,7 +2740,7 @@ namespace AmplifyShaderEditor
 
 				if( module.AdditionalDirectives.ValidData )
 				{
-					module.AdditionalDirectives.AddAllToDataCollector( ref m_currentDataCollector , m_templateMultiPass.SubShaders[ m_subShaderIdx ].Modules.IncludePragmaContainer );
+					module.AdditionalDirectives.AddAllToDataCollector( ref m_currentDataCollector , null, m_templateMultiPass.SubShaders[ m_subShaderIdx ].Modules.IncludePragmaContainer );
 				}
 
 				if( module.TagsHelper.ValidData )
@@ -2886,7 +2887,8 @@ namespace AmplifyShaderEditor
 
 				if( module.AdditionalDirectives.ValidData )
 				{
-					module.AdditionalDirectives.AddAllToDataCollector( ref m_currentDataCollector , m_templateMultiPass.SubShaders[ m_subShaderIdx ].Passes[ m_passIdx ].Modules.IncludePragmaContainer );
+					var pass = m_templateMultiPass.SubShaders[ m_subShaderIdx ].Passes[ m_passIdx ];
+					module.AdditionalDirectives.AddAllToDataCollector( ref m_currentDataCollector , pass, pass.Modules.IncludePragmaContainer );
 				}
 
 				if( module.TagsHelper.ValidData )

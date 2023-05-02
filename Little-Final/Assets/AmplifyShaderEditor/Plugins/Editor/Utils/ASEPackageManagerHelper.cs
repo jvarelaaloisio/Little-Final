@@ -39,7 +39,8 @@ namespace AmplifyShaderEditor
 		ASE_SRP_11 = 110000,
 		ASE_SRP_12 = 120000,
 		ASE_SRP_13 = 130000,
-		ASE_SRP_14 = 140000
+		ASE_SRP_14 = 140000,
+		ASE_SRP_15 = 150000
 	}
 
 	public class ASESRPPackageDesc
@@ -76,6 +77,7 @@ namespace AmplifyShaderEditor
 			{ ( int )ASESRPBaseline.ASE_SRP_12, new ASESRPPackageDesc( ASESRPBaseline.ASE_SRP_12, "57fcea0ed8b5eb347923c4c21fa31b57", "9a5e61a8b3421b944863d0946e32da0a" ) },
 			{ ( int )ASESRPBaseline.ASE_SRP_13, new ASESRPPackageDesc( ASESRPBaseline.ASE_SRP_13, "57fcea0ed8b5eb347923c4c21fa31b57", "9a5e61a8b3421b944863d0946e32da0a" ) },
 			{ ( int )ASESRPBaseline.ASE_SRP_14, new ASESRPPackageDesc( ASESRPBaseline.ASE_SRP_14, "2e9da72e7e3196146bf7d27450013734", "89f0b84148d149d4d96b838d7ef60e92" ) },
+			{ ( int )ASESRPBaseline.ASE_SRP_15, new ASESRPPackageDesc( ASESRPBaseline.ASE_SRP_15, "2e9da72e7e3196146bf7d27450013734", "89f0b84148d149d4d96b838d7ef60e92" ) },
 		};
 
 		private static Shader m_lateShader;

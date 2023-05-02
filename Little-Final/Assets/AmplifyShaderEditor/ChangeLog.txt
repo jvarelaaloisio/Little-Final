@@ -1,34 +1,67 @@
+v1.9.1.5
+
+   Editor
+      * Fixed error in template additional directives helper
+
+   Templates
+      * Fixed LOD Cross Fade visual issues when using vertex position output (URP 14x)
+      * Fixed Unlit shader errors when using LOD CrossFade (URP 14x)
+
+v1.9.1.4
+
+   Editor
+      * Added SRP 15 baseline pointing to SRP 14 packages (not official support yet)
+      * Added template owner info on action logs
+      * Fixed online sharing errors; added warnings to request enabling HTTP in 2022.1+
+      * Added conditional fields Passes and SRPVersion to additional directives
+
+   Nodes
+      * SRP Additional Light now only adds directives to relevant pass
+      * Fixed SRP Additional Light normals and Forward+ support
+      * Fixed Sample Lightmap node when both static and dynamic lightmaps are used
+
+   Templates
+      * Fixed decal errors when DECAL_RECONSTRUCT_NORMAL not defined (URP 12x 14x)
+      * Fixed Lit shader not writing Occlusion to GBuffer (URP 12x 14x)
+      * Fixed errors in Motion Vector interpolators using "Vertex TexCoord" 4/5 (HDRP all)
+      * Fixed backface picking in URP 2D templates (URP 12x 14x)
+      * Fixed decal template errors when using instancing (URP 12x 14x)
+      * Fixed rendering layers (URP 14x)
+      * Updated LOD crossfade to support blue noise + keyword optimizations
+      * Fixed instancing in FullScreenDebug pass (HDRP 12x 14x)
+      * Fixed Lit shader subsurface and transmission logic (HDRP 12x 14x)
+
 v1.9.1.3
 
    Editor
       * Fixed unity exceptions caused by get_productName
-      * Fixed upgrade issue for shaders earlier than 1.9.0 causing some passes to be missing
+      * Fixed upgrade issue for shaders earlier than 1.9.0 causing missing passes
       * Fixed Removed down arrows from sample import buttons in start screen
       * Fixed preview texture showing incorrect data at edges
-      * Fixed ASEPackageManagerHelper throwing errors when SRP unitypackages are missing
+      * Fixed ASEPackageManagerHelper errors when SRP unitypackages are missing
       * Fixed script compile error in Unity 2021.1
 
    Samples
       * Fixed and reorganized samples for all SRP versions
-      * Added sample packages each SRP baseline and updated sample import buttons/actions on Start Screen
+      * Added sample packages per SRP; updated Start Screen sample import buttons
 
    Nodes
-      * Restored pragma multi_compile directives in SRP Additional Light so it works with Unlit shaders
+      * Restored pragma multi_compile directives in SRP Additional Light for Unlit shaders
       * Small improvement in Decode Directional Lightmap
       * Added new Sample Lightmap shader function with support for Bicubic sampling
       * Fixed Lightmap UV shader function
       * Fixed LightAttenuation pragmas on URP 14x
 
    Templates
-      * Fixed debug display and reduced min shader model to 3.5 for webgl2 (URP 10x 12x 14x)
-      * Fixed reflection/specular highlights toggle + specular setup define to keyword (URP 14x)
+      * Fixed debug display; reduced min shader model to 3.5 for webgl2 (URP all)
+      * Fixed reflection/specular highlights toggle (URP 14x)
       * Removed deprecated option from Hair template (HDRP 10x)
       * Fixed URP Lit template causing bugs in "Depth Fade" node (12x 14x)
       * Updated all SRP templates with synced property ordering and minor cleanups
       * Updated all SRP templates to support core library's bicubic filtering
       * Fixed shader errors when virtual texturing is enabled (HDRP 12x)
-      * Fixed "Blend Preserves Specular" not showing properly in Hair shaders (HDRP 10x 14x)
-      * Fixed scene view editor/debug visualization causing errors in Lit shaders (URP 12x 14x)
+      * Fixed "Blend Preserves Specular" not showing in Hair shaders (HDRP 10x 14x)
+      * Fixed scene view debug visualization causing errors in Lit shaders (URP 12x 14x)
 
 v1.9.1.2
 

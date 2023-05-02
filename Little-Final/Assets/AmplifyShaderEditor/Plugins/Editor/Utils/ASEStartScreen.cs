@@ -52,6 +52,8 @@ namespace AmplifyShaderEditor
 		private static readonly GUIContent UpdateTitle = new GUIContent( "Latest Update", "Check the lastest additions, improvements and bug fixes done to ASE" );
 		private static readonly GUIContent ASETitle = new GUIContent( "Amplify Shader Editor", "Are you using the latest version? Now you know" );
 
+		private const string OnlineVersionWarning = "Please enable \"Allow downloads over HTTP*\" in Player Settings to access latest version information via Start Screen.";
+
 		Vector2 m_scrollPosition = Vector2.zero;
 		Preferences.ShowOption m_startup = Preferences.ShowOption.Never;
 
@@ -183,24 +185,33 @@ namespace AmplifyShaderEditor
 			{
 				m_infoDownloaded = true;
 
-				StartBackgroundTask( StartRequest( ChangelogURL, () =>
+#if UNITY_2022_1_OR_NEWER
+				if ( PlayerSettings.insecureHttpOption == InsecureHttpOption.NotAllowed )
 				{
-					var temp = ChangeLogInfo.CreateFromJSON( www.downloadHandler.text );
-					if( temp != null && temp.Version >= m_changeLog.Version )
+					Debug.LogWarning( "[AmplifyShaderEditor] " + OnlineVersionWarning );
+				}
+				else
+#endif
+				{
+					StartBackgroundTask( StartRequest( ChangelogURL, () =>
 					{
-						m_changeLog = temp;
-					}
+						var temp = ChangeLogInfo.CreateFromJSON( www.downloadHandler.text );
+						if( temp != null && temp.Version >= m_changeLog.Version )
+						{
+							m_changeLog = temp;
+						}
 
-					int version = m_changeLog.Version;
-					int major = version / 10000;
-					int minor = version / 1000 - major * 10;
-					int release = version / 100 - ( version / 1000 ) * 10;
-					int revision = version - ( version / 100 ) * 100;
+						int version = m_changeLog.Version;
+						int major = version / 10000;
+						int minor = version / 1000 - major * 10;
+						int release = version / 100 - ( version / 1000 ) * 10;
+						int revision = version - ( version / 100 ) * 100;
 
-					m_newVersion = major + "." + minor + "." + release + ( revision > 0 ? "." + revision : "" );
+						m_newVersion = major + "." + minor + "." + release + ( revision > 0 ? "." + revision : "" );
 
-					Repaint();
-				} ) );
+						Repaint();
+					} ) );
+				}
 			}
 
 			if( m_buttonStyle == null )
