@@ -130,7 +130,8 @@ namespace Player
 			controller.onPutDown.AddListener(ShowPutDownFeedback);
 			controller.onThrowing.AddListener(ShowThrowingFeedback);
 			controller.onThrew.AddListener(ShowThrewFeedback);
-			controller.OnMount.AddListener(() => GetComponent<PlayerSound>().StopWalk());
+			controller.OnMount.AddListener(ShowMountingFeedback);
+			controller.OnRide.AddListener(ShowRideFeedback);
 			// controller.OnDeath_OLD += ShowDeathFeedback;
 			controller.onDeath += ShowDeathFeedback;
 			controller.OnGlideChanges += SetFlying;
@@ -151,6 +152,16 @@ namespace Player
 
 			FadePoncho(0);
 			ponchoTurnOff = new ActionOverTime(ponchoTurnOffTime, FadePoncho, _sceneIndex);
+		}
+
+		private void ShowMountingFeedback()
+		{
+			
+		}
+
+		private void ShowRideFeedback()
+		{
+			GetComponent<PlayerSound>().StopWalk();
 		}
 
 		private void OnEnable()

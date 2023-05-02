@@ -1,5 +1,40 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5510493501585971345
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166348a06c9b9b429f38eb61984a2ca, type: 3}
+  m_Name: PP_ScreenDirtPPSSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  _Flowmap:
+    overrideState: 1
+    value: {fileID: 2800000, guid: 8a57741d6bb040c4aa25a2fc1ef1b388, type: 3}
+    defaultState: 1
+  _CenterMaskSize:
+    overrideState: 0
+    value: 0.06
+  _CenterMaskEdge:
+    overrideState: 1
+    value: 0.21
+  _NoiseScale:
+    overrideState: 1
+    value: 30
+  _Speed:
+    overrideState: 1
+    value: 0.75
+  _DirtColor:
+    overrideState: 1
+    value: {r: 0.047169805, g: 0.021054523, b: 0.0015574944, a: 1}
 --- !u!114 &-1330264546098590675
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -33,6 +68,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings:
   - {fileID: 8333458454270540011}
+  - {fileID: -5510493501585971345}
 --- !u!114 &8333458454270540011
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -45,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cceac40f2d2cba43aaab426cf761fc8, type: 3}
   m_Name: PP_SpeedLinesPPSSettings
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -69,4 +105,7 @@ MonoBehaviour:
     value: 0.55
   _Speed:
     overrideState: 1
-    value: 0.05
+    value: 0.01
+  _FramesPerSecond:
+    overrideState: 1
+    value: 120

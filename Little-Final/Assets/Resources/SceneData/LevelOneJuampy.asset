@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42a54d5348ab448991ee4eb7ce649458, type: 3}
   m_Name: LevelOneJuampy
   m_EditorClassIdentifier: 
-  name: LevelOneJuampy
-  buildIndexes: 020000000300000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f0000001000000011000000
+  immediateLoadBuildIndexes: 020000000300000005000000060000000c000000
   activeSceneIndex: 0
+  batchedLoads:
+  - buildIndexes: 0b000000
+  - buildIndexes: 070000000d000000
+  - buildIndexes: 08000000090000000e0000000f000000
+  - buildIndexes: 0a00000010000000
+  - buildIndexes: 11000000

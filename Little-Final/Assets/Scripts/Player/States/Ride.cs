@@ -21,6 +21,7 @@ namespace Player.States
 			}
 
 			controller.GetComponent<Rigidbody>().isKinematic = true;
+			controller.OnRide.Invoke();
 		}
 
 		public override void OnStateUpdate()

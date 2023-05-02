@@ -57,9 +57,8 @@ namespace Player.States
 				&& Controller.CanMount(out IRideable interactable)
 				&& interactable is IRideable)
 			{
-				IRideable rideable = (IRideable)interactable;
-				Controller.Mount(rideable);
-				Controller.ChangeState<Ride>();
+				Controller.Rideable = interactable;
+				Controller.ChangeState<Mount>();
 			}
 		}
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using Events;
 using Events.Channels;
 using UnityEngine;
@@ -13,11 +12,18 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
 
     public LevelDataContainerChannel sceneDataChannel;
     public VoidChannelSo quitGameChannel;
-
-    private List<AsyncOperation> _scenesLoading = new List<AsyncOperation>();
+    
+    [SerializeField]
+    private float delayBeforeHidingLoadScreen = .5f;
+    [SerializeField]
+    private float delayBetweenBatches = 1f;
+    [SerializeField]
+    private float delayBeforeLoadingNextScene = 3f;
+    [SerializeField]
+    private float delayBeforeActivatingScene = .5f;
+    
     private Slider _progressBar;
     private float _totalSceneProgress;
-    private LevelDataContainer[] _levelData;
     private LevelDataContainer _currentLevel;
 
     private void Awake()
@@ -29,10 +35,10 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
         }
 
         Instance = this;
+        //TODO: Convert into separate script that loads the title screen as intended, through the event channel
         _currentLevel = titleScreen;
         _currentLevel.Load();
         _progressBar = loadingScreen.GetComponentInChildren<Slider>();
-        _levelData = Resources.LoadAll<LevelDataContainer>("SceneData");
     }
 
     private void OnEnable()
@@ -51,35 +57,59 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
     {
         loadingScreen.gameObject.SetActive(true);
         _currentLevel.Unload();
-        foreach (var data in _levelData)
-        {
-            if (!data.Equals(levelData)) continue;
-            _scenesLoading = data.Load();
-            _currentLevel = data;
-        }
+        _currentLevel = levelData;
 
-        StartCoroutine(UpdateSceneLoadProgress());
+        StartCoroutine(LoadLevelCoroutine(levelData));
     }
 
-    private IEnumerator UpdateSceneLoadProgress()
+    private IEnumerator LoadLevelCoroutine(LevelDataContainer levelData)
     {
-        for (var i = 0; i < _scenesLoading.Count; i++)
-            while (!_scenesLoading[i].isDone)
-            {
-                _totalSceneProgress = 0;
+        var scenesToLoadQty = levelData.immediateLoadBuildIndexes.Length;
+        for (var i = 0; i < scenesToLoadQty; i++)
+        {
+            var buildIndex = levelData.immediateLoadBuildIndexes[i];
+            var loadLevelOperation = SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive);
+            StartCoroutine(UpdateLevelLoadProgress(loadLevelOperation, i, scenesToLoadQty));
+            yield return loadLevelOperation;
+        }
 
-                foreach (var op in _scenesLoading) _totalSceneProgress += op.progress;
-
-                _totalSceneProgress = _totalSceneProgress / _scenesLoading.Count * 100f;
-
-                _progressBar.value = Mathf.RoundToInt(_totalSceneProgress);
-
-                yield return null;
-            }
-
+        yield return new WaitForSeconds(delayBeforeHidingLoadScreen);
         var activeScene = SceneManager.GetSceneByBuildIndex(_currentLevel.activeSceneIndex);
         SceneManager.SetActiveScene(activeScene);
         loadingScreen.gameObject.SetActive(false);
+        
+        foreach (var levelBatch in levelData.batchedLoads)
+        {
+            foreach (var buildIndex in levelBatch.buildIndexes)
+            {
+                var loadOperation = SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive);
+                loadOperation.allowSceneActivation = false;
+                var scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
+                Debug.Log($"{name}: Loading {scenePath}");
+                
+                yield return new WaitUntil(() => loadOperation.progress >= 0.9f);
+
+                yield return new WaitForSeconds(delayBeforeActivatingScene);
+                Debug.Log($"{name}: Activating {scenePath}");
+                loadOperation.allowSceneActivation = true;
+                
+                Debug.Log($"{name}: Loaded {scenePath}");
+                yield return new WaitForSeconds(delayBeforeLoadingNextScene);
+            }
+
+            yield return new WaitForSeconds(delayBetweenBatches);
+        }
+    }
+
+    private IEnumerator UpdateLevelLoadProgress(AsyncOperation loadOperation, int scenesAlreadyLoadedQty, int totalScenesToLoadQty)
+    {
+        while (!loadOperation.isDone)
+        {
+            var totalSceneProgress = (loadOperation.progress + scenesAlreadyLoadedQty) / totalScenesToLoadQty;
+
+            _progressBar.value = totalSceneProgress;
+            yield return null;
+        }
     }
 
     private static void QuitGame()
