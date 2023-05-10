@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering.PostProcessing;
+//using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 using VarelaAloisio.UpdateManagement.Runtime;
 
@@ -73,7 +73,7 @@ namespace Player
 		CameraView cameraView;
 		ActionOverTime staminaFade;
 		CountDownTimer staminaFadeTimer;
-		private LensDistortion lensDistortionSettings;
+		//private LensDistortion lensDistortionSettings;
 		private float originalDistorsionIntensity;
 
 		public TrailRenderer[] glideEffect,
@@ -144,11 +144,11 @@ namespace Player
 			SetStaminaTransparency(1);
 			_staminaOriginalScale = staminaRings.localScale;
 			//TODO: Limpiá esto, sucio de mierda
-			if ((_mainCamera = Camera.main).TryGetComponent(out PostProcessVolume postProcessVolume))
-				if (postProcessVolume.profile.TryGetSettings(out lensDistortionSettings))
-				{
-					originalDistorsionIntensity = lensDistortionSettings.intensity;
-				}
+			//if ((_mainCamera = Camera.main).TryGetComponent(out PostProcessVolume postProcessVolume))
+			//	if (postProcessVolume.profile.TryGetSettings(out lensDistortionSettings))
+			//	{
+			//		originalDistorsionIntensity = lensDistortionSettings.intensity;
+			//	}
 
 			FadePoncho(0);
 			ponchoTurnOff = new ActionOverTime(ponchoTurnOffTime, FadePoncho, _sceneIndex);
@@ -315,8 +315,8 @@ namespace Player
 
 		public void SetAccelerationEffect(float lerp)
 		{
-			lensDistortionSettings.intensity.value = Mathf.Lerp(originalDistorsionIntensity, lensDistortionWhenFlying,
-																BezierHelper.GetSinBezier(lerp));
+			//lensDistortionSettings.intensity.value = Mathf.Lerp(originalDistorsionIntensity, lensDistortionWhenFlying,
+			//													BezierHelper.GetSinBezier(lerp));
 			staminaRings.localScale = Vector3.Lerp(_staminaOriginalScale, Vector3.one * staminaRingsScaleWhenFlying,
 													BezierHelper.GetSinBezier(lerp));
 			staminaRings.anchoredPosition = Vector3.Lerp(_lastStaminaControlledPosition, staminaUIOffsetWhenFlying,
@@ -343,7 +343,7 @@ namespace Player
 			}
 
 			staminaRings.localScale = _staminaOriginalScale;
-			lensDistortionSettings.intensity.value = originalDistorsionIntensity;
+			//lensDistortionSettings.intensity.value = originalDistorsionIntensity;
 		}
 
 		public void PlaySpecificAnimation(string stateName)
