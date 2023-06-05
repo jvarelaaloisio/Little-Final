@@ -144,6 +144,7 @@ namespace Player
 			SetStaminaTransparency(1);
 			_staminaOriginalScale = staminaRings.localScale;
 			//TODO: Limpiá esto, sucio de mierda
+			_mainCamera = Camera.main;
 			//if ((_mainCamera = Camera.main).TryGetComponent(out PostProcessVolume postProcessVolume))
 			//	if (postProcessVolume.profile.TryGetSettings(out lensDistortionSettings))
 			//	{
