@@ -1,18 +1,18 @@
-// Made with Amplify Shader Editor v1.9.1.2
+// Made with Amplify Shader Editor v1.9.1.3
 // Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "PP_RainDrops"
 {
 	Properties
 	{
-		[NoScaleOffset][Normal]_Noise__Normal("Noise__Normal", 2D) = "bump" {}
-		_Drops__RenderTexture("Drops__RenderTexture", 2D) = "bump" {}
-		_Drops__NormalTiling("Drops__Normal Tiling", Float) = 1
-		_Drops__NormalScale("Drops__Normal Scale", Range( 0 , 1)) = 1
-		_Border__Mask("Border__Mask", 2D) = "white" {}
-		_Border__WaterSpeed("Border__WaterSpeed", Float) = 0.2
-		_Border__WaterSpeedOffsetFactor("Border__WaterSpeedOffsetFactor", Float) = 2
-		_Border__NormalTiling("Border__Normal Tiling", Float) = 1
-		_Border__NormalScale("Border__Normal Scale", Float) = 1
+		[NoScaleOffset][Normal]_NoiseNormal("Noise Normal", 2D) = "bump" {}
+		_DropsRenderTexture("Drops RenderTexture", 2D) = "bump" {}
+		_DropsNormalTiling("Drops Normal Tiling", Float) = 1
+		_DropsNormalScale("Drops Normal Scale", Range( 0 , 1)) = 1
+		_BorderMask("Border Mask", 2D) = "white" {}
+		_BorderWaterSpeed("Border WaterSpeed", Float) = 0.2
+		_BorderWaterSpeedOffsetFactor("Border WaterSpeedOffsetFactor", Float) = 2
+		_BorderNormalTiling("Border Normal Tiling", Float) = 1
+		_BorderNormalScale("Border Normal Scale", Float) = 1
 		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 
 	}
@@ -63,17 +63,17 @@ Shader "PP_RainDrops"
 			uniform half4 _MainTex_TexelSize;
 			uniform half4 _MainTex_ST;
 			
-			uniform sampler2D _Drops__RenderTexture;
-			uniform float4 _Drops__RenderTexture_ST;
-			uniform sampler2D _Noise__Normal;
-			uniform float _Drops__NormalTiling;
-			uniform float _Drops__NormalScale;
-			uniform float _Border__WaterSpeed;
-			uniform float _Border__NormalTiling;
-			uniform float _Border__NormalScale;
-			uniform float _Border__WaterSpeedOffsetFactor;
-			uniform sampler2D _Border__Mask;
-			uniform float4 _Border__Mask_ST;
+			uniform sampler2D _DropsRenderTexture;
+			uniform float4 _DropsRenderTexture_ST;
+			uniform sampler2D _NoiseNormal;
+			uniform float _DropsNormalTiling;
+			uniform float _DropsNormalScale;
+			uniform float _BorderWaterSpeed;
+			uniform float _BorderNormalTiling;
+			uniform float _BorderNormalScale;
+			uniform float _BorderWaterSpeedOffsetFactor;
+			uniform sampler2D _BorderMask;
+			uniform float4 _BorderMask_ST;
 
 
 			
@@ -105,26 +105,26 @@ Shader "PP_RainDrops"
 			{
 				float4 ase_ppsScreenPosFragNorm = float4(i.texcoordStereo,0,1);
 
-				float2 uv_Drops__RenderTexture = i.texcoord.xy * _Drops__RenderTexture_ST.xy + _Drops__RenderTexture_ST.zw;
-				float2 temp_cast_0 = (_Drops__NormalTiling).xx;
+				float2 uv_DropsRenderTexture = i.texcoord.xy * _DropsRenderTexture_ST.xy + _DropsRenderTexture_ST.zw;
+				float2 temp_cast_0 = (_DropsNormalTiling).xx;
 				float2 texCoord29 = i.texcoord.xy * temp_cast_0 + float2( 0,0 );
-				float3 NORMAL_Waves31 = ( tex2D( _Drops__RenderTexture, uv_Drops__RenderTexture ).r * UnpackScaleNormal( tex2D( _Noise__Normal, texCoord29 ), _Drops__NormalScale ) );
+				float3 NORMAL_Waves31 = ( tex2D( _DropsRenderTexture, uv_DropsRenderTexture ).r * UnpackScaleNormal( tex2D( _NoiseNormal, texCoord29 ), _DropsNormalScale ) );
 				float4 UV_ScreenCordinates47 = ase_ppsScreenPosFragNorm;
-				float VAR_BorderWaterSpeed101 = _Border__WaterSpeed;
+				float VAR_BorderWaterSpeed101 = _BorderWaterSpeed;
 				float2 appendResult80 = (float2(0.0 , VAR_BorderWaterSpeed101));
-				float VAR_BorderNormalTiling98 = _Border__NormalTiling;
+				float VAR_BorderNormalTiling98 = _BorderNormalTiling;
 				float2 temp_cast_2 = (VAR_BorderNormalTiling98).xx;
 				float2 texCoord45 = i.texcoord.xy * temp_cast_2 + float2( 0,0 );
 				float2 panner78 = ( 1.0 * _Time.y * appendResult80 + texCoord45);
-				float VAR_BorderNomalScale95 = _Border__NormalScale;
-				float VAR_WaterSpeedOffsetFactor108 = _Border__WaterSpeedOffsetFactor;
+				float VAR_BorderNomalScale95 = _BorderNormalScale;
+				float VAR_WaterSpeedOffsetFactor108 = _BorderWaterSpeedOffsetFactor;
 				float2 appendResult88 = (float2(0.0 , ( VAR_BorderWaterSpeed101 * VAR_WaterSpeedOffsetFactor108 )));
 				float2 temp_cast_3 = (VAR_BorderNormalTiling98).xx;
 				float2 texCoord87 = i.texcoord.xy * temp_cast_3 + float2( 0,0 );
 				float2 panner84 = ( 1.0 * _Time.y * appendResult88 + texCoord87);
-				float3 NORMAL_WaterDeform92 = BlendNormals( UnpackScaleNormal( tex2D( _Noise__Normal, panner78 ), VAR_BorderNomalScale95 ) , UnpackScaleNormal( tex2D( _Noise__Normal, panner84 ), VAR_BorderNomalScale95 ) );
-				float2 uv_Border__Mask = i.texcoord.xy * _Border__Mask_ST.xy + _Border__Mask_ST.zw;
-				float4 lerpResult56 = lerp( UV_ScreenCordinates47 , ( float4( NORMAL_WaterDeform92 , 0.0 ) + UV_ScreenCordinates47 ) , tex2D( _Border__Mask, uv_Border__Mask ).r);
+				float3 NORMAL_WaterDeform92 = BlendNormals( UnpackScaleNormal( tex2D( _NoiseNormal, panner78 ), VAR_BorderNomalScale95 ) , UnpackScaleNormal( tex2D( _NoiseNormal, panner84 ), VAR_BorderNomalScale95 ) );
+				float2 uv_BorderMask = i.texcoord.xy * _BorderMask_ST.xy + _BorderMask_ST.zw;
+				float4 lerpResult56 = lerp( UV_ScreenCordinates47 , ( float4( NORMAL_WaterDeform92 , 0.0 ) + UV_ScreenCordinates47 ) , tex2D( _BorderMask, uv_BorderMask ).r);
 				float4 UV_ScreenWithBorderDeformation60 = lerpResult56;
 				float4 OUT_FragColor34 = tex2D( _MainTex, ( float4( NORMAL_Waves31 , 0.0 ) + UV_ScreenWithBorderDeformation60 ).xy );
 				
@@ -141,7 +141,7 @@ Shader "PP_RainDrops"
 	Fallback Off
 }
 /*ASEBEGIN
-Version=19102
+Version=19103
 Node;AmplifyShaderEditor.CommentaryNode;106;-4384,-1104;Inherit;False;953.3152;810.4758;;14;108;107;42;41;54;53;37;11;101;81;98;95;46;44;Variables;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;104;-4391,-224;Inherit;False;1750.222;1259.977;;21;100;99;102;109;103;91;87;89;83;80;45;96;40;39;78;92;90;88;97;84;105;Water Border Normal Deformation;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;105;-4352,560;Inherit;False;1181;440;;8;55;57;59;56;50;51;93;60;Blend Border With Screen Cordinates;1,1,1,1;0;0
@@ -156,8 +156,7 @@ Node;AmplifyShaderEditor.TemplateShaderPropertyNode;1;-2160,368;Inherit;False;0;
 Node;AmplifyShaderEditor.SamplerNode;6;-2000,416;Inherit;True;Property;_Screen;Screen;0;0;Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.GetLocalVarNode;38;-2560,-176;Inherit;False;37;TEX_RenderTexture;1;0;OBJECT;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.GetLocalVarNode;43;-2368,-64;Inherit;False;42;TEX_WaterNormal;1;0;OBJECT;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.SamplerNode;27;-2080,16;Inherit;True;Property;_DropsWaveDeformatio;DropsWaveDeformatio;1;2;[NoScaleOffset];[Normal];Create;True;0;0;0;False;0;False;-1;6472ad6da0da0e249a21b11ffedb3876;None;True;0;False;white;Auto;True;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode;30;-2576,16;Inherit;False;Property;_Drops__NormalTiling;Drops__Normal Tiling;2;0;Create;True;0;0;0;False;0;False;1;1;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SamplerNode;27;-2080,16;Inherit;True;Property;_DropsWaveDeformatio;DropsWaveDeformatio;1;2;[NoScaleOffset];[Normal];Create;True;0;0;0;False;0;False;-1;6472ad6da0da0e249a21b11ffedb3876;6472ad6da0da0e249a21b11ffedb3876;True;0;True;white;Auto;True;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleAddOpNode;19;-2160,448;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;62;-2560,480;Inherit;False;60;UV_ScreenWithBorderDeformation;1;0;OBJECT;;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;32;-2560,400;Inherit;False;31;NORMAL_Waves;1;0;OBJECT;;False;1;FLOAT3;0
@@ -178,17 +177,13 @@ Node;AmplifyShaderEditor.GetLocalVarNode;55;-4304,768;Inherit;False;54;TEX_Borde
 Node;AmplifyShaderEditor.GetLocalVarNode;50;-4304,688;Inherit;False;47;UV_ScreenCordinates;1;0;OBJECT;;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;93;-4304,608;Inherit;False;92;NORMAL_WaterDeform;1;0;OBJECT;;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;34;-1696,416;Inherit;False;OUT_FragColor;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode;46;-4336,-976;Inherit;False;Property;_Border__NormalTiling;Border__Normal Tiling;7;0;Create;True;0;0;0;False;0;False;1;1;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;95;-3952,-1056;Inherit;False;VAR_BorderNomalScale;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;98;-3952,-976;Inherit;False;VAR_BorderNormalTiling;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;101;-3952,-896;Inherit;False;VAR_BorderWaterSpeed;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;35;-1152,0;Inherit;False;34;OUT_FragColor;1;0;OBJECT;;False;1;COLOR;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;-896,0;Float;False;True;-1;2;ASEMaterialInspector;0;8;PP_RainDrops;32139be9c1eb75640a847f011acf3bcf;True;SubShader 0 Pass 0;0;0;SubShader 0 Pass 0;1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;True;7;False;;False;False;False;False;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;0;;0;0;Standard;0;0;1;True;False;;False;0
-Node;AmplifyShaderEditor.TexturePropertyNode;11;-4336,-512;Inherit;True;Property;_Drops__RenderTexture;Drops__RenderTexture;1;0;Create;True;0;0;0;False;0;False;51f1e5a8a4fa22440b16fc17241e0087;None;False;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.RegisterLocalVarNode;37;-4096,-512;Inherit;False;TEX_RenderTexture;-1;True;1;0;SAMPLER2D;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.TexturePropertyNode;53;-4336,-720;Inherit;True;Property;_Border__Mask;Border__Mask;4;0;Create;True;0;0;0;False;0;False;e85a86d788581674c92d56b6629f0546;None;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.RegisterLocalVarNode;54;-4096,-720;Inherit;False;TEX_BorderMask;-1;True;1;0;SAMPLER2D;;False;1;SAMPLER2D;0
-Node;AmplifyShaderEditor.TexturePropertyNode;41;-3872,-720;Inherit;True;Property;_Noise__Normal;Noise__Normal;0;2;[NoScaleOffset];[Normal];Create;True;0;0;0;False;0;False;6472ad6da0da0e249a21b11ffedb3876;None;False;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 Node;AmplifyShaderEditor.RegisterLocalVarNode;42;-3648,-720;Inherit;False;TEX_WaterNormal;-1;True;1;0;SAMPLER2D;;False;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;108;-3952,-816;Inherit;False;VAR_WaterSpeedOffsetFactor;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.PannerNode;78;-3760,-80;Inherit;False;3;0;FLOAT2;0,0;False;2;FLOAT2;0,1;False;1;FLOAT;1;False;1;FLOAT2;0
@@ -206,10 +201,15 @@ Node;AmplifyShaderEditor.GetLocalVarNode;109;-4352,416;Inherit;False;108;VAR_Wat
 Node;AmplifyShaderEditor.GetLocalVarNode;102;-4352,-48;Inherit;False;101;VAR_BorderWaterSpeed;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;99;-4352,-176;Inherit;False;98;VAR_BorderNormalTiling;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;100;-4352,208;Inherit;False;98;VAR_BorderNormalTiling;1;0;OBJECT;;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;81;-4336,-896;Inherit;False;Property;_Border__WaterSpeed;Border__WaterSpeed;5;0;Create;True;0;0;0;False;0;False;0.2;1;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;44;-4336,-1056;Inherit;False;Property;_Border__NormalScale;Border__Normal Scale;8;0;Create;True;0;0;0;False;0;False;1;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;107;-4336,-816;Inherit;False;Property;_Border__WaterSpeedOffsetFactor;Border__WaterSpeedOffsetFactor;6;0;Create;True;0;0;0;False;0;False;2;1;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;23;-2368,144;Inherit;False;Property;_Drops__NormalScale;Drops__Normal Scale;3;0;Create;True;0;0;0;False;0;False;1;1;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;107;-4336,-816;Inherit;False;Property;_BorderWaterSpeedOffsetFactor;Border WaterSpeedOffsetFactor;6;0;Create;True;0;0;0;False;0;False;2;1;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;81;-4336,-896;Inherit;False;Property;_BorderWaterSpeed;Border WaterSpeed;5;0;Create;True;0;0;0;False;0;False;0.2;1;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;46;-4336,-976;Inherit;False;Property;_BorderNormalTiling;Border Normal Tiling;7;0;Create;True;0;0;0;False;0;False;1;1;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;44;-4336,-1056;Inherit;False;Property;_BorderNormalScale;Border Normal Scale;8;0;Create;True;0;0;0;False;0;False;1;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;23;-2368,144;Inherit;False;Property;_DropsNormalScale;Drops Normal Scale;3;0;Create;True;0;0;0;False;0;False;1;1;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;30;-2576,16;Inherit;False;Property;_DropsNormalTiling;Drops Normal Tiling;2;0;Create;True;0;0;0;False;0;False;1;1;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TexturePropertyNode;53;-4336,-720;Inherit;True;Property;_BorderMask;Border Mask;4;0;Create;True;0;0;0;False;0;False;e85a86d788581674c92d56b6629f0546;e85a86d788581674c92d56b6629f0546;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.TexturePropertyNode;11;-4336,-512;Inherit;True;Property;_DropsRenderTexture;Drops RenderTexture;1;0;Create;True;0;0;0;False;0;False;51f1e5a8a4fa22440b16fc17241e0087;51f1e5a8a4fa22440b16fc17241e0087;False;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
+Node;AmplifyShaderEditor.TexturePropertyNode;41;-3872,-720;Inherit;True;Property;_NoiseNormal;Noise Normal;0;2;[NoScaleOffset];[Normal];Create;True;0;0;0;False;0;False;6472ad6da0da0e249a21b11ffedb3876;6472ad6da0da0e249a21b11ffedb3876;True;bump;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
 WireConnection;29;0;30;0
 WireConnection;14;0;38;0
 WireConnection;28;0;14;1
@@ -261,4 +261,4 @@ WireConnection;87;0;100;0
 WireConnection;91;0;40;0
 WireConnection;91;1;89;0
 ASEEND*/
-//CHKSM=D566C6DBB4C101C06965865166648E6C872D0FCE
+//CHKSM=9B1BA59B649C2FEC7D568FBE406E51621FA68C65

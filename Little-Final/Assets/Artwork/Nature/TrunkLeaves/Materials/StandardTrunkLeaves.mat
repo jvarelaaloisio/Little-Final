@@ -2,20 +2,24 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: StandardTrunkLeaves
   m_Shader: {fileID: 4800000, guid: 03e54434780ca084faa27474fcc2a54d, type: 3}
-  m_ShaderKeywords: 
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -27,28 +31,52 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
+    - _AlphaCutoff: 0.5
     - _Cutoff: 0.5
     - _Dither__Size: 0.3
+    - _EnvironmentReflections: 1
     - _Float0: 0.3
     - _Float1: 0
     - _Float2: 0
     - _Light__Factor: 0.5
     - _Light__MaskScale: 0.3
-    - _ProximityMask_SizeMax: 0.6
+    - _LocalVertexOffsetFactor: 1
+    - _ProximityMask_SizeMax: 0.1
     - _ProximityMask_SizeMin: -0.2
-    - _ProximityMask__Factor: 0
+    - _ProximityMask__Factor: 1
     - _ProximityMask__Size: 0.15
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
     - _Shadow__Factor: 0.5
     - _Shadow__MaskScale: 0.05
+    - _Smoothness: 0
+    - _SpecularHighlights: 1
     - _TransAmbient: 0.2
     - _TransDirect: 1
+    - _TransNormal: 0.5
     - _TransNormalDistortion: 0.1
     - _TransScattering: 2
     - _TransShadow: 0.9
+    - _TransStrength: 1
     - _Translucency: 0
     - _TranslucencyFactor: 0.2
     - _Wind__BaseSpeed: 0.1
+    - _Wind__Direction: 0
     - _Wind__NoiseAnimationScale: 0.3
     - _Wind__NoiseFactor: 3
     - _Wind__PrimarySpeed: 0.2
@@ -58,6 +86,8 @@ Material:
     - _Wind__WorldNoiseSpeedY: 0
     - __dirty: 0
     m_Colors:
-    - _Leaves__BaseColor: {r: 0.12682444, g: 0.4716981, b: 0.21612206, a: 1}
-    - _Light__Color: {r: 0.24697399, g: 0.6981132, b: 0.50196576, a: 1}
-    - _Shadow__Color: {r: 0.207843, g: 0.24313712, b: 0.078431256, a: 0}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Leaves__BaseColor: {r: 0.12682441, g: 0.4716981, b: 0.21612203, a: 1}
+    - _Light__Color: {r: 0.24697393, g: 0.6981132, b: 0.50196576, a: 1}
+    - _Shadow__Color: {r: 0.20784298, g: 0.24313709, b: 0.07843123, a: 0}
+  m_BuildTextureStacks: []

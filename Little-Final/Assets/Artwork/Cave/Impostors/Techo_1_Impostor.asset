@@ -2,20 +2,24 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &-4267426628363931446
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Techo_1_Impostor
-  m_Shader: {fileID: 4800000, guid: 572f9be5706148142b8da6e9de53acdb, type: 3}
-  m_ShaderKeywords: 
+  m_Shader: {fileID: 4800000, guid: da79d698f4bf0164e910ad798d07efdf, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -35,22 +39,27 @@ Material:
         m_Texture: {fileID: 2800000, guid: 13e0588e5adc1af4280e62cd04a9203d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AI_AlphaToCoverage: 0
     - _AI_ShadowBias: 0.25
     - _AI_ShadowView: 1
     - _ClipMask: 0.5
-    - _DepthSize: 26.369678
+    - _DepthSize: 26.582186
     - _Frames: 16
+    - _FramesX: 16
+    - _FramesY: 16
     - _Hemi: 0
     - _Hue: 0
-    - _ImpostorSize: 26.379728
+    - _ImpostorSize: 26.556805
     - _Parallax: 1
     - _TextureBias: -1
+    - _Use_Parallax: 0
     m_Colors:
-    - _AI_SizeOffset: {r: 26.379728, g: 26.369678, b: 0, a: -0.0001230315}
+    - _AI_SizeOffset: {r: 26.556805, g: 26.582186, b: 0, a: 0}
     - _HueVariation: {r: 0, g: 0, b: 0, a: 0}
-    - _Offset: {r: -0.035322458, g: 1.9160787, b: 0.044933103, a: 0.001968504}
+    - _Offset: {r: -0.035322458, g: 1.9160787, b: 0.044933103, a: -0}
+  m_BuildTextureStacks: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,11 +74,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Material: {fileID: -4267426628363931446}
   Mesh: {fileID: 7806382135028725422}
-  Version: 9713
-  ImpostorType: 1
+  Version: 9803
+  ImpostorType: 0
   LockedSizes: 1
-  SelectedSize: 2048
-  TexSize: {x: 2048, y: 2048}
+  SelectedSize: 1024
+  TexSize: {x: 1024, y: 1024}
   DecoupleAxisFrames: 0
   HorizontalFrames: 16
   VerticalFrames: 16
@@ -78,15 +87,15 @@ MonoBehaviour:
   Tolerance: 0.15
   NormalScale: 0.01
   ShapePoints:
-  - {x: 0, y: 0.71306324}
-  - {x: 0.3076652, y: 1}
-  - {x: 0.69132686, y: 1}
-  - {x: 1, y: 0.69132686}
-  - {x: 1, y: 0.3162161}
-  - {x: 0.6537229, y: 0}
-  - {x: 0.3398363, y: 0}
-  - {x: 0, y: 0.32242227}
-  Preset: {fileID: 11400000, guid: e4786beb7716da54dbb02a632681cc37, type: 2}
+  - {x: 0, y: 0.7705925}
+  - {x: 0.34419402, y: 1}
+  - {x: 0.7684721, y: 1}
+  - {x: 1, y: 0.65602064}
+  - {x: 1, y: 0.35792404}
+  - {x: 0.76984614, y: 0}
+  - {x: 0.3664461, y: 0}
+  - {x: 0, y: 0.2269929}
+  Preset: {fileID: 11400000, guid: 0403878495ffa3c4e9d4bcb3eac9b559, type: 2}
   OverrideOutput: []
 --- !u!43 &7806382135028725422
 Mesh:
@@ -95,7 +104,7 @@ Mesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Techo_1_Impostor
-  serializedVersion: 10
+  serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
@@ -105,8 +114,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 8
     localAABB:
-      m_Center: {x: 0, y: -0.05192852, z: 0}
-      m_Extent: {x: 13.189864, y: 13.189864, z: 0}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 13.278402, y: 13.278402, z: 0}
   m_Shapes:
     vertices: []
     shapes: []
@@ -185,7 +194,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 256
-    _typelessdata: af0953c1f384b5c0000000000000000000000000000080bf0000000060e9923e145ca2c062de53c1000000000000000000000000000080bf4b869d3e000000004282a14062de53c1000000000000000000000000000080bfccfa303f00000000af095341a82ba3c0000000000000000000000000ffff7fbf0000803f680a9e3eaf095341cd7a9940000000000000000000000000000080bf0000803f760c2f3fefc38140fc345241000000000000000000000000000080bf625a273f0000803fd03387c0fc345241000000000000000000000000000080bf06ffad3e0000803faf0953c1a33d9440000000000000000000000000000080bf00000000bc752d3f
+    _typelessdata: 567454c14ef4e5c0000000000000000000000000000080bf00000000cce96a3e1c6884c0567454c1000000000000000000000000000080bf333ab03e00000000ff26e440567454c1000000000000000000000000000080bf96ba443f0000000056745441d09684c0000000000000000000000000000080bf0000803f101eb03e56745441337a7140000000000000000000000000000080bf0000803f175f243fee51e54056745441000000000000000000000000ffff7fbfa314453f0000803f31fe62c056745441000000000000000000000000000080bfd39ebb3e0000803f567454c19b01e840000000000000000000000000000080bf00000000cbe3453f
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -242,12 +251,14 @@ Mesh:
     m_Center: {x: -0.035322458, y: 1.9160787, z: 0.044933103}
     m_Extent: {x: 9.139274, y: 1.9613004, z: 9.469179}
   m_MeshUsageFlags: 0
+  m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshMetrics[0]: 1
   m_MeshMetrics[1]: 1
   m_MeshOptimizationFlags: 1
   m_StreamData:
+    serializedVersion: 2
     offset: 0
     size: 0
     path: 

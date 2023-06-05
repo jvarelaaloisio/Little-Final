@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BakePresetURP
   m_EditorClassIdentifier: 
   BakeShader: {fileID: 4800000, guid: 491949b665cd59d43bc93c611092dcae, type: 3}
-  RuntimeShader: {fileID: 0}
+  RuntimeShader: {fileID: 4800000, guid: da79d698f4bf0164e910ad798d07efdf, type: 3}
   AlphaIndex: 0
   Output:
   - Index: -1
@@ -24,7 +24,7 @@ MonoBehaviour:
     SRGB: 1
     Channels: 0
     Compression: 1
-    ImageFormat: 1
+    ImageFormat: 0
   - Index: -1
     OverrideMask: 0
     Active: 1
@@ -33,22 +33,22 @@ MonoBehaviour:
     SRGB: 1
     Channels: 0
     Compression: 1
-    ImageFormat: 1
+    ImageFormat: 0
   - Index: -1
     OverrideMask: 0
     Active: 1
     Name: _NormalDepth
     Scale: 1
     SRGB: 0
-    Channels: 0
+    Channels: 1
     Compression: 1
-    ImageFormat: 1
+    ImageFormat: 0
   - Index: -1
     OverrideMask: 0
     Active: 1
     Name: _EmissionOcclusion
     Scale: 1
     SRGB: 0
-    Channels: 0
+    Channels: 1
     Compression: 1
-    ImageFormat: 1
+    ImageFormat: 0

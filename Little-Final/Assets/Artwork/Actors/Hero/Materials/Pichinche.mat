@@ -2,20 +2,24 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Pichinche
   m_Shader: {fileID: 4800000, guid: f2e6c1694f57d614aad15748854fddc8, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 0
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -47,6 +51,14 @@ Material:
         m_Texture: {fileID: 2800000, guid: 9e8e306d5b8e2794587eb5031502a77c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MagicDistortion:
+        m_Texture: {fileID: 2800000, guid: 1a8de9010eebe93458719b1d94480e00, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MagicMaskTex:
+        m_Texture: {fileID: 2800000, guid: 4c51f2036ac9ae74a9a6b0299220edf7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Magic__Distortion:
         m_Texture: {fileID: 2800000, guid: ccd44a7950132444fb0dc8b9102739e0, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -69,6 +81,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PBRBaseColor:
+        m_Texture: {fileID: 2800000, guid: 0d823bc15b3011f4fa70263c4b9da4a2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PBREmissive:
+        m_Texture: {fileID: 2800000, guid: 9e8e306d5b8e2794587eb5031502a77c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PBRNormal:
+        m_Texture: {fileID: 2800000, guid: 3d22ecf38274270428c1139ffca03e44, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PBR_Albedo:
@@ -111,19 +135,37 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _Activate: 0.83
+    - _AlphaCutoff: 0.5
     - _BigWindScale1: 1.5
     - _BumpScale: 1
     - _CloudShadowSpeed2: 0.1
     - _CloudsShadowScale2: 0.01
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
+    - _DistortionFactor: 0.003
+    - _DistortionScale: 1
+    - _DistortionSpeed: 0.08
     - _Distortion__Factor: 0.005
     - _Distortion__Scale: 0.1
     - _Distortion___Speed: 0.1
     - _DstBlend: 0
     - _EdgeLength: 15
+    - _EnvironmentReflections: 1
     - _FallOff: 1.08
     - _Float0: 0.005
     - _Float1: 0.1
@@ -142,14 +184,18 @@ Material:
     - _NoiseSpeed: 0.03
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _QueueControl: -1
+    - _QueueOffset: 0
     - _Radius: 11.3
+    - _ReceiveShadows: 1
     - _Scan_FallOff: 1.08
     - _Scan_LineWidth: 0.08
     - _Scan_LinesAmount: 2
     - _Scan_Radius: 11.3
     - _Scan_Speed: 2
     - _SmoothnessTextureChannel: 0
-    - _SparksScale: 100
+    - _SparksScale: 200
+    - _SparksSpeed: 0.1
     - _Sparks__Scale: 100
     - _Sparks__Speed: 0.1
     - _SpecularHighlights: 1
@@ -162,11 +208,14 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorPonchoMagic: {r: 0, g: 0.99056596, b: 0.7631484, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _MagicActiveColor: {r: 0, g: 1, b: 0.8446779, a: 0}
     - _MagicColor: {r: 0, g: 1, b: 0.8446779, a: 0}
+    - _MagicInactiveColor: {r: 0, g: 1, b: 0.8446779, a: 0}
     - _Magic__ActiveColor: {r: 0.9963673, g: 1, b: 0, a: 0}
     - _Magic__InactiveColor: {r: 1, g: 1, b: 1, a: 0}
     - _NoiseColor: {r: 0.33018857, g: 0.13849282, b: 0.045167275, a: 0}
     - _Scan_Color: {r: 0.9963673, g: 1, b: 0, a: 0}
-    - _SparksColor: {r: 1, g: 0.67765254, b: 0, a: 0}
+    - _SparksColor: {r: 0, g: 0.52591467, b: 1, a: 0}
     - _Sparks__Color: {r: 1, g: 0.67765254, b: 0, a: 0}
     - _Vector2: {r: 0, g: -1.6, b: 1, a: 0}
+  m_BuildTextureStacks: []
