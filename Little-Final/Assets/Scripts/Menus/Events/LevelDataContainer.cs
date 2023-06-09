@@ -23,7 +23,11 @@ namespace Events
         //TODO: Make coroutine/Async op
         public void Unload()
         {
-            foreach (var index in immediateLoadBuildIndexes) SceneManager.UnloadSceneAsync(index);
+            foreach (var index in immediateLoadBuildIndexes)
+                SceneManager.UnloadSceneAsync(index);
+            foreach (var batchedLoad in batchedLoads)
+                foreach (var index in batchedLoad.buildIndexes)
+                    SceneManager.UnloadSceneAsync(index);
         }
     }
 }

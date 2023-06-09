@@ -9,13 +9,13 @@ namespace EditorExtensions
 		private const string NEW_PARENT_NAME = "New Parent";
 		private const string CREATE_NEW_PARENT_UNDO_COMMAND = "Create New Parent";
 
-		[MenuItem("GameObject/Reset Transform (Ignore children)", true, 49)]
+		[MenuItem("GameObject/Transform/Reset Transform (Ignore children)", true, 49)]
 		private static bool Validate_ResetTransform()
 		{
 			return (Selection.activeGameObject != null);
 		}
 
-		[MenuItem("GameObject/Reset Transform (Ignore children)", false, 49)]
+		[MenuItem("GameObject/Transform/Reset Transform (Ignore children)", false, 49)]
 		private static void ResetTransform()
 		{
 			GameObject selection = Selection.activeGameObject;
@@ -42,13 +42,13 @@ namespace EditorExtensions
 			}
 		}
 
-		[MenuItem("GameObject/Sit Down", true, 48)]
+		[MenuItem("GameObject/Transform/Sit Down", true, 48)]
 		private static bool Validate_SitDownSelection()
 		{
 			return (Selection.activeGameObject != null);
 		}
 
-		[MenuItem("GameObject/Sit Down", false, 48)]
+		[MenuItem("GameObject/Transform/Sit Down", false, 48)]
 		private static void SitDownSelection()
 		{
 			var selection = Selection.gameObjects;
@@ -65,13 +65,13 @@ namespace EditorExtensions
 			}
 		}
 
-		[MenuItem("GameObject/Set Parent to Null", true, 49)]
+		[MenuItem("GameObject/Transform/Set Parent to Null", true, 49)]
 		private static bool Validate_MakeOrphan()
 		{
 			return (Selection.activeGameObject != null);
 		}
 
-		[MenuItem("GameObject/Set Parent to Null", false, 49)]
+		[MenuItem("GameObject/Transform/Set Parent to Null", false, 49)]
 		private static void MakeOrphan()
 		{
 			var selection = Selection.gameObjects;
@@ -81,7 +81,7 @@ namespace EditorExtensions
 			}
 		}
 
-		[MenuItem("GameObject/Create Parent", true, 0)]
+		[MenuItem("GameObject/Transform/Create Parent", true, 0)]
 		private static bool Validate_CreateParent()
 		{
 			GameObject activeGameObject = Selection.activeGameObject;
@@ -89,12 +89,10 @@ namespace EditorExtensions
 					&& activeGameObject.name != NEW_PARENT_NAME);
 		}
 
-		[MenuItem("GameObject/Create Parent", false, 0)]
+		[MenuItem("GameObject/Transform/Create Parent", false, 0)]
 		private static void CreateParent()
 		{
 			var activeGameObject = Selection.activeGameObject;
-			if (activeGameObject.name == NEW_PARENT_NAME)
-				return;
 			var selection = Selection.gameObjects;
 			GameObject newParent = new GameObject(NEW_PARENT_NAME);
 			Undo.RegisterCreatedObjectUndo(newParent, CREATE_NEW_PARENT_UNDO_COMMAND);
@@ -108,6 +106,16 @@ namespace EditorExtensions
 			}
 
 			Selection.activeGameObject = newParent.gameObject;
+		}
+		
+		[MenuItem("GameObject/Transform/Toggle Active", true, 0)]
+		private static bool Validate_ToggleActive() => Selection.activeGameObject != null;
+
+		[MenuItem("GameObject/Transform/Toggle Active", false, 0)]
+		private static void ToggleActive()
+		{
+			var activeGameObject = Selection.activeGameObject;
+			activeGameObject.SetActive(!activeGameObject.activeSelf);
 		}
 	}
 }

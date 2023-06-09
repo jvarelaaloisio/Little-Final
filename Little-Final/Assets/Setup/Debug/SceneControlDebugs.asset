@@ -9,10 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42a54d5348ab448991ee4eb7ce649458, type: 3}
-  m_Name: LoadPerformanceTest
+  m_Script: {fileID: 11500000, guid: bcf45fe8027cdcc46ac8705811008b85, type: 3}
+  m_Name: SceneControlDebugs
   m_EditorClassIdentifier: 
-  immediateLoadBuildIndexes: 0200000003000000050000000600000007000000
-  activeSceneIndex: 0
-  batchedLoads:
-  - buildIndexes: 11000000
+  enabled: 1
+  logNames: 1
+  allowLog: 1
+  allowWarning: 1
+  allowError: 1
+  allowAssert: 1
+  allowException: 1
+  drawLines: 1
+  drawRays: 1
+  filteredTags: []
