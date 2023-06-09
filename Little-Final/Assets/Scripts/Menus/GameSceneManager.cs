@@ -84,16 +84,23 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
             {
                 var loadOperation = SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive);
                 loadOperation.allowSceneActivation = false;
-                var scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
-                Debug.Log($"{name}: Loading {scenePath}");
-                
+                var sceneName = SceneUtility.GetScenePathByBuildIndex(buildIndex).Split('/')[^1];
+                Debug.Log($"{name}: <color=yellow>Loading</color> {sceneName}");
+
+                var loadStartTime = Time.realtimeSinceStartupAsDouble;
                 yield return new WaitUntil(() => loadOperation.progress >= 0.9f);
 
+                Debug.Log($"{name}: <color=green>Loaded</color> {sceneName} in <color=red>{(Time.realtimeSinceStartupAsDouble - loadStartTime):F3}</color> seconds"+
+                          $"\n<color=black>Waiting {delayBeforeActivatingScene} seconds before activation</color>");
+                
                 yield return new WaitForSeconds(delayBeforeActivatingScene);
-                Debug.Log($"{name}: Activating {scenePath}");
+                
+                var activationStartTime = Time.realtimeSinceStartupAsDouble;
+                Debug.Log($"{name}: <color=yellow>Activating</color> {sceneName}");
                 loadOperation.allowSceneActivation = true;
                 
-                Debug.Log($"{name}: Loaded {scenePath}");
+                Debug.Log($"{name}: <color=green>Activated</color> {sceneName} in <color=red>{(Time.realtimeSinceStartupAsDouble - activationStartTime):F3}</color> seconds" +
+                          $"\n<color=black>Waiting {delayBetweenBatches} seconds.</color>");
                 yield return new WaitForSeconds(delayBeforeLoadingNextScene);
             }
 
