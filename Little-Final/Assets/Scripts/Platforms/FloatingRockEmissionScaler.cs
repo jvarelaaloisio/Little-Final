@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Core;
 using UnityEngine;
 
@@ -84,6 +85,11 @@ namespace Platforms
 		private void OnDisable()
 		{
 			StopCoroutine(Start());
+		}
+
+		private void OnDestroy()
+		{
+			OnDisable();
 		}
 	}
 }
