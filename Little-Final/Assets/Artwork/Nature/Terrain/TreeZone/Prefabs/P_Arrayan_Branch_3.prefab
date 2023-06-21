@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 22
   m_IsActive: 1
 --- !u!4 &5039690880619493766
 Transform:
@@ -26,6 +26,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6089261685991980573}
   m_Father: {fileID: 0}
@@ -36,6 +37,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 5039690880619493766}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: cfa5100cd66b3c44aa867b0684f89769,
@@ -108,10 +110,35 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1306062702289706810, guid: cfa5100cd66b3c44aa867b0684f89769,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: -680635029971599083, guid: cfa5100cd66b3c44aa867b0684f89769,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 22
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: cfa5100cd66b3c44aa867b0684f89769,
         type: 3}
       propertyPath: m_Name
       value: arrayan_branch_2_LOD
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: cfa5100cd66b3c44aa867b0684f89769,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 2457990625004343825, guid: cfa5100cd66b3c44aa867b0684f89769,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 2655427916162030595, guid: cfa5100cd66b3c44aa867b0684f89769,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 4742473837712756890, guid: cfa5100cd66b3c44aa867b0684f89769,
         type: 3}
@@ -123,7 +150,15 @@ PrefabInstance:
       propertyPath: m_AnimateCrossFading
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8031941002927747586, guid: cfa5100cd66b3c44aa867b0684f89769,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 22
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cfa5100cd66b3c44aa867b0684f89769, type: 3}
 --- !u!4 &6089261685991980573 stripped
 Transform:

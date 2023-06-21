@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Material: {fileID: 3457349903758082852}
   Mesh: {fileID: 187827623316340894}
-  Version: 9713
-  ImpostorType: 1
+  Version: 9803
+  ImpostorType: 0
   LockedSizes: 1
-  SelectedSize: 2048
-  TexSize: {x: 2048, y: 2048}
+  SelectedSize: 1024
+  TexSize: {x: 1024, y: 1024}
   DecoupleAxisFrames: 0
   HorizontalFrames: 16
   VerticalFrames: 16
@@ -27,15 +27,15 @@ MonoBehaviour:
   Tolerance: 0.15
   NormalScale: 0.01
   ShapePoints:
-  - {x: 0.19036096, y: 0.91870356}
-  - {x: 0.32036904, y: 1}
-  - {x: 0.6683655, y: 1}
-  - {x: 0.8094961, y: 0.92287296}
-  - {x: 0.8089889, y: 0.06286377}
-  - {x: 0.61738926, y: 0}
-  - {x: 0.368823, y: 0}
-  - {x: 0.19086139, y: 0.06872743}
-  Preset: {fileID: 11400000, guid: e4786beb7716da54dbb02a632681cc37, type: 2}
+  - {x: 0.19015196, y: 0.9143745}
+  - {x: 0.3024797, y: 1}
+  - {x: 0.65149, y: 1}
+  - {x: 0.8091662, y: 0.93817484}
+  - {x: 0.8094989, y: 0.07713199}
+  - {x: 0.66871566, y: 0}
+  - {x: 0.34535873, y: 0}
+  - {x: 0.19071224, y: 0.06896144}
+  Preset: {fileID: 11400000, guid: 0403878495ffa3c4e9d4bcb3eac9b559, type: 2}
   OverrideOutput: []
 --- !u!43 &187827623316340894
 Mesh:
@@ -44,7 +44,7 @@ Mesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Esquina_1_Impostor
-  serializedVersion: 10
+  serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
@@ -54,8 +54,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 8
     localAABB:
-      m_Center: {x: -0.001894474, y: 0, z: 0}
-      m_Extent: {x: 8.204929, y: 13.252244, z: 0}
+      m_Center: {x: -0.0046024323, y: 0, z: 0}
+      m_Extent: {x: 8.164501, y: 13.182435, z: 0}
   m_Shapes:
     vertices: []
     shapes: []
@@ -134,7 +134,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 256
-    _typelessdata: 274f03c1758f31c1000000000000000000000000000080bffced423ec07ea63d555a98c0310954c1000000000000000000000000ffff7fbf6907a43e0000000051cc8e40310954c1000000000000000000000000000080bf001a2b3f00000000a23f0341195433c1000000000000000000000000ffff7fbf233b4f3fc8f49d3d930803418d603941000000000000000000000000000080bfe6194f3f29e86f3f3b20474031095441000000000000000000000000000080bf390d1e3f0000803f8e835ec031095441000000000000000000000000000080bf5ed6bc3e0000803fd31803c1fae33641000000000000000000000000000080bf2b71433ee1676e3f
+    _typelessdata: a6b402c182cc2ec1000000000000000000000000000080bf32b7423e705caf3da2a4a6c041eb52c1000000000000000000000000ffff7fbf9fde9a3e00000000eb9d7f4041eb52c1000000000000000000000000000080bf0cc8263f00000000046b0241b9d638c1000000000000000000000000000080bf84254f3f603c7d3df28e0241bb613241000000000000000000000000000080bf523b4f3f14416c3f61578e4041eb5241000000000000000000000000000080bff3302b3f0000803f947782c041eb5241000000000000000000000000ffff7fbfdcd2b03e0000803f247802c113d43541000000000000000000000000000080bf124a433e8b586e3f
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -191,31 +191,37 @@ Mesh:
     m_Center: {x: -0.07945001, y: -0.009274458, z: 0.20308344}
     m_Extent: {x: 5.470716, y: 10.73288, z: 5.5247626}
   m_MeshUsageFlags: 0
+  m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshMetrics[0]: 1
   m_MeshMetrics[1]: 1
   m_MeshOptimizationFlags: 1
   m_StreamData:
+    serializedVersion: 2
     offset: 0
     size: 0
     path: 
 --- !u!21 &3457349903758082852
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Esquina_1_Impostor
-  m_Shader: {fileID: 4800000, guid: 572f9be5706148142b8da6e9de53acdb, type: 3}
-  m_ShaderKeywords: 
+  m_Shader: {fileID: 4800000, guid: da79d698f4bf0164e910ad798d07efdf, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -235,19 +241,24 @@ Material:
         m_Texture: {fileID: 2800000, guid: de9e18af25830da48bdf4311952a8bc4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AI_AlphaToCoverage: 0
     - _AI_ShadowBias: 0.25
     - _AI_ShadowView: 1
     - _ClipMask: 0.5
-    - _DepthSize: 26.469347
+    - _DepthSize: 26.506197
     - _Frames: 16
+    - _FramesX: 16
+    - _FramesY: 16
     - _Hemi: 0
     - _Hue: 0
-    - _ImpostorSize: 26.504488
+    - _ImpostorSize: 26.36487
     - _Parallax: 1
     - _TextureBias: -1
+    - _Use_Parallax: 0
     m_Colors:
-    - _AI_SizeOffset: {r: 26.504488, g: 26.469347, b: 0, a: 0}
+    - _AI_SizeOffset: {r: 26.36487, g: 26.506197, b: 0, a: 0}
     - _HueVariation: {r: 0, g: 0, b: 0, a: 0}
     - _Offset: {r: -0.07945001, g: -0.009274458, b: 0.20308344, a: -0}
+  m_BuildTextureStacks: []

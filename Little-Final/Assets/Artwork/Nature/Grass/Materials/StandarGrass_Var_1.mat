@@ -2,20 +2,24 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: StandarGrass_Var_1
   m_Shader: {fileID: 4800000, guid: f342aacd45082fe4da92cd042f7f2f17, type: 3}
-  m_ShaderKeywords: 
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -44,7 +48,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GrassAlpha:
-        m_Texture: {fileID: 2800000, guid: 3f34489a12e46504e8459d30fad9cefd, type: 3}
+        m_Texture: {fileID: 2800000, guid: 0b4fa66ba8525c14db71975a0b784d48, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GrassAtlas:
@@ -91,7 +95,21 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
+    - _AlphaCutoff: 0.5
     - _BigWindScale1: 1.5
     - _BumpScale: 1
     - _CloudShadowSpeed: 0.05
@@ -102,6 +120,8 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EnvironmentReflections: 1
+    - _Float0: -0.03
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -112,9 +132,13 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
     - _RoughnessMultiply: 0
     - _Satura: 0
     - _Saturation: 0
+    - _Smootheness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -135,9 +159,9 @@ Material:
     m_Colors:
     - _Color: {r: 0.34782913, g: 0.5, b: 0.27122614, a: 1}
     - _ColorMultiplier: {r: 0.049928784, g: 0.32075468, b: 0.09387054, a: 1}
-    - _ColorMultiplierBottom: {r: 0.009211458, g: 0.21698105, b: 0.04313299, a: 1}
+    - _ColorMultiplierBottom: {r: 0.009211458, g: 0.21698096, b: 0.043132924, a: 1}
     - _ColorMultiplierDown: {r: 0.035987798, g: 0.22700001, b: 0.06643902, a: 1}
-    - _ColorMultiplierTop: {r: 0.093378, g: 0.589, b: 0.10350809, a: 1}
+    - _ColorMultiplierTop: {r: 0.093377896, g: 0.589, b: 0.103508, a: 1}
     - _ColorMultiplier_1: {r: 0.035987798, g: 0.22700001, b: 0.06643902, a: 1}
     - _ColorMultiplier_2: {r: 0.09337803, g: 0.589, b: 0.103508115, a: 1}
     - _ColorMultiply: {r: 0.7169812, g: 0.30776078, b: 0.30776078, a: 0}
@@ -146,3 +170,4 @@ Material:
     - _Vector2: {r: 0, g: -1.6, b: 1, a: 0}
     - _WindLigth: {r: 1, g: 1, b: 1, a: 0}
     - _WindShadow: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 0}
+  m_BuildTextureStacks: []

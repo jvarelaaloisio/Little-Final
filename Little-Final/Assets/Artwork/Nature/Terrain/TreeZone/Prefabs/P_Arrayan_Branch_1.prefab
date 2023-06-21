@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 22
   m_IsActive: 1
 --- !u!4 &8744027953967419633
 Transform:
@@ -26,6 +26,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7271748662237496341}
   m_Father: {fileID: 0}
@@ -36,6 +37,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 8744027953967419633}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 4153ed1ed26b21d46b6d5e05d3e0b3de,
@@ -108,10 +110,35 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5850470146460667187, guid: 4153ed1ed26b21d46b6d5e05d3e0b3de,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: -3821278301112055321, guid: 4153ed1ed26b21d46b6d5e05d3e0b3de,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: -2595993189414880065, guid: 4153ed1ed26b21d46b6d5e05d3e0b3de,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 22
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4153ed1ed26b21d46b6d5e05d3e0b3de,
         type: 3}
       propertyPath: m_Name
       value: arrayan_branch_4_LOD
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4153ed1ed26b21d46b6d5e05d3e0b3de,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 3878478468362145513, guid: 4153ed1ed26b21d46b6d5e05d3e0b3de,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 4742473837712756890, guid: 4153ed1ed26b21d46b6d5e05d3e0b3de,
         type: 3}
@@ -133,7 +160,15 @@ PrefabInstance:
       propertyPath: m_LODs.Array.data[1].screenRelativeHeight
       value: 0.29605082
       objectReference: {fileID: 0}
+    - target: {fileID: 4811825658790941660, guid: 4153ed1ed26b21d46b6d5e05d3e0b3de,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 22
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4153ed1ed26b21d46b6d5e05d3e0b3de, type: 3}
 --- !u!4 &7271748662237496341 stripped
 Transform:

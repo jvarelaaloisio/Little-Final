@@ -7,7 +7,7 @@ Mesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Pared2_Impostor
-  serializedVersion: 10
+  serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
@@ -17,8 +17,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 8
     localAABB:
-      m_Center: {x: -0.0694232, y: 0, z: 0}
-      m_Extent: {x: 10.011591, y: 14.2535925, z: 0}
+      m_Center: {x: 0.0036559105, y: -0.056378365, z: 0}
+      m_Extent: {x: 9.835886, y: 14.263689, z: 0}
   m_Shapes:
     vertices: []
     shapes: []
@@ -97,7 +97,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 256
-    _typelessdata: d64b21c180883cc1000000000000000000000000000080bfd8e1153ec077b13d77e57bc0b70e64c1000000000000000000000000000080bf614fb93e00000000eabea040b70e64c1000000000000000000000000000080bf391c2d3f000000001f131f411a8c2ec1000000000000000000000000000080bf5748593f1844f03d7d071f413cc23041000000000000000000000000000080bfd041593f3d35633f654e9840b70e6441000000000000000000000000000080bfeabd2a3f0000803f111c2ac0b70e6441000000000000000000000000000080bf1043d03e0000803fcbe01ac128dc4041000000000000000000000000ffff7fbf8e4a243eb73e6c3f
+    _typelessdata: d1501dc1d4e23741000000000000000000000000000080bf98111f3e21a4673fa8111dc129aa3fc1000000000000000000000000000080bf499f1f3e5010a83d28222bc0ff1e65c1000000000000000000000000000080bf3702d03e0000000039d6a640ff1e65c1000000000000000000000000000080bf54c92e3f00000000c46e1d41f8db2fc1000000000000000000000000000080bf664c583f40fbee3de45b1d4113cb2e41000000000000000000000000000080bfd041583f938a623f4348914025516341000000000000000000000000000080bfeabd283f0000803f85b29fc025516341000000000000000000000000000080bf706ea63e0000803f
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -154,12 +154,14 @@ Mesh:
     m_Center: {x: 0.013174117, y: -0.11548686, z: -2.1931746}
     m_Extent: {x: 9.12729, y: 10.7863865, z: 3.024709}
   m_MeshUsageFlags: 0
+  m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshMetrics[0]: 1
   m_MeshMetrics[1]: 1
   m_MeshOptimizationFlags: 1
   m_StreamData:
+    serializedVersion: 2
     offset: 0
     size: 0
     path: 
@@ -177,11 +179,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Material: {fileID: 8906212981740471976}
   Mesh: {fileID: -2219891061281911378}
-  Version: 9713
-  ImpostorType: 1
+  Version: 9803
+  ImpostorType: 0
   LockedSizes: 1
-  SelectedSize: 2048
-  TexSize: {x: 2048, y: 2048}
+  SelectedSize: 1024
+  TexSize: {x: 1024, y: 1024}
   DecoupleAxisFrames: 0
   HorizontalFrames: 16
   VerticalFrames: 16
@@ -190,32 +192,36 @@ MonoBehaviour:
   Tolerance: 0.15
   NormalScale: 0.01
   ShapePoints:
-  - {x: 0.14636934, y: 0.9133458}
-  - {x: 0.36193374, y: 1}
-  - {x: 0.6762119, y: 1}
-  - {x: 0.84876007, y: 0.8826826}
-  - {x: 0.84866047, y: 0.1124689}
-  - {x: 0.66696036, y: 0}
-  - {x: 0.40676165, y: 0}
-  - {x: 0.16044065, y: 0.07716805}
-  Preset: {fileID: 11400000, guid: e4786beb7716da54dbb02a632681cc37, type: 2}
+  - {x: 0.15534055, y: 0.09515184}
+  - {x: 0.15588106, y: 0.91793764}
+  - {x: 0.4062669, y: 1}
+  - {x: 0.6827595, y: 1}
+  - {x: 0.84491575, y: 0.88330984}
+  - {x: 0.8447542, y: 0.115073025}
+  - {x: 0.65914786, y: 0}
+  - {x: 0.32506132, y: 0}
+  Preset: {fileID: 11400000, guid: 0403878495ffa3c4e9d4bcb3eac9b559, type: 2}
   OverrideOutput: []
 --- !u!21 &8906212981740471976
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Pared2_Impostor
-  m_Shader: {fileID: 4800000, guid: 572f9be5706148142b8da6e9de53acdb, type: 3}
-  m_ShaderKeywords: 
+  m_Shader: {fileID: 4800000, guid: da79d698f4bf0164e910ad798d07efdf, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -235,19 +241,24 @@ Material:
         m_Texture: {fileID: 2800000, guid: e561319f52902244aa4cbd18b43c65aa, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AI_AlphaToCoverage: 0
     - _AI_ShadowBias: 0.25
     - _AI_ShadowView: 1
     - _ClipMask: 0.5
-    - _DepthSize: 28.673553
+    - _DepthSize: 28.38985
     - _Frames: 16
+    - _FramesX: 16
+    - _FramesY: 16
     - _Hemi: 0
     - _Hue: 0
-    - _ImpostorSize: 28.507185
+    - _ImpostorSize: 28.527378
     - _Parallax: 1
     - _TextureBias: -1
+    - _Use_Parallax: 0
     m_Colors:
-    - _AI_SizeOffset: {r: 28.507185, g: 28.673553, b: 0, a: 0}
+    - _AI_SizeOffset: {r: 28.527378, g: 28.38985, b: 0, a: -0.00012351779}
     - _HueVariation: {r: 0, g: 0, b: 0, a: 0}
-    - _Offset: {r: 0.013174117, g: -0.11548686, b: -2.1931746, a: -0}
+    - _Offset: {r: 0.013174117, g: -0.11548686, b: -2.1931746, a: 0.0019762847}
+  m_BuildTextureStacks: []

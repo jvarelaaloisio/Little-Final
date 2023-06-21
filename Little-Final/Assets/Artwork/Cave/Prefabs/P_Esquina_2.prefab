@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5953370914801734046}
   - {fileID: 5026708290508552695}
@@ -79,7 +80,7 @@ MonoBehaviour:
   m_renderers:
   - {fileID: 4815952819091254001}
   m_lodReplacement: 2
-  m_renderPipelineInUse: 0
+  m_renderPipelineInUse: 2
   m_insertIndex: 2
   m_lastImpostor: {fileID: 2703406478637253591}
   m_folderPath: Assets/Artwork/Cave/Impostors/
@@ -112,6 +113,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1891881037732974681}
   m_RootOrder: 1
@@ -135,10 +137,12 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -163,6 +167,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &8972349311921216874
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,6 +194,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1891881037732974681}
   m_Father: {fileID: 0}
@@ -199,6 +205,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 1891881037732974681}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: b3a11e2c0efe4b241a655b4f6686970f,
@@ -272,16 +279,19 @@ PrefabInstance:
       value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b3a11e2c0efe4b241a655b4f6686970f, type: 3}
---- !u!4 &5953370914801734046 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b3a11e2c0efe4b241a655b4f6686970f,
-    type: 3}
-  m_PrefabInstance: {fileID: 6130566995363182197}
-  m_PrefabAsset: {fileID: 0}
 --- !u!23 &4815952819091254001 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: b3a11e2c0efe4b241a655b4f6686970f,
+    type: 3}
+  m_PrefabInstance: {fileID: 6130566995363182197}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5953370914801734046 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b3a11e2c0efe4b241a655b4f6686970f,
     type: 3}
   m_PrefabInstance: {fileID: 6130566995363182197}
   m_PrefabAsset: {fileID: 0}
