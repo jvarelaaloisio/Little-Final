@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using Menus.Events;
+using UnityEngine;
 
 namespace Events.Channels
 {
     [CreateAssetMenu(menuName = "Event Channels/Data Channels/Scene", fileName = "SceneChannel")]
-    public class LevelDataContainerChannel : EventChannel<LevelDataContainer> { }
+    public class LevelDataContainerChannel : EventChannel<LevelDataContainerViaBuildIndexes> { }
 }

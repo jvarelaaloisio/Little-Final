@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
-namespace Events
+namespace Menus.Events
 {
-    [Serializable]
-    public struct LevelLoadBatch
+    public abstract class LevelLoadBatch
     {
-        public int[] buildIndexes;
-        
+        public abstract int Length { get; }
+        public abstract IEnumerable<AsyncOperation> LoadBatch();
+        public abstract IEnumerable<AsyncOperation> UnloadBatch();
     }
 }

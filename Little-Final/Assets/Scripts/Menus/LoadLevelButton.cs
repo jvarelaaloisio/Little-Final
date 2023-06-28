@@ -1,12 +1,13 @@
 ﻿using Events;
 using Events.Channels;
+using Menus.Events;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
 public class LoadLevelButton : MonoBehaviour
 {
-    public LevelDataContainer sceneToLoad;
+    public LevelDataContainerViaBuildIndexes sceneToLoad;
     public LevelDataContainerChannel sceneDataChannel;
 
     private Button Button

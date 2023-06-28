@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using Events;
 using Events.Channels;
+using Menus.Events;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
 {
     public GameObject loadingScreen;
-    public LevelDataContainer titleScreen;
+    public LevelDataContainerViaBuildIndexes titleScreen;
 
     public LevelDataContainerChannel sceneDataChannel;
     public VoidChannelSo quitGameChannel;
@@ -24,7 +24,7 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
     
     private Slider _progressBar;
     private float _totalSceneProgress;
-    private LevelDataContainer _currentLevel;
+    private LevelDataContainerViaBuildIndexes _currentLevel;
 
     private void Awake()
     {
@@ -53,7 +53,7 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
         quitGameChannel.Unsubscribe(QuitGame);
     }
 
-    public void LoadLevel(LevelDataContainer levelData)
+    public void LoadLevel(LevelDataContainerViaBuildIndexes levelData)
     {
         loadingScreen.gameObject.SetActive(true);
         _currentLevel.Unload();
@@ -64,13 +64,14 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
 
     private IEnumerator LoadLevelCoroutine(LevelDataContainer levelData)
     {
-        var scenesToLoadQty = levelData.immediateLoadBuildIndexes.Length;
-        for (var i = 0; i < scenesToLoadQty; i++)
+        var scenesLoadedQty = 0;
+        var totalScenesToLoadQty = levelData.ImmediateLoadBatch.Length;
+        foreach (var loadOperation in levelData.LoadImmediateScenes())
         {
-            var buildIndex = levelData.immediateLoadBuildIndexes[i];
-            var loadLevelOperation = SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive);
-            StartCoroutine(UpdateLevelLoadProgress(loadLevelOperation, i, scenesToLoadQty));
-            yield return loadLevelOperation;
+            yield return UpdateLevelLoadProgress(loadOperation,
+                scenesLoadedQty,
+                totalScenesToLoadQty);
+            scenesLoadedQty++;
         }
 
         yield return new WaitForSeconds(delayBeforeHidingLoadScreen);
@@ -78,19 +79,19 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
         SceneManager.SetActiveScene(activeScene);
         loadingScreen.gameObject.SetActive(false);
         
-        foreach (var levelBatch in levelData.batchedLoads)
+        foreach (var levelBatch in levelData.LevelBatches)
         {
-            foreach (var buildIndex in levelBatch.buildIndexes)
+            foreach (var loadOperation in levelBatch.LoadBatch())
             {
-                var loadOperation = SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive);
                 loadOperation.allowSceneActivation = false;
-                var sceneName = SceneUtility.GetScenePathByBuildIndex(buildIndex).Split('/')[^1];
+                // var sceneName = SceneUtility.GetScenePathByBuildIndex(loadOperation).Split('/')[^1];
+                var sceneName = "temp value";
                 Debug.Log($"{name}: <color=yellow>Loading</color> {sceneName}");
 
                 var loadStartTime = Time.realtimeSinceStartupAsDouble;
                 yield return new WaitUntil(() => loadOperation.progress >= 0.9f);
 
-                Debug.Log($"{name}: <color=green>Loaded</color> {sceneName} in <color=red>{(Time.realtimeSinceStartupAsDouble - loadStartTime):F3}</color> seconds"+
+                Debug.Log($"{name}: <color=green>Loaded</color> {sceneName} in <color=red>{(Time.realtimeSinceStartupAsDouble - loadStartTime) * 1000:F0}</color> ms"+
                           $"\n<color=black>Waiting {delayBeforeActivatingScene} seconds before activation</color>");
                 
                 yield return new WaitForSeconds(delayBeforeActivatingScene);
@@ -99,8 +100,8 @@ public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
                 Debug.Log($"{name}: <color=yellow>Activating</color> {sceneName}");
                 loadOperation.allowSceneActivation = true;
                 
-                Debug.Log($"{name}: <color=green>Activated</color> {sceneName} in <color=red>{(Time.realtimeSinceStartupAsDouble - activationStartTime):F3}</color> seconds" +
-                          $"\n<color=black>Waiting {delayBetweenBatches} seconds.</color>");
+                Debug.Log($"{name}: <color=green>Activated</color> {sceneName} in <color=red>{(Time.realtimeSinceStartupAsDouble - activationStartTime) * 1000:F0}</color> ms" +
+                          $"\n<color=black>Waiting {delayBetweenBatches * 1000} ms.</color>");
                 yield return new WaitForSeconds(delayBeforeLoadingNextScene);
             }
 

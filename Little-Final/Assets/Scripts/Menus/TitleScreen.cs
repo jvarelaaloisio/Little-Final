@@ -1,9 +1,10 @@
 ﻿using Events;
+using Menus.Events;
 using UnityEngine;
 
 public class TitleScreen : MonoBehaviour
 {
-    public LevelDataContainer levelOne;
+    public LevelDataContainerViaBuildIndexes levelOne;
     
     public void PlayGame() => GameSceneManager.Instance.LoadLevel(levelOne);
 
