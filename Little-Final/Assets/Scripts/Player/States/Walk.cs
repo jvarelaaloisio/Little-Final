@@ -113,6 +113,9 @@ namespace Player.States
 							Controller.Rideable = rideable;
 							Controller.ChangeState<Mount>();
 							break;
+						default:
+							interactable.Interact(Controller);
+							break;
 					}
 				}
 			}

@@ -2,12 +2,13 @@ using System;
 using Core.Helpers;
 using Core.Items;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class InventoryDebugger : MonoBehaviour
 {
     private const string AddItemUnitsToInventory = "Add item units to inventory";
     [SerializeField] private Inventory inventory;
-    [SerializeField] private Id itemId;
+    [FormerlySerializedAs("itemId")] [SerializeField] private IdContainer itemIdContainer;
     [SerializeField] private int unitsToAdd;
 
     private void OnValidate()
@@ -23,7 +24,7 @@ public class InventoryDebugger : MonoBehaviour
         }
     }
 
-    private void HandleItemAdded(Id itemId, Item item)
+    private void HandleItemAdded(IIdentification itemId, Item item)
     {
         Debug.Log($"{name}: Item added ({item})");
         item.onQuantityChanged += LogItemQtyChanged;
@@ -43,9 +44,9 @@ public class InventoryDebugger : MonoBehaviour
     [ContextMenu(AddItemUnitsToInventory, false)]
     public void AddUnitsToQuantifiedItemById()
     {
-        if (inventory.TryGetItem(itemId, out Item item))
-            (item as QuantifiedItem)?.AddUnits(unitsToAdd);
+        if (inventory.TryGetItem(itemIdContainer.Get, out Item item))
+            item.AddUnit(new QuantifiedItem(unitsToAdd));
         else
-            inventory.TryAddItem(itemId, new QuantifiedItem(unitsToAdd));
+            inventory.TryAddItem(itemIdContainer.Get, new QuantifiedItem(unitsToAdd));
     }
 }

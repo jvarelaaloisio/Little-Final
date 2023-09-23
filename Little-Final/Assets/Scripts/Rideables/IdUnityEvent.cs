@@ -5,7 +5,7 @@ using UnityEngine.Events;
 namespace Rideables
 {
 	[Serializable]
-	public class IdUnityEvent : UnityEvent<Id>
+	public class IdUnityEvent : UnityEvent<IdContainer>
 	{
 	}
 }

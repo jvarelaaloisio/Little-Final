@@ -66,11 +66,6 @@ namespace Player.States
 					controller.ChangeState<Jump>,
 					sceneIndex
 				);
-
-			//TODO: Solve this bug
-			if (Controller.LastClimbHit.point != Vector3.zero) return;
-			Debug.LogError("CLIMB POINT WAS ZERO");
-			controller.ChangeState<Walk>();
 		}
 
 		public override void OnStateUpdate()

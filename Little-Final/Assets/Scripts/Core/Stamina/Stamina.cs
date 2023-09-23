@@ -25,6 +25,7 @@ namespace Player.Stamina
 
 		public Action OnRefillingStart;
 		public Action<float> OnStaminaChange;
+		public event Action<float> OnMaxStaminaUpgrade = delegate { }; 
 		private readonly CountDownTimer _refillDelayTimer;
 		private readonly CountDownTimer _refillPeriod;
 		private float _maxStamina;
@@ -79,6 +80,7 @@ namespace Player.Stamina
 		{
 			_maxStamina = value;
 			_refillPeriod.StartTimer();
+			OnMaxStaminaUpgrade(_maxStamina);
 		}
 	}
 }

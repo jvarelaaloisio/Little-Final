@@ -4,7 +4,7 @@ namespace Core.Interactions
 {
 	public interface IInteractor
 	{
-		Transform Transform { get; }
+		Transform transform { get; }
 		void LoseInteraction();
 	}
 }

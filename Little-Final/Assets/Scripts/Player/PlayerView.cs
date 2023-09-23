@@ -120,6 +120,7 @@ namespace Player
 #endif
 			controller.onStaminaChange += UpdateStamina;
 			controller.OnPickCollectable += UpdatePonchoEffect;
+			controller.Stamina.OnMaxStaminaUpgrade += _ => ShowStaminaUpgradeFeedback();
 			controller.OnChangeSpeed += SetSpeed;
 			controller.OnSpecificAction += PlaySpecificAnimation;
 			controller.OnJump += ShowJumpFeedback;
@@ -377,12 +378,17 @@ namespace Player
 			poncho.SetFloat("_Activate", collectableQuantity / PP_Stats.CollectablesForReward);
 			if (collectableQuantity == PP_Stats.CollectablesForReward)
 			{
-				audioManager.PlayCharacterSound(reward);
-				ponchoTurnOff = new ActionOverTime(ponchoTurnOffTime, FadePoncho, _sceneIndex);
-				ponchoTurnOff.StartAction();
+				ShowStaminaUpgradeFeedback();
 			}
 			else if (ponchoTurnOff.IsRunning)
 				ponchoTurnOff.StopAction();
+		}
+
+		private void ShowStaminaUpgradeFeedback()
+		{
+			audioManager.PlayCharacterSound(reward);
+			ponchoTurnOff = new ActionOverTime(ponchoTurnOffTime, FadePoncho, _sceneIndex);
+			ponchoTurnOff.StartAction();
 		}
 
 		private void FadePoncho(float lerp) => poncho.SetFloat(Activate, BezierHelper.GetSinBezier(lerp));
