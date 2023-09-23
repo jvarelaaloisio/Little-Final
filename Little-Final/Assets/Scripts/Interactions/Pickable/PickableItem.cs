@@ -35,7 +35,7 @@ namespace Interactions.Pickable
 
 		public virtual void Interact(IInteractor interactor)
 		{
-			Transform userTransform = interactor.Transform;
+			Transform userTransform = interactor.transform;
 			debugger.Log(name, $"item picked by {userTransform.name}", this);
 			_picker = interactor;
 			if (userTransform.TryGetComponent(out HandContainer handContainer))
@@ -51,23 +51,23 @@ namespace Interactions.Pickable
 				debugger.LogError(name, $"No hand container found on user.\nuser: {userTransform.name}", this);
 			}
 			rigidBody.isKinematic = true;
-			onPick.Invoke(_picker.Transform);
+			onPick.Invoke(_picker.transform);
 		}
 
 		public virtual void Leave()
 		{
-			debugger.Log(name, $"item put down by {_picker.Transform.name}", this);
+			debugger.Log(name, $"item put down by {_picker.transform.name}", this);
 			PutDownInternal();
 			onPutDown.Invoke();
 		}
 
 		public virtual void Throw(float force, Vector3 direction)
 		{
-			debugger.Log(name, $"item thrown by {_picker.Transform.name}" +
+			debugger.Log(name, $"item thrown by {_picker.transform.name}" +
 								$"\nForce: {force}; Direction: {direction} ", this);
 			PutDownInternal();
 			rigidBody.AddForce(direction * force, ForceMode.Impulse);
-			onThrow.Invoke(_picker.Transform);
+			onThrow.Invoke(_picker.transform);
 		}
 
 		public void ForceLoseInteraction()

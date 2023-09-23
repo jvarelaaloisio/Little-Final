@@ -32,7 +32,10 @@ namespace Menus.Events
         //BUG: Unloading when the batched loads haven't still been loaded generates exceptions
         public override void Unload()
         {
-            immediateLoadBatch.UnloadBatch();
+            foreach (var unloadOperation in immediateLoadBatch.UnloadBatch())
+            {
+                Debug.Log($"Unloaded {unloadOperation}");
+            }
             foreach (var batchedLoad in batchedLoads)
                 foreach (var unloadOperation in batchedLoad.UnloadBatch())
                 {

@@ -81,21 +81,22 @@ namespace Rideables
 		[SerializeField]
 		protected LayerMask floor;
 
+		[FormerlySerializedAs("eatId")]
 		[Header("Decision result keys")]
 		[SerializeField]
-		private Id eatId;
+		private IdContainer eatIdContainer;
 
-		[SerializeField]
-		private Id goToFruitId;
+		[FormerlySerializedAs("goToFruitId")] [SerializeField]
+		private IdContainer goToFruitIdContainer;
 
-		[SerializeField]
-		private Id fleeFromPlayerId;
+		[FormerlySerializedAs("fleeFromPlayerId")] [SerializeField]
+		private IdContainer fleeFromPlayerIdContainer;
 
-		[SerializeField]
-		private Id idleId;
+		[FormerlySerializedAs("idleId")] [SerializeField]
+		private IdContainer idleIdContainer;
 
-		[SerializeField]
-		private Id patrolId;
+		[FormerlySerializedAs("patrolId")] [SerializeField]
+		private IdContainer patrolIdContainer;
 
 		[Header("Event channels listened")]
 		[Tooltip("Can be null")]
@@ -132,12 +133,12 @@ namespace Rideables
 		private float _runningStart;
 		private Vector3 _lastMoveDirection;
 
-		private FiniteStateMachine<Id> _stateMachine;
-		private CharacterState<Id> _idle;
-		private Eat<Id> _eat;
-		private Navigate<Id> _goToFruit;
-		private Navigate<Id> _fleeFromPlayer;
-		private Navigate<Id> _patrol;
+		private FiniteStateMachine<IdContainer> _stateMachine;
+		private CharacterState<IdContainer> _idle;
+		private Eat<IdContainer> _eat;
+		private Navigate<IdContainer> _goToFruit;
+		private Navigate<IdContainer> _fleeFromPlayer;
+		private Navigate<IdContainer> _patrol;
 
 		public event Action OnCompletedObjective = delegate { };
 		public event Action OnMounted = delegate { };
@@ -178,9 +179,9 @@ namespace Rideables
 			InitializeMovement(out Movement, Speed);
 			InitializeNavigator(out Navigator);
 			awareness.OnEnvironmentChanged += OnEnvironmentChanged;
-			_idle = new CharacterState<Id>(idleId.Name, transform, OnStateCompletedObjective, debugger);
+			_idle = new CharacterState<IdContainer>(idleIdContainer.Name, transform, OnStateCompletedObjective, debugger);
 
-			_eat = new Eat<Id>(eatId.Name,
+			_eat = new Eat<IdContainer>(eatIdContainer.Name,
 								transform,
 								OnStateCompletedObjective,
 								debugger,
@@ -193,51 +194,51 @@ namespace Rideables
 			_eat.OnSleep += FireOnStoppedEating;
 			_eat.OnFinishedFruit += onFinishedFruit.Invoke;
 
-			_goToFruit = new Navigate<Id>(goToFruitId.Name,
+			_goToFruit = new Navigate<IdContainer>(goToFruitIdContainer.Name,
 										transform,
 										OnStateCompletedObjective,
 										debugger,
 										Navigator);
 
-			_fleeFromPlayer = new Navigate<Id>(fleeFromPlayerId.Name,
+			_fleeFromPlayer = new Navigate<IdContainer>(fleeFromPlayerIdContainer.Name,
 												transform,
 												OnStateCompletedObjective,
 												debugger,
 												Navigator);
 
-			_patrol = new Navigate<Id>(patrolId.Name,
+			_patrol = new Navigate<IdContainer>(patrolIdContainer.Name,
 										transform,
 										OnStateCompletedObjective,
 										debugger,
 										Navigator);
 			_patrol.OnAwake += () => _patrol.NavigateTo(GetPatrolCandidates());
 
-			_idle.AddTransition(eatId, _eat);
-			_idle.AddTransition(goToFruitId, _goToFruit);
-			_idle.AddTransition(fleeFromPlayerId, _fleeFromPlayer);
-			_idle.AddTransition(patrolId, _patrol);
+			_idle.AddTransition(eatIdContainer, _eat);
+			_idle.AddTransition(goToFruitIdContainer, _goToFruit);
+			_idle.AddTransition(fleeFromPlayerIdContainer, _fleeFromPlayer);
+			_idle.AddTransition(patrolIdContainer, _patrol);
 
-			_eat.AddTransition(idleId, _idle);
-			_eat.AddTransition(goToFruitId, _goToFruit);
-			_eat.AddTransition(fleeFromPlayerId, _fleeFromPlayer);
-			_eat.AddTransition(patrolId, _patrol);
+			_eat.AddTransition(idleIdContainer, _idle);
+			_eat.AddTransition(goToFruitIdContainer, _goToFruit);
+			_eat.AddTransition(fleeFromPlayerIdContainer, _fleeFromPlayer);
+			_eat.AddTransition(patrolIdContainer, _patrol);
 
-			_goToFruit.AddTransition(idleId, _idle);
-			_goToFruit.AddTransition(eatId, _eat);
-			_goToFruit.AddTransition(fleeFromPlayerId, _fleeFromPlayer);
-			_goToFruit.AddTransition(patrolId, _patrol);
+			_goToFruit.AddTransition(idleIdContainer, _idle);
+			_goToFruit.AddTransition(eatIdContainer, _eat);
+			_goToFruit.AddTransition(fleeFromPlayerIdContainer, _fleeFromPlayer);
+			_goToFruit.AddTransition(patrolIdContainer, _patrol);
 
-			_fleeFromPlayer.AddTransition(idleId, _idle);
-			_fleeFromPlayer.AddTransition(eatId, _eat);
-			_fleeFromPlayer.AddTransition(goToFruitId, _goToFruit);
-			_fleeFromPlayer.AddTransition(patrolId, _patrol);
+			_fleeFromPlayer.AddTransition(idleIdContainer, _idle);
+			_fleeFromPlayer.AddTransition(eatIdContainer, _eat);
+			_fleeFromPlayer.AddTransition(goToFruitIdContainer, _goToFruit);
+			_fleeFromPlayer.AddTransition(patrolIdContainer, _patrol);
 
-			_patrol.AddTransition(idleId, _idle);
-			_patrol.AddTransition(eatId, _eat);
-			_patrol.AddTransition(goToFruitId, _goToFruit);
-			_patrol.AddTransition(fleeFromPlayerId, _fleeFromPlayer);
+			_patrol.AddTransition(idleIdContainer, _idle);
+			_patrol.AddTransition(eatIdContainer, _eat);
+			_patrol.AddTransition(goToFruitIdContainer, _goToFruit);
+			_patrol.AddTransition(fleeFromPlayerIdContainer, _fleeFromPlayer);
 
-			_stateMachine = FiniteStateMachine<Id>.Build(_idle, name)
+			_stateMachine = FiniteStateMachine<IdContainer>.Build(_idle, name)
 				.ThatLogsTransitions(Debug.unityLogger)
 				.Done();
 		}
@@ -259,7 +260,7 @@ namespace Rideables
 		private void OnEnvironmentChanged()
 		{
 			string currentStateName = _stateMachine.CurrentState.Name;
-			if (currentStateName == goToFruitId.Name)
+			if (currentStateName == goToFruitIdContainer.Name)
 			{
 				Transform fruit = awareness.Fruit;
 				Vector3 fruitDestination;
@@ -277,7 +278,7 @@ namespace Rideables
 
 				_goToFruit.NavigateTo(new[] {fruitDestination});
 			}
-			else if (currentStateName == fleeFromPlayerId.Name
+			else if (currentStateName == fleeFromPlayerIdContainer.Name
 					&& awareness.Player)
 			{
 				_fleeFromPlayer.NavigateTo(GetFleeCandidates(awareness.Player.position));
@@ -321,8 +322,8 @@ namespace Rideables
 			_stateMachine.Update(Time.deltaTime);
 		}
 
-		public void TransitionTo(Id id)
-			=> _stateMachine.TransitionTo(id);
+		public void TransitionTo(IdContainer idContainer)
+			=> _stateMachine.TransitionTo(idContainer);
 
 		protected abstract void InitializeMovement(out IMovement movement, float speed);
 		protected abstract void InitializeNavigator(out INavigator navigator);
@@ -332,7 +333,7 @@ namespace Rideables
 		public virtual void Interact(IInteractor interactor)
 		{
 			IsMounted = true;
-			TransitionTo(idleId);
+			TransitionTo(idleIdContainer);
 			_runningStart = Time.time;
 			onMounted.Invoke();
 			OnMounted();

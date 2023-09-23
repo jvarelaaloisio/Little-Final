@@ -7,6 +7,7 @@ using Core.Helpers;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace Rideables
 {
@@ -22,8 +23,8 @@ namespace Rideables
 		[Tooltip("The ik tip in the rigging.\nThe object that will follow this one")]
 		private Transform ikTip;
 
-		[SerializeField]
-		private Id eatingId;
+		[FormerlySerializedAs("eatingId")] [SerializeField]
+		private IdContainer eatingIdContainer;
 
 		[SerializeField]
 		private AnimationCurve headDown = AnimationCurve.Linear(0, 0, 1, 1);
@@ -61,9 +62,9 @@ namespace Rideables
 			}
 		}
 
-		public void OnDecisionTaken(Id decisionId)
+		public void OnDecisionTaken(IdContainer decisionIdContainer)
 		{
-			if (decisionId == eatingId)
+			if (decisionIdContainer == eatingIdContainer)
 			{
 				if (_isEating)
 					return;

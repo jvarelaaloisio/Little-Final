@@ -5,6 +5,7 @@ using Core.Debugging;
 using Core.Helpers;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 namespace Rideables
 {
@@ -23,21 +24,22 @@ namespace Rideables
 		[SerializeField]
 		private NavMeshAgent agent;
 
+		[FormerlySerializedAs("eatFruitId")]
 		[Header("Decision result keys")]
 		[SerializeField]
-		private Id eatFruitId;
+		private IdContainer eatFruitIdContainer;
 
-		[SerializeField]
-		private Id goToFruitId;
+		[FormerlySerializedAs("goToFruitId")] [SerializeField]
+		private IdContainer goToFruitIdContainer;
 
-		[SerializeField]
-		private Id walkAwayFromPlayerId;
+		[FormerlySerializedAs("walkAwayFromPlayerId")] [SerializeField]
+		private IdContainer walkAwayFromPlayerIdContainer;
 
-		[SerializeField]
-		private Id idleId;
+		[FormerlySerializedAs("idleId")] [SerializeField]
+		private IdContainer idleIdContainer;
 
-		[SerializeField]
-		private Id patrolId;
+		[FormerlySerializedAs("patrolId")] [SerializeField]
+		private IdContainer patrolIdContainer;
 
 		[Header("Roulette Chances")]
 		[SerializeField]
@@ -57,7 +59,7 @@ namespace Rideables
 		[SerializeField]
 		private bool logRepeatedResponsesOnDecisionTree;
 
-		private DecisionTree<Id> _decisionTree;
+		private DecisionTree<IdContainer> _decisionTree;
 
 		private float _lastRecoverStart;
 
@@ -73,11 +75,11 @@ namespace Rideables
 		{
 			#region Actions
 
-			var eatFruit = new TreeAction<Id>(eatFruitId);
-			var goToFruit = new TreeAction<Id>(goToFruitId);
-			var walkAwayFromPlayer = new TreeAction<Id>(walkAwayFromPlayerId);
-			var idle = new TreeAction<Id>(idleId);
-			var patrol = new TreeAction<Id>(patrolId);
+			var eatFruit = new TreeAction<IdContainer>(eatFruitIdContainer);
+			var goToFruit = new TreeAction<IdContainer>(goToFruitIdContainer);
+			var walkAwayFromPlayer = new TreeAction<IdContainer>(walkAwayFromPlayerIdContainer);
+			var idle = new TreeAction<IdContainer>(idleIdContainer);
+			var patrol = new TreeAction<IdContainer>(patrolIdContainer);
 
 			var actions = new[] {eatFruit, goToFruit, walkAwayFromPlayer, idle, patrol};
 
@@ -101,7 +103,7 @@ namespace Rideables
 
 			#endregion
 
-			_decisionTree = new DecisionTree<Id>(questions,
+			_decisionTree = new DecisionTree<IdContainer>(questions,
 												actions,
 												OnDecision,
 												isRecovering,
@@ -131,9 +133,9 @@ namespace Rideables
 			_lastRecoverStart = Time.time;
 		}
 
-		private void OnDecision(Id id)
+		private void OnDecision(IdContainer idContainer)
 		{
-			onDecision.Invoke(id);
+			onDecision.Invoke(idContainer);
 		}
 
 		private bool IsPlayerClose()
