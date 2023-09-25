@@ -1,10 +1,10 @@
-name: Actions 😎
+name: Build 🛠️
 
 on: [push, pull_request]
 
 jobs:
   build:
-    name: Build my project ✨
+    name: Windows Build
     runs-on: ubuntu-latest
     steps:
       # Checkout
@@ -46,3 +46,19 @@ jobs:
         with:
           name: Build
           path: build
+      #Zip output
+      - name: Archive build files
+        id: archive
+        run: |
+          sudo apt-get update
+          sudo apt-get install zip
+          echo "DATE=$(date +'%y%m%d')" >> $GITHUB_ENV
+          zip -r build_${{ env.DATE }}.zip ./build
+    
+      #Upload to Google Drive
+      - name: Upload to Google Drive
+        uses: google-github-actions/upload-cloud-storage@v1
+        with:
+          credentials: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+          path: './build_${{ env.DATE }}.zip'
+          destination: 'your-bucket-name/build_${{ env.DATE }}.zip'
