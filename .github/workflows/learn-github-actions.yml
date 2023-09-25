@@ -14,10 +14,11 @@ jobs:
           lfs: true
 
       # Cache
-      - uses: actions/cache@v3
+      - name: Read/Create Library cache
+        uses: actions/cache@v3
         with:
-          path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          path: ./Little-Final/Library
+          key: Library-${{ hashFiles('./Little-Final/Assets/**', './Little-Final/Packages/**', './Little-Final/ProjectSettings/**') }}
           restore-keys: |
             Library-
 
@@ -41,13 +42,15 @@ jobs:
           targetPlatform: StandaloneWindows
           projectPath: ./Little-Final
 
-      # Output
-      - uses: actions/upload-artifact@v3
+      # Upload Artifact
+      - name: Create Artifact
+        uses: actions/upload-artifact@v3
         with:
           name: Build
           path: build
+
       #Zip output
-      - name: Archive build files
+      - name: Zip build files
         id: archive
         run: |
           sudo apt-get update
@@ -56,9 +59,9 @@ jobs:
           zip -r build_${{ env.DATE }}.zip ./build
     
       #Upload to Google Drive
-      - name: Upload to Google Drive
-        uses: google-github-actions/upload-cloud-storage@v1
-        with:
-          credentials: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
-          path: './build_${{ env.DATE }}.zip'
-          destination: 'Lemu_Builds/build_${{ env.DATE }}.zip'
+      # - name: Upload to Google Drive
+      #   uses: google-github-actions/upload-cloud-storage@v1
+      #   with:
+      #     credentials: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+      #     path: './build_${{ env.DATE }}.zip'
+      #     destination: 'bucket-name/build_${{ env.DATE }}.zip'
