@@ -61,4 +61,4 @@ jobs:
         with:
           credentials: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
           path: './build_${{ env.DATE }}.zip'
-          destination: 'your-bucket-name/build_${{ env.DATE }}.zip'
+          destination: 'Lemu_Builds/build_${{ env.DATE }}.zip'
