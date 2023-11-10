@@ -36,11 +36,15 @@ public class PaintTexture
 
         fixedIlsands = new RenderTexture(paintedTexture.descriptor);
 
+        var temp = RenderTexture.active;
+        RenderTexture.active = runTimeTexture;
         Graphics.SetRenderTarget(runTimeTexture);
         //Clear the current render target (runtimeTexture)
         GL.Clear(false, true, clearColor);
+        RenderTexture.active = paintedTexture;
         Graphics.SetRenderTarget(paintedTexture);
         GL.Clear(false, true, clearColor);
+        RenderTexture.active = temp;
 
 
         mPaintInUV = new Material(sPaintInUV);

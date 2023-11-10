@@ -40,9 +40,9 @@ namespace Textures.Editor
 
         private const string WindowTitle = "Paint Texture";
         private const string UnlitFixIslandEdges = "Unlit/FixIlsandEdges";
-        private const string UnlitTexturePaintShader = "Shader Graphs/TexturePaintURP";
+        private const string UnlitTexturePaintShader = "Unlit/TexturePaint";
         private const string BrushShader = "Unlit/BrushShader";
-        private const string MainTexName = "_BaseMap";
+        private const string MainTexName = "_MainTex";
         private const string MarkingIslandsBufferName = "markingIslands";
         private const string MouseGlobalShaderParam = "_Mouse";
 
@@ -83,16 +83,19 @@ namespace Textures.Editor
             var initReport = window.TryInitialize();
             if (!initReport.Item1)
             {
-                var message = new Message(MessageType.Error, initReport.Item2, null);
-                window.messages.Add(message);
+                // var message = new Message(MessageType.Error, initReport.Item2, null);
+                // window.messages.Add(message);
             }
-            else
+            if(!initReport.Item1)
             {
                 Debug.LogError($"{WindowTitle.Colored("grey")}: <color=#FF3300>Error</color> encountered while opening window." +
                                $"\n{initReport.Item2}");
                 window.Close();
             }
-            window.Show();
+            else
+            {
+                window.Show();
+            }
         }
 
         [MenuItem("Tools/" + WindowTitle, true)]
@@ -227,23 +230,18 @@ namespace Textures.Editor
             if (!targetSetResult.Item1)
                 return targetSetResult;
 
-            var defaultTexture = _target.defaultMaterial.mainTexture;
-            if (!defaultTexture)
-            {
-                return (false, $"the target material has no main texture");
-            }
-
-            _paintMaterial = new Material(_target.defaultMaterial);
-            _markedIslands = new RenderTexture(defaultTexture.width, defaultTexture.height, 0, RenderTextureFormat.R8);
-
             _paintShader = Shader.Find(UnlitTexturePaintShader);
             _fixIslandEdgesShader = Shader.Find(UnlitFixIslandEdges);
-            _paintTexture = new PaintTexture(Color.white, defaultTexture.width, defaultTexture.height, MainTexName
+            
+            _paintMaterial = new Material(Resources.Load<Material>("PaintMat"));
+            _markedIslands = new RenderTexture(512, 512, 0, RenderTextureFormat.R8);
+
+            _paintTexture = new PaintTexture(Color.white, 512, 512, MainTexName
                                              , _paintShader, _target.mesh, _fixIslandEdgesShader, _markedIslands);
 
             _paintMaterial.SetTexture(_paintTexture.id, _paintTexture.runTimeTexture);
 
-            _paintMaterial.shader = _paintShader;
+            // _paintMaterial.shader = _paintShader;
             _target.meshRenderer.sharedMaterial = _paintMaterial;
 
             // Command buffer initialization ------------------------------------------------
