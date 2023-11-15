@@ -1,0 +1,20 @@
+#pragma kernel WindNoise
+
+#include "Simplex.compute"
+
+RWTexture2D<float4> _WindMap;
+
+float _Frequency, _Time, _Amplitude;
+
+[numthreads(8,8,1)]
+void WindNoise(uint3 id : SV_DispatchThreadID) {
+    const float x_period = 0.05f; // Repetition of lines in x direction
+    const float y_period = 0.1f; // Repetition of lines in y direction
+    const float turbulence_power = 2.3f;
+    const float turbulence_size = 2.0f;
+
+    const float xy_value = id.x * x_period + id.y * y_period + turbulence_power * snoise(id * turbulence_size);
+    const float sine_value = (sin((xy_value + _Time) * _Frequency) + 1.5f) * _Amplitude;
+
+    _WindMap[id.xy] = sine_value;
+}
