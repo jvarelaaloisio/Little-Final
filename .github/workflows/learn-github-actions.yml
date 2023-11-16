@@ -1,13 +1,67 @@
-name: build unity
-run-name: ${{ github.actor }} is learning GitHub Actions
-on: [push]
+name: Build 🛠️
+
+on: [pull_request]
+
 jobs:
-  check-bats-version:
+  build:
+    name: Windows Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
-          node-version: '14'
-      - run: npm install -g bats
-      - run: bats -v
+          lfs: true
+
+      # Cache
+      - name: Read/Create Library cache
+        uses: actions/cache@v3
+        with:
+          path: ./Little-Final/Library
+          key: Library-${{ hashFiles('./Little-Final/Assets/**', './Little-Final/Packages/**', './Little-Final/ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+
+      # Test
+      #- name: Run tests
+      #  uses: game-ci/unity-test-runner@v3
+      #  env:
+      #    UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      #  with:
+      #    githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build
+      - name: Build project
+        uses: game-ci/unity-builder@v3
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          #targetPlatform: WebGL
+          targetPlatform: StandaloneWindows
+          projectPath: ./Little-Final
+
+      # Upload Artifact
+      - name: Create Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build
+          path: build
+
+      #Zip output
+      - name: Zip build files
+        id: archive
+        run: |
+          sudo apt-get update
+          sudo apt-get install zip
+          echo "DATE=$(date +'%y%m%d')" >> $GITHUB_ENV
+          zip -r build_${{ env.DATE }}.zip ./build
+    
+      #Upload to Google Drive
+      # - name: Upload to Google Drive
+      #   uses: google-github-actions/upload-cloud-storage@v1
+      #   with:
+      #     credentials: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+      #     path: './build_${{ env.DATE }}.zip'
+      #     destination: 'bucket-name/build_${{ env.DATE }}.zip'
