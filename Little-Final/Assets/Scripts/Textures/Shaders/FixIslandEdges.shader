@@ -1,4 +1,4 @@
-﻿Shader "Unlit/FixIlsandEdges"
+﻿Shader "Unlit/FixIslandEdges"
 {
 	
 	SubShader

@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Core.Debugging;
 using UnityEditor;
 using UnityEngine;
@@ -8,14 +6,64 @@ using UnityEngine.Rendering;
 
 namespace Textures.Editor
 {
-    public class TexturePaintWindow : EditorWindow
+    public class TexturePaintWindow : EditorWindow, IHasCustomMenu
     {
-        private static class MessageIds
+        private class Settings
         {
-            public const string NoTarget = "There is no active GameObject selected.";
-            public const string NoMeshFilter = "The target gameObject doesn't have a " + nameof(MeshFilter);
-            public const string NoMeshRenderer = "the target gameObject doesn't have a "+nameof(_target.meshRenderer);
+            private const string prefsPrefix = "texturePaint_";
+            private const string PaintColorPref = prefsPrefix + "paintColor";
+            public Color paintColor = Color.white;
+            private const string BrushSizePref = prefsPrefix + "brushSize";
+            public float brushSize = 1f;
+            private const string BrushOpacityPref = prefsPrefix + "brushOpacity";
+            public float brushOpacity = 1f;
+            private const string BrushHardnessPref = prefsPrefix + "brushHardness";
+            public float brushHardness = 1f;
+            public const string ExportPathPref = prefsPrefix + "exportPath";
+            public string exportPath = "Assets/Textures/paintTexture.png";
+
+            public void Load()
+            {
+                if (EditorPrefs.HasKey(PaintColorPref)
+                    && !ColorUtility.TryParseHtmlString("#" + EditorPrefs.GetString(PaintColorPref), out paintColor)
+                    )
+                    Debug.LogError($"{_fadedTitle}: Cannot parse paint color");
+                if (EditorPrefs.HasKey(PaintColorPref))
+                    brushSize = EditorPrefs.GetFloat(BrushSizePref);
+                if (EditorPrefs.HasKey(BrushOpacityPref))
+                    brushOpacity = EditorPrefs.GetFloat(BrushOpacityPref);
+                if (EditorPrefs.HasKey(BrushHardnessPref))
+                    brushHardness = EditorPrefs.GetFloat(BrushHardnessPref);
+                if (EditorPrefs.HasKey(ExportPathPref))
+                    exportPath = EditorPrefs.GetString(ExportPathPref);
+            }
+
+            public void Save()
+            {
+                EditorPrefs.SetString(PaintColorPref, ColorUtility.ToHtmlStringRGB(paintColor));
+                EditorPrefs.SetFloat(BrushSizePref, brushSize);
+                EditorPrefs.SetFloat(BrushOpacityPref, brushOpacity);
+                EditorPrefs.SetFloat(BrushHardnessPref, brushHardness);
+                EditorPrefs.SetString(ExportPathPref, exportPath);
+            }
         }
+
+        private static class Shaders
+        {
+            public const string MainTexParamName = "_MainTex";
+            
+            public static readonly int ColorParam = Shader.PropertyToID("_Color");
+            public static readonly int MouseParam = Shader.PropertyToID("_Mouse");
+            public static readonly int BrushColorParam = Shader.PropertyToID("_BrushColor");
+            public static readonly int BrushSizeParam = Shader.PropertyToID("_BrushSize");
+            public static readonly int BrushOpacityParam = Shader.PropertyToID("_BrushOpacity");
+            public static readonly int BrushHardnessParam = Shader.PropertyToID("_BrushHardness");
+            
+            public static readonly Shader FixRiftsShader = Shader.Find("Unlit/FixIslandEdges");
+            public static readonly Shader PaintShader = Shader.Find("Unlit/TexturePaint");
+            public static readonly Shader BrushShader = Shader.Find("Unlit/BrushShader");
+        }
+
         private struct Message
         {
             public readonly MessageType messageType;
@@ -28,94 +76,127 @@ namespace Textures.Editor
                 Context = context;
             }
         }
-        
+
         private struct Target
         {
+            private static class Messages
+            {
+                public const string NoTarget = "There is no active GameObject selected.";
+                public const string NoMeshFilter = "The target gameObject doesn't have a " + nameof(MeshFilter);
+                public const string NoMeshRenderer = "the target gameObject doesn't have a " + nameof(_target.meshRenderer);
+            }
+            
             public GameObject gameObject;
             public MeshFilter meshFilter;
-            public MeshRenderer meshRenderer;
             public Mesh mesh;
+            public bool hadMeshBeforeSelection;
+            public MeshRenderer meshRenderer;
             public Material defaultMaterial;
+
+            public bool TrySet(GameObject activeGameObject, out string resultReport)
+            {
+                resultReport = string.Empty;
+                gameObject = activeGameObject;
+                if (!gameObject)
+                {
+                    resultReport = Messages.NoTarget;
+                    return false;
+                }
+
+                if (gameObject.TryGetComponent(out meshFilter))
+                    mesh = meshFilter.sharedMesh;
+                else
+                {
+                    resultReport = Messages.NoMeshFilter;
+                    return false;
+                }
+
+                if (gameObject.TryGetComponent(out meshRenderer))
+                    defaultMaterial = meshRenderer.sharedMaterial;
+                else
+                {
+                    resultReport = Messages.NoMeshRenderer;
+                    return false;
+                }
+
+                return true;
+            }
+            public void Reset()
+            {
+                if (meshRenderer)
+                    meshRenderer.sharedMaterial = defaultMaterial;
+            }
         }
 
         private const string WindowTitle = "Paint Texture";
-        private const string UnlitFixIslandEdges = "Unlit/FixIlsandEdges";
-        private const string UnlitTexturePaintShader = "Unlit/TexturePaint";
-        private const string BrushShader = "Unlit/BrushShader";
-        private const string MainTexName = "_MainTex";
+        
         private const string MarkingIslandsBufferName = "markingIslands";
-        private const string MouseGlobalShaderParam = "_Mouse";
 
-        /// <summary>
-        /// the shader used to draw in the texture of the mesh
-        /// </summary>
-        private Shader _paintShader;
+        private static readonly string _fadedTitle = WindowTitle.Colored("grey");
 
-        private Shader _fixIslandEdgesShader;
         private Material _paintMaterial;
+
         private RenderTexture _markedIslands;
+
         private PaintTexture _paintTexture;
 
         private Target _target;
 
-        //Export
-        private string _exportPath = "Assets/Textures/text.png";
-
         //Window Control
-        private List<Message> messages = new(); 
-        
+
+        //TODO: Finish setup or delete variable
+
+        private List<Message> messages = new();
+
         //Paint process
+
         private bool _isPaintingOnSceneView;
+
         private int _numberOfFrames;
+
         private Camera _camera;
+
         private CommandBuffer _markingIslandsBuffer;
-        private Transform _mouseRepresentation;
-        private Material _mouseMaterial;
-        private Color _paintColor = Color.white;
-        private static readonly int ColorPropertyID = Shader.PropertyToID("_Color");
+
+        private Transform _mouseBrush;
+
+        private Material _brushMaterial;
+
+        private Settings _settings = new();
         private Event _currentEvent;
-        
+
+        private static TexturePaintWindow _window;
+
         [MenuItem("Tools/" + WindowTitle)]
         private static void OpenWindow()
         {
-            var window = GetWindow<TexturePaintWindow>();
-            window.titleContent = new GUIContent(WindowTitle);
-            var initReport = window.TryInitialize();
-            if (!initReport.Item1)
+            if (_window != null)
+                _window.Close();
+            
+            _window = GetWindow<TexturePaintWindow>();
+            _window.titleContent = new GUIContent(WindowTitle);
+            if(!_window.TryInitialize(out var report))
             {
-                // var message = new Message(MessageType.Error, initReport.Item2, null);
-                // window.messages.Add(message);
-            }
-            if(!initReport.Item1)
-            {
-                Debug.LogError($"{WindowTitle.Colored("grey")}: <color=#FF3300>Error</color> encountered while opening window." +
-                               $"\n{initReport.Item2}");
-                window.Close();
+                Debug.LogError($"{_fadedTitle}: <color=#FF3300>Error</color> encountered while opening window." +
+                               $"\n{report}");
+                _window.Close();
             }
             else
-            {
-                window.Show();
-            }
-        }
-
-        [MenuItem("Tools/" + WindowTitle, true)]
-        private static bool OpenWindow_Validate()
-        {
-            return true;
+                _window.Show();
         }
 
         private void OnSelectionChange()
         {
             if (_target.gameObject == Selection.activeGameObject)
                 return;
-            Debug.Log($"{name}: Selection changed");
-            if (_target.gameObject)
-                ResetTargetToDefault(_target);
-            var initReport = TryInitialize();
-            if (!initReport.Item1)
+            Debug.Log($"{_fadedTitle}: Selection changed");
+            
+            _target.Reset();
+            
+            if(TryInitialize(out var report))
             {
-                Debug.LogError($"{WindowTitle.Colored("grey")}: {"Error".Colored("#FF3300")} encountered on selection change." +
-                               $"\n{initReport.Item2}");
+                Debug.LogError($"{_fadedTitle}: {"Error".Colored("#FF3300")} encountered on selection change." +
+                               $"\n{report}");
                 Close();
             }
         }
@@ -124,62 +205,117 @@ namespace Textures.Editor
         {
             SceneView.beforeSceneGui += CaptureMouseEvent;
             SceneView.duringSceneGui += HandleSceneViewGUI;
-            _mouseRepresentation   = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
-            DestroyImmediate(_mouseRepresentation.GetComponent<SphereCollider>());
-            _mouseMaterial = new Material(Shader.Find(BrushShader));
-            _mouseRepresentation.GetComponent<Renderer>().material = _mouseMaterial;
+            CreateBrush(out _mouseBrush, ref _brushMaterial);
+            _settings.Load();
         }
 
         private void OnDisable()
         {
             SceneView.beforeSceneGui -= CaptureMouseEvent;
             SceneView.duringSceneGui -= HandleSceneViewGUI;
-            DestroyImmediate(_mouseRepresentation.gameObject);
+            if (_mouseBrush.gameObject)
+                DestroyImmediate(_mouseBrush.gameObject);
+            _settings.Save();
         }
 
         private void OnDestroy()
         {
-            ResetTargetToDefault(_target);
+            _target.Reset();
+            if (_camera)
+            {
+                _paintTexture.SetInactiveTexture(_camera);
+            }
+
+            if (_markedIslands != null)
+            {
+                _markedIslands.Release();
+            }
+
+            if (_paintTexture != null)
+            {
+                _paintTexture.Release();
+            }
+        }
+
+        private void OnGUI()
+        {
+            if (messages.Count > 0)
+            {
+                var lastMessage = messages[^1];
+                EditorGUILayout.HelpBox(lastMessage.message, lastMessage.messageType);
+            }
+            _settings.paintColor = EditorGUILayout.ColorField("Color", _settings.paintColor);
+            _brushMaterial.SetColor(Shaders.ColorParam, _settings.paintColor);
+            Shader.SetGlobalColor(Shaders.BrushColorParam, _settings.paintColor);
+            
+            _settings.brushSize = EditorGUILayout.FloatField("Size", _settings.brushSize);
+            Shader.SetGlobalFloat(Shaders.BrushSizeParam, _settings.brushSize);
+            _settings.brushOpacity = EditorGUILayout.FloatField(nameof(_settings.brushOpacity), _settings.brushOpacity);
+            Shader.SetGlobalFloat(Shaders.BrushOpacityParam, _settings.brushOpacity);
+            // Brush size is doubled for the mouse representation so it shows the correct size sphere in editor.
+            _mouseBrush.localScale = _settings.brushSize * 2f *Vector3.one;
+            
+            _settings.brushHardness = EditorGUILayout.FloatField(nameof(_settings.brushHardness), _settings.brushHardness);
+            Shader.SetGlobalFloat(Shaders.BrushHardnessParam, _settings.brushHardness);
+
+            using (new EditorGUILayout.HorizontalScope("Button"))
+            {
+                _settings.exportPath = EditorGUILayout.TextField("Path", _settings.exportPath);
+                if (GUILayout.Button("Export"))
+                {
+                    var tempPath = EditorUtility.SaveFilePanelInProject("Save Texture", "paintTexture", "png", "Save the painted texture", _settings.exportPath);
+                    var userCanceled = string.IsNullOrEmpty(tempPath);
+                    if (!userCanceled)
+                    {
+                        _settings.exportPath = tempPath;
+                        Export(_paintTexture, tempPath);
+                        AssetDatabase.ImportAsset(tempPath);
+                    }
+                }
+            }
+        }
+
+        public void AddItemsToMenu(GenericMenu menu)
+        {
+            menu.AddItem(new GUIContent("Reset EditorPrefs"), true, ResetEditorPrefs);
+        }
+
+        private static void ResetEditorPrefs()
+        {
+            EditorPrefs.DeleteAll();
         }
 
         private void CaptureMouseEvent(SceneView obj)
         {
             _currentEvent = Event.current;
-            var mouseIsOverSceneView = mouseOverWindow && mouseOverWindow.titleContent.text == "Scene";
+            var mouseIsOverSceneView = mouseOverWindow != null && mouseOverWindow.titleContent.text == "Scene";
             //Prevent target deselection
-            _isPaintingOnSceneView = _target.gameObject && (UserKeepsPainting() || UserStartsPainting());
-
-            if (_isPaintingOnSceneView)
+            _isPaintingOnSceneView = (_target.gameObject != null)
+                                     && (UserStartsPainting()
+                                         || (!UserStoppedPainting() && _isPaintingOnSceneView));
+            
+            if (_isPaintingOnSceneView && _currentEvent.isMouse)
             {
                 _currentEvent.Use();
             }
+            
+            bool UserStoppedPainting() =>
+                _currentEvent.type is EventType.MouseUp;
 
-            bool UserKeepsPainting() =>
-                _isPaintingOnSceneView
-                && _currentEvent.type is EventType.MouseUp
+            bool UserStartsPainting() =>
+                _currentEvent.type is EventType.MouseDown
+                && _currentEvent.button == 0
+                && mouseIsOverSceneView
                 && MouseIsOverTarget();
 
             bool MouseIsOverTarget() =>
                 GUIRaycast(_currentEvent.mousePosition, _target.gameObject.layer, out var hit)
                 && hit.transform.gameObject == _target.gameObject;
-
-            bool UserStartsPainting() =>
-                !_isPaintingOnSceneView
-                && _currentEvent.type is EventType.MouseDown
-                && mouseIsOverSceneView;
         }
 
         private void HandleSceneViewGUI(SceneView obj)
         {
-            if (!_camera)
-            {
-                return;
-            }
-            if (_numberOfFrames > 0)
-                _camera.RemoveCommandBuffer(CameraEvent.AfterDepthTexture, _markingIslandsBuffer);
-            _numberOfFrames++;
-            
-            if (!_target.gameObject)
+            if (!_camera || !_target.gameObject)
                 return;
             
             // This MUST be called to set up the painting with the mouse.
@@ -194,10 +330,51 @@ namespace Textures.Editor
                 mouseWorldPosition = hit.point;
             }
             
-            mouseWorldPosition.w = (Event.current.type == EventType.MouseDown && Event.current.button == 0) ? 1 : 0;
+            mouseWorldPosition.w = _isPaintingOnSceneView ? 1 : 0;
+            Shader.SetGlobalVector(Shaders.MouseParam, mouseWorldPosition);
+            _mouseBrush.position = mouseWorldPosition;
+        }
 
-            Shader.SetGlobalVector(MouseGlobalShaderParam, mouseWorldPosition);
-            _mouseRepresentation.position = mouseWorldPosition;
+        private bool TryInitialize(out string report)
+        {
+            if (!_target.TrySet(Selection.activeGameObject, out report))
+                return false;
+            
+            _paintMaterial = new Material(Resources.Load<Material>("PaintMat"));
+            _markedIslands = new RenderTexture(512, 512, 0, RenderTextureFormat.R8);
+
+            _paintTexture = new PaintTexture(Color.white, 512, 512, Shaders.MainTexParamName
+                                             , Shaders.PaintShader, _target.mesh, Shaders.FixRiftsShader, _markedIslands);
+
+            _paintMaterial.SetTexture(_paintTexture.id, _paintTexture.runTimeTexture);
+
+            _target.meshRenderer.sharedMaterial = _paintMaterial;
+
+            // Command buffer initialization ------------------------------------------------
+
+            _markingIslandsBuffer = new CommandBuffer();
+            _markingIslandsBuffer.name = MarkingIslandsBufferName;
+
+            _markingIslandsBuffer.SetRenderTarget(_markedIslands);
+            Material islandMarker = new Material(Shaders.PaintShader);
+            _markingIslandsBuffer.DrawMesh(_target.mesh, Matrix4x4.identity, islandMarker);
+
+            if (!TryGetSceneCamera(ref _camera, out report))
+                return false;
+
+            _camera.AddCommandBuffer(CameraEvent.AfterDepthTexture, _markingIslandsBuffer);
+            _paintTexture.SetActiveTexture(_camera);
+            
+            return true;
+        }
+
+        private static void CreateBrush(out Transform mouseRepresentation, ref Material brushMaterial)
+        {
+            mouseRepresentation = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
+            DestroyImmediate(mouseRepresentation.GetComponent<SphereCollider>());
+            if(!brushMaterial)
+                brushMaterial = new Material(Shaders.BrushShader);
+            mouseRepresentation.GetComponent<Renderer>().material = brushMaterial;
         }
 
         private static bool GUIRaycast(Vector2 mousePosition, int layer, out RaycastHit hit)
@@ -209,91 +386,18 @@ namespace Textures.Editor
             return raycast;
         }
 
-        private void OnGUI()
+        private static bool TryGetSceneCamera(ref Camera camera, out string resultReport)
         {
-            _paintColor = EditorGUILayout.ColorField(_paintColor);
-            if (messages.Count > 0)
-            {
-                var lastMessage = messages[^1];
-                EditorGUILayout.HelpBox(lastMessage.message, lastMessage.messageType);
-            }
-            Shader.SetGlobalColor("_BrushColor", _paintColor);
-            Shader.SetGlobalFloat("_BrushSize", 1);
-            Shader.SetGlobalFloat("_BrushOpacity", 1);
-            Shader.SetGlobalFloat("_BrushHardness", 1);
-            _mouseMaterial.SetColor(ColorPropertyID, _paintColor);
-        }
-
-        private (bool, string) TryInitialize()
-        {
-            var targetSetResult = TrySetTargetToSelection(Selection.activeGameObject);
-            if (!targetSetResult.Item1)
-                return targetSetResult;
-
-            _paintShader = Shader.Find(UnlitTexturePaintShader);
-            _fixIslandEdgesShader = Shader.Find(UnlitFixIslandEdges);
+            if (!camera && SceneView.lastActiveSceneView)
+                camera = SceneView.lastActiveSceneView.camera;
             
-            _paintMaterial = new Material(Resources.Load<Material>("PaintMat"));
-            _markedIslands = new RenderTexture(512, 512, 0, RenderTextureFormat.R8);
-
-            _paintTexture = new PaintTexture(Color.white, 512, 512, MainTexName
-                                             , _paintShader, _target.mesh, _fixIslandEdgesShader, _markedIslands);
-
-            _paintMaterial.SetTexture(_paintTexture.id, _paintTexture.runTimeTexture);
-
-            // _paintMaterial.shader = _paintShader;
-            _target.meshRenderer.sharedMaterial = _paintMaterial;
-
-            // Command buffer initialization ------------------------------------------------
-
-            _markingIslandsBuffer = new CommandBuffer();
-            _markingIslandsBuffer.name = MarkingIslandsBufferName;
-
-            _markingIslandsBuffer.SetRenderTarget(_markedIslands);
-            Material islandMarker = new Material(_paintShader);
-            _markingIslandsBuffer.DrawMesh(_target.mesh, Matrix4x4.identity, islandMarker);
-            
-            if (!TryToInitializeMainCamera())
-                return (false, "There is no scene view camera");
-
-            _camera.AddCommandBuffer(CameraEvent.AfterDepthTexture, _markingIslandsBuffer);
-            _paintTexture.SetActiveTexture(_camera);
-            
-            return (true, string.Empty);
+            resultReport = camera ? string.Empty : "There is no scene view camera";
+            return camera;
         }
-
-        private (bool, string) TrySetTargetToSelection(GameObject activeGameObject)
+        
+        private static void Export(PaintTexture paintTexture, string exportPath)
         {
-            _target.gameObject = activeGameObject;
-            if (!_target.gameObject)
-                return (false, MessageIds.NoTarget);
-
-            if (_target.gameObject.TryGetComponent(out _target.meshFilter))
-                _target.mesh = _target.meshFilter.sharedMesh;
-            else
-                return (false, MessageIds.NoMeshFilter);
-
-            if (_target.gameObject.TryGetComponent(out _target.meshRenderer))
-                _target.defaultMaterial = _target.meshRenderer.sharedMaterial;
-            else
-            {
-                return (false, MessageIds.NoMeshRenderer);
-            }
-
-            return (true, string.Empty);
-        }
-
-        private bool TryToInitializeMainCamera()
-        {
-            _camera = SceneView.lastActiveSceneView.camera;
-
-            return _camera;
-        }
-
-        private static void ResetTargetToDefault(Target target)
-        {
-            if (target.meshRenderer)
-                target.meshRenderer.sharedMaterial = target.defaultMaterial;
+            paintTexture.paintedTexture.SaveToFile(exportPath);
         }
     }
 }

@@ -12,7 +12,7 @@ public class PaintTexture
 
     private Material mPaintInUV;
     private Material mFixedEdges;
-    private RenderTexture fixedIlsands;
+    public RenderTexture fixedIslands;
 
     public PaintTexture(Color clearColor, int width, int height, string id,
                             Shader sPaintInUV, Mesh mToDraw, Shader fixIslandEdgesShader, RenderTexture markedIslands)
@@ -22,30 +22,21 @@ public class PaintTexture
         runTimeTexture = new RenderTexture(width, height, 0)
         {
             anisoLevel = 0,
-            useMipMap = false,
-            filterMode = FilterMode.Bilinear
         };
 
-        paintedTexture = new RenderTexture(width, height, 0)
+        paintedTexture = new RenderTexture(runTimeTexture.descriptor)
         {
             anisoLevel = 0,
-            useMipMap = false,
-            filterMode = FilterMode.Bilinear
         };
 
+        fixedIslands = new RenderTexture(runTimeTexture.descriptor);
 
-        fixedIlsands = new RenderTexture(paintedTexture.descriptor);
-
-        var temp = RenderTexture.active;
-        RenderTexture.active = runTimeTexture;
         Graphics.SetRenderTarget(runTimeTexture);
         //Clear the current render target (runtimeTexture)
         GL.Clear(false, true, clearColor);
-        RenderTexture.active = paintedTexture;
+        
         Graphics.SetRenderTarget(paintedTexture);
         GL.Clear(false, true, clearColor);
-        RenderTexture.active = temp;
-
 
         mPaintInUV = new Material(sPaintInUV);
         if (!mPaintInUV.SetPass(0)) Debug.LogError("Invalid Shader Pass: ");
@@ -61,14 +52,14 @@ public class PaintTexture
         commandBuffer.name = "TexturePainting" + id;
 
 
-        // Render to runtime text
+        // Render to runtime texture
         commandBuffer.SetRenderTarget(runTimeTexture);
         commandBuffer.DrawMesh(mToDraw, Matrix4x4.identity, mPaintInUV);
 
         // Fix UV island rifts (errors)
-        commandBuffer.Blit(runTimeTexture, fixedIlsands, mFixedEdges);
+        commandBuffer.Blit(runTimeTexture, fixedIslands, mFixedEdges);
         // Put fixed texture in runtime
-        commandBuffer.Blit(fixedIlsands, runTimeTexture);
+        commandBuffer.Blit(fixedIslands, runTimeTexture);
         // Put runtime in painted
         commandBuffer.Blit(runTimeTexture, paintedTexture);
     }
@@ -87,5 +78,13 @@ public class PaintTexture
     {
         // Must be updated every time the mesh moves, and also at start
         mPaintInUV.SetMatrix("mesh_Object2World", localToWorld);
+    }
+
+    public void Release()
+    {
+        RenderTexture.active = null;
+        runTimeTexture.Release();
+        paintedTexture.Release();
+        fixedIslands.Release();
     }
 }
