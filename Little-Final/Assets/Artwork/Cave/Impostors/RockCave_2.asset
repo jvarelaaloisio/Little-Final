@@ -210,7 +210,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: RockCave_2
-  m_Shader: {fileID: 4800000, guid: 0e9d5a909a1f7e84882a534d0d11e49f, type: 3}
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -230,6 +230,18 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -254,6 +266,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -282,24 +298,37 @@ Material:
     - _AI_AlphaToCoverage: 0
     - _AI_ShadowBias: 0.25
     - _AI_ShadowView: 1
+    - _BumpScale: 1
     - _ClipMask: 0.5
+    - _Cutoff: 0.5
     - _DepthSize: 50.723785
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
     - _Frames: 16
+    - _GlossMapScale: 1
     - _Glossiness: 0
+    - _GlossyReflections: 1
     - _Hemi: 0
     - _Hue: 0
     - _ImpostorSize: 50.934204
     - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
     - _Parallax: 1
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
     - _TextureBias: -1
+    - _UVSec: 0
     - _UseAoMap: 0
     - _UseColorMap: 0
     - _UseEmissiveMap: 0
     - _UseMetallicMap: 0
     - _UseNormalMap: 0
     - _UseRoughnessMap: 0
+    - _ZWrite: 1
     m_Colors:
     - _AI_SizeOffset: {r: 50.934204, g: 50.723785, b: 0, a: -0.0024752475}
     - _Color: {r: 0, g: 0, b: 0, a: 0}

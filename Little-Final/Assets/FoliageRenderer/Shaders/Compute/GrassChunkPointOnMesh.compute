@@ -1,0 +1,148 @@
+#pragma kernel InitializeGrassChunk
+
+#include "Simplex.compute"
+#include "OnMeshGrassData.cginc"
+
+struct VertexData
+{
+    float3 position;
+    float3 normal;
+};
+
+// Dependencies
+RWStructuredBuffer<GrassData> _GrassDataBuffer;
+float4x4 _ObjectWorldMatrix;
+
+// Grass Geometry parent
+uint _ParentMeshTriangleCount;
+RWStructuredBuffer<float2> _ParentMeshUv;
+RWStructuredBuffer<float3> _ParentMeshVertices;
+RWStructuredBuffer<float3> _ParentMeshNormals;
+RWStructuredBuffer<uint> _ParentMeshTriangles;
+
+// Chunks
+int _Dimension, _Scale, _XOffset, _YOffset, _NumChunks, _ChunkDimension;
+
+float3 GetLocalSpacePositionFromPointUv(float2 uv_point)
+{
+    for (uint i = 0; i < _ParentMeshTriangleCount; i += 3)
+    {
+        float2 uv0 = _ParentMeshUv[_ParentMeshTriangles[i]];
+        float2 uv1 = _ParentMeshUv[_ParentMeshTriangles[i + 1]];
+        float2 uv2 = _ParentMeshUv[_ParentMeshTriangles[i + 2]];
+
+        /*
+         * Calculate barycentric weights
+         */
+        const float w0 = ((uv1.y - uv2.y) * (uv_point.x - uv2.x) + (uv2.x - uv1.x) * (uv_point.y - uv2.y)) /
+            ((uv1.y - uv2.y) * (uv0.x - uv2.x) + (uv2.x - uv1.x) * (uv0.y - uv2.y));
+        const float w1 = ((uv2.y - uv0.y) * (uv_point.x - uv2.x) + (uv0.x - uv2.x) * (uv_point.y - uv2.y)) /
+            ((uv1.y - uv2.y) * (uv0.x - uv2.x) + (uv2.x - uv1.x) * (uv0.y - uv2.y));
+        const float w2 = 1.0f - w0 - w1;
+
+        /*
+         * If the weights are valid, then the point is inside the triangle
+         */
+        if (w0 >= 0 && w0 <= 1 && w1 >= 0 && w1 <= 1 && w2 >= 0 && w2 <= 1)
+        {
+            float3 interpolated_position = w0 * _ParentMeshVertices[_ParentMeshTriangles[i]] +
+                w1 * _ParentMeshVertices[_ParentMeshTriangles[i + 1]] +
+                w2 * _ParentMeshVertices[_ParentMeshTriangles[i + 2]];
+
+
+            return interpolated_position;
+        }
+    }
+
+    return float3(0, 0, 0);
+}
+
+VertexData GetLocalSpacePositionAndNormalFromPointUv(float2 uv_point)
+{
+    for (uint i = 0; i < _ParentMeshTriangleCount; i += 3)
+    {
+        float2 uv0 = _ParentMeshUv[_ParentMeshTriangles[i]];
+        float2 uv1 = _ParentMeshUv[_ParentMeshTriangles[i + 1]];
+        float2 uv2 = _ParentMeshUv[_ParentMeshTriangles[i + 2]];
+
+        /*
+         * Calculate barycentric weights
+         */
+        const float w0 = ((uv1.y - uv2.y) * (uv_point.x - uv2.x) + (uv2.x - uv1.x) * (uv_point.y - uv2.y)) /
+            ((uv1.y - uv2.y) * (uv0.x - uv2.x) + (uv2.x - uv1.x) * (uv0.y - uv2.y));
+        const float w1 = ((uv2.y - uv0.y) * (uv_point.x - uv2.x) + (uv0.x - uv2.x) * (uv_point.y - uv2.y)) /
+            ((uv1.y - uv2.y) * (uv0.x - uv2.x) + (uv2.x - uv1.x) * (uv0.y - uv2.y));
+        const float w2 = 1.0f - w0 - w1;
+
+        /*
+         * If the weights are valid, then the point is inside the triangle
+         */
+        if (w0 >= 0 && w0 <= 1 && w1 >= 0 && w1 <= 1 && w2 >= 0 && w2 <= 1)
+        {
+            VertexData interpolated_result;
+            interpolated_result.position = w0 * _ParentMeshVertices[_ParentMeshTriangles[i]] +
+                w1 * _ParentMeshVertices[_ParentMeshTriangles[i + 1]] +
+                w2 * _ParentMeshVertices[_ParentMeshTriangles[i + 2]];
+
+            // interpolated_result.normal = w0 * _ParentMeshNormals[_ParentMeshTriangles[i]] +
+            //     w1 * _ParentMeshNormals[_ParentMeshTriangles[i + 1]] +
+            //     w2 * _ParentMeshNormals[_ParentMeshTriangles[i + 2]];
+            //
+            // interpolated_result.normal = normalize(interpolated_result.normal);
+
+            float3 edge1 = _ParentMeshVertices[_ParentMeshTriangles[i + 1]] - _ParentMeshVertices[_ParentMeshTriangles[i]];
+            float3 edge2 = _ParentMeshVertices[_ParentMeshTriangles[i + 2]] - _ParentMeshVertices[_ParentMeshTriangles[i]];
+            interpolated_result.normal = normalize(cross(edge1, edge2));
+
+            return interpolated_result;
+        }
+    }
+    
+    VertexData bad_vertex_data;
+    bad_vertex_data.normal = float3(0,0,1);
+    bad_vertex_data.position = float3(0,0,0);
+    return bad_vertex_data;
+}
+
+[numthreads(8,8,1)]
+void InitializeGrassChunk(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x < uint(_ChunkDimension) && id.y < uint(_ChunkDimension))
+    {
+        GrassData grass;
+        float4 pos = 0.0f;
+
+        const float scale = float(_Scale);
+        const float dimension = float(_Dimension);
+        const float chunk_dimension = float(_ChunkDimension);
+
+        pos.x = (id.x - (chunk_dimension * 0.5f * _NumChunks)) + chunk_dimension * _XOffset;
+        pos.z = (id.y - (chunk_dimension * 0.5f * _NumChunks)) + chunk_dimension * _YOffset;
+        pos.xz *= (1.0f / scale);
+
+        pos.x += snoise(float3(pos.xz + _XOffset + _YOffset, 0.0f) * 3.0f) * 0.05f;
+        pos.z += snoise(float3(pos.xz + _XOffset + _YOffset, 0.0f) * 4.0f) * 0.05f;
+
+        float uv_x = pos.x + dimension * 0.5f * _NumChunks * (1.0f / _NumChunks);
+        float uv_y = pos.z + dimension * 0.5f * _NumChunks * (1.0f / _NumChunks);
+
+        float2 uv = float2(uv_x, uv_y) / dimension;
+        uv.y = 1 - uv.y;
+        uv.x = 1 - uv.x;
+        
+        const float noise = abs(snoise(float3(pos.xz + _XOffset + _YOffset, 0.0f) * 2.2f));
+
+        const VertexData vertex_data = GetLocalSpacePositionAndNormalFromPointUv(uv);
+        pos = float4(vertex_data.position, 1);
+        pos.w = lerp(0.3f, 0.8f, noise);
+        // This is an offset to separate it from the midpoint of the plane.
+        // TODO: See if there is any way to avoid this.
+        pos.y += .5;
+
+        grass.uv = uv;
+        grass.position = pos;
+        grass.groundDirection = vertex_data.normal;
+
+        _GrassDataBuffer[id.x + id.y * _ChunkDimension] = grass;
+    }
+}
