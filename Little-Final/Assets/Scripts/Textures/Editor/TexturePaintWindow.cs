@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using Core.Debugging;
+using Editor.Utils;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Object = UnityEngine.Object;
 
 namespace Textures.Editor
 {
@@ -11,40 +14,28 @@ namespace Textures.Editor
         private class Settings
         {
             private const string prefsPrefix = "texturePaint_";
-            private const string PaintColorPref = prefsPrefix + "paintColor";
-            public Color paintColor = Color.white;
-            private const string BrushSizePref = prefsPrefix + "brushSize";
-            public float brushSize = 1f;
-            private const string BrushOpacityPref = prefsPrefix + "brushOpacity";
-            public float brushOpacity = 1f;
-            private const string BrushHardnessPref = prefsPrefix + "brushHardness";
-            public float brushHardness = 1f;
-            public const string ExportPathPref = prefsPrefix + "exportPath";
-            public string exportPath = "Assets/Textures/paintTexture.png";
+            public EditorPref<Color> paintColor = new ColorEditorPref(prefsPrefix + nameof(paintColor), Color.white);
+            public EditorPref<float> brushSize = new FloatEditorPref(prefsPrefix + nameof(brushSize)); 
+            public EditorPref<float> brushOpacity = new FloatEditorPref(prefsPrefix + nameof(brushOpacity)); 
+            public EditorPref<float> brushHardness = new FloatEditorPref(prefsPrefix + nameof(brushHardness)); 
+            public EditorPref<string> exportPath = new StringEditorPref(prefsPrefix + nameof(exportPath), "Assets/Textures/paintTexture.png"); 
 
             public void Load()
             {
-                if (EditorPrefs.HasKey(PaintColorPref)
-                    && !ColorUtility.TryParseHtmlString("#" + EditorPrefs.GetString(PaintColorPref), out paintColor)
-                    )
-                    Debug.LogError($"{_fadedTitle}: Cannot parse paint color");
-                if (EditorPrefs.HasKey(PaintColorPref))
-                    brushSize = EditorPrefs.GetFloat(BrushSizePref);
-                if (EditorPrefs.HasKey(BrushOpacityPref))
-                    brushOpacity = EditorPrefs.GetFloat(BrushOpacityPref);
-                if (EditorPrefs.HasKey(BrushHardnessPref))
-                    brushHardness = EditorPrefs.GetFloat(BrushHardnessPref);
-                if (EditorPrefs.HasKey(ExportPathPref))
-                    exportPath = EditorPrefs.GetString(ExportPathPref);
+                paintColor.TryLoad();
+                brushSize.TryLoad();
+                brushOpacity.TryLoad();
+                brushHardness.TryLoad();
+                exportPath.TryLoad();
             }
 
             public void Save()
             {
-                EditorPrefs.SetString(PaintColorPref, ColorUtility.ToHtmlStringRGB(paintColor));
-                EditorPrefs.SetFloat(BrushSizePref, brushSize);
-                EditorPrefs.SetFloat(BrushOpacityPref, brushOpacity);
-                EditorPrefs.SetFloat(BrushHardnessPref, brushHardness);
-                EditorPrefs.SetString(ExportPathPref, exportPath);
+                paintColor.Save();
+                brushSize.Save();
+                brushOpacity.Save();
+                brushHardness.Save();
+                exportPath.Save();
             }
         }
 
@@ -68,8 +59,8 @@ namespace Textures.Editor
         {
             public readonly MessageType messageType;
             public readonly string message;
-            public object Context { get; set; }
-            public Message(MessageType messageType, string message, object context)
+            public Object Context { get; set; }
+            public Message(MessageType messageType, string message, Object context = null)
             {
                 this.messageType = messageType;
                 this.message = message;
@@ -77,6 +68,7 @@ namespace Textures.Editor
             }
         }
 
+        //TODO: Check if GO has meshCollider and add it if not/make it non-convex and have the needed flags to turn it back to it's original state
         private struct Target
         {
             private static class Messages
@@ -89,17 +81,17 @@ namespace Textures.Editor
             public GameObject gameObject;
             public MeshFilter meshFilter;
             public Mesh mesh;
-            public bool hadMeshBeforeSelection;
             public MeshRenderer meshRenderer;
             public Material defaultMaterial;
+            public bool IsValid => gameObject && meshFilter && mesh && meshRenderer;
 
-            public bool TrySet(GameObject activeGameObject, out string resultReport)
+            public bool TrySet(GameObject activeGameObject, out Message resultReport)
             {
-                resultReport = string.Empty;
+                resultReport = new Message();
                 gameObject = activeGameObject;
                 if (!gameObject)
                 {
-                    resultReport = Messages.NoTarget;
+                    resultReport = new Message(MessageType.Error, Messages.NoTarget);
                     return false;
                 }
 
@@ -107,7 +99,7 @@ namespace Textures.Editor
                     mesh = meshFilter.sharedMesh;
                 else
                 {
-                    resultReport = Messages.NoMeshFilter;
+                    resultReport = new Message(MessageType.Error, Messages.NoMeshFilter, gameObject);
                     return false;
                 }
 
@@ -115,7 +107,7 @@ namespace Textures.Editor
                     defaultMaterial = meshRenderer.sharedMaterial;
                 else
                 {
-                    resultReport = Messages.NoMeshRenderer;
+                    resultReport = new Message(MessageType.Error, Messages.NoMeshRenderer, gameObject);
                     return false;
                 }
 
@@ -162,7 +154,7 @@ namespace Textures.Editor
 
         private Material _brushMaterial;
 
-        private Settings _settings = new();
+        private readonly Settings _settings = new();
         private Event _currentEvent;
 
         private static TexturePaintWindow _window;
@@ -175,37 +167,38 @@ namespace Textures.Editor
             
             _window = GetWindow<TexturePaintWindow>();
             _window.titleContent = new GUIContent(WindowTitle);
-            if(!_window.TryInitialize(out var report))
-            {
-                Debug.LogError($"{_fadedTitle}: <color=#FF3300>Error</color> encountered while opening window." +
-                               $"\n{report}");
-                _window.Close();
-            }
-            else
-                _window.Show();
+            _window.TryInitialize(out var initReport);
+            _window.messages.Add(initReport);
+            _window.Show();
         }
 
         private void OnSelectionChange()
         {
             if (_target.gameObject == Selection.activeGameObject)
                 return;
-            Debug.Log($"{_fadedTitle}: Selection changed");
             
             _target.Reset();
+
+            var wasSuccessful = TryInitialize(out var report);
+            messages.Add(wasSuccessful
+                             ? new Message(MessageType.Info, "Selection changed")
+                             : report);
+            if (!wasSuccessful && _mouseBrush)
+                TryDestroyGameObject(_mouseBrush);
+            else if (wasSuccessful && !_mouseBrush)
+                CreateBrush(out _mouseBrush, ref _brushMaterial);
             
-            if(TryInitialize(out var report))
-            {
-                Debug.LogError($"{_fadedTitle}: {"Error".Colored("#FF3300")} encountered on selection change." +
-                               $"\n{report}");
-                Close();
-            }
+            Repaint();
         }
 
         private void OnEnable()
         {
             SceneView.beforeSceneGui += CaptureMouseEvent;
             SceneView.duringSceneGui += HandleSceneViewGUI;
-            CreateBrush(out _mouseBrush, ref _brushMaterial);
+            if (_target.IsValid)
+            {
+                CreateBrush(out _mouseBrush, ref _brushMaterial);
+            }
             _settings.Load();
         }
 
@@ -213,8 +206,7 @@ namespace Textures.Editor
         {
             SceneView.beforeSceneGui -= CaptureMouseEvent;
             SceneView.duringSceneGui -= HandleSceneViewGUI;
-            if (_mouseBrush.gameObject)
-                DestroyImmediate(_mouseBrush.gameObject);
+            TryDestroyGameObject(_mouseBrush);
             _settings.Save();
         }
 
@@ -231,10 +223,9 @@ namespace Textures.Editor
                 _markedIslands.Release();
             }
 
-            if (_paintTexture != null)
-            {
-                _paintTexture.Release();
-            }
+            _paintTexture?.Release();
+
+            _markingIslandsBuffer?.Release();
         }
 
         private void OnGUI()
@@ -243,50 +234,62 @@ namespace Textures.Editor
             {
                 var lastMessage = messages[^1];
                 EditorGUILayout.HelpBox(lastMessage.message, lastMessage.messageType);
+                var userClickedHelpBox = Event.current.type == EventType.MouseDown
+                                         && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition);
+                if (userClickedHelpBox && lastMessage.Context)
+                {
+                    EditorGUIUtility.PingObject(lastMessage.Context);
+                }
             }
-            _settings.paintColor = EditorGUILayout.ColorField("Color", _settings.paintColor);
-            _brushMaterial.SetColor(Shaders.ColorParam, _settings.paintColor);
+
+            _settings.paintColor.value = EditorGUILayout.ColorField("Color", _settings.paintColor);
+            if (_brushMaterial)
+                _brushMaterial.SetColor(Shaders.ColorParam, _settings.paintColor);
             Shader.SetGlobalColor(Shaders.BrushColorParam, _settings.paintColor);
             
-            _settings.brushSize = EditorGUILayout.FloatField("Size", _settings.brushSize);
+            _settings.brushSize.value = EditorGUILayout.FloatField("Size", _settings.brushSize);
             Shader.SetGlobalFloat(Shaders.BrushSizeParam, _settings.brushSize);
-            _settings.brushOpacity = EditorGUILayout.FloatField(nameof(_settings.brushOpacity), _settings.brushOpacity);
+            _settings.brushOpacity.value = EditorGUILayout.FloatField("Opacity", _settings.brushOpacity);
             Shader.SetGlobalFloat(Shaders.BrushOpacityParam, _settings.brushOpacity);
-            // Brush size is doubled for the mouse representation so it shows the correct size sphere in editor.
-            _mouseBrush.localScale = _settings.brushSize * 2f *Vector3.one;
+            if(_mouseBrush)
+                // Brush size is doubled for the mouse representation so it shows the correct size sphere in editor.
+                _mouseBrush.localScale = _settings.brushSize * 2f *Vector3.one;
             
-            _settings.brushHardness = EditorGUILayout.FloatField(nameof(_settings.brushHardness), _settings.brushHardness);
+            _settings.brushHardness.value = EditorGUILayout.FloatField("Hardness", _settings.brushHardness);
             Shader.SetGlobalFloat(Shaders.BrushHardnessParam, _settings.brushHardness);
 
             using (new EditorGUILayout.HorizontalScope("Button"))
             {
-                _settings.exportPath = EditorGUILayout.TextField("Path", _settings.exportPath);
-                if (GUILayout.Button("Export"))
-                {
-                    var tempPath = EditorUtility.SaveFilePanelInProject("Save Texture", "paintTexture", "png", "Save the painted texture", _settings.exportPath);
-                    var userCanceled = string.IsNullOrEmpty(tempPath);
-                    if (!userCanceled)
-                    {
-                        _settings.exportPath = tempPath;
-                        Export(_paintTexture, tempPath);
-                        AssetDatabase.ImportAsset(tempPath);
-                    }
-                }
+                _settings.exportPath.value = EditorGUILayout.TextField("Path", _settings.exportPath);
+                if (!GUILayout.Button("Export"))
+                    return;
+                
+                var tempPath = EditorUtility.SaveFilePanelInProject("Save Texture", "paintTexture", "png", "Save the painted texture", _settings.exportPath);
+                var userCanceled = string.IsNullOrEmpty(tempPath);
+                if (userCanceled)
+                    return;
+                
+                _settings.exportPath.value = tempPath;
+                Export(_paintTexture, tempPath);
+                AssetDatabase.ImportAsset(tempPath);
             }
         }
 
         public void AddItemsToMenu(GenericMenu menu)
         {
-            menu.AddItem(new GUIContent("Reset EditorPrefs"), true, ResetEditorPrefs);
+            menu.AddItem(new GUIContent("Toggle auto-save"), true, ToggleAutoSave);
         }
 
-        private static void ResetEditorPrefs()
+        private static void ToggleAutoSave()
         {
-            EditorPrefs.DeleteAll();
+            //TODO: Implement method
+            throw new NotImplementedException();
         }
 
         private void CaptureMouseEvent(SceneView obj)
         {
+            if(!_target.IsValid)
+                return;
             _currentEvent = Event.current;
             var mouseIsOverSceneView = mouseOverWindow != null && mouseOverWindow.titleContent.text == "Scene";
             //Prevent target deselection
@@ -332,10 +335,11 @@ namespace Textures.Editor
             
             mouseWorldPosition.w = _isPaintingOnSceneView ? 1 : 0;
             Shader.SetGlobalVector(Shaders.MouseParam, mouseWorldPosition);
-            _mouseBrush.position = mouseWorldPosition;
+            if (_mouseBrush)
+                _mouseBrush.position = mouseWorldPosition;
         }
 
-        private bool TryInitialize(out string report)
+        private bool TryInitialize(out Message report)
         {
             if (!_target.TrySet(Selection.activeGameObject, out report))
                 return false;
@@ -377,6 +381,19 @@ namespace Textures.Editor
             mouseRepresentation.GetComponent<Renderer>().material = brushMaterial;
         }
 
+        /// <summary>
+        /// Destroys a given gameObject immediately
+        /// </summary>
+        /// <param name="component"></param>
+        private static bool TryDestroyGameObject(Component component)
+        {
+            if (!component)
+                return false;
+            DestroyImmediate(component);
+            return true;
+
+        }
+
         private static bool GUIRaycast(Vector2 mousePosition, int layer, out RaycastHit hit)
         {
             Ray ray = HandleUtility.GUIPointToWorldRay(mousePosition);
@@ -386,12 +403,12 @@ namespace Textures.Editor
             return raycast;
         }
 
-        private static bool TryGetSceneCamera(ref Camera camera, out string resultReport)
+        private static bool TryGetSceneCamera(ref Camera camera, out Message resultReport)
         {
             if (!camera && SceneView.lastActiveSceneView)
                 camera = SceneView.lastActiveSceneView.camera;
             
-            resultReport = camera ? string.Empty : "There is no scene view camera";
+            resultReport = camera ? new Message() : new Message(MessageType.Error, "There is no scene view camera");
             return camera;
         }
         
