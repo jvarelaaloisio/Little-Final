@@ -1,15 +1,19 @@
-using UnityEditor;
-
-namespace Editor.Utils
+namespace Prefs.Runtime
 {
-    public abstract class EditorPref<T>
+    /// <summary>
+    /// Base class for different units that hold prefs-stored values
+    /// </summary>
+    /// <typeparam name="T">The value being hold by this class</typeparam>
+    public abstract class PrefUnit<T>
     {
         public T value;
+        protected readonly IPrefs Prefs;
         public readonly string key;
         private readonly T _defaultValue;
 
-        protected EditorPref(string key, T defaultValue)
+        protected PrefUnit(IPrefs prefs, string key, T defaultValue)
         {
+            Prefs = prefs;
             this.key = key;
             _defaultValue = defaultValue;
             Reset();
@@ -18,7 +22,7 @@ namespace Editor.Utils
         /// <summary>
         /// Checks if the editor prefs has this pref's key
         /// </summary>
-        public bool Exists => EditorPrefs.HasKey(key);
+        public bool Exists => Prefs.HasKey(key);
 
         /// <summary>
         /// Sets the value back to default
@@ -28,13 +32,13 @@ namespace Editor.Utils
             => value = _defaultValue;
 
         /// <summary>
-        /// Deletes this pref's key from editorPrefs
+        /// Deletes this pref's key from prefs
         /// </summary>
         public virtual void DeleteKey()
-            => EditorPrefs.DeleteKey(key);
+            => Prefs.DeleteKey(key);
 
         /// <summary>
-        /// Checks if the key exists in the editorPrefs before loading.
+        /// Checks if the key exists in the prefs before loading.
         /// </summary>
         /// <returns>True if the key exists</returns>
         public virtual bool TryLoad()
@@ -46,15 +50,15 @@ namespace Editor.Utils
         }
 
         /// <summary>
-        /// Gets the value stored in editorPrefs
+        /// Gets the value stored in prefs
         /// </summary>
         public abstract void Load();
 
         /// <summary>
-        /// Saves the value into the editorPrefs
+        /// Saves the value into the prefs
         /// </summary>
         public abstract void Save();
 
-        public static implicit operator T(EditorPref<T> editorPref) => editorPref.value;
+        public static implicit operator T(PrefUnit<T> prefUnit) => prefUnit.value;
     }
 }

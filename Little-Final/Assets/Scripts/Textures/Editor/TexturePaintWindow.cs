@@ -1,7 +1,8 @@
-using System;
 using System.Collections.Generic;
 using Core.Debugging;
-using Editor.Utils;
+using Prefs;
+using Prefs.Editor;
+using Prefs.Runtime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -14,11 +15,13 @@ namespace Textures.Editor
         private class Settings
         {
             private const string prefsPrefix = "texturePaint_";
-            public EditorPref<Color> paintColor = new ColorEditorPref(prefsPrefix + nameof(paintColor), Color.white);
-            public EditorPref<float> brushSize = new FloatEditorPref(prefsPrefix + nameof(brushSize)); 
-            public EditorPref<float> brushOpacity = new FloatEditorPref(prefsPrefix + nameof(brushOpacity)); 
-            public EditorPref<float> brushHardness = new FloatEditorPref(prefsPrefix + nameof(brushHardness)); 
-            public EditorPref<string> exportPath = new StringEditorPref(prefsPrefix + nameof(exportPath), "Assets/Textures/paintTexture.png"); 
+            private static readonly IPrefs editorPrefs = new EditorPrefsWrapper();
+            public PrefUnit<Color> paintColor = new ColorPref(editorPrefs, prefsPrefix + nameof(paintColor), Color.white);
+            public PrefUnit<float> brushSize = new FloatPref(editorPrefs, prefsPrefix + nameof(brushSize)); 
+            public PrefUnit<float> brushOpacity = new FloatPref(editorPrefs, prefsPrefix + nameof(brushOpacity)); 
+            public PrefUnit<float> brushHardness = new FloatPref(editorPrefs, prefsPrefix + nameof(brushHardness)); 
+            public PrefUnit<string> exportPath = new StringPref(editorPrefs, prefsPrefix + nameof(exportPath), "Assets/Textures/paintTexture.png");
+            public PrefUnit<bool> autoSave = new BoolPref(editorPrefs, prefsPrefix + nameof(autoSave), false);
 
             public void Load()
             {
@@ -27,6 +30,7 @@ namespace Textures.Editor
                 brushOpacity.TryLoad();
                 brushHardness.TryLoad();
                 exportPath.TryLoad();
+                autoSave.TryLoad();
             }
 
             public void Save()
@@ -36,6 +40,7 @@ namespace Textures.Editor
                 brushOpacity.Save();
                 brushHardness.Save();
                 exportPath.Save();
+                autoSave.Save();
             }
         }
 
@@ -207,7 +212,10 @@ namespace Textures.Editor
             SceneView.beforeSceneGui -= CaptureMouseEvent;
             SceneView.duringSceneGui -= HandleSceneViewGUI;
             TryDestroyGameObject(_mouseBrush);
-            _settings.Save();
+            if (_settings.autoSave)
+            {
+                _settings.Save();
+            }
         }
 
         private void OnDestroy()
@@ -261,30 +269,34 @@ namespace Textures.Editor
             using (new EditorGUILayout.HorizontalScope("Button"))
             {
                 _settings.exportPath.value = EditorGUILayout.TextField("Path", _settings.exportPath);
-                if (!GUILayout.Button("Export"))
-                    return;
-                
-                var tempPath = EditorUtility.SaveFilePanelInProject("Save Texture", "paintTexture", "png", "Save the painted texture", _settings.exportPath);
-                var userCanceled = string.IsNullOrEmpty(tempPath);
-                if (userCanceled)
-                    return;
-                
-                _settings.exportPath.value = tempPath;
-                Export(_paintTexture, tempPath);
-                AssetDatabase.ImportAsset(tempPath);
+                if (GUILayout.Button("Export"))
+                {
+                    var tempPath = EditorUtility.SaveFilePanelInProject("Save Texture", "paintTexture", "png",
+                                                                        "Save the painted texture",
+                                                                        _settings.exportPath);
+                    var userCanceled = string.IsNullOrEmpty(tempPath);
+                    if (!userCanceled)
+                    {
+                        _settings.exportPath.value = tempPath;
+                        Export(_paintTexture, tempPath);
+                        AssetDatabase.ImportAsset(tempPath);
+                    }
+                }
+            }
+
+            if (GUILayout.Button("Save Settings"))
+            {
+                _settings.Save();
             }
         }
 
         public void AddItemsToMenu(GenericMenu menu)
         {
-            menu.AddItem(new GUIContent("Toggle auto-save"), true, ToggleAutoSave);
+            menu.AddItem(new GUIContent("Toggle auto-save"), _settings.autoSave, ToggleAutoSave);
         }
 
-        private static void ToggleAutoSave()
-        {
-            //TODO: Implement method
-            throw new NotImplementedException();
-        }
+        //TODO: Implement method
+        private void ToggleAutoSave() => _settings.autoSave.value = !_settings.autoSave;
 
         private void CaptureMouseEvent(SceneView obj)
         {
