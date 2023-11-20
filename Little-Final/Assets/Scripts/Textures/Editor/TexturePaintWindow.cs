@@ -389,7 +389,7 @@ namespace Textures.Editor
         {
             if (!component)
                 return false;
-            DestroyImmediate(component);
+            DestroyImmediate(component.gameObject);
             return true;
 
         }
