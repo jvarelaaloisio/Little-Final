@@ -26,7 +26,7 @@ namespace FoliageRenderer.Scripts
 
         [Header("Grass rendering")] [SerializeField]
         private Material grassMaterial;
-        [SerializeField, Range(0,1)] private float wildFactor = 1f;
+        [SerializeField] private float wildFactor = 1f;
         [SerializeField] private float wildScale = 1f;
 
         [SerializeField] private Mesh grassMesh;
@@ -77,6 +77,13 @@ namespace FoliageRenderer.Scripts
         #region Shader Ids
 
         private static readonly int
+            // Dependencies
+            GrassDataBufferID = Shader.PropertyToID("_GrassDataBuffer"),
+            PositionBufferPropID = Shader.PropertyToID("_PositionBuffer"),
+            ObjectWorldMatrixPropID = Shader.PropertyToID("_ObjectWorldMatrix"),
+            ObjectRotationMatrixPropID = Shader.PropertyToID("_ObjectRotationMatrix"),
+            ObjectScaleMatrixPropID = Shader.PropertyToID("_ObjectScaleMatrix"),
+            TimePropID = Shader.PropertyToID("_Time"),
             // Rendering
             WildFactorPropID = Shader.PropertyToID("_WildFactor"),
             WildScalePropID = Shader.PropertyToID("_WildScale"),
@@ -85,11 +92,6 @@ namespace FoliageRenderer.Scripts
             DynamicPositionsBufferPropID = Shader.PropertyToID("_dynamicPositions"),
             AvoidanceMaxDisplacementPropID = Shader.PropertyToID("_AvoidanceMaxDisplacement"),
             AvoidanceRadiusPropID = Shader.PropertyToID("_AvoidanceRadius"),
-            // Dependencies
-            GrassDataBufferID = Shader.PropertyToID("_GrassDataBuffer"),
-            PositionBufferPropID = Shader.PropertyToID("_PositionBuffer"),
-            ObjectWorldMatrixPropID = Shader.PropertyToID("_ObjectWorldMatrix"),
-            TimePropID = Shader.PropertyToID("_Time"),
             // Chunks
             ScalePropID = Shader.PropertyToID("_Scale"),
             DimensionPropID = Shader.PropertyToID("_Dimension"),
@@ -160,6 +162,7 @@ namespace FoliageRenderer.Scripts
             computeChunkPoints.SetInt(ChunkDimensionPropID, _chunkDimension);
             computeChunkPoints.SetInt(ScalePropID, chunkDensity);
             computeChunkPoints.SetInt(NumChunksPropID, numChunks);
+            computeChunkPoints.SetMatrix(ObjectWorldMatrixPropID, transform.localToWorldMatrix);
 
             _wind = new RenderTexture(
                 1024,
@@ -331,6 +334,8 @@ namespace FoliageRenderer.Scripts
             chunk.material.SetInt(DynamicPositionCountPropID, dynamicObjects.Count);
             chunk.material.SetFloat(WildFactorPropID, wildFactor);
             chunk.material.SetFloat(WildFactorPropID, wildScale);
+            chunk.material.SetMatrix(ObjectRotationMatrixPropID, Matrix4x4.Rotate(transform.rotation));
+            chunk.material.SetMatrix(ObjectScaleMatrixPropID, Matrix4x4.Scale(transform.localScale));
 
             return chunk;
         }

@@ -141,6 +141,7 @@ void InitializeGrassChunk(uint3 id : SV_DispatchThreadID)
 
         grass.uv = uv;
         grass.position = pos;
+        //grass.position = mul(_ObjectWorldMatrix, float4(pos.xyz, 1));
         grass.groundDirection = vertex_data.normal;
 
         _GrassDataBuffer[id.x + id.y * _ChunkDimension] = grass;
