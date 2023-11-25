@@ -16,7 +16,7 @@ Shader "TriplanarTerrain"
 		_BlendNoise("Blend Noise", 2D) = "white" {}
 		_NoiseBlendeTilig("Noise Blende Tilig", Float) = 0
 		_Float2("Float 2", Range( 0 , 1)) = 0
-		_Float3("Float 3", Float) = 0
+		_Mid("Mid", Range( 0 , 1)) = 0.5
 		[HideInInspector] __dirty( "", Int ) = 1
 	}
 
@@ -43,9 +43,9 @@ Shader "TriplanarTerrain"
 			INTERNAL_DATA
 		};
 
-		uniform float _Float3;
 		uniform sampler2D _Cliffs;
 		uniform float _CliffTiling;
+		uniform float _Mid;
 		uniform sampler2D _Ground;
 		uniform float _GroundTiling;
 		uniform sampler2D _DownWalls;
@@ -83,12 +83,6 @@ Shader "TriplanarTerrain"
 			return xNorm * projNormal.x + yNorm * projNormal.y + zNorm * projNormal.z;
 		}
 
-
-		float4 CalculateContrast( float contrastValue, float4 colorTarget )
-		{
-			float t = 0.5 * ( 1.0 - contrastValue );
-			return mul( float4x4( contrastValue,0,0,t, 0,contrastValue,0,t, 0,0,contrastValue,t, 0,0,0,1 ), colorTarget );
-		}
 
 		inline float4 TriplanarSampling77( sampler2D topTexMap, float3 worldPos, float3 worldNormal, float falloff, float2 tiling, float3 normalScale, float3 index )
 		{
@@ -164,21 +158,21 @@ Shader "TriplanarTerrain"
 			float4 triplanar73 = TriplanarSampling73( _Cliffs, ase_worldPos, ase_worldNormal, 1.0, temp_cast_0, 1.0, 0 );
 			float2 temp_cast_1 = (( _CliffTiling * 0.5 )).xx;
 			float4 triplanar104 = TriplanarSampling104( _Cliffs, ase_worldPos, ase_worldNormal, 1.0, temp_cast_1, 1.0, 0 );
-			float4 lerpResult107 = lerp( triplanar73 , triplanar104 , 0.5);
-			float2 temp_cast_4 = (_GroundTiling).xx;
-			float4 triplanar77 = TriplanarSampling77( _Ground, ase_worldPos, ase_worldNormal, 1.0, temp_cast_4, 1.0, 0 );
+			float4 lerpResult107 = lerp( triplanar73 , triplanar104 , _Mid);
+			float2 temp_cast_2 = (_GroundTiling).xx;
+			float4 triplanar77 = TriplanarSampling77( _Ground, ase_worldPos, ase_worldNormal, 1.0, temp_cast_2, 1.0, 0 );
 			float3 ase_vertexNormal = mul( unity_WorldToObject, float4( ase_worldNormal, 0 ) );
 			ase_vertexNormal = normalize( ase_vertexNormal );
-			float4 lerpResult10 = lerp( saturate( CalculateContrast(_Float3,lerpResult107) ) , triplanar77 , saturate( (0.0 + (ase_vertexNormal.y - 0.8) * (1.0 - 0.0) / (1.0 - 0.8)) ));
-			float2 temp_cast_5 = (_DownWallsTiling).xx;
-			float4 triplanar79 = TriplanarSampling79( _DownWalls, ase_worldPos, ase_worldNormal, 1.0, temp_cast_5, 1.0, 0 );
+			float4 lerpResult10 = lerp( saturate( lerpResult107 ) , triplanar77 , saturate( (0.0 + (ase_vertexNormal.y - 0.8) * (1.0 - 0.0) / (1.0 - 0.8)) ));
+			float2 temp_cast_3 = (_DownWallsTiling).xx;
+			float4 triplanar79 = TriplanarSampling79( _DownWalls, ase_worldPos, ase_worldNormal, 1.0, temp_cast_3, 1.0, 0 );
 			float4 lerpResult23 = lerp( lerpResult10 , triplanar79 , saturate( (0.0 + (ase_vertexNormal.y - 0.0) * (1.0 - 0.0) / (-1.0 - 0.0)) ));
-			float2 temp_cast_6 = (_SlopeTiling).xx;
-			float4 triplanar81 = TriplanarSampling81( _Slope, ase_worldPos, ase_worldNormal, 1.0, temp_cast_6, 1.0, 0 );
-			float2 temp_cast_7 = (_NoiseBlendeTilig).xx;
-			float4 triplanar92 = TriplanarSampling92( _BlendNoise, ase_worldPos, ase_worldNormal, 1.0, temp_cast_7, 1.0, 0 );
-			float2 temp_cast_8 = (( _NoiseBlendeTilig * 0.5 )).xx;
-			float4 triplanar101 = TriplanarSampling101( _BlendNoise, ase_worldPos, ase_worldNormal, 1.0, temp_cast_8, 1.0, 0 );
+			float2 temp_cast_4 = (_SlopeTiling).xx;
+			float4 triplanar81 = TriplanarSampling81( _Slope, ase_worldPos, ase_worldNormal, 1.0, temp_cast_4, 1.0, 0 );
+			float2 temp_cast_5 = (_NoiseBlendeTilig).xx;
+			float4 triplanar92 = TriplanarSampling92( _BlendNoise, ase_worldPos, ase_worldNormal, 1.0, temp_cast_5, 1.0, 0 );
+			float2 temp_cast_6 = (( _NoiseBlendeTilig * 0.5 )).xx;
+			float4 triplanar101 = TriplanarSampling101( _BlendNoise, ase_worldPos, ase_worldNormal, 1.0, temp_cast_6, 1.0, 0 );
 			float4 lerpResult61 = lerp( lerpResult23 , triplanar81 , saturate( ( ( 1.0 - ( ase_worldPos.y + _Float0 ) ) - ( ( triplanar92.x + triplanar101.x ) * _Float2 ) ) ));
 			o.Albedo = lerpResult61.xyz;
 			o.Alpha = 1;
@@ -310,10 +304,8 @@ Node;AmplifyShaderEditor.TriplanarNode;104;-1888,-800;Inherit;True;Spherical;Wor
 Node;AmplifyShaderEditor.LerpOp;107;-1344,-992;Inherit;False;3;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.RangedFloatNode;76;-2176,-800;Inherit;False;Property;_CliffTiling;Cliff Tiling;4;0;Create;True;0;0;0;False;0;False;0;0.1;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;105;-2032,-720;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0.5;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;108;-1504,-704;Inherit;False;Constant;_Mid;Mid;13;0;Create;True;0;0;0;False;0;False;0.5;0.3;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleContrastOpNode;110;-1140.473,-830.9465;Inherit;False;2;1;COLOR;0,0,0,0;False;0;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.RangedFloatNode;111;-1289.473,-776.9465;Inherit;False;Property;_Float3;Float 3;13;0;Create;True;0;0;0;False;0;False;0;0.5;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SaturateNode;112;-872.4731,-824.9465;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SaturateNode;112;-872.4731,-824.9465;Inherit;False;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.RangedFloatNode;108;-1504,-704;Inherit;False;Property;_Mid;Mid;13;0;Create;True;0;0;0;False;0;False;0.5;0.5;0;1;0;1;FLOAT;0
 WireConnection;77;0;78;0
 WireConnection;77;3;83;0
 WireConnection;79;0;80;0
@@ -359,8 +351,6 @@ WireConnection;107;0;73;0
 WireConnection;107;1;104;0
 WireConnection;107;2;108;0
 WireConnection;105;0;76;0
-WireConnection;110;1;107;0
-WireConnection;110;0;111;0
-WireConnection;112;0;110;0
+WireConnection;112;0;107;0
 ASEEND*/
-//CHKSM=D0FC5E4032F56267302E2ACF02C5686F154C6B33
+//CHKSM=15F16C1131DCABF3EC55E7B7D2829C0027CD710C
