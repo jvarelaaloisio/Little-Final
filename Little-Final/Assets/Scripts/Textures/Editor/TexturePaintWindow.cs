@@ -163,6 +163,8 @@ namespace Textures.Editor
         private Event _currentEvent;
 
         private static TexturePaintWindow _window;
+        private Texture textureAsset;
+        private Texture2D _blackTexture;
 
         [MenuItem("Tools/" + WindowTitle)]
         private static void OpenWindow()
@@ -172,8 +174,6 @@ namespace Textures.Editor
             
             _window = GetWindow<TexturePaintWindow>();
             _window.titleContent = new GUIContent(WindowTitle);
-            _window.TryInitialize(out var initReport);
-            _window.messages.Add(initReport);
             _window.Show();
         }
 
@@ -200,11 +200,17 @@ namespace Textures.Editor
         {
             SceneView.beforeSceneGui += CaptureMouseEvent;
             SceneView.duringSceneGui += HandleSceneViewGUI;
+            TryInitialize(out var initReport);
+            messages.Add(initReport);
             if (_target.IsValid)
             {
                 CreateBrush(out _mouseBrush, ref _brushMaterial);
             }
             _settings.Load();
+
+            _blackTexture = new Texture2D(1, 1);
+            _blackTexture.SetPixel(0, 0, Color.black);
+            _blackTexture.Apply();
         }
 
         private void OnDisable()
@@ -245,9 +251,7 @@ namespace Textures.Editor
                 var userClickedHelpBox = Event.current.type == EventType.MouseDown
                                          && GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition);
                 if (userClickedHelpBox && lastMessage.Context)
-                {
                     EditorGUIUtility.PingObject(lastMessage.Context);
-                }
             }
 
             _settings.paintColor.value = EditorGUILayout.ColorField("Color", _settings.paintColor);
@@ -284,10 +288,20 @@ namespace Textures.Editor
                 }
             }
 
-            if (GUILayout.Button("Save Settings"))
+            GUI.DrawTexture(GUILayoutUtility.GetRect(position.width, 5),  _blackTexture, ScaleMode.StretchToFill);
+            using (new EditorGUILayout.HorizontalScope("Button"))
             {
-                _settings.Save();
+                textureAsset = (Texture)EditorGUILayout.ObjectField(textureAsset, typeof(Texture), false);
+                if (GUILayout.Button("Use") && _paintTexture != null && textureAsset)
+                {
+                    _paintTexture.Blit(textureAsset);
+                    SceneView.RepaintAll();
+                }
             }
+            if (GUILayout.Button("Save Settings"))
+                _settings.Save();
+            
+            GUI.DrawTexture(GUILayoutUtility.GetRect(position.width - 100, position.width - 100), _paintTexture.paintedTexture);
         }
 
         public void AddItemsToMenu(GenericMenu menu)
@@ -303,25 +317,28 @@ namespace Textures.Editor
             if(!_target.IsValid)
                 return;
             _currentEvent = Event.current;
-            var mouseIsOverSceneView = mouseOverWindow != null && mouseOverWindow.titleContent.text == "Scene";
             //Prevent target deselection
-            _isPaintingOnSceneView = (_target.gameObject != null)
+            _isPaintingOnSceneView = _target.gameObject != null
                                      && (UserStartsPainting()
                                          || (!UserStoppedPainting() && _isPaintingOnSceneView));
             
             if (_isPaintingOnSceneView && _currentEvent.isMouse)
-            {
                 _currentEvent.Use();
-            }
-            
+
             bool UserStoppedPainting() =>
                 _currentEvent.type is EventType.MouseUp;
 
-            bool UserStartsPainting() =>
-                _currentEvent.type is EventType.MouseDown
-                && _currentEvent.button == 0
-                && mouseIsOverSceneView
-                && MouseIsOverTarget();
+            bool UserStartsPainting()
+            {
+                return _currentEvent.type is EventType.MouseDown
+                       && _currentEvent.button == 0
+                       && MouseIsOverSceneView()
+                       && MouseIsOverTarget();
+
+            }
+
+            bool MouseIsOverSceneView() =>
+                mouseOverWindow != null && mouseOverWindow.titleContent.text == "Scene";
 
             bool MouseIsOverTarget() =>
                 GUIRaycast(_currentEvent.mousePosition, _target.gameObject.layer, out var hit)
