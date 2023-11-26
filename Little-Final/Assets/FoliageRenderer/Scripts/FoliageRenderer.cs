@@ -29,7 +29,7 @@ namespace FoliageRenderer.Scripts
         [Header("Grass rendering")] 
         [SerializeField] private Mesh grassMesh;
         [SerializeField] private Material grassMaterial;
-        [FormerlySerializedAs("oldGrassHeight")] [SerializeField] private float oldGrassColorFactor = .3f;
+        [SerializeField] private float oldGrassColorFactor = .3f;
         [SerializeField, Range(0,1)] private float wildFactor = 1f;
         [SerializeField] private float wildScale = 1f;
         [SerializeField] private float height = 3f;
@@ -40,7 +40,7 @@ namespace FoliageRenderer.Scripts
         [Header("Optimization")] 
         [SerializeField] private Camera currentCamera;
         [SerializeField] private Mesh grassLODMesh;
-        [SerializeField, Range(0, 1000.0f)] private float lodCutoff = 20f;
+        [SerializeField, Range(0, 1000.0f)] private float lodCutoff = 55f;
         [SerializeField, Range(0, 1000.0f)] private float distanceCutoff = 200f;
 
         private ComputeBuffer

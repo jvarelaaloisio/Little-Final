@@ -35,6 +35,26 @@ Material:
         m_Texture: {fileID: 2800000, guid: 06d2f3147da96854fa9f6b36b4b3616c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _CustomMaskR:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CustomMsakRGB:
+        m_Texture: {fileID: 2800000, guid: 804b3aceaa367cd4eba069f7323f3cc3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CustomtextureB:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CustomtextureG:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CustomtextureR:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -48,7 +68,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DownWalls:
-        m_Texture: {fileID: 2800000, guid: 06d2f3147da96854fa9f6b36b4b3616c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 25e1d1375f6e5424fa4152cdc64a746c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DownWallsTexture:
@@ -115,27 +135,44 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _CliffTiling: 0.1
+    - _CliffTilingBlend: 0.5
+    - _Clifftilingblend: 0.5
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
+    - _DownWallsBlend: 0.486
     - _DownWallsTiling: 0.1
     - _DstBlend: 0
     - _Float0: 2.85
-    - _Float1: 0.941175
+    - _Float1: 0.5
     - _Float2: 1
+    - _Float3: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _GroundTiling: 0.1
+    - _GroundTiling: 0.4
+    - _GroundTilingBlend: 0.5
+    - _Groundtilingblend: 0.5
     - _Metallic: 0
+    - _Mid: 0.5
+    - _MidCliff: 0.5
     - _Mode: 0
-    - _NoiseBlendeTilig: 0.1
+    - _NoiseBlendeTilig: 0.3
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _SlopeTiling: 0.4
+    - _SecondaryCliffTilingFactor: 0.2
+    - _SecondaryDownWallsTilingFactor: 0.2
+    - _SecondaryGroundTilingFactor: 0.04
+    - _SecondarySlopeTilingFactor: 0.1
+    - _SlopeOffset: 2.59
+    - _SlopeTiling: 1
+    - _Slopeblend: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
+    - _Usebluechanel: 0
+    - _Usegreenchanel: 0
+    - _Useredchanel: 0
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
