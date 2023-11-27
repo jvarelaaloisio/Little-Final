@@ -29,7 +29,7 @@ Shader "Lemu/Nature/StandardTree"
 	SubShader
 	{
 		Tags{ "RenderType" = "TransparentCutout"  "Queue" = "AlphaTest+0" }
-		Cull Back
+		Cull Off
 		CGINCLUDE
 		#include "UnityShaderVariables.cginc"
 		#include "UnityCG.cginc"
@@ -370,21 +370,21 @@ Node;AmplifyShaderEditor.GetLocalVarNode;305;-321.6799,-398.3201;Inherit;False;3
 Node;AmplifyShaderEditor.GetLocalVarNode;302;-192,-288;Inherit;False;299;VAR_LeavesShadowColor;1;0;OBJECT;;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;306;-192,-208;Inherit;False;304;MASK_ShadowMask;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SaturateNode;407;1184,384;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.StandardSurfaceOutputNode;409;1536,384;Float;False;True;-1;2;ASEMaterialInspector;0;0;Standard;Lemu/Nature/StandardTree;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;Back;0;False;;0;False;;False;0;False;;0;False;;False;0;Masked;0.5;True;True;0;False;TransparentCutout;;AlphaTest;All;12;all;True;True;True;True;0;False;;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;2;15;10;25;False;0.5;True;0;0;False;;0;False;;0;0;False;;0;False;;0;False;;0;False;;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;True;Relative;0;;0;-1;-1;-1;0;False;0;0;False;;-1;0;False;;0;0;0;False;0.1;False;;0;False;;False;16;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
-Node;AmplifyShaderEditor.ColorNode;45;-1232,-224;Inherit;False;Property;_Light_Color;Light_Color;3;0;Create;True;0;0;0;False;0;False;0.6,0.6,0.6,0;0.2469739,0.6981132,0.5019658,1;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.ColorNode;3;-1232,-400;Inherit;False;Property;_Leaves_BaseColor;Leaves_BaseColor;1;0;Create;True;0;0;0;False;0;False;0.3019608,0.3019608,0.3019608,0;0.1268244,0.4716981,0.216122,1;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.ColorNode;77;-1232,-48;Inherit;False;Property;_Shadow_Color;Shadow_Color;6;0;Create;True;0;0;0;False;0;False;0.1921569,0.1921569,0.1921569,0;0.207843,0.2431371,0.07843123,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode;35;-1856,464;Inherit;False;Property;_Light_MaskScale;Light_Mask Scale;5;0;Create;True;0;0;0;False;0;False;1;0.3;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;56;-1296,480;Inherit;False;Property;_Light_Factor;Light_Factor;4;0;Create;True;0;0;0;False;0;False;0.3;0.5;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;70;-1600,927;Inherit;False;Property;_Shadow_Factor;Shadow_Factor;7;0;Create;True;0;0;0;False;0;False;1;0.5;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;62;-2064,912;Inherit;False;Property;_Shadow_MaskScale;Shadow_Mask Scale;8;0;Create;True;0;0;0;False;0;False;0.3;0.05;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.StandardSurfaceOutputNode;409;1536,384;Float;False;True;-1;2;ASEMaterialInspector;0;0;Standard;Lemu/Nature/StandardTree;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;Off;0;False;;0;False;;False;0;False;;0;False;;False;0;Masked;0.5;True;True;0;False;TransparentCutout;;AlphaTest;All;12;all;True;True;True;True;0;False;;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;2;15;10;25;False;0.5;True;0;0;False;;0;False;;0;0;False;;0;False;;0;False;;0;False;;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;True;Relative;0;;0;-1;-1;-1;0;False;0;0;False;;-1;0;False;;0;0;0;False;0.1;False;;0;False;;False;16;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
+Node;AmplifyShaderEditor.ColorNode;45;-1232,-224;Inherit;False;Property;_Light_Color;Light_Color;3;0;Create;True;0;0;0;False;0;False;0.6,0.6,0.6,0;0.6,0.6,0.6,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ColorNode;3;-1232,-400;Inherit;False;Property;_Leaves_BaseColor;Leaves_BaseColor;1;0;Create;True;0;0;0;False;0;False;0.3019608,0.3019608,0.3019608,0;0.3019607,0.3019607,0.3019607,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ColorNode;77;-1232,-48;Inherit;False;Property;_Shadow_Color;Shadow_Color;6;0;Create;True;0;0;0;False;0;False;0.1921569,0.1921569,0.1921569,0;0.1921568,0.1921568,0.1921568,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.RangedFloatNode;35;-1856,464;Inherit;False;Property;_Light_MaskScale;Light_Mask Scale;5;0;Create;True;0;0;0;False;0;False;1;1;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;56;-1296,480;Inherit;False;Property;_Light_Factor;Light_Factor;4;0;Create;True;0;0;0;False;0;False;0.3;0.3;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;70;-1600,927;Inherit;False;Property;_Shadow_Factor;Shadow_Factor;7;0;Create;True;0;0;0;False;0;False;1;1;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;62;-2064,912;Inherit;False;Property;_Shadow_MaskScale;Shadow_Mask Scale;8;0;Create;True;0;0;0;False;0;False;0.3;0.3;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;327;-2081,1600;Inherit;False;Property;_Wind_Direction;Wind_Direction;10;0;Create;True;0;0;0;False;0;False;0;0;0;360;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;222;-1760,1744;Inherit;False;Property;_Wind_WorldNoiseScale;Wind_World Noise Scale;16;0;Create;True;0;0;0;False;0;False;1;1;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.Vector4Node;244;-1280,1727;Inherit;False;Constant;_Wind_WorldNoiseLevels;Wind_World Noise Levels;18;0;Create;True;0;0;0;False;0;False;0.3,0.5,0,0.6;0,0,0,0;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode;215;-3663.445,1320.133;Inherit;False;Property;_Wind_BaseSpeed;Wind_Base Speed;11;0;Create;True;0;0;0;False;0;False;0;0.1;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;215;-3663.445,1320.133;Inherit;False;Property;_Wind_BaseSpeed;Wind_Base Speed;11;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;164;-3013.445,1157.133;Inherit;False;Property;_Wind_PrimarySpeed;Wind_Primary Speed;12;0;Create;True;0;0;0;False;0;False;0.2;0.2;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;237;-3013.445,1237.133;Inherit;False;Property;_Wind_SecondarySpeed;Wind_Secondary Speed;13;0;Create;True;0;0;0;False;0;False;0;2;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;165;-1376,1376;Inherit;False;Property;_Wind_NoiseFactor;Wind_Noise Factor;14;0;Create;True;0;0;0;False;0;False;2;3;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;237;-3013.445,1237.133;Inherit;False;Property;_Wind_SecondarySpeed;Wind_Secondary Speed;13;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;165;-1376,1376;Inherit;False;Property;_Wind_NoiseFactor;Wind_Noise Factor;14;0;Create;True;0;0;0;False;0;False;2;2;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;144;-1680,1279;Inherit;False;Property;_Wind_NoiseAnimationScale;Wind_Noise Animation Scale;15;0;Create;True;0;0;0;False;0;False;0.3;0.3;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;286;1792,1536;Inherit;False;Property;_ProximityMask_Size;ProximityMask_Size;17;0;Create;True;0;0;0;False;0;False;0.15;0.15;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;292;2048,1888;Inherit;False;Property;_ProximityMask_Factor;ProximityMask_Factor;20;0;Create;True;0;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
@@ -483,4 +483,4 @@ WireConnection;409;4;280;0
 WireConnection;409;10;322;0
 WireConnection;409;11;268;0
 ASEEND*/
-//CHKSM=B81DA9FAF50957A2E27F2658A1539770DD9B45F2
+//CHKSM=292BD1B6EED104B0BA322DC206CADEAB1FE6AEDD
