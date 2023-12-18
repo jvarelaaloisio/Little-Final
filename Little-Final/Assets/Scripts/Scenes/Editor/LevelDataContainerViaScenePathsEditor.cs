@@ -4,7 +4,7 @@ using UnityEditor;
 
 namespace Scenes.Editor
 {
-    [CustomEditor(typeof(LevelDataContainerViaScenePaths))]
+    // [CustomEditor(typeof(LevelDataContainerViaScenePaths))]
     public class LevelDataContainerViaScenePathsEditor : UnityEditor.Editor
     {
         private LevelDataContainerViaScenePaths _levelDataContainer;

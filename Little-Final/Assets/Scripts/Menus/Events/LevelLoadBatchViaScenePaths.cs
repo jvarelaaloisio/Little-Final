@@ -20,13 +20,13 @@ namespace Menus.Events
             set => paths = value;
         }
 
-        public override IEnumerable<AsyncOperation> LoadBatch()
+        public override IEnumerable<SceneAsyncOperation> GetLoadBatch()
             => paths
                 .Select(path
-                    => SceneManager.LoadSceneAsync((string)path, LoadSceneMode.Additive));
+                    => new SceneAsyncOperation(path, SceneManager.LoadSceneAsync(path, LoadSceneMode.Additive)));
 
-        public override IEnumerable<AsyncOperation> UnloadBatch()
+        public override IEnumerable<SceneAsyncOperation> GetUnloadBatch()
             => paths
-                .Select(SceneManager.UnloadSceneAsync);
+                .Select(path => new SceneAsyncOperation(path, SceneManager.UnloadSceneAsync(path)));
     }
 }

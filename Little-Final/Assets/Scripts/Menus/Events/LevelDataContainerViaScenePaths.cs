@@ -17,22 +17,8 @@ namespace Menus.Events
         
         public override LevelLoadBatch ImmediateLoadBatch => immediateLoadBatch;
         public override IEnumerable<LevelLoadBatch> LevelBatches => batches;
-
-        //TODO: Make coroutine/Async op
-        //BUG: Unloading when the batched loads haven't still been loaded generates exceptions
-        public override void Unload()
-        {
-            immediateLoadBatch.UnloadBatch();
-            foreach (var batchedLoad in batches)
-            foreach (var unloadOperation in batchedLoad.UnloadBatch())
-            {
-                //TODO: should yield return
-                Debug.Log($"Unloaded {unloadOperation}");
-            }
-        }
-
-        public override IEnumerable<AsyncOperation> LoadImmediateScenes() => immediateLoadBatch.LoadBatch();
-                [ContextMenu("show type")]
+        
+        [ContextMenu("show type")]
         public void SHowType()
         {
             Debug.Log(ImmediateLoadBatch.GetType());
