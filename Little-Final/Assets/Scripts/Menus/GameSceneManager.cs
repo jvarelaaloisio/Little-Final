@@ -15,16 +15,12 @@ namespace Menus
 
         public LevelDataContainerChannel sceneDataChannel;
         public VoidChannelSo quitGameChannel;
-    
-        [SerializeField]
-        private float delayBeforeHidingLoadScreen = .5f;
-        [SerializeField]
-        private float delayBetweenBatches = 1f;
-        [SerializeField]
-        private float delayBeforeLoadingNextScene = 3f;
-        [SerializeField]
-        private float delayBeforeActivatingScene = .5f;
-    
+
+        [SerializeField] private float delayBeforeHidingLoadScreen = .5f;
+        [SerializeField] private float delayBetweenBatches = 1f;
+        [SerializeField] private float delayBeforeLoadingNextScene = 3f;
+        [SerializeField] private float delayBeforeActivatingScene = .5f;
+
         private Slider _progressBar;
         private float _totalSceneProgress;
         private LevelDataContainerViaBuildIndexes _currentLevel;
@@ -38,9 +34,6 @@ namespace Menus
             }
 
             Instance = this;
-            //TODO: Convert into separate script that loads the title screen as intended, through the event channel
-            _currentLevel = titleScreen;
-            _currentLevel.Load();
             _progressBar = loadingScreen.GetComponentInChildren<Slider>();
         }
 
@@ -70,20 +63,25 @@ namespace Menus
         {
             loadingScreen.gameObject.SetActive(true);
             var scenesLoadedQty = 0;
-            var totalScenesToLoadQty = newLevel.ImmediateLoadBatch.Length + oldLevel.GetTotalQuantityOfScenes();
-            
-            var unloadReport = $"<color=yellow>Unloaded</color> level {oldLevel.name}. Report:";
-            var asyncOperations = oldLevel.GetUnloadScenes();
-            foreach (var unloadOperation in asyncOperations)
+            var totalScenesToLoadQty = newLevel.ImmediateLoadBatch.Length
+                                       + (oldLevel ? oldLevel.GetTotalQuantityOfScenes() : 0);
+
+            if (oldLevel)
             {
-                var duration = Time.realtimeSinceStartupAsDouble;
-                yield return UpdateLevelLoadProgress(unloadOperation, scenesLoadedQty, totalScenesToLoadQty);
-                duration = Time.realtimeSinceStartupAsDouble - duration;
-                unloadReport += $"\n{unloadOperation.Name} ({duration * 1000:F} ms)";
-                scenesLoadedQty++;
+                var unloadReport = $"<color=yellow>Unloaded</color> level {oldLevel.name}. Report:";
+                var asyncOperations = oldLevel.GetUnloadScenes();
+                foreach (var unloadOperation in asyncOperations)
+                {
+                    var duration = Time.realtimeSinceStartupAsDouble;
+                    yield return UpdateLevelLoadProgress(unloadOperation, scenesLoadedQty, totalScenesToLoadQty);
+                    duration = Time.realtimeSinceStartupAsDouble - duration;
+                    unloadReport += $"\n{unloadOperation.Name} ({duration * 1000:F} ms)";
+                    scenesLoadedQty++;
+                }
+                this.Log(unloadReport, oldLevel);
             }
-            this.Log(unloadReport, oldLevel);
-            
+
+
             var loadReport = $"<color=green>Loaded</color> level {newLevel.name}. Report:";
             foreach (var loadOperation in newLevel.GetImmediateScenes())
             {
@@ -93,6 +91,7 @@ namespace Menus
                 loadReport += $"\n{loadOperation.Name} ({duration * 1000:F} ms)";
                 scenesLoadedQty++;
             }
+
             this.Log(loadReport, newLevel);
 
             var defaultBackgroundLoadingPriority = Application.backgroundLoadingPriority;
@@ -109,9 +108,9 @@ namespace Menus
             }
             else
                 this.LogError($"Active scene in level ({_currentLevel.ActiveScene}[{activeSceneBuildIndex}]) is not found in build settings!");
-            
+
             loadingScreen.gameObject.SetActive(false);
-        
+
             foreach (var levelBatch in newLevel.LevelBatches)
             {
                 foreach (var loadOperation in levelBatch.GetLoadBatch())
@@ -125,15 +124,15 @@ namespace Menus
                     var loadStartTime = Time.realtimeSinceStartupAsDouble;
                     yield return new WaitUntil(() => asyncOperation.progress >= 0.9f);
 
-                    Debug.Log($"{name}: <color=green>Loaded</color> {sceneName} in <color=red>{(Time.realtimeSinceStartupAsDouble - loadStartTime) * 1000:F0}</color> ms"+
+                    Debug.Log($"{name}: <color=green>Loaded</color> {sceneName} in <color=red>{(Time.realtimeSinceStartupAsDouble - loadStartTime) * 1000:F0}</color> ms" +
                               $"\n<color=black>Waiting {delayBeforeActivatingScene} seconds before activation</color>");
-                
+
                     yield return new WaitForSeconds(delayBeforeActivatingScene);
-                
+
                     var activationStartTime = Time.realtimeSinceStartupAsDouble;
                     Debug.Log($"{name}: <color=yellow>Activating</color> {sceneName}");
                     asyncOperation.allowSceneActivation = true;
-                
+
                     Debug.Log($"{name}: <color=green>Activated</color> {sceneName} in <color=red>{(Time.realtimeSinceStartupAsDouble - activationStartTime) * 1000:F0}</color> ms" +
                               $"\n<color=black>Waiting {delayBetweenBatches * 1000} ms.</color>");
                     yield return new WaitForSeconds(delayBeforeLoadingNextScene);
@@ -145,7 +144,8 @@ namespace Menus
             Application.backgroundLoadingPriority = defaultBackgroundLoadingPriority;
         }
 
-        private IEnumerator UpdateLevelLoadProgress(SceneAsyncOperation loadOperation, int scenesAlreadyLoadedQty, int totalScenesToLoadQty)
+        private IEnumerator UpdateLevelLoadProgress(SceneAsyncOperation loadOperation, int scenesAlreadyLoadedQty,
+                                                    int totalScenesToLoadQty)
         {
             while (!loadOperation.AsyncOperation.isDone)
             {
