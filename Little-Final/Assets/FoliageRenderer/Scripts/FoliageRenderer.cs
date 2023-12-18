@@ -142,8 +142,9 @@ namespace FoliageRenderer.Scripts
         {
             if (Application.isPlaying)
             {
-                currentCamera ??= Camera.current;
-                if (!currentCamera)
+                if(currentCamera == null)
+                    currentCamera = Camera.current;
+                if (currentCamera == null)
                 {
                     enabled = false;
                     return;
@@ -261,23 +262,24 @@ namespace FoliageRenderer.Scripts
 
         protected virtual void OnDisable()
         {
-            _voteBuffer.Release();
-            _scanBuffer.Release();
-            _groupSumArrayBuffer.Release();
-            _scannedGroupSumBuffer.Release();
-            _dynamicPositionBuffer.Release();
-            
-            _wind.Release();
+            _voteBuffer?.Release();
+            _scanBuffer?.Release();
+            _groupSumArrayBuffer?.Release();
+            _scannedGroupSumBuffer?.Release();
+            _dynamicPositionBuffer?.Release();
+
+            if (_wind != null)
+                _wind.Release();
             _wind = null;
             _scannedGroupSumBuffer = null;
             _voteBuffer = null;
             _scanBuffer = null;
             _groupSumArrayBuffer = null;
-
-
-            for (var i = 0; i < numChunks * numChunks; ++i)
+            
+            if (_chunks != null)
             {
-                FreeChunk(_chunks[i]);
+                for (var i = 0; i < numChunks * numChunks; ++i)
+                    FreeChunk(_chunks[i]);
             }
 
             _chunks = null;
@@ -443,13 +445,13 @@ namespace FoliageRenderer.Scripts
 
         private static void FreeChunk(GrassChunk chunk)
         {
-            chunk.positionsBuffer.Release();
+            chunk.positionsBuffer?.Release();
             chunk.positionsBuffer = null;
-            chunk.culledPositionsBuffer.Release();
+            chunk.culledPositionsBuffer?.Release();
             chunk.culledPositionsBuffer = null;
-            chunk.argsBuffer.Release();
+            chunk.argsBuffer?.Release();
             chunk.argsBuffer = null;
-            chunk.argsBufferLOD.Release();
+            chunk.argsBufferLOD?.Release();
             chunk.argsBufferLOD = null;
         }
     }

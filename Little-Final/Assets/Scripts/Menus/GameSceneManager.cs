@@ -106,7 +106,8 @@ namespace Menus
                 else
                     this.LogError($"Active Scene ({activeScene.name}) is not valid!");
             }
-            this.LogError($"Active scene in level ({_currentLevel.ActiveScene}) is not found in build settings!");
+            else
+                this.LogError($"Active scene in level ({_currentLevel.ActiveScene}[{activeSceneBuildIndex}]) is not found in build settings!");
             
             loadingScreen.gameObject.SetActive(false);
         
