@@ -8,7 +8,7 @@ namespace Menus.Events
     [Serializable]
     public abstract class LevelDataContainer : ScriptableObject
     {
-        [field: Tooltip("First scene to load (loaded with immediate batch)")]
+        [field: Tooltip("Scene set as active. Must be previously loaded or be loaded in the immediate load batch")]
         [field: SerializeField]
         public SerializableScene ActiveScene { get; protected set; }
 
@@ -34,9 +34,7 @@ namespace Menus.Events
         }
 
         public virtual IEnumerable<SceneAsyncOperation> GetImmediateScenes()
-        {
-            return ImmediateLoadBatch.GetLoadBatch();
-        }
+            => ImmediateLoadBatch.GetLoadBatch();
 
         public virtual int GetTotalQuantityOfScenes()
         {

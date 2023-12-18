@@ -11,7 +11,7 @@ namespace Menus.Events
     {
         [Obsolete] public int[] immediateLoadBuildIndexes;
 
-        [Tooltip("scenes to load immediately\n(Active scene will be added to this list)")] [SerializeField]
+        [Tooltip("scenes to load immediately")] [SerializeField]
         private LevelLoadBatchViaBuildIndexes immediateLoadBatch;
 
         [Space(25f)]

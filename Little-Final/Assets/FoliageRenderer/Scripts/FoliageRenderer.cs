@@ -140,6 +140,15 @@ namespace FoliageRenderer.Scripts
 
         protected virtual void OnEnable()
         {
+            if (Application.isPlaying)
+            {
+                currentCamera ??= Camera.current;
+                if (!currentCamera)
+                {
+                    enabled = false;
+                    return;
+                }
+            }
             _numInstancesPerChunk = Mathf.CeilToInt((float) fieldSize / numChunks) * chunkDensity;
             _chunkDimension = _numInstancesPerChunk;
             _numInstancesPerChunk *= _numInstancesPerChunk;
@@ -276,6 +285,10 @@ namespace FoliageRenderer.Scripts
 
         private void OnDrawGizmosSelected()
         {
+            if (!currentCamera)
+            {
+                return;
+            }
             Gizmos.color = Color.green;
             var cameraPos = currentCamera.transform.position;
             Gizmos.DrawWireSphere(cameraPos, 1);
