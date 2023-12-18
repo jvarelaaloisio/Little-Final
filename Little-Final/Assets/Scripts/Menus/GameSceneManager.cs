@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Linq;
 using Core.Extensions;
 using Events.Channels;
 using Menus.Events;
@@ -96,6 +95,8 @@ namespace Menus
             }
             this.Log(loadReport, newLevel);
 
+            var defaultBackgroundLoadingPriority = Application.backgroundLoadingPriority;
+            Application.backgroundLoadingPriority = ThreadPriority.Low;
             yield return new WaitForSeconds(delayBeforeHidingLoadScreen);
             var activeSceneBuildIndex = _currentLevel.ActiveScene.BuildIndex;
             if (activeSceneBuildIndex != -1)
@@ -140,6 +141,8 @@ namespace Menus
 
                 yield return new WaitForSeconds(delayBetweenBatches);
             }
+
+            Application.backgroundLoadingPriority = defaultBackgroundLoadingPriority;
         }
 
         private IEnumerator UpdateLevelLoadProgress(SceneAsyncOperation loadOperation, int scenesAlreadyLoadedQty, int totalScenesToLoadQty)

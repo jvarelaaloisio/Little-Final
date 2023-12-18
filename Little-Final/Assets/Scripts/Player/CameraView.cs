@@ -1,4 +1,6 @@
-﻿using Events.Channels;
+﻿using System;
+using Core.Providers;
+using Events.Channels;
 using Player.States;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,6 +14,8 @@ namespace Player
 		private const string CAMERA_Y = "Mouse Y";
 		public Animator animator;
 
+		[SerializeField] private DataProvider<Camera> cameraProvider;
+		
 		[SerializeField]
 		private PlayerView view;
 
@@ -26,6 +30,11 @@ namespace Player
 
 		public string isInputParameter,
 			isFlyingParameter;
+
+		private void Awake()
+		{
+			cameraProvider.TrySetValue(GetComponent<Camera>());
+		}
 
 		private void Start()
 		{

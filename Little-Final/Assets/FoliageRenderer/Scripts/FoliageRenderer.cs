@@ -1,6 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Extensions;
+using Core.Providers;
 using FoliageRenderer.Scripts.Data;
 using FoliageRenderer.Scripts.Data.Terrain;
 using FoliageRenderer.Scripts.GizmosHelper;
@@ -15,7 +18,7 @@ namespace FoliageRenderer.Scripts
         [Header("Dynamic")] 
         [SerializeField] private float avoidanceRadius;
         [SerializeField] private float avoidanceMaxDisplacement;
-        [SerializeField] private List<Transform> dynamicObjects;
+        [SerializeField] private DataProvider<List<Transform>> dynamicObjectsDataProvider;
 
         [Header("Chunks")] 
         [SerializeField, Range(1, 100)] private int numChunks = 10;
@@ -37,8 +40,9 @@ namespace FoliageRenderer.Scripts
         [SerializeField] private float fogDensity;
         [SerializeField] private float fogOffset;
 
-        [Header("Optimization")] 
-        [SerializeField] private Camera currentCamera;
+        [Header("Optimization")] [SerializeField]
+        private DataProvider<Camera> cameraProvider;
+        private Camera _currentCamera;
         [SerializeField] private Mesh grassLODMesh;
         [SerializeField, Range(0, 1000.0f)] private float lodCutoff = 55f;
         [SerializeField, Range(0, 1000.0f)] private float distanceCutoff = 200f;
@@ -140,15 +144,17 @@ namespace FoliageRenderer.Scripts
 
         protected virtual void OnEnable()
         {
-            if (Application.isPlaying)
+            if (!cameraProvider)
             {
-                if(currentCamera == null)
-                    currentCamera = Camera.current;
-                if (currentCamera == null)
-                {
-                    enabled = false;
-                    return;
-                }
+                enabled = false;
+                this.LogWarning($"{nameof(cameraProvider)} is null! Disabling");
+            }
+            _currentCamera = cameraProvider.Value;
+            if (_currentCamera == null)
+            {
+                StartCoroutine(WaitTillCameraIsProvided());
+                this.Log($"Waiting until {nameof(cameraProvider)} has value...");
+                enabled = false;
             }
             _numInstancesPerChunk = Mathf.CeilToInt((float) fieldSize / numChunks) * chunkDensity;
             _chunkDimension = _numInstancesPerChunk;
@@ -176,7 +182,8 @@ namespace FoliageRenderer.Scripts
             _scanBuffer = new ComputeBuffer(_numInstancesPerChunk, 4);
             _groupSumArrayBuffer = new ComputeBuffer(_numThreadGroups, 4);
             _scannedGroupSumBuffer = new ComputeBuffer(_numThreadGroups, 4);
-            _dynamicPositionBuffer = new ComputeBuffer(dynamicObjects.Count, sizeof(float) * 3);
+            if(dynamicObjectsDataProvider && dynamicObjectsDataProvider.Value.Any())
+                _dynamicPositionBuffer = new ComputeBuffer(dynamicObjectsDataProvider.Value.Count, sizeof(float) * 3);
 
             computeChunkPoints.SetInt(DimensionPropID, fieldSize);
             computeChunkPoints.SetInt(ChunkDimensionPropID, _chunkDimension);
@@ -217,17 +224,24 @@ namespace FoliageRenderer.Scripts
             );
         }
 
+        private IEnumerator WaitTillCameraIsProvided()
+        {
+            yield return new WaitUntil(() => cameraProvider.Value);
+            enabled = true;
+            this.Log($"Camera was provided! enabling");
+        }
+
         private void Update()
         {
-            var projectionMatrix = currentCamera.projectionMatrix;
-            var worldToLocalMatrix = currentCamera.transform.worldToLocalMatrix;
+            var projectionMatrix = _currentCamera.projectionMatrix;
+            var worldToLocalMatrix = _currentCamera.transform.worldToLocalMatrix;
             var viewProjectionMatrix = projectionMatrix * worldToLocalMatrix;
 
             GenerateWind();
 
             for (var i = 0; i < numChunks * numChunks; ++i)
             {
-                var dist = Vector3.Distance(currentCamera.transform.position, _chunks[i].bounds.center);
+                var dist = Vector3.Distance(_currentCamera.transform.position, _chunks[i].bounds.center);
                 var noLOD = dist < lodCutoff;
 
                 CullGrass(_chunks[i], viewProjectionMatrix, noLOD);
@@ -244,8 +258,11 @@ namespace FoliageRenderer.Scripts
                 _chunks[i].material.SetFloat(OldGrassColorFactorPropID, oldGrassColorFactor);
 #endif
                 //TODO Optimize this
-                _dynamicPositionBuffer.SetData(dynamicObjects.Select(p => p.position).ToArray());
-                _chunks[i].material.SetBuffer(DynamicPositionsBufferPropID, _dynamicPositionBuffer);
+                if (dynamicObjectsDataProvider && dynamicObjectsDataProvider.Value.Any())
+                {
+                    _dynamicPositionBuffer.SetData(dynamicObjectsDataProvider.Value.Select(p => p.position).ToArray());
+                    _chunks[i].material.SetBuffer(DynamicPositionsBufferPropID, _dynamicPositionBuffer);
+                }
 
                 if (noLOD)
                 {
@@ -287,12 +304,12 @@ namespace FoliageRenderer.Scripts
 
         private void OnDrawGizmosSelected()
         {
-            if (!currentCamera)
+            if (!_currentCamera)
             {
                 return;
             }
             Gizmos.color = Color.green;
-            var cameraPos = currentCamera.transform.position;
+            var cameraPos = _currentCamera.transform.position;
             Gizmos.DrawWireSphere(cameraPos, 1);
             Gizmos.DrawWireSphere(cameraPos, lodCutoff);
             
@@ -371,7 +388,8 @@ namespace FoliageRenderer.Scripts
             chunk.material.SetBuffer(PositionBufferPropID, chunk.culledPositionsBuffer);
             chunk.material.SetTexture(WindTexPropID, _wind);
             chunk.material.SetInt(ChunkNumPropID, xOffset + yOffset * numChunks);
-            chunk.material.SetInt(DynamicPositionCountPropID, dynamicObjects.Count);
+            if (dynamicObjectsDataProvider)
+                chunk.material.SetInt(DynamicPositionCountPropID, dynamicObjectsDataProvider.Value.Count);
             chunk.material.SetMatrix(ObjectRotationMatrixPropID, Matrix4x4.Rotate(transform.rotation));
             chunk.material.SetMatrix(ObjectScaleMatrixPropID, Matrix4x4.Scale(transform.localScale));
             chunk.material.SetMatrix(ObjectWorldMatrixPropID, transform.worldToLocalMatrix);
@@ -408,7 +426,7 @@ namespace FoliageRenderer.Scripts
             // Vote
             computeCullGrass.SetMatrix(ViewProjectionMatrixPropID, viewProjectionMatrix);
             computeCullGrass.SetBuffer(0, VoteBufferPropID, _voteBuffer);
-            computeCullGrass.SetVector(CameraPositionPropID, currentCamera.transform.position);
+            computeCullGrass.SetVector(CameraPositionPropID, _currentCamera.transform.position);
             computeCullGrass.SetFloat(DistancePropID, distanceCutoff);
             computeCullGrass.Dispatch(0, _numVoteThreadGroups, 1, 1);
 

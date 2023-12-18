@@ -32,7 +32,7 @@ Transform:
   - {fileID: 8520403597333779129}
   - {fileID: 5340949128104233679}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5590204716398718244
 PrefabInstance:
@@ -395,8 +395,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   avoidanceRadius: 0.5
   avoidanceMaxDisplacement: 0.5
-  dynamicObjects:
-  - {fileID: 0}
+  dynamicObjectsDataProvider: {fileID: 11400000, guid: 18dc60dfe8d98ea449ce5dad196115a6,
+    type: 2}
   numChunks: 10
   chunkDensity: 5
   fieldSize: 100
@@ -412,7 +412,7 @@ MonoBehaviour:
   drop: 0.2
   fogDensity: 0.05
   fogOffset: 30
-  currentCamera: {fileID: 0}
+  cameraProvider: {fileID: 11400000, guid: 34d06f3dd6112ba48af2bb4ba8dd0ffa, type: 2}
   grassLODMesh: {fileID: -875046394390484430, guid: 3ee8d80b901e419448e2ab95355be8c9,
     type: 3}
   lodCutoff: 45
