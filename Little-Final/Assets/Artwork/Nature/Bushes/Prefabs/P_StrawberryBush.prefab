@@ -30,6 +30,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0.49999914, z: -0, w: 0.8660259}
   m_LocalPosition: {x: -0.047604874, y: -0.53, z: -0.13241081}
   m_LocalScale: {x: 0.5, y: 0.50000006, z: 0.50000006}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2879436583716922493}
   m_RootOrder: 1
@@ -53,10 +54,12 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -81,6 +84,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &3115411646896790939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2188,6 +2192,8 @@ MonoBehaviour:
     m_AreaError: 15
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
+  m_Mesh: {fileID: 0}
+  m_VersionIndex: 0
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2200,9 +2206,17 @@ MeshCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 513800926622174488}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 4
+  serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
@@ -2232,6 +2246,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.816, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2441410433530455982}
   - {fileID: 9212966256935011148}
@@ -2278,6 +2293,7 @@ Transform:
   m_LocalRotation: {x: -0.49826604, y: -0.501728, z: -0.501728, w: 0.49826604}
   m_LocalPosition: {x: -1.68, y: 1.075, z: -2.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 168324586668864500}
   m_RootOrder: 13
@@ -2302,6 +2318,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -2385,6 +2402,9 @@ PrefabInstance:
       value: Frutilla (18)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &1667121871114110700 stripped
 Transform:
@@ -2397,6 +2417,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -2480,6 +2501,9 @@ PrefabInstance:
       value: Frutilla (25)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &2503180297273162885 stripped
 Transform:
@@ -2492,6 +2516,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -2575,6 +2600,9 @@ PrefabInstance:
       value: Frutilla (16)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &2441410433530455982 stripped
 Transform:
@@ -2587,6 +2615,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -2670,6 +2699,9 @@ PrefabInstance:
       value: Frutilla (23)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &2364996183960102713 stripped
 Transform:
@@ -2682,6 +2714,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -2765,6 +2798,9 @@ PrefabInstance:
       value: Frutilla (28)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &3675555685045730994 stripped
 Transform:
@@ -2777,6 +2813,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -2860,6 +2897,9 @@ PrefabInstance:
       value: Frutilla (24)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &4325302073290782178 stripped
 Transform:
@@ -2872,6 +2912,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -2955,6 +2996,9 @@ PrefabInstance:
       value: Frutilla (20)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &4277796316565305031 stripped
 Transform:
@@ -2967,6 +3011,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -3050,6 +3095,9 @@ PrefabInstance:
       value: Frutilla (22)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &4147195245266147601 stripped
 Transform:
@@ -3062,6 +3110,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -3145,6 +3194,9 @@ PrefabInstance:
       value: Frutilla (29)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &5096600798008081910 stripped
 Transform:
@@ -3157,6 +3209,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -3240,6 +3293,9 @@ PrefabInstance:
       value: Frutilla (19)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &4750546778161316353 stripped
 Transform:
@@ -3252,6 +3308,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -3335,6 +3392,9 @@ PrefabInstance:
       value: Frutilla (21)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &5625768978357514734 stripped
 Transform:
@@ -3347,6 +3407,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -3430,6 +3491,9 @@ PrefabInstance:
       value: Frutilla (27)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &5974593309137773706 stripped
 Transform:
@@ -3442,6 +3506,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -3525,6 +3590,9 @@ PrefabInstance:
       value: Frutilla (26)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &7559749138159528544 stripped
 Transform:
@@ -3537,6 +3605,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6024457564540784806, guid: 2b3c1ba1f55a4804d8852936741fe353,
@@ -3600,16 +3669,27 @@ PrefabInstance:
       value: P_StrawberryBush
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6024457564540784806, guid: 2b3c1ba1f55a4804d8852936741fe353,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2375004370721900024}
+    - targetCorrespondingSourceObject: {fileID: 5327868222380990815, guid: 2b3c1ba1f55a4804d8852936741fe353,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 168324586668864500}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b3c1ba1f55a4804d8852936741fe353, type: 3}
---- !u!4 &4440161683904927108 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5327868222380990815, guid: 2b3c1ba1f55a4804d8852936741fe353,
-    type: 3}
-  m_PrefabInstance: {fileID: 8389920702251693275}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2879436583716922493 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6024457564540784806, guid: 2b3c1ba1f55a4804d8852936741fe353,
+    type: 3}
+  m_PrefabInstance: {fileID: 8389920702251693275}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4440161683904927108 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5327868222380990815, guid: 2b3c1ba1f55a4804d8852936741fe353,
     type: 3}
   m_PrefabInstance: {fileID: 8389920702251693275}
   m_PrefabAsset: {fileID: 0}
@@ -3618,6 +3698,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 168324586668864500}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ec0b2a71d4911df449b956bce853369a,
@@ -3701,6 +3782,9 @@ PrefabInstance:
       value: Frutilla (17)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!4 &9212966256935011148 stripped
 Transform:

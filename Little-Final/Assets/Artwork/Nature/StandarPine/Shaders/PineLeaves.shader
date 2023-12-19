@@ -17,7 +17,7 @@ Shader "Lemu/Common/PineLeaves"
 	SubShader
 	{
 		Tags{ "RenderType" = "Transparent"  "Queue" = "Transparent+0" "IgnoreProjector" = "True" "IsEmissive" = "true"  }
-		Cull Back
+		Cull Off
 		CGINCLUDE
 		#include "UnityShaderVariables.cginc"
 		#include "UnityPBSLighting.cginc"
@@ -116,12 +116,7 @@ Shader "Lemu/Common/PineLeaves"
 			v.vertex.w = 1;
 		}
 
-		inline half4 LightingUnlit( SurfaceOutput s, half3 lightDir, half atten )
-		{
-			return half4 ( 0, 0, 0, s.Alpha );
-		}
-
-		void surf( Input i , inout SurfaceOutput o )
+		void surf( Input i , inout SurfaceOutputStandard o )
 		{
 			float2 uv_Color_Alpha = i.uv_texcoord * _Color_Alpha_ST.xy + _Color_Alpha_ST.zw;
 			float4 tex2DNode1 = tex2D( _Color_Alpha, uv_Color_Alpha );
@@ -154,7 +149,7 @@ Shader "Lemu/Common/PineLeaves"
 
 		ENDCG
 		CGPROGRAM
-		#pragma surface surf Unlit alpha:fade keepalpha fullforwardshadows vertex:vertexDataFunc 
+		#pragma surface surf Standard alpha:fade keepalpha fullforwardshadows vertex:vertexDataFunc 
 
 		ENDCG
 		Pass
@@ -215,8 +210,8 @@ Shader "Lemu/Common/PineLeaves"
 				float3 worldPos = IN.worldPos;
 				half3 worldViewDir = normalize( UnityWorldSpaceViewDir( worldPos ) );
 				surfIN.worldPos = worldPos;
-				SurfaceOutput o;
-				UNITY_INITIALIZE_OUTPUT( SurfaceOutput, o )
+				SurfaceOutputStandard o;
+				UNITY_INITIALIZE_OUTPUT( SurfaceOutputStandard, o )
 				surf( surfIN, o );
 				#if defined( CAN_SKIP_VPOS )
 				float2 vpos = IN.pos;
@@ -267,14 +262,14 @@ Node;AmplifyShaderEditor.FunctionNode;7;-768,-144;Inherit;False;CloudsPattern;-1
 Node;AmplifyShaderEditor.RegisterLocalVarNode;74;-128,-128;Inherit;False;OUT_BaseColor;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;75;-128,64;Inherit;False;OUT_Opacity;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;76;-128,224;Inherit;False;OUT_VertexOffset;-1;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.StandardSurfaceOutputNode;120;256,-128;Float;False;True;-1;2;ASEMaterialInspector;0;0;Unlit;Lemu/Common/PineLeaves;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;False;False;False;False;False;False;Back;0;False;;0;False;;False;0;False;;0;False;;False;0;Transparent;0.5;True;True;0;False;Transparent;;Transparent;All;12;all;True;True;True;True;0;False;;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;2;15;10;25;False;0.5;True;2;5;False;;10;False;;0;0;False;;0;False;;0;False;;0;False;;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;True;Relative;0;;-1;-1;-1;-1;0;False;0;0;False;;-1;0;False;;0;0;0;False;0.1;False;;0;False;;False;15;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
+Node;AmplifyShaderEditor.StandardSurfaceOutputNode;120;256,-128;Float;False;True;-1;2;ASEMaterialInspector;0;0;Standard;Lemu/Common/PineLeaves;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;False;False;False;False;False;False;Off;0;False;;0;False;;False;0;False;;0;False;;False;0;Transparent;0.5;True;True;0;False;Transparent;;Transparent;All;12;all;True;True;True;True;0;False;;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;2;15;10;25;False;0.5;True;2;5;False;;10;False;;0;0;False;;0;False;;0;False;;0;False;;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;True;Relative;0;;-1;-1;-1;-1;0;False;0;0;False;;-1;0;False;;0;0;0;False;0.1;False;;0;False;;False;16;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
 Node;AmplifyShaderEditor.SamplerNode;1;-1408,-224;Inherit;True;Property;_Color_Alpha;Color_Alpha;0;1;[NoScaleOffset];Create;True;0;0;0;False;0;False;-1;None;fd28405bc1e6aaa448362eb81fff150a;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.ColorNode;3;-1408,-32;Inherit;False;Property;_Color_Multiplier;Color_Multiplier;1;0;Create;True;0;0;0;False;0;False;1,1,1,0;0.03524386,0.2264149,0.170188,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ColorNode;3;-1408,-32;Inherit;False;Property;_Color_Multiplier;Color_Multiplier;1;0;Create;True;0;0;0;False;0;False;1,1,1,0;0.1785192,0.248,0.158224,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RangedFloatNode;43;-2320,624;Inherit;False;Constant;_Wind_NoiseAnimationScale;Wind_Noise Animation Scale;3;0;Create;True;0;0;0;False;0;False;1;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;49;-2032,719;Inherit;False;Property;_Wind_NoiseFactor;Wind_Noise Factor;2;0;Create;True;0;0;0;False;0;False;0;0.15;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;62;-1904,1120;Inherit;False;Property;_Wind_WorldNoiseScale;Wind_World Noise Scale;3;0;Create;True;0;0;0;False;0;False;2;0.05;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;49;-2032,719;Inherit;False;Property;_Wind_NoiseFactor;Wind_Noise Factor;2;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;62;-1904,1120;Inherit;False;Property;_Wind_WorldNoiseScale;Wind_World Noise Scale;3;0;Create;True;0;0;0;False;0;False;2;2;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;72;-1904,1039;Inherit;False;Property;_Wind_WorldNosieSpeedY;Wind_World Nosie Speed Y;5;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;71;-1904,960;Inherit;False;Property;_Wind_WorldNosieSpeedX;Wind_World Nosie Speed X;4;0;Create;True;0;0;0;False;0;False;0;1;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;71;-1904,960;Inherit;False;Property;_Wind_WorldNosieSpeedX;Wind_World Nosie Speed X;4;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.Vector2Node;64;-1457,1184;Inherit;False;Constant;_Wind_WorldNoiseLevels;Wind_World Noise Levels;5;0;Create;True;0;0;0;False;0;False;0,1.2;0,1.2;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
 WireConnection;44;0;45;0
 WireConnection;40;0;44;0
@@ -318,4 +313,4 @@ WireConnection;120;9;75;0
 WireConnection;120;11;76;0
 WireConnection;1;1;4;0
 ASEEND*/
-//CHKSM=3049DADA231F89DDA529521E05F31AB24C16A56A
+//CHKSM=943F4EA868967CBD294E6DD2206D0B28CC5C34F4

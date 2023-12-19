@@ -17,8 +17,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 8
     localAABB:
-      m_Center: {x: -0.08929038, y: -0.17271304, z: 0}
-      m_Extent: {x: 2.2614906, y: 2.3457038, z: 0}
+      m_Center: {x: 0.000027298927, y: -0.21239293, z: 0}
+      m_Extent: {x: 2.1009808, y: 2.306366, z: 0}
   m_Shapes:
     vertices: []
     shapes: []
@@ -97,7 +97,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 256
-    _typelessdata: 327316c0f118833e000000000000000000000000000080bf00000000619f173fe91cebbf0f09bcbf000000000000000000000000000080bfa6e1df3dd0c4663e521b95bebe2d21c0000000000000000000000000000080bf2449e03e008b0d3b6b01ba3ef82a21c0000000000000000000000000000080bf00c8133f00e70f3b54050b40a37b9cbf000000000000000000000000ffff7fbfba46763f863a8e3ecca70a401c48e63f000000000000000000000000ffff7fbf27f7753feca36b3f7eb152bd48120b40000000000000000000000000000080bff865fa3e0000803ff6d1b1bf197cf93f000000000000000000000000000080bf8e6d513e23cf733f
+    _typelessdata: 057606c08fdf6e3f000000000000000000000000000080bfa65c3a3dbcb53f3fa75606c07f90afbf000000000000000000000000000080bfeb0e3c3df025803ecabca2be593321c0000000000000000000000000ffff7fbf7acbdc3e001d0b3b07679f3e713121c0000000000000000000000000000080bfea3d113f00c30c3bd35906405248a9bf000000000000000000000000000080bfd041743f8895853eea760640b7896a3f000000000000000000000000000080bffc5a743fa4c53e3ff19a5e3fa8030640000000000000000000000000000080bf0c28303f0000803fc7595fbfa8030640000000000000000000000000000080bf575d9f3e0000803f
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -192,14 +192,14 @@ MonoBehaviour:
   Tolerance: 0.15
   NormalScale: 0.01
   ShapePoints:
-  - {x: 0, y: 0.40772432}
-  - {x: 0.10931711, y: 0.77463984}
-  - {x: 0.43805802, y: 0.9978402}
-  - {x: 0.5772705, y: 0.9978042}
-  - {x: 0.9620167, y: 0.72220975}
-  - {x: 0.9608025, y: 0.07953}
-  - {x: 0.4890592, y: 0}
-  - {x: 0.20451948, y: 0.047620595}
+  - {x: 0.045498513, y: 0.2511332}
+  - {x: 0.045912664, y: 0.74971056}
+  - {x: 0.4312399, y: 0.9978773}
+  - {x: 0.567351, y: 0.99785215}
+  - {x: 0.9541292, y: 0.73909354}
+  - {x: 0.9545133, y: 0.25479674}
+  - {x: 0.68811107, y: 0}
+  - {x: 0.311259, y: 0}
   Preset: {fileID: 11400000, guid: 0403878495ffa3c4e9d4bcb3eac9b559, type: 2}
   OverrideOutput: []
 --- !u!21 &7774302379751316427
@@ -210,7 +210,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ImpostorBushRed
-  m_Shader: {fileID: 4800000, guid: da79d698f4bf0164e910ad798d07efdf, type: 3}
+  m_Shader: {fileID: 4800000, guid: e82933f4c0eb9ba42aab0739f48efe21, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -247,16 +247,16 @@ Material:
     - _AI_ShadowBias: 0.25
     - _AI_ShadowView: 1
     - _ClipMask: 0.5
-    - _DepthSize: 4.6881847
+    - _DepthSize: 4.6093917
     - _FramesX: 16
     - _FramesY: 16
     - _Hue: 0
-    - _ImpostorSize: 4.701562
+    - _ImpostorSize: 4.6225443
     - _Parallax: 1
     - _TextureBias: -1
     - _Use_Parallax: 0
     m_Colors:
-    - _AI_SizeOffset: {r: 4.701562, g: 4.6881847, b: 0, a: -0.0023634455}
+    - _AI_SizeOffset: {r: 4.6225443, g: 4.6093917, b: 0, a: -0.002938034}
     - _HueVariation: {r: 0, g: 0, b: 0, a: 0}
-    - _Offset: {r: -0.22898221, g: 2.4108589, b: -0.009912729, a: 0.037815128}
+    - _Offset: {r: -0.22898221, g: 2.4108589, b: -0.009912729, a: 0.047008544}
   m_BuildTextureStacks: []

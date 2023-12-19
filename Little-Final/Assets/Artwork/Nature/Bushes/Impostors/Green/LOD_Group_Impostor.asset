@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LOD_Group_Impostor
-  m_Shader: {fileID: 4800000, guid: da79d698f4bf0164e910ad798d07efdf, type: 3}
+  m_Shader: {fileID: 4800000, guid: e82933f4c0eb9ba42aab0739f48efe21, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -45,20 +45,20 @@ Material:
     - _AI_ShadowBias: 0.25
     - _AI_ShadowView: 1
     - _ClipMask: 0.5
-    - _DepthSize: 4.7175894
+    - _DepthSize: 4.677946
     - _Frames: 16
     - _FramesX: 16
     - _FramesY: 16
     - _Hemi: 0
     - _Hue: 0
-    - _ImpostorSize: 4.7301345
+    - _ImpostorSize: 4.690386
     - _Parallax: 1
     - _TextureBias: -1
     - _Use_Parallax: 0
     m_Colors:
-    - _AI_SizeOffset: {r: 4.7301345, g: 4.7175894, b: -0.00026260506, a: -0.0023634455}
+    - _AI_SizeOffset: {r: 4.690386, g: 4.677946, b: 0, a: -0.0026483051}
     - _HueVariation: {r: 0, g: 0, b: 0, a: 0}
-    - _Offset: {r: -0.20842218, g: 2.4206922, b: -0.023943186, a: 0.037815128}
+    - _Offset: {r: -0.20843005, g: 2.4206922, b: -0.023955584, a: 0.042372882}
   m_BuildTextureStacks: []
 --- !u!114 &11400000
 MonoBehaviour:
@@ -87,14 +87,14 @@ MonoBehaviour:
   Tolerance: 0.2
   NormalScale: 0.01
   ShapePoints:
-  - {x: 0, y: 0.6990875}
-  - {x: 0.44465423, y: 0.99786174}
-  - {x: 0.5583468, y: 0.99793893}
-  - {x: 0.8666589, y: 0.8193516}
-  - {x: 1, y: 0.5411845}
-  - {x: 0.8730399, y: 0.051351845}
-  - {x: 0.4889005, y: 0}
-  - {x: 0.105141856, y: 0.07834542}
+  - {x: 0.033439785, y: 0.31314355}
+  - {x: 0.034218635, y: 0.7457044}
+  - {x: 0.43473586, y: 0.99789166}
+  - {x: 0.552833, y: 0.9979347}
+  - {x: 0.96570265, y: 0.7559571}
+  - {x: 0.96660215, y: 0.31936777}
+  - {x: 0.7495103, y: 0}
+  - {x: 0.2595668, y: 0}
   Preset: {fileID: 11400000, guid: 0403878495ffa3c4e9d4bcb3eac9b559, type: 2}
   OverrideOutput: []
 --- !u!43 &8055174246172348224
@@ -114,8 +114,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 8
     localAABB:
-      m_Center: {x: -0.019874573, y: -0.17399609, z: 0}
-      m_Extent: {x: 2.3650672, y: 2.3601928, z: 0}
+      m_Center: {x: 0.000098347664, y: -0.19390166, z: 0}
+      m_Extent: {x: 2.1884456, y: 2.3403492, z: 0}
   m_Shapes:
     vertices: []
     shapes: []
@@ -194,7 +194,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 256
-    _typelessdata: e3a218c0356f8fbf000000000000000000000000000080bf0000000034119a3eb83690be2b2a22c0000000000000000000000000000080bfb8a9e33e00220c3b5721833e263022c0000000000000000000000000000080bfd1ef0e3f0013073bcd73db3fca3fd8bf000000000000000000000000ffff7fbf5cdd5d3fe4fb383ea3171640d352bfbe000000000000000000000000000080bf0000803fdee9ea3ed650df3fe8bdf83f000000000000000000000000000080bf8b7f5f3f9bda723f2d3a94bda5ea0b40000000000000000000000000ffff7fbf2b51fa3e0000803f189df1bffb65e83f000000000000000000000000000080bf9d54d73d8ef16b3f
+    _typelessdata: e20d0cc0ad7c2d3f000000000000000000000000000080bf28f8083dd3d52f3f08d20bc0eaf3acbf000000000000000000000000000080bfd7280c3d0833823ef9ba9cbedd2d22c0000000000000000000000000000080bfb395de3e002c0a3b2fc17d3e2b3122c0000000000000000000000000000080bf77860d3f005a073bfccb0b40b31bb3bf000000000000000000000000ffff7fbf4a38773f60e6793e1b110c406c03263f000000000000000000000000000080bf3d73773fea3d2e3f60cc953f665f0940000000000000000000000000000080bfe8df3f3f0000803f465990bf665f0940000000000000000000000000ffff7fbff1e5843e0000803f
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -248,8 +248,8 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: -0.20842218, y: 2.4206922, z: -0.023943186}
-    m_Extent: {x: 3.2375107, y: 2.8793006, z: 2.6979806}
+    m_Center: {x: -0.20843005, y: 2.4206922, z: -0.023955584}
+    m_Extent: {x: 3.2375112, y: 2.8793006, z: 2.6979814}
   m_MeshUsageFlags: 0
   m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 

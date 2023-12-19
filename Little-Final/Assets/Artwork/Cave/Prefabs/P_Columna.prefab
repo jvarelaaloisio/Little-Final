@@ -1,5 +1,88 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2033527275991462104
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8136998117554538464}
+  - component: {fileID: 5111274112599249804}
+  - component: {fileID: 1457564024138229985}
+  m_Layer: 0
+  m_Name: Impostor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8136998117554538464
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033527275991462104}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8617696694128648858}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &5111274112599249804
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033527275991462104}
+  m_Mesh: {fileID: -6367253918705455736, guid: 765d5c008c41f8c469e9105ef28b5fc9, type: 2}
+--- !u!23 &1457564024138229985
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033527275991462104}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 3370568696045441075, guid: 765d5c008c41f8c469e9105ef28b5fc9, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7977202345534530731
 GameObject:
   m_ObjectHideFlags: 0
@@ -80,6 +163,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6763559448982912820}
+  - {fileID: 8136998117554538464}
   m_Father: {fileID: 4819330465809919077}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -91,8 +175,8 @@ LODGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8936049036805391600}
   serializedVersion: 2
-  m_LocalReferencePoint: {x: -0.09705138, y: -1.4044027, z: -0.15898037}
-  m_Size: 21.380964
+  m_LocalReferencePoint: {x: -0.09705615, y: -1.4044027, z: -0.15897655}
+  m_Size: 21.380962
   m_FadeMode: 1
   m_AnimateCrossFading: 1
   m_LastLODIsBillboard: 0
@@ -104,7 +188,7 @@ LODGroup:
   - screenRelativeHeight: 0.009535424
     fadeTransitionWidth: 0
     renderers:
-    - renderer: {fileID: 5591167978831021147}
+    - renderer: {fileID: 1457564024138229985}
   m_Enabled: 1
 --- !u!114 &8890449764028429728
 MonoBehaviour:
@@ -124,9 +208,9 @@ MonoBehaviour:
   m_renderers:
   - {fileID: 5591167978831021147}
   m_lodReplacement: 2
-  m_renderPipelineInUse: 2
+  m_renderPipelineInUse: 0
   m_insertIndex: 1
-  m_lastImpostor: {fileID: 0}
+  m_lastImpostor: {fileID: 2033527275991462104}
   m_folderPath: Assets/Artwork/Cave/Impostors/
   m_cutMode: 0
 --- !u!1001 &6509465106577987807
@@ -205,7 +289,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 0f714e26951d9394ab066890b46de26c,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0f714e26951d9394ab066890b46de26c,
         type: 3}
