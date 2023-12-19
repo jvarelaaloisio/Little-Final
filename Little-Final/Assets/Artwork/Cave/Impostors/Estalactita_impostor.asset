@@ -7,7 +7,7 @@ Mesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Estalactita_impostor
-  serializedVersion: 10
+  serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
@@ -17,8 +17,8 @@ Mesh:
     firstVertex: 0
     vertexCount: 8
     localAABB:
-      m_Center: {x: 0.000007867813, y: 0.13903642, z: 0}
-      m_Extent: {x: 1.4196053, y: 1.9219735, z: 0}
+      m_Center: {x: 0.000007927418, y: 0.13903642, z: 0}
+      m_Extent: {x: 1.419605, y: 1.9219732, z: 0}
   m_Shapes:
     vertices: []
     shapes: []
@@ -97,7 +97,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 256
-    _typelessdata: 5eb5b5bf7431c03b000000000000000000000000000080bf54d4053e1843ee3eddcf7abf4837e4bf000000000000000000000000000080bf7c017b3e0000000086bd763f4837e4bf000000000000000000000000000080bf7730403f00000000e2b5b53f44f0093e000000000000000000000000000080bf308b5e3f546cff3eca01b53f9dc6cf3f000000000000000000000000000080bf7c2d5e3f8cd8623fb2d8f23e96e70340000000000000000000000000000080bf92961f3f0000803ff6d61abf96e70340000000000000000000000000000080bfe86faf3e0000803f4323b5bf80abc93f000000000000000000000000000080bf6704073e43ab5f3f
+    _typelessdata: 5cb5b5bf7831c03b000000000000000000000000000080bf54d4053e1843ee3edbcf7abf4637e4bf000000000000000000000000ffff7fbf7c017b3e0000000084bd763f4637e4bf000000000000000000000000000080bf7730403f00000000e1b5b53f43f0093e000000000000000000000000000080bf308b5e3f546cff3ec901b53f9bc6cf3f000000000000000000000000000080bf7c2d5e3f8cd8623fb0d8f23e95e70340000000000000000000000000000080bf92961f3f0000803ff5d61abf95e70340000000000000000000000000000080bfe86faf3e0000803f4123b5bf7eabc93f000000000000000000000000000080bf6704073e43ab5f3f
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -151,34 +151,40 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: -0.053515613, y: -0.5029548, z: 0.16721328}
-    m_Extent: {x: 1.3228351, y: 1.5392269, z: 0.5568171}
+    m_Center: {x: -0.05350938, y: -0.502954, z: 0.16721952}
+    m_Extent: {x: 1.3228352, y: 1.5392268, z: 0.5568172}
   m_MeshUsageFlags: 0
+  m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshMetrics[0]: 1
   m_MeshMetrics[1]: 1
   m_MeshOptimizationFlags: 1
   m_StreamData:
+    serializedVersion: 2
     offset: 0
     size: 0
     path: 
 --- !u!21 &-1534711535713196575
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Estalactita_impostor
   m_Shader: {fileID: 4800000, guid: 572f9be5706148142b8da6e9de53acdb, type: 3}
-  m_ShaderKeywords: 
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -198,6 +204,7 @@ Material:
         m_Texture: {fileID: 2800000, guid: 8c1582230ca325840b6c5f4249c6ef43, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AI_AlphaToCoverage: 0
     - _AI_ShadowBias: 0.25
@@ -207,13 +214,14 @@ Material:
     - _Frames: 16
     - _Hemi: 0
     - _Hue: 0
-    - _ImpostorSize: 3.843947
+    - _ImpostorSize: 3.8439465
     - _Parallax: 1
     - _TextureBias: -1
     m_Colors:
-    - _AI_SizeOffset: {r: 3.843947, g: 3.8581684, b: 0, a: 0.0022606382}
+    - _AI_SizeOffset: {r: 3.8439465, g: 3.8581684, b: 0, a: 0.0022606382}
     - _HueVariation: {r: 0, g: 0, b: 0, a: 0}
-    - _Offset: {r: -0.053515613, g: -0.5029548, b: 0.16721328, a: -0.03617021}
+    - _Offset: {r: -0.05350938, g: -0.502954, b: 0.16721952, a: -0.03617021}
+  m_BuildTextureStacks: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,7 +236,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Material: {fileID: -1534711535713196575}
   Mesh: {fileID: -2000138645908225975}
-  Version: 9713
+  Version: 9803
   ImpostorType: 1
   LockedSizes: 1
   SelectedSize: 2048

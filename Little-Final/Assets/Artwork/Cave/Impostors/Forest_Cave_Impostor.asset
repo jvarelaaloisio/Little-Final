@@ -2,20 +2,24 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &-3121209704537549851
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Forest_Cave_Impostor
   m_Shader: {fileID: 4800000, guid: 572f9be5706148142b8da6e9de53acdb, type: 3}
-  m_ShaderKeywords: 
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -35,6 +39,7 @@ Material:
         m_Texture: {fileID: 2800000, guid: f849eb5d70f64364682099a9a05bc410, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AI_AlphaToCoverage: 0
     - _AI_ShadowBias: 0.25
@@ -51,6 +56,7 @@ Material:
     - _AI_SizeOffset: {r: 72.138084, g: 72.9791, b: 0, a: 0.0001230315}
     - _HueVariation: {r: 0, g: 0, b: 0, a: 0}
     - _Offset: {r: 271.81882, g: 13.161573, b: 176.5473, a: -0.001968504}
+  m_BuildTextureStacks: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,7 +71,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Material: {fileID: -3121209704537549851}
   Mesh: {fileID: 5860556824782919626}
-  Version: 9713
+  Version: 9803
   ImpostorType: 1
   LockedSizes: 1
   SelectedSize: 2048
@@ -95,7 +101,7 @@ Mesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Forest_Cave_Impostor
-  serializedVersion: 10
+  serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
@@ -242,12 +248,14 @@ Mesh:
     m_Center: {x: 271.81882, y: 13.161573, z: 176.5473}
     m_Extent: {x: 29.806852, y: 8.480915, z: 20.192493}
   m_MeshUsageFlags: 0
+  m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshMetrics[0]: 1
   m_MeshMetrics[1]: 1
   m_MeshOptimizationFlags: 1
   m_StreamData:
+    serializedVersion: 2
     offset: 0
     size: 0
     path: 
