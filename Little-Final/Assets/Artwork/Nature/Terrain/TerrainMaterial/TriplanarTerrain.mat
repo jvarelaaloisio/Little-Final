@@ -32,7 +32,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Cliffs:
-        m_Texture: {fileID: 2800000, guid: 06d2f3147da96854fa9f6b36b4b3616c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2fa68d0e83492a243a3f35e31b520f1f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CustomMaskR:
@@ -68,7 +68,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DownWalls:
-        m_Texture: {fileID: 2800000, guid: 25e1d1375f6e5424fa4152cdc64a746c, type: 3}
+        m_Texture: {fileID: 2800000, guid: e90838db910529440b90e2a8891f7c91, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DownWallsTexture:
@@ -108,7 +108,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Slope:
-        m_Texture: {fileID: 2800000, guid: c29ec51bd7874d647a62066d39c3d806, type: 3}
+        m_Texture: {fileID: 2800000, guid: ed60dbbd7504e194e8bed4b4308479e3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture0:
@@ -135,14 +135,14 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _CliffTiling: 0.1
-    - _CliffTilingBlend: 0.5
+    - _CliffTilingBlend: 0.2
     - _Clifftilingblend: 0.5
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DownWallsBlend: 0.486
+    - _DownWallsBlend: 0.2
     - _DownWallsTiling: 0.1
     - _DstBlend: 0
-    - _Float0: 2.85
+    - _Float0: -0
     - _Float1: 0.5
     - _Float2: 1
     - _Float3: 1
@@ -163,10 +163,12 @@ Material:
     - _SecondaryDownWallsTilingFactor: 0.2
     - _SecondaryGroundTilingFactor: 0.04
     - _SecondarySlopeTilingFactor: 0.1
-    - _SlopeOffset: 2.59
-    - _SlopeTiling: 1
-    - _Slopeblend: 0.5
+    - _SlopeFalloff: 3
+    - _SlopeOffset: -2.5
+    - _SlopeTiling: 0.5
+    - _Slopeblend: 0
     - _SmoothnessTextureChannel: 0
+    - _Smothness: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
