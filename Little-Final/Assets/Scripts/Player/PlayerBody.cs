@@ -131,7 +131,8 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	private void FixedUpdate()
 	{
 		ControlJump();
-		AccelerateFall();
+		if (!rb.isKinematic)
+			AccelerateFall();
 		ProcessForceRequests();
 		ProcessMovementRequests();
 		// if (rb.velocity.magnitude > maxSpeed)
@@ -196,7 +197,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	/// <summary>
 	/// Accelerates the velocity of the player while falling to eliminate feather falling effet
 	/// </summary>
-	void AccelerateFall()
+	public void AccelerateFall()
 	{
 		if (rb.velocity.y < .5 && rb.velocity.y > -10)
 		{

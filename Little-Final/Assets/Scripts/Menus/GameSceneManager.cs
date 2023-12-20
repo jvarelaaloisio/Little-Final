@@ -24,6 +24,7 @@ namespace Menus
         private Slider _progressBar;
         private float _totalSceneProgress;
         private LevelDataContainerViaBuildIndexes _currentLevel;
+        private Coroutine _currentLoadCoroutine;
 
         private void Awake()
         {
@@ -55,7 +56,12 @@ namespace Menus
         /// <param name="newLevel">The level to change to</param>
         public void LoadLevel(LevelDataContainerViaBuildIndexes newLevel)
         {
-            StartCoroutine(ChangeLevelCoroutine(_currentLevel, newLevel));
+            this.Log($"Loading Level [{newLevel.name}]");
+            if (_currentLoadCoroutine != null)
+            {
+                StopCoroutine(_currentLoadCoroutine);
+            }
+            _currentLoadCoroutine = StartCoroutine(ChangeLevelCoroutine(_currentLevel, newLevel));
             _currentLevel = newLevel;
         }
 
@@ -68,9 +74,13 @@ namespace Menus
 
             if (oldLevel)
             {
+                foreach (var sceneName in oldLevel.RuntimeLoadedScenes)
+                {
+                    if (SceneManager.GetSceneByName(sceneName).IsValid())
+                        yield return SceneManager.UnloadSceneAsync(sceneName);
+                }
                 var unloadReport = $"<color=yellow>Unloaded</color> level {oldLevel.name}. Report:";
-                var asyncOperations = oldLevel.GetUnloadScenes();
-                foreach (var unloadOperation in asyncOperations)
+                foreach (var unloadOperation in oldLevel.GetUnloadScenes())
                 {
                     var duration = Time.realtimeSinceStartupAsDouble;
                     yield return UpdateLevelLoadProgress(unloadOperation, scenesLoadedQty, totalScenesToLoadQty);
@@ -85,6 +95,7 @@ namespace Menus
             var loadReport = $"<color=green>Loaded</color> level {newLevel.name}. Report:";
             foreach (var loadOperation in newLevel.GetImmediateScenes())
             {
+                newLevel.RuntimeLoadedScenes.Add(loadOperation.Name);
                 var duration = Time.realtimeSinceStartupAsDouble;
                 yield return UpdateLevelLoadProgress(loadOperation, scenesLoadedQty, totalScenesToLoadQty);
                 duration = Time.realtimeSinceStartupAsDouble - duration;
@@ -162,7 +173,13 @@ namespace Menus
 
         private static void QuitGame()
         {
-            Debug.Log("Quitting game...Bye!");
+#if UNITY_EDITOR
+            if (Application.isPlaying)
+            {
+                UnityEditor.EditorApplication.isPlaying = false;
+                return;
+            }
+#endif
             Application.Quit();
         }
     }

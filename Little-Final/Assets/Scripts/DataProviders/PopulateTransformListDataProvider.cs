@@ -10,12 +10,20 @@ namespace DataProviders
     {
         [SerializeField] private DataProvider<List<Transform>> transformListDataProvider;
 
-        private void Awake()
+        private void OnEnable()
         {
-            if (transformListDataProvider)
+            if (transformListDataProvider && !transformListDataProvider.Value.Contains(transform))
                 transformListDataProvider.Value.Add(transform);
             else
                 this.LogWarning($"{nameof(transformListDataProvider)} is null! this component won't have any effect.");
+        }
+
+        private void OnDisable()
+        {
+            if (transformListDataProvider)
+            {
+                transformListDataProvider.Value.Remove(transform);
+            }
         }
     }
 }

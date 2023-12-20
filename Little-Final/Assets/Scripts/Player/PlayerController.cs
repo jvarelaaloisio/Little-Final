@@ -155,6 +155,7 @@ namespace Player
         private void OnEnable()
         {
             UpdateManager.Subscribe(this);
+            SaveSafeState(transform.position, transform.rotation);
         }
 
         private void OnDisable()

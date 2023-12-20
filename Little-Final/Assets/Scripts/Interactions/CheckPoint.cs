@@ -6,8 +6,9 @@ namespace Interactions
 	public class CheckPoint : MonoBehaviour
 	{
 		public float distanceFromFloor;
+		[SerializeField]
 		public Vector3 safePoint;
-		[HideInInspector]
+		[SerializeField, HideInInspector]
 		public Quaternion safeRotation;
 
 		[Header("Debug")]

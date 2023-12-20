@@ -12,13 +12,14 @@ namespace Menus.Events
 #if UNITY_EDITOR
         [SerializeField] private SceneAsset scene;
 #endif
-        [SerializeReadOnly] private int _buildIndex;
-        public int BuildIndex => _buildIndex;
+        [SerializeField, SerializeReadOnly] private int buildIndex;
+        public int BuildIndex => buildIndex;
 
         public void Validate()
         {
 #if UNITY_EDITOR
-            _buildIndex = SceneUtility.GetBuildIndexByScenePath(AssetDatabase.GetAssetPath(scene));
+            if (scene)
+                buildIndex = SceneUtility.GetBuildIndexByScenePath(AssetDatabase.GetAssetPath(scene));
 #endif
         }
 
@@ -27,8 +28,7 @@ namespace Menus.Events
 #if UNITY_EDITOR
             if (scene)
                 return scene.ToString();
-            else
-                return "null";
+            return "null";
 #endif
             return base.ToString();
         }

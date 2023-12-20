@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 namespace Scenes.Editor
 {
+    [Obsolete]
     // [CustomEditor(typeof(LevelDataContainerViaBuildIndexes))]
     public class LevelDataContainerViaBuildIndexesEditor : UnityEditor.Editor
     {

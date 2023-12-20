@@ -11,21 +11,12 @@ namespace Menus.Events
     {
         [SerializeField] private List<SerializableScene> scenes = new();
 
-        [Obsolete] private List<int> _buildIndexes = new();
         public override int Length => scenes.Count;
 
-        [Obsolete] public List<int> BuildIndexes => _buildIndexes;
+        //TODO: Remove
+        [Obsolete] public List<int> BuildIndexes => scenes.Select(scene => scene.BuildIndex).ToList();
 
-        public override void Validate()
-        {
-            scenes.ForEach(scene => scene.Validate());
-            _buildIndexes = scenes.Where(SceneIsValid)
-                                  .Select(scene => scene.BuildIndex)
-                                  .ToList();
-
-            bool SceneIsValid(SerializableScene scene)
-                => scene.BuildIndex != -1;
-        }
+        public override void Validate() => scenes.ForEach(scene => scene.Validate());
 
         public override IEnumerable<SceneAsyncOperation> GetLoadBatch()
             => scenes
@@ -37,7 +28,7 @@ namespace Menus.Events
         public override IEnumerable<SceneAsyncOperation> GetUnloadBatch()
             => scenes
                .Select(scene => scene.BuildIndex)
-               .Where(i => SceneManager.GetSceneAt(i).isLoaded)
+               .Where(i => SceneManager.GetSceneByBuildIndex(i).isLoaded)
                .Select(i => new SceneAsyncOperation(SceneUtility.GetScenePathByBuildIndex(i),
                                                     SceneManager.UnloadSceneAsync(i)));
     }

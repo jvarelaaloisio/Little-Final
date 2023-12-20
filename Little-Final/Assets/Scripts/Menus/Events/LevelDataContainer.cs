@@ -16,6 +16,8 @@ namespace Menus.Events
 
         public abstract IEnumerable<LevelLoadBatch> LevelBatches { get; }
 
+        [NonSerialized]
+        public List<string> RuntimeLoadedScenes = new();
         private void OnValidate()
         {
             ImmediateLoadBatch.Validate();

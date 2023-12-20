@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Menus.Events
 {
@@ -9,8 +7,6 @@ namespace Menus.Events
                         menuName = "Levels/Level Data Container via Build Indexes", order = 0)]
     public class LevelDataContainerViaBuildIndexes : LevelDataContainer
     {
-        [Obsolete] public int[] immediateLoadBuildIndexes;
-
         [Tooltip("scenes to load immediately")] [SerializeField]
         private LevelLoadBatchViaBuildIndexes immediateLoadBatch;
 
@@ -20,14 +16,5 @@ namespace Menus.Events
 
         public override LevelLoadBatch ImmediateLoadBatch => immediateLoadBatch;
         public override IEnumerable<LevelLoadBatch> LevelBatches => batchedLoads;
-
-        [Obsolete]
-        public List<AsyncOperation> Load()
-        {
-            var ao = new List<AsyncOperation>();
-            foreach (var index in immediateLoadBuildIndexes)
-                ao.Add(SceneManager.LoadSceneAsync(index, LoadSceneMode.Additive));
-            return ao;
-        }
     }
 }

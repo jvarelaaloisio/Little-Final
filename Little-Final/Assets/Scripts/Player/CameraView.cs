@@ -31,11 +31,6 @@ namespace Player
 		public string isInputParameter,
 			isFlyingParameter;
 
-		private void Awake()
-		{
-			cameraProvider.TrySetValue(GetComponent<Camera>());
-		}
-
 		private void Start()
 		{
 			view.Controller.OnStateChanges += HandleStateChange;
@@ -45,12 +40,14 @@ namespace Player
 		{
 			pauseChannel.SubscribeSafely(SetPause);
 			UpdateManager.Subscribe(this);
+			cameraProvider.TrySetValue(GetComponent<Camera>());
 		}
 
 		private void OnDisable()
 		{
 			pauseChannel.Unsubscribe(SetPause);
 			UpdateManager.UnSubscribe(this);
+			cameraProvider.TrySetValue(null);
 		}
 
 		private void HandleStateChange(State state) =>

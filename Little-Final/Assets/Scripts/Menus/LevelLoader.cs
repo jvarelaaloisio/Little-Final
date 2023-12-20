@@ -1,3 +1,4 @@
+using Core.Extensions;
 using Events.Channels;
 using Menus.Events;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Menus
         private void Start()
         {
             loadLevelChannel.RaiseEventSafely(levelContainer);
+            this.Log($"Loaded Level [{levelContainer.name}] via [{loadLevelChannel.name}]");
             if (destroyOnLoad)
             {
                 Destroy(gameObject);

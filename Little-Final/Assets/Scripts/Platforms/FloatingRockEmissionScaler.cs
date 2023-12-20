@@ -63,7 +63,7 @@ namespace Platforms
 			var shader = _material.shader;
 			_emissionFactorId = shader.GetPropertyNameId(shader.FindPropertyIndex(emissionFactorProperty));
 			waitPeriodWhenPlayerIsAway = new WaitForSeconds(periodWhenPlayerIsAway);
-			while (true)
+			while (!destroyCancellationToken.IsCancellationRequested && _player != null)
 			{
 				float distance = Vector3.Distance(_player.position, transform.position);
 				if (distance > ignoreDistance)

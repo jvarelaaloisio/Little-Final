@@ -77,6 +77,7 @@ GameObject:
   - component: {fileID: 781928539219432362}
   - component: {fileID: 5671817175804219044}
   - component: {fileID: 7088276369633447600}
+  - component: {fileID: 4656857045496093312}
   m_Layer: 18
   m_Name: P_Frutilla
   m_TagString: Untagged
@@ -414,6 +415,20 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.15
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4656857045496093312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3908558111288673973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c680f713b0bd68468d34bac9ead6e6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transformListDataProvider: {fileID: 11400000, guid: 18dc60dfe8d98ea449ce5dad196115a6,
+    type: 2}
 --- !u!1001 &8038869245959352025
 PrefabInstance:
   m_ObjectHideFlags: 0

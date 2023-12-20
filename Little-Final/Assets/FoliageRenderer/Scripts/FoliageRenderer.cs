@@ -6,7 +6,6 @@ using Core.Extensions;
 using Core.Providers;
 using FoliageRenderer.Scripts.Data;
 using FoliageRenderer.Scripts.Data.Terrain;
-using FoliageRenderer.Scripts.GizmosHelper;
 using UnityEngine;
 using UnityEngine.Serialization;
 using static System.Runtime.InteropServices.Marshal;
@@ -64,6 +63,9 @@ namespace FoliageRenderer.Scripts
         [SerializeField] private float frequency = .2f;
         [SerializeField] private float windStrength = .1f;
         [SerializeField] private ComputeShader computeWindGenerator;
+#if UNITY_EDITOR
+        [Header("Debugging")] [SerializeField] private bool updateValuesInEditorPlaymode;
+#endif
 
         protected virtual Type GrassDataType() => typeof(GrassData);
 
@@ -183,7 +185,7 @@ namespace FoliageRenderer.Scripts
             _groupSumArrayBuffer = new ComputeBuffer(_numThreadGroups, 4);
             _scannedGroupSumBuffer = new ComputeBuffer(_numThreadGroups, 4);
             if(dynamicObjectsDataProvider && dynamicObjectsDataProvider.Value.Any())
-                _dynamicPositionBuffer = new ComputeBuffer(dynamicObjectsDataProvider.Value.Count, sizeof(float) * 3);
+                InitializeDynamicPositionsBuffer(dynamicObjectsDataProvider.Value.Count);
 
             computeChunkPoints.SetInt(DimensionPropID, fieldSize);
             computeChunkPoints.SetInt(ChunkDimensionPropID, _chunkDimension);
@@ -224,6 +226,11 @@ namespace FoliageRenderer.Scripts
             );
         }
 
+        private void InitializeDynamicPositionsBuffer(int count)
+        {
+            _dynamicPositionBuffer = new ComputeBuffer(count, sizeof(float) * 3);
+        }
+
         private IEnumerator WaitTillCameraIsProvided()
         {
             yield return new WaitUntil(() => cameraProvider.Value);
@@ -233,11 +240,20 @@ namespace FoliageRenderer.Scripts
 
         private void Update()
         {
+            if (_currentCamera == null)
+            {
+                enabled = false;
+                if (!destroyCancellationToken.IsCancellationRequested)
+                    StartCoroutine(WaitTillCameraIsProvided());
+                return;
+            }
             var projectionMatrix = _currentCamera.projectionMatrix;
             var worldToLocalMatrix = _currentCamera.transform.worldToLocalMatrix;
             var viewProjectionMatrix = projectionMatrix * worldToLocalMatrix;
 
             GenerateWind();
+            if(dynamicObjectsDataProvider && dynamicObjectsDataProvider.Value.Count != _dynamicPositionBuffer.count)
+                InitializeDynamicPositionsBuffer(dynamicObjectsDataProvider.Value.Count);
 
             for (var i = 0; i < numChunks * numChunks; ++i)
             {
@@ -247,15 +263,18 @@ namespace FoliageRenderer.Scripts
                 CullGrass(_chunks[i], viewProjectionMatrix, noLOD);
                 
 #if UNITY_EDITOR
-                _chunks[i].material.SetFloat(AvoidanceRadiusPropID, avoidanceRadius);
-                _chunks[i].material.SetFloat(AvoidanceMaxDisplacementPropID, avoidanceMaxDisplacement);
-                _chunks[i].material.SetFloat(WildFactorPropID, wildFactor);
-                _chunks[i].material.SetFloat(WildScalePropID, wildScale);
-                _chunks[i].material.SetFloat(HeightPropID, height);
-                _chunks[i].material.SetFloat(DropPropID, drop);
-                _chunks[i].material.SetFloat(FogDensityPropID, fogDensity);
-                _chunks[i].material.SetFloat(FogOffsetPropID, fogOffset);
-                _chunks[i].material.SetFloat(OldGrassColorFactorPropID, oldGrassColorFactor);
+                if (updateValuesInEditorPlaymode)
+                {
+                    _chunks[i].material.SetFloat(AvoidanceRadiusPropID, avoidanceRadius);
+                    _chunks[i].material.SetFloat(AvoidanceMaxDisplacementPropID, avoidanceMaxDisplacement);
+                    _chunks[i].material.SetFloat(WildFactorPropID, wildFactor);
+                    _chunks[i].material.SetFloat(WildScalePropID, wildScale);
+                    _chunks[i].material.SetFloat(HeightPropID, height);
+                    _chunks[i].material.SetFloat(DropPropID, drop);
+                    _chunks[i].material.SetFloat(FogDensityPropID, fogDensity);
+                    _chunks[i].material.SetFloat(FogOffsetPropID, fogOffset);
+                    _chunks[i].material.SetFloat(OldGrassColorFactorPropID, oldGrassColorFactor);
+                }
 #endif
                 //TODO Optimize this
                 if (dynamicObjectsDataProvider && dynamicObjectsDataProvider.Value.Any())
