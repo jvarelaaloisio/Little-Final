@@ -4,8 +4,10 @@ Shader "Lemu/Common/PineLeaves"
 {
 	Properties
 	{
+		_Cutoff( "Mask Clip Value", Float ) = 0.5
 		[NoScaleOffset]_Color_Alpha("Color_Alpha", 2D) = "white" {}
 		_Color_Multiplier("Color_Multiplier", Color) = (1,1,1,0)
+		_Color_Light("Color_Light", Color) = (1,1,1,0)
 		_Wind_NoiseFactor("Wind_Noise Factor", Float) = 0
 		_Wind_WorldNoiseScale("Wind_World Noise Scale", Float) = 2
 		_Wind_WorldNosieSpeedX("Wind_World Nosie Speed X", Float) = 0
@@ -16,17 +18,31 @@ Shader "Lemu/Common/PineLeaves"
 
 	SubShader
 	{
-		Tags{ "RenderType" = "Transparent"  "Queue" = "Transparent+0" "IgnoreProjector" = "True" "IsEmissive" = "true"  }
-		Cull Back
-		CGINCLUDE
+		Tags{ "RenderType" = "TransparentCutout"  "Queue" = "AlphaTest+0" "IgnoreProjector" = "True" "IsEmissive" = "true"  }
+		Cull Off
+		CGPROGRAM
 		#include "UnityShaderVariables.cginc"
-		#include "UnityPBSLighting.cginc"
-		#include "Lighting.cginc"
 		#pragma target 3.0
+		#pragma surface surf Standard keepalpha addshadow fullforwardshadows vertex:vertexDataFunc 
+
+		struct appdata_full_custom
+		{
+			float4 vertex : POSITION;
+			float4 tangent : TANGENT;
+			float3 normal : NORMAL;
+			float4 texcoord : TEXCOORD0;
+			float4 texcoord1 : TEXCOORD1;
+			float4 texcoord2 : TEXCOORD2;
+			float4 texcoord3 : TEXCOORD3;
+			float4 color : COLOR;
+			UNITY_VERTEX_INPUT_INSTANCE_ID
+			uint ase_vertexId : SV_VertexID;
+		};
 		struct Input
 		{
 			float3 worldPos;
 			float2 uv_texcoord;
+			uint ase_vertexId;
 		};
 
 		uniform float _Wind_NoiseFactor;
@@ -36,6 +52,8 @@ Shader "Lemu/Common/PineLeaves"
 		uniform sampler2D _Color_Alpha;
 		uniform float4 _Color_Alpha_ST;
 		uniform float4 _Color_Multiplier;
+		uniform float4 _Color_Light;
+		uniform float _Cutoff = 0.5;
 
 
 		float3 RotateAroundAxis( float3 center, float3 original, float3 u, float angle )
@@ -90,7 +108,7 @@ Shader "Lemu/Common/PineLeaves"
 		}
 
 
-		void vertexDataFunc( inout appdata_full v, out Input o )
+		void vertexDataFunc( inout appdata_full_custom v, out Input o )
 		{
 			UNITY_INITIALIZE_OUTPUT( Input, o );
 			float mulTime12_g17 = _Time.y * 0.5;
@@ -114,14 +132,10 @@ Shader "Lemu/Common/PineLeaves"
 			float4 OUT_VertexOffset76 = ( float4( ( rotatedValue2_g17 - temp_output_14_0_g17 ) , 0.0 ) + lerpResult66 );
 			v.vertex.xyz += OUT_VertexOffset76.xyz;
 			v.vertex.w = 1;
+			o.ase_vertexId = v.ase_vertexId;
 		}
 
-		inline half4 LightingUnlit( SurfaceOutput s, half3 lightDir, half atten )
-		{
-			return half4 ( 0, 0, 0, s.Alpha );
-		}
-
-		void surf( Input i , inout SurfaceOutput o )
+		void surf( Input i , inout SurfaceOutputStandard o )
 		{
 			float2 uv_Color_Alpha = i.uv_texcoord * _Color_Alpha_ST.xy + _Color_Alpha_ST.zw;
 			float4 tex2DNode1 = tex2D( _Color_Alpha, uv_Color_Alpha );
@@ -146,87 +160,22 @@ Shader "Lemu/Common/PineLeaves"
 			float3 _Vector2 = float3(0,-1.6,1);
 			float temp_output_16_0_g18 = saturate( (_Vector2.y + (( ( ( temp_output_8_0_g18 * simplePerlin2D11_g21 ) + ( 1.0 - simplePerlin2D11_g20 ) ) * temp_output_8_0_g18 ) - 0.0) * (_Vector2.z - _Vector2.y) / (1.0 - 0.0)) );
 			float4 lerpResult24_g18 = lerp( temp_output_21_0_g18 , saturate( ( temp_output_21_0_g18 * color20_g18 ) ) , ( temp_output_16_0_g18 * 1.0 ));
-			float4 OUT_BaseColor74 = lerpResult24_g18;
+			uint currInstanceId = 0;
+			#ifdef UNITY_INSTANCING_ENABLED
+			currInstanceId = unity_InstanceID;
+			#endif
+			float2 temp_cast_3 = ( currInstanceId + i.ase_vertexId );
+			float dotResult4_g22 = dot( temp_cast_3 , float2( 12.9898,78.233 ) );
+			float lerpResult10_g22 = lerp( 0.0 , 1.0 , frac( ( sin( dotResult4_g22 ) * 43758.55 ) ));
+			float4 lerpResult127 = lerp( lerpResult24_g18 , _Color_Light , lerpResult10_g22);
+			float4 OUT_BaseColor74 = lerpResult127;
 			o.Emission = OUT_BaseColor74.rgb;
+			o.Alpha = 1;
 			float OUT_Opacity75 = tex2DNode1.a;
-			o.Alpha = OUT_Opacity75;
+			clip( OUT_Opacity75 - _Cutoff );
 		}
 
 		ENDCG
-		CGPROGRAM
-		#pragma surface surf Unlit alpha:fade keepalpha fullforwardshadows vertex:vertexDataFunc 
-
-		ENDCG
-		Pass
-		{
-			Name "ShadowCaster"
-			Tags{ "LightMode" = "ShadowCaster" }
-			ZWrite On
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			#pragma target 3.0
-			#pragma multi_compile_shadowcaster
-			#pragma multi_compile UNITY_PASS_SHADOWCASTER
-			#pragma skip_variants FOG_LINEAR FOG_EXP FOG_EXP2
-			#include "HLSLSupport.cginc"
-			#if ( SHADER_API_D3D11 || SHADER_API_GLCORE || SHADER_API_GLES || SHADER_API_GLES3 || SHADER_API_METAL || SHADER_API_VULKAN )
-				#define CAN_SKIP_VPOS
-			#endif
-			#include "UnityCG.cginc"
-			#include "Lighting.cginc"
-			#include "UnityPBSLighting.cginc"
-			sampler3D _DitherMaskLOD;
-			struct v2f
-			{
-				V2F_SHADOW_CASTER;
-				float2 customPack1 : TEXCOORD1;
-				float3 worldPos : TEXCOORD2;
-				UNITY_VERTEX_INPUT_INSTANCE_ID
-				UNITY_VERTEX_OUTPUT_STEREO
-			};
-			v2f vert( appdata_full v )
-			{
-				v2f o;
-				UNITY_SETUP_INSTANCE_ID( v );
-				UNITY_INITIALIZE_OUTPUT( v2f, o );
-				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
-				UNITY_TRANSFER_INSTANCE_ID( v, o );
-				Input customInputData;
-				vertexDataFunc( v, customInputData );
-				float3 worldPos = mul( unity_ObjectToWorld, v.vertex ).xyz;
-				half3 worldNormal = UnityObjectToWorldNormal( v.normal );
-				o.customPack1.xy = customInputData.uv_texcoord;
-				o.customPack1.xy = v.texcoord;
-				o.worldPos = worldPos;
-				TRANSFER_SHADOW_CASTER_NORMALOFFSET( o )
-				return o;
-			}
-			half4 frag( v2f IN
-			#if !defined( CAN_SKIP_VPOS )
-			, UNITY_VPOS_TYPE vpos : VPOS
-			#endif
-			) : SV_Target
-			{
-				UNITY_SETUP_INSTANCE_ID( IN );
-				Input surfIN;
-				UNITY_INITIALIZE_OUTPUT( Input, surfIN );
-				surfIN.uv_texcoord = IN.customPack1.xy;
-				float3 worldPos = IN.worldPos;
-				half3 worldViewDir = normalize( UnityWorldSpaceViewDir( worldPos ) );
-				surfIN.worldPos = worldPos;
-				SurfaceOutput o;
-				UNITY_INITIALIZE_OUTPUT( SurfaceOutput, o )
-				surf( surfIN, o );
-				#if defined( CAN_SKIP_VPOS )
-				float2 vpos = IN.pos;
-				#endif
-				half alphaRef = tex3D( _DitherMaskLOD, float3( vpos.xy * 0.25, o.Alpha * 0.9375 ) ).a;
-				clip( alphaRef - 0.01 );
-				SHADOW_CASTER_FRAGMENT( IN )
-			}
-			ENDCG
-		}
 	}
 	Fallback "Diffuse"
 	CustomEditor "ASEMaterialInspector"
@@ -267,15 +216,21 @@ Node;AmplifyShaderEditor.FunctionNode;7;-768,-144;Inherit;False;CloudsPattern;-1
 Node;AmplifyShaderEditor.RegisterLocalVarNode;74;-128,-128;Inherit;False;OUT_BaseColor;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;75;-128,64;Inherit;False;OUT_Opacity;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;76;-128,224;Inherit;False;OUT_VertexOffset;-1;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.StandardSurfaceOutputNode;120;256,-128;Float;False;True;-1;2;ASEMaterialInspector;0;0;Unlit;Lemu/Common/PineLeaves;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;False;False;False;False;False;False;Back;0;False;;0;False;;False;0;False;;0;False;;False;0;Transparent;0.5;True;True;0;False;Transparent;;Transparent;All;12;all;True;True;True;True;0;False;;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;2;15;10;25;False;0.5;True;2;5;False;;10;False;;0;0;False;;0;False;;0;False;;0;False;;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;True;Relative;0;;-1;-1;-1;-1;0;False;0;0;False;;-1;0;False;;0;0;0;False;0.1;False;;0;False;;False;15;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
-Node;AmplifyShaderEditor.SamplerNode;1;-1408,-224;Inherit;True;Property;_Color_Alpha;Color_Alpha;0;1;[NoScaleOffset];Create;True;0;0;0;False;0;False;-1;None;fd28405bc1e6aaa448362eb81fff150a;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.ColorNode;3;-1408,-32;Inherit;False;Property;_Color_Multiplier;Color_Multiplier;1;0;Create;True;0;0;0;False;0;False;1,1,1,0;0.03524386,0.2264149,0.170188,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SamplerNode;1;-1408,-224;Inherit;True;Property;_Color_Alpha;Color_Alpha;1;1;[NoScaleOffset];Create;True;0;0;0;False;0;False;-1;None;fd28405bc1e6aaa448362eb81fff150a;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RangedFloatNode;43;-2320,624;Inherit;False;Constant;_Wind_NoiseAnimationScale;Wind_Noise Animation Scale;3;0;Create;True;0;0;0;False;0;False;1;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;49;-2032,719;Inherit;False;Property;_Wind_NoiseFactor;Wind_Noise Factor;2;0;Create;True;0;0;0;False;0;False;0;0.15;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;62;-1904,1120;Inherit;False;Property;_Wind_WorldNoiseScale;Wind_World Noise Scale;3;0;Create;True;0;0;0;False;0;False;2;0.05;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;72;-1904,1039;Inherit;False;Property;_Wind_WorldNosieSpeedY;Wind_World Nosie Speed Y;5;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;71;-1904,960;Inherit;False;Property;_Wind_WorldNosieSpeedX;Wind_World Nosie Speed X;4;0;Create;True;0;0;0;False;0;False;0;1;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;49;-2032,719;Inherit;False;Property;_Wind_NoiseFactor;Wind_Noise Factor;4;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;62;-1904,1120;Inherit;False;Property;_Wind_WorldNoiseScale;Wind_World Noise Scale;5;0;Create;True;0;0;0;False;0;False;2;2;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;72;-1904,1039;Inherit;False;Property;_Wind_WorldNosieSpeedY;Wind_World Nosie Speed Y;7;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;71;-1904,960;Inherit;False;Property;_Wind_WorldNosieSpeedX;Wind_World Nosie Speed X;6;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.Vector2Node;64;-1457,1184;Inherit;False;Constant;_Wind_WorldNoiseLevels;Wind_World Noise Levels;5;0;Create;True;0;0;0;False;0;False;0,1.2;0,1.2;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.StandardSurfaceOutputNode;120;310,-129;Float;False;True;-1;2;ASEMaterialInspector;0;0;Standard;Lemu/Common/PineLeaves;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;False;False;False;False;False;False;Off;0;False;;0;False;;False;0;False;;0;False;;False;0;Masked;0.5;True;True;0;False;TransparentCutout;;AlphaTest;All;12;all;True;True;True;True;0;False;;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;2;15;10;25;False;0.5;True;0;5;False;;10;False;;0;0;False;;0;False;;0;False;;0;False;;0;False;0;0,0,0,0;VertexOffset;True;False;Cylindrical;False;True;Relative;0;;0;-1;-1;-1;0;False;0;0;False;;-1;0;False;;0;0;0;False;0.1;False;;0;False;;False;16;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;2;FLOAT3;0,0,0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT3;0,0,0;False;7;FLOAT3;0,0,0;False;8;FLOAT;0;False;9;FLOAT;0;False;10;FLOAT;0;False;13;FLOAT3;0,0,0;False;11;FLOAT3;0,0,0;False;12;FLOAT3;0,0,0;False;14;FLOAT4;0,0,0,0;False;15;FLOAT3;0,0,0;False;0
+Node;AmplifyShaderEditor.InstanceIdNode;121;-941.5908,-648.7643;Inherit;False;False;0;1;INT;0
+Node;AmplifyShaderEditor.SimpleAddOpNode;122;-682.5908,-586.7643;Inherit;False;2;2;0;INT;0;False;1;INT;0;False;1;INT;0
+Node;AmplifyShaderEditor.VertexIdVariableNode;123;-912.5908,-541.7643;Inherit;False;0;1;INT;0
+Node;AmplifyShaderEditor.ColorNode;3;-1408,-32;Inherit;False;Property;_Color_Multiplier;Color_Multiplier;2;0;Create;True;0;0;0;False;0;False;1,1,1,0;0.1785192,0.2479999,0.1582239,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ColorNode;125;-999.1588,-458.0202;Inherit;False;Property;_Color_Light;Color_Light;3;0;Create;True;0;0;0;False;0;False;1,1,1,0;0.379243,0.735849,0.253382,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.FunctionNode;124;-522.5908,-554.7643;Inherit;False;Random Range;-1;;22;7b754edb8aebbfb4a9ace907af661cfc;0;3;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.LerpOp;127;-326.6271,-231.4259;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
 WireConnection;44;0;45;0
 WireConnection;40;0;44;0
 WireConnection;41;1;40;0
@@ -310,12 +265,18 @@ WireConnection;55;0;20;0
 WireConnection;55;1;66;0
 WireConnection;69;0;70;0
 WireConnection;7;21;6;0
-WireConnection;74;0;7;0
+WireConnection;74;0;127;0
 WireConnection;75;0;69;0
 WireConnection;76;0;55;0
-WireConnection;120;2;74;0
-WireConnection;120;9;75;0
-WireConnection;120;11;76;0
 WireConnection;1;1;4;0
+WireConnection;120;2;74;0
+WireConnection;120;10;75;0
+WireConnection;120;11;76;0
+WireConnection;122;0;121;0
+WireConnection;122;1;123;0
+WireConnection;124;1;122;0
+WireConnection;127;0;7;0
+WireConnection;127;1;125;0
+WireConnection;127;2;124;0
 ASEEND*/
-//CHKSM=3049DADA231F89DDA529521E05F31AB24C16A56A
+//CHKSM=9DEA87793DF73C05449CCFA6064387F59D8B06A7

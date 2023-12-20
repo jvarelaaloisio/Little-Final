@@ -8,8 +8,9 @@ OcclusionCullingSettings:
     smallestOccluder: 5
     smallestHole: 0.25
     backfaceThreshold: 100
-  m_SceneGUID: 00000000000000000000000000000000
-  m_OcclusionCullingData: {fileID: 0}
+  m_SceneGUID: fed0a5707a37bbc42a3351768d6e0844
+  m_OcclusionCullingData: {fileID: 36300000, guid: 59be3772e3aa1a74b855304934eff188,
+    type: 2}
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
@@ -938,7 +939,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: baa795ba3c9054f4cada8ecc494dda29, type: 2}
+  - {fileID: 2100000, guid: 96edf1116b3105b49a31a9e478576477, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1004,7 +1005,7 @@ PrefabInstance:
     - target: {fileID: 1155483654595676809, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.6723492
+      value: -1.6113491
       objectReference: {fileID: 0}
     - target: {fileID: 1155483654595676809, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
@@ -1019,17 +1020,17 @@ PrefabInstance:
     - target: {fileID: 1155483654595676809, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.14554507
+      value: 0.1455451
       objectReference: {fileID: 0}
     - target: {fileID: 1155483654595676809, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.43600425
+      value: -0.43600428
       objectReference: {fileID: 0}
     - target: {fileID: 1155483654595676809, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.07168811
+      value: 0.07168812
       objectReference: {fileID: 0}
     - target: {fileID: 1155483654595676814, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
@@ -1064,7 +1065,7 @@ PrefabInstance:
     - target: {fileID: 1155483654913944932, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_Lens.m_SensorSize.x
-      value: 1.7783191
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1155483655035065988, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
@@ -1074,7 +1075,7 @@ PrefabInstance:
     - target: {fileID: 1155483655035065988, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.4407766
+      value: -3.3797765
       objectReference: {fileID: 0}
     - target: {fileID: 1155483655035065988, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
@@ -1089,22 +1090,22 @@ PrefabInstance:
     - target: {fileID: 1155483655035065988, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.14554507
+      value: 0.1455451
       objectReference: {fileID: 0}
     - target: {fileID: 1155483655035065988, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.43600425
+      value: -0.43600428
       objectReference: {fileID: 0}
     - target: {fileID: 1155483655035065988, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.07168811
+      value: 0.07168812
       objectReference: {fileID: 0}
     - target: {fileID: 1155483655035065991, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_Lens.m_SensorSize.x
-      value: 1.7776549
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1155483656558093787, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
@@ -1125,6 +1126,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6157457040061276411, guid: 92154d90c454e7847ad94e88b9d26f1d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.061
       objectReference: {fileID: 0}
     - target: {fileID: 6157457040061276411, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
@@ -1154,7 +1160,7 @@ PrefabInstance:
     - target: {fileID: 6669475938835101804, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.445
+      value: 5.212
       objectReference: {fileID: 0}
     - target: {fileID: 6669475938835101804, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
@@ -1199,12 +1205,12 @@ PrefabInstance:
     - target: {fileID: 8685427086967904736, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_Lens.m_SensorSize.x
-      value: 1.7776549
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8685427086967904743, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.00000023841858
+      value: 0.06099987
       objectReference: {fileID: 0}
     - target: {fileID: 8685427086967904743, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
@@ -1264,7 +1270,7 @@ PrefabInstance:
     - target: {fileID: 8685427087439608175, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_Lens.m_SensorSize.x
-      value: 1.7776549
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8685427087449724993, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
@@ -1304,17 +1310,17 @@ PrefabInstance:
     - target: {fileID: 8685427087449724994, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_Lens.m_SensorSize.x
-      value: 1.7776549
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8685427087929366588, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_Lens.m_SensorSize.x
-      value: 1.7776549
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8685427088409087860, guid: 92154d90c454e7847ad94e88b9d26f1d,
         type: 3}
       propertyPath: m_Lens.m_SensorSize.x
-      value: 1.7776549
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1541,7 +1547,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: 6a1add6f8b8332647885d4307dbf02dd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -9,7 +9,8 @@ using UnityEngine.SceneManagement;
 
 namespace Scenes.Editor
 {
-    [CustomEditor(typeof(LevelDataContainerViaBuildIndexes))]
+    [Obsolete]
+    // [CustomEditor(typeof(LevelDataContainerViaBuildIndexes))]
     public class LevelDataContainerViaBuildIndexesEditor : UnityEditor.Editor
     {
         private const int buttonWidth = 30;
@@ -29,8 +30,8 @@ namespace Scenes.Editor
             _immediateLoadBatch = (LevelLoadBatchViaBuildIndexes)_levelDataContainer.ImmediateLoadBatch;
             CopyFromBatchToSceneAssetListBasedOnBuildSettings(in _immediateLoadBatch, out _immediateSceneAssets);
             ResetBatches();
-            _activeSceneAsset =
-                GetSceneAssetByBuildIndex(EditorBuildSettings.scenes, _levelDataContainer.activeSceneIndex);
+            // _activeSceneAsset =
+            //     GetSceneAssetByBuildIndex(EditorBuildSettings.scenes, _levelDataContainer.activeSceneIndex);
         }
 
         private void ResetBatches()
@@ -185,7 +186,7 @@ namespace Scenes.Editor
                 if (EditorBuildSettings.scenes.Any(scene => scene.path == scenePath))
                 {
                     var sceneIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
-                    _levelDataContainer.activeSceneIndex = sceneIndex;
+                    // _levelDataContainer.activeSceneIndex = sceneIndex;
                 }
             }
         }

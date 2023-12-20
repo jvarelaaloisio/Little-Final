@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Material: {fileID: 7584983155475858181}
   Mesh: {fileID: 8813014192951326383}
-  Version: 9713
+  Version: 9803
   ImpostorType: 1
   LockedSizes: 1
   SelectedSize: 2048
@@ -39,20 +39,24 @@ MonoBehaviour:
   OverrideOutput: []
 --- !u!21 &7584983155475858181
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Pared_2_Impostor
   m_Shader: {fileID: 4800000, guid: 572f9be5706148142b8da6e9de53acdb, type: 3}
-  m_ShaderKeywords: 
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -72,6 +76,7 @@ Material:
         m_Texture: {fileID: 2800000, guid: 6fb1ddc2b0d531142b18ad59e043ff11, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AI_AlphaToCoverage: 0
     - _AI_ShadowBias: 0.25
@@ -88,6 +93,7 @@ Material:
     - _AI_SizeOffset: {r: 26.949305, g: 26.876152, b: 0, a: -0.00036621094}
     - _HueVariation: {r: 0, g: 0, b: 0, a: 0}
     - _Offset: {r: 0.006527826, g: 2.4215534, b: 0.47915956, a: 0.005859375}
+  m_BuildTextureStacks: []
 --- !u!43 &8813014192951326383
 Mesh:
   m_ObjectHideFlags: 0
@@ -95,7 +101,7 @@ Mesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Pared_2_Impostor
-  serializedVersion: 10
+  serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
@@ -242,12 +248,14 @@ Mesh:
     m_Center: {x: 0.006527826, y: 2.4215534, z: 0.47915956}
     m_Extent: {x: 9.187193, y: 2.348987, z: 9.578261}
   m_MeshUsageFlags: 0
+  m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshMetrics[0]: 1
   m_MeshMetrics[1]: 1
   m_MeshOptimizationFlags: 1
   m_StreamData:
+    serializedVersion: 2
     offset: 0
     size: 0
     path: 

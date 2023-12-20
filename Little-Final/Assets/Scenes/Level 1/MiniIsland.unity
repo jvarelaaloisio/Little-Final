@@ -8,8 +8,9 @@ OcclusionCullingSettings:
     smallestOccluder: 5
     smallestHole: 0.25
     backfaceThreshold: 100
-  m_SceneGUID: 00000000000000000000000000000000
-  m_OcclusionCullingData: {fileID: 0}
+  m_SceneGUID: a455af0d5b044b3439effaac8dd6f58d
+  m_OcclusionCullingData: {fileID: 36300000, guid: 59be3772e3aa1a74b855304934eff188,
+    type: 2}
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
@@ -165,7 +166,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh398786
+  m_Name: pb_Mesh358390
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -334,7 +335,6 @@ GameObject:
   m_Component:
   - component: {fileID: 135058566}
   - component: {fileID: 135058567}
-  - component: {fileID: 135058568}
   m_Layer: 0
   m_Name: Spot Light (11)
   m_TagString: Untagged
@@ -419,29 +419,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &135058568
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 135058565}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Version: 3
-  m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
-  m_LightLayerMask: 1
-  m_RenderingLayers: 1
-  m_CustomShadowLayers: 0
-  m_ShadowLayerMask: 1
-  m_ShadowRenderingLayers: 1
-  m_LightCookieSize: {x: 1, y: 1}
-  m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
 --- !u!1 &208426966
 GameObject:
   m_ObjectHideFlags: 0
@@ -4229,7 +4206,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh398748
+  m_Name: pb_Mesh358358
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -8712,7 +8689,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh398814
+  m_Name: pb_Mesh358414
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -8916,33 +8893,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
         type: 3}
-      propertyPath: m_LocalScale.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
-        type: 3}
       propertyPath: m_LocalPosition.x
-      value: 139.74178
+      value: 138.865
       objectReference: {fileID: 0}
     - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 15.407576
+      value: 15.131899
       objectReference: {fileID: 0}
     - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 69.13724
+      value: 72.916
       objectReference: {fileID: 0}
     - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
         type: 3}
@@ -9035,21 +8997,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
         type: 3}
-      propertyPath: m_LocalScale.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
-        type: 3}
       propertyPath: m_LocalPosition.x
       value: 136.48288
       objectReference: {fileID: 0}
@@ -9119,7 +9066,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1165939266}
   - component: {fileID: 1165939267}
-  - component: {fileID: 1165939268}
   m_Layer: 0
   m_Name: Spot Light (9)
   m_TagString: Untagged
@@ -9204,29 +9150,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &1165939268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1165939265}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Version: 3
-  m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
-  m_LightLayerMask: 1
-  m_RenderingLayers: 1
-  m_CustomShadowLayers: 0
-  m_ShadowLayerMask: 1
-  m_ShadowRenderingLayers: 1
-  m_LightCookieSize: {x: 1, y: 1}
-  m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
 --- !u!1 &1175412181
 GameObject:
   m_ObjectHideFlags: 0
@@ -14120,7 +14043,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh398868
+  m_Name: pb_Mesh358460
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -14289,7 +14212,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1898660043}
   - component: {fileID: 1898660044}
-  - component: {fileID: 1898660045}
   m_Layer: 0
   m_Name: Spot Light (10)
   m_TagString: Untagged
@@ -14374,36 +14296,13 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &1898660045
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1898660042}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Version: 3
-  m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
-  m_LightLayerMask: 1
-  m_RenderingLayers: 1
-  m_CustomShadowLayers: 0
-  m_ShadowLayerMask: 1
-  m_ShadowRenderingLayers: 1
-  m_LightCookieSize: {x: 1, y: 1}
-  m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
 --- !u!43 &1930301039
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh398798
+  m_Name: pb_Mesh358402
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -14568,7 +14467,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh398722
+  m_Name: pb_Mesh358332
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -14733,7 +14632,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh398736
+  m_Name: pb_Mesh358346
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -15740,21 +15639,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
         type: 3}
-      propertyPath: m_LocalScale.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
-        type: 3}
       propertyPath: m_LocalPosition.x
       value: 137.846
       objectReference: {fileID: 0}
@@ -15820,7 +15704,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh398834
+  m_Name: pb_Mesh358430
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -16134,7 +16018,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh398702
+  m_Name: pb_Mesh358314
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2

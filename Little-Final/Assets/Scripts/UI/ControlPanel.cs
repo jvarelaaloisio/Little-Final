@@ -22,7 +22,7 @@ namespace UI
             if (Input.GetKeyDown(KeyCode.Escape)) Toggle();
         }
 
-        private void Toggle()
+        public void Toggle()
         {
             _isOn = !_isOn;
             container.SetActive(_isOn);

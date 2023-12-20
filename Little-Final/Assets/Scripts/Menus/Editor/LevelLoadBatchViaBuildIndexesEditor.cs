@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[CustomEditor(typeof(LevelLoadBatchViaBuildIndexes))]
+// [CustomEditor(typeof(LevelLoadBatchViaBuildIndexes))]
 public class LevelLoadBatchViaBuildIndexesEditor : Editor
 {
     private SerializedProperty buildIndexesProperty;

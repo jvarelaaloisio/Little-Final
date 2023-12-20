@@ -13,7 +13,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -24,7 +24,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Leaves_AlphaLeaf:
-        m_Texture: {fileID: 2800000, guid: ea15a28edcab85b4ea2ae6e567ae9e09, type: 3}
+        m_Texture: {fileID: 2800000, guid: 393745bdb00886c42810374665c9d89b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -52,6 +52,8 @@ Material:
     - _Float0: 0.3
     - _Float1: 0
     - _Float2: 0
+    - _Light_Factor: 1
+    - _Light_MaskScale: 1
     - _Light__Factor: 0.5
     - _Light__MaskScale: 0.3
     - _LocalVertexOffsetFactor: 1
@@ -62,8 +64,11 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _Shadow_Factor: 1
+    - _Shadow_MaskScale: 0.2
     - _Shadow__Factor: 0.5
     - _Shadow__MaskScale: 0.05
+    - _ShowdSpots: 0.04
     - _Smoothness: 0
     - _SpecularHighlights: 1
     - _TransAmbient: 0.2
@@ -75,6 +80,13 @@ Material:
     - _TransStrength: 1
     - _Translucency: 0
     - _TranslucencyFactor: 0.2
+    - _Wind_BaseSpeed: 0
+    - _Wind_Direction: 0
+    - _Wind_NoiseAnimationScale: 0.3
+    - _Wind_NoiseFactor: 2
+    - _Wind_PrimarySpeed: 0.2
+    - _Wind_SecondarySpeed: 0
+    - _Wind_WorldNoiseScale: 1
     - _Wind__BaseSpeed: 0.1
     - _Wind__Direction: 0
     - _Wind__NoiseAnimationScale: 0.3
@@ -87,7 +99,10 @@ Material:
     - __dirty: 0
     m_Colors:
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Leaves_BaseColor: {r: 0.2627923, g: 0.3207547, b: 0.06808473, a: 1}
     - _Leaves__BaseColor: {r: 0.12682441, g: 0.4716981, b: 0.21612203, a: 1}
+    - _Light_Color: {r: 1, g: 0.97981787, b: 0, a: 0}
     - _Light__Color: {r: 0.24697393, g: 0.6981132, b: 0.50196576, a: 1}
+    - _Shadow_Color: {r: 0.07685805, g: 0.2264151, b: 0.06941973, a: 0}
     - _Shadow__Color: {r: 0.20784298, g: 0.24313709, b: 0.07843123, a: 0}
   m_BuildTextureStacks: []

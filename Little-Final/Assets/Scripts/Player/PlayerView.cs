@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core.Providers;
 using UnityEngine;
 using UnityEngine.Events;
 //using UnityEngine.Rendering.PostProcessing;

@@ -13,7 +13,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -125,7 +125,7 @@ Material:
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _Float0: 1
-    - _Float1: 0
+    - _Float1: 0.1
     - _Float2: 0.5
     - _Float3: 0
     - _GlossMapScale: 1
@@ -135,6 +135,8 @@ Material:
     - _Hue: 0
     - _LightFactor: 0.3
     - _LightMaskScale: 1
+    - _Light_Factor: 0.5
+    - _Light_MaskScale: 1
     - _Light__Factor: 0.3
     - _Light__MaskScale: 1
     - _LocalVertexOffsetFactor: 1
@@ -151,6 +153,7 @@ Material:
     - _ProximityMask__Size: 0.15
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _RandomVertexOffset: 0.0001
     - _ReceiveShadows: 1
     - _RoughnessMultiply: 0
     - _Satura: 0
@@ -159,8 +162,11 @@ Material:
     - _SecondSpeed: 0.1
     - _ShadowFactor: 1
     - _ShadowMaskScale: 0.3
+    - _Shadow_Factor: 0.5
+    - _Shadow_MaskScale: 0.1
     - _Shadow__Factor: 1
     - _Shadow__MaskScale: 0.3
+    - _ShowdSpots: 0.08
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -177,7 +183,16 @@ Material:
     - _TranslucencyFactor: 0.5745376
     - _UVSec: 0
     - _Value: 0
+    - _WindIntensity: 0
     - _WindSpeed: 1
+    - _WindTurbulence: 1
+    - _Wind_BaseSpeed: 0
+    - _Wind_Direction: 0
+    - _Wind_NoiseAnimationScale: 0.3
+    - _Wind_NoiseFactor: 2
+    - _Wind_PrimarySpeed: 0.2
+    - _Wind_SecondarySpeed: 0
+    - _Wind_WorldNoiseScale: 1
     - _Wind__BaseSpeed: 0.03
     - _Wind__BranchSpeedMovement: 1
     - _Wind__BranchesIntencity: 0.5
@@ -200,10 +215,13 @@ Material:
     - _Color: {r: 0.34782937, g: 0.5, b: 0.2712264, a: 1}
     - _ColorMultiply: {r: 0.7169812, g: 0.30776078, b: 0.30776078, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Leaves_BaseColor: {r: 0.1112434, g: 0.21698111, b: 0.107467055, a: 1}
     - _Leaves__BaseColor: {r: 0.10196028, g: 0.3019603, b: 0.24313673, a: 1}
     - _LightColor: {r: 0.19999996, g: 0.6, b: 0.4823529, a: 0}
+    - _Light_Color: {r: 0.19490908, g: 0.56700003, b: 0.144585, a: 0}
     - _Light__Color: {r: 0.19999951, g: 0.6, b: 0.4823529, a: 0}
     - _ShadowColor: {r: 0.06274508, g: 0.19215682, b: 0.1568627, a: 0}
+    - _Shadow_Color: {r: 0.025364893, g: 0.07137448, b: 0.2830189, a: 0}
     - _Shadow__Color: {r: 0.06274473, g: 0.19215637, b: 0.15686226, a: 0}
     - _Vector0: {r: 1, g: 0, b: 0, a: 0}
     - _Vector1: {r: 0, g: 0, b: 0, a: 0}

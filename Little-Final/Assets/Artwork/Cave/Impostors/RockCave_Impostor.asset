@@ -2,20 +2,24 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &-6678464769575438038
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: RockCave_Impostor
   m_Shader: {fileID: 4800000, guid: 572f9be5706148142b8da6e9de53acdb, type: 3}
-  m_ShaderKeywords: 
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -35,22 +39,24 @@ Material:
         m_Texture: {fileID: 2800000, guid: e66db38f5f7071043b416822f7c6ae24, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AI_AlphaToCoverage: 0
     - _AI_ShadowBias: 0.25
     - _AI_ShadowView: 1
     - _ClipMask: 0.5
-    - _DepthSize: 69.99531
+    - _DepthSize: 69.9953
     - _Frames: 16
     - _Hemi: 0
     - _Hue: 0
-    - _ImpostorSize: 70.17053
+    - _ImpostorSize: 70.17052
     - _Parallax: 1
     - _TextureBias: -1
     m_Colors:
-    - _AI_SizeOffset: {r: 70.17053, g: 69.99531, b: 0, a: -0.0009809417}
+    - _AI_SizeOffset: {r: 70.17052, g: 69.9953, b: 0, a: -0.0009809417}
     - _HueVariation: {r: 0, g: 0, b: 0, a: 0}
-    - _Offset: {r: -1.0879278, g: 4.013455, b: 0.7338123, a: 0.015695067}
+    - _Offset: {r: -1.0878707, g: 4.013428, b: 0.7338891, a: 0.015695067}
+  m_BuildTextureStacks: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,7 +71,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Material: {fileID: -6678464769575438038}
   Mesh: {fileID: 6704371263245378000}
-  Version: 9713
+  Version: 9803
   ImpostorType: 1
   LockedSizes: 1
   SelectedSize: 2048
@@ -95,7 +101,7 @@ Mesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: RockCave_Impostor
-  serializedVersion: 10
+  serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
@@ -106,7 +112,7 @@ Mesh:
     vertexCount: 8
     localAABB:
       m_Center: {x: 0.00018882751, y: -1.1013298, z: 0}
-      m_Extent: {x: 19.880089, y: 35.085266, z: 0}
+      m_Extent: {x: 19.880083, y: 35.08526, z: 0}
   m_Shapes:
     vertices: []
     shapes: []
@@ -185,7 +191,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 256
-    _typelessdata: 090a9fc111d94740000000000000000000000000000080bf69e45d3efa680f3f82b69ec1bb0ce6c1000000000000000000000000000080bfc67c5e3e08ddd83d600547c113bf10c2000000000000000000000000000080bf763da53e000000000d3b4a4113bf10c2000000000000000000000000000080bfa01c2e3f00000000b6bf9e41244de3c1000000000000000000000000000080bf0165483fe8e3e23dcf0a9f4104121340000000000000000000000000000080bf4087483fcb660c3fd1d213418def0742000000000000000000000000000080bfc4b4213f0000803f1f5e14c18def0742000000000000000000000000000080bff156bc3e0000803f
+    _typelessdata: 060a9fc10ed94740000000000000000000000000000080bf69e45d3efa680f3f80b69ec1b80ce6c1000000000000000000000000000080bfc67c5e3e08ddd83d5d0547c111bf10c2000000000000000000000000ffff7fbf763da53e000000000a3b4a4111bf10c2000000000000000000000000000080bfa01c2e3f00000000b4bf9e41214de3c1000000000000000000000000ffff7fbf0165483fe8e3e23dcc0a9f4102121340000000000000000000000000000080bf4087483fcb660c3fcfd213418bef0742000000000000000000000000000080bfc4b4213f0000803f1d5e14c18bef0742000000000000000000000000000080bff156bc3e0000803f
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -239,15 +245,17 @@ Mesh:
       m_BitSize: 0
     m_UVInfo: 0
   m_LocalAABB:
-    m_Center: {x: -1.0879278, y: 4.013455, z: 0.7338123}
-    m_Extent: {x: 17.056019, y: 33.044773, z: 15.513164}
+    m_Center: {x: -1.0878707, y: 4.013428, z: 0.7338891}
+    m_Extent: {x: 17.056019, y: 33.044773, z: 15.513161}
   m_MeshUsageFlags: 0
+  m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshMetrics[0]: 1
   m_MeshMetrics[1]: 1
   m_MeshOptimizationFlags: 1
   m_StreamData:
+    serializedVersion: 2
     offset: 0
     size: 0
     path: 

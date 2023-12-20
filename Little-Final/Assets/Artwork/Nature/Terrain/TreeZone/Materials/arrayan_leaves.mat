@@ -44,7 +44,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Leaves_AlphaLeaf:
-        m_Texture: {fileID: 2800000, guid: 7b37f974619dbc841939c82e1676b3d5, type: 3}
+        m_Texture: {fileID: 2800000, guid: c5fc62f94355c23448fcb87f881091f7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -89,9 +89,11 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _Light_Factor: 0.5
+    - _Light_MaskScale: 1
     - _Light__Factor: 0.3
     - _Light__MaskScale: 1
-    - _LocalVertexOffsetFactor: 1
+    - _LocalVertexOffsetFactor: 20
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -102,8 +104,12 @@ Material:
     - _ProximityMask__Size: 0.15
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _Shadow_Factor: 1
+    - _Shadow_MaskScale: 0.6
     - _Shadow__Factor: 1
     - _Shadow__MaskScale: 0.3
+    - _ShowdSpots: 0.07
+    - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -115,6 +121,13 @@ Material:
     - _Translucency: 1
     - _TranslucencyFactor: 0
     - _UVSec: 0
+    - _Wind_BaseSpeed: 0
+    - _Wind_Direction: 0
+    - _Wind_NoiseAnimationScale: 0.3
+    - _Wind_NoiseFactor: 2
+    - _Wind_PrimarySpeed: 0.2
+    - _Wind_SecondarySpeed: 0
+    - _Wind_WorldNoiseScale: 1
     - _Wind__BaseSpeed: 0
     - _Wind__Direction: 0
     - _Wind__NoiseAnimationScale: 0.3
@@ -129,7 +142,10 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Leaves_BaseColor: {r: 0.06759521, g: 0.4622641, b: 0.074336, a: 0}
     - _Leaves__BaseColor: {r: 0.11774651, g: 0.509434, b: 0.20182163, a: 0}
+    - _Light_Color: {r: 0.2856501, g: 0.462745, b: 0.08235291, a: 0}
     - _Light__Color: {r: 0.31350002, g: 0.66, b: 0.38626504, a: 0}
+    - _Shadow_Color: {r: 0.191, g: 0.1106087, b: 0.02158301, a: 0}
     - _Shadow__Color: {r: 0.188559, g: 0.36900002, b: 0.22645162, a: 1}
   m_BuildTextureStacks: []

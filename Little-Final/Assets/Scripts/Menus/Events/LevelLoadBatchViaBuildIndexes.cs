@@ -9,20 +9,27 @@ namespace Menus.Events
     [Serializable]
     public class LevelLoadBatchViaBuildIndexes : LevelLoadBatch
     {
-        [SerializeField]
-        private List<int> buildIndexes = new();
+        [SerializeField] private List<SerializableScene> scenes = new();
 
-        public override int Length => buildIndexes.Count;
+        public override int Length => scenes.Count;
 
-        public List<int> BuildIndexes => buildIndexes;
-        
-        public override IEnumerable<AsyncOperation> LoadBatch()
-            => buildIndexes
-                .Select(buildIndex
-                    => SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive));
+        //TODO: Remove
+        [Obsolete] public List<int> BuildIndexes => scenes.Select(scene => scene.BuildIndex).ToList();
 
-        public override IEnumerable<AsyncOperation> UnloadBatch()
-            => buildIndexes
-                .Select(SceneManager.UnloadSceneAsync);
+        public override void Validate() => scenes.ForEach(scene => scene.Validate());
+
+        public override IEnumerable<SceneAsyncOperation> GetLoadBatch()
+            => scenes
+               .Select(scene => scene.BuildIndex)
+               .Select(i
+                           => new SceneAsyncOperation(SceneUtility.GetScenePathByBuildIndex(i),
+                                                      SceneManager.LoadSceneAsync(i, LoadSceneMode.Additive)));
+
+        public override IEnumerable<SceneAsyncOperation> GetUnloadBatch()
+            => scenes
+               .Select(scene => scene.BuildIndex)
+               .Where(i => SceneManager.GetSceneByBuildIndex(i).isLoaded)
+               .Select(i => new SceneAsyncOperation(SceneUtility.GetScenePathByBuildIndex(i),
+                                                    SceneManager.UnloadSceneAsync(i)));
     }
 }

@@ -64,6 +64,12 @@ namespace Environment
                 Shader.SetGlobalVector(Cascade_2,WaterfallEnd_2.position);
             if (WaterfallEnd_3)
                 Shader.SetGlobalVector(Cascade_3,WaterfallEnd_3.position);
+            SetClearWater();
+        }
+
+        [ContextMenu("SetClearWaterPositionOnMaterial")]
+        public void SetClearWater()
+        {
             if(ClearWaterPoint_1)
                 Shader.SetGlobalVector(ClearWater_1,ClearWaterPoint_1.position);
             if(ClearWaterPoint_2)

@@ -16,13 +16,14 @@ namespace Menus.Events
 
         public override int Length => scenes.Length;
 
-        public override IEnumerable<AsyncOperation> LoadBatch()
+        public override IEnumerable<SceneAsyncOperation> GetLoadBatch()
             => scenes
-                .Select(scene
-                    => SceneManager.LoadSceneAsync((int)scene.buildIndex, LoadSceneMode.Additive));
+                .Select(scene => new SceneAsyncOperation(scene.name,
+                                                         SceneManager.LoadSceneAsync(scene.buildIndex,
+                                                                                     LoadSceneMode.Additive)));
 
-        public override IEnumerable<AsyncOperation> UnloadBatch()
+        public override IEnumerable<SceneAsyncOperation> GetUnloadBatch()
             => scenes
-                .Select(SceneManager.UnloadSceneAsync);
+                .Select(scene => new SceneAsyncOperation(scene.name, SceneManager.UnloadSceneAsync(scene)));
     }
 }

@@ -13,7 +13,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -93,6 +93,8 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _Light_Factor: 0.5
+    - _Light_MaskScale: 1
     - _Light__Factor: 0.3
     - _Light__MaskScale: 1
     - _LocalVertexOffsetFactor: 1
@@ -102,8 +104,12 @@ Material:
     - _Parallax: 0.02
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _Shadow_Factor: 1
+    - _Shadow_MaskScale: 0.5
     - _Shadow__Factor: 1
     - _Shadow__MaskScale: 0.3
+    - _ShowdSpots: 0.3
+    - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -115,6 +121,13 @@ Material:
     - _Translucency: 1
     - _TranslucencyFactor: 0
     - _UVSec: 0
+    - _Wind_BaseSpeed: 0
+    - _Wind_Direction: 0
+    - _Wind_NoiseAnimationScale: 0.3
+    - _Wind_NoiseFactor: 2
+    - _Wind_PrimarySpeed: 0.2
+    - _Wind_SecondarySpeed: 0
+    - _Wind_WorldNoiseScale: 1
     - _Wind__BaseSpeed: 0
     - _Wind__Direction: 0
     - _Wind__NoiseAnimationScale: 0.3
@@ -129,8 +142,11 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Leaves_BaseColor: {r: 0.089997664, g: 0.3679245, b: 0.060742244, a: 0}
     - _Leaves__BaseColor: {r: 0.25918922, g: 0.31132078, b: 0.20705768, a: 0}
+    - _Light_Color: {r: 0.22900495, g: 0.32941177, b: 0.0862745, a: 0}
     - _Light__Color: {r: 0.17649707, g: 0.2264151, b: 0.14845142, a: 0}
+    - _Shadow_Color: {r: 0.103329666, g: 0.026788898, b: 0.13207549, a: 0}
     - _Shadow__Color: {r: 0.10008009, g: 0.122641504, b: 0.08503916, a: 0}
     - _leaf_color: {r: 0.1995641, g: 0.36200002, b: 0.18796155, a: 0}
   m_BuildTextureStacks: []

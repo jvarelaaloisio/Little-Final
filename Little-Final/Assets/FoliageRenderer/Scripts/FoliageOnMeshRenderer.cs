@@ -28,7 +28,15 @@ namespace FoliageRenderer.Scripts
             _parentMeshTrianglesBuffer = GetComputeBufferFromArray(sharedMesh.triangles, IntBytesSize);
             _parentMeshVerticesBuffer = GetComputeBufferFromArray(sharedMesh.vertices, Vector3BytesSize);
             _parentMeshNormalsBuffer = GetComputeBufferFromArray(sharedMesh.normals, Vector3BytesSize);
-            
+
+            if (_parentUvBuffer == null
+                || _parentMeshTrianglesBuffer == null
+                || _parentMeshVerticesBuffer == null
+                || _parentMeshNormalsBuffer == null)
+            {
+                enabled = false;
+                return;
+            }
             computeChunkPoints.SetInt("_ParentMeshTriangleCount", sharedMesh.triangles.Length);
             computeChunkPoints.SetBuffer(0, "_ParentMeshUv", _parentUvBuffer);
             computeChunkPoints.SetBuffer(0, "_ParentMeshVertices", _parentMeshVerticesBuffer);
@@ -51,6 +59,10 @@ namespace FoliageRenderer.Scripts
         
         private static ComputeBuffer GetComputeBufferFromArray<T>(T[] items, int stride)
         {
+            if (items.Length < 0)
+            {
+                return null;
+            }
             var computeBuffer = new ComputeBuffer(items.Length, stride);
             computeBuffer.SetData(items);
             return computeBuffer;

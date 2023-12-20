@@ -135,14 +135,13 @@ void InitializeGrassChunk(uint3 id : SV_DispatchThreadID)
         const VertexData vertex_data = GetLocalSpacePositionAndNormalFromPointUv(uv);
         pos = float4(vertex_data.position, 1);
         pos.w = lerp(0.3f, 0.8f, noise);
-        // This is an offset to separate it from the midpoint of the plane.
-        // TODO: See if there is any way to avoid this.
-        pos.y += .5;
-
+        
         grass.uv = uv;
         grass.position = pos;
         grass.groundDirection = vertex_data.normal;
-
+        // Place holder value, it's calculates in cull compute
+        grass.height = 1;
+        
         _GrassDataBuffer[id.x + id.y * _ChunkDimension] = grass;
     }
 }

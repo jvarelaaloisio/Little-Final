@@ -15,6 +15,8 @@ void WindNoise(uint3 id : SV_DispatchThreadID) {
 
     const float xy_value = id.x * x_period + id.y * y_period + turbulence_power * snoise(id * turbulence_size);
     const float sine_value = (sin((xy_value + _Time) * _Frequency) + 1.5f) * _Amplitude;
+    const float sine_value_1 = (sin((xy_value + _Time) * _Frequency * .5) + 1.5f) * _Amplitude;
+    const float sine_value_2 = (sin((xy_value + _Time * .2f) * _Frequency * 6.25f) + 1.5f) * _Amplitude * .83f;
 
-    _WindMap[id.xy] = sine_value;
+    _WindMap[id.xy] = sine_value + sine_value_1 + sine_value_2;
 }

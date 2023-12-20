@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Material: {fileID: 8352817747754350994}
   Mesh: {fileID: 8126593770362392475}
-  Version: 9713
+  Version: 9803
   ImpostorType: 1
   LockedSizes: 1
   SelectedSize: 2048
@@ -44,7 +44,7 @@ Mesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PAred1_Cave_Impostors
-  serializedVersion: 10
+  serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
@@ -191,31 +191,37 @@ Mesh:
     m_Center: {x: 0.000017166138, y: -0.0000040964696, z: 0.0000045088227}
     m_Extent: {x: 24.481165, y: 22.658195, z: 69.7053}
   m_MeshUsageFlags: 0
+  m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshMetrics[0]: 1
   m_MeshMetrics[1]: 1
   m_MeshOptimizationFlags: 1
   m_StreamData:
+    serializedVersion: 2
     offset: 0
     size: 0
     path: 
 --- !u!21 &8352817747754350994
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PAred1_Cave_Impostors
   m_Shader: {fileID: 4800000, guid: 572f9be5706148142b8da6e9de53acdb, type: 3}
-  m_ShaderKeywords: 
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -235,6 +241,7 @@ Material:
         m_Texture: {fileID: 2800000, guid: a6e949b044f18be4aa1daa10c112fb5d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AI_AlphaToCoverage: 0
     - _AI_ShadowBias: 0.25
@@ -251,3 +258,4 @@ Material:
     - _AI_SizeOffset: {r: 144.24895, g: 144.26613, b: 0, a: 0.0006537657}
     - _HueVariation: {r: 0, g: 0, b: 0, a: 0}
     - _Offset: {r: 0.000017166138, g: -0.0000040964696, b: 0.0000045088227, a: -0.010460251}
+  m_BuildTextureStacks: []

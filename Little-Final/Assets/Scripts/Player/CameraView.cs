@@ -1,4 +1,6 @@
-﻿using Events.Channels;
+﻿using System;
+using Core.Providers;
+using Events.Channels;
 using Player.States;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,6 +14,8 @@ namespace Player
 		private const string CAMERA_Y = "Mouse Y";
 		public Animator animator;
 
+		[SerializeField] private DataProvider<Camera> cameraProvider;
+		
 		[SerializeField]
 		private PlayerView view;
 
@@ -36,12 +40,14 @@ namespace Player
 		{
 			pauseChannel.SubscribeSafely(SetPause);
 			UpdateManager.Subscribe(this);
+			cameraProvider.TrySetValue(GetComponent<Camera>());
 		}
 
 		private void OnDisable()
 		{
 			pauseChannel.Unsubscribe(SetPause);
 			UpdateManager.UnSubscribe(this);
+			cameraProvider.TrySetValue(null);
 		}
 
 		private void HandleStateChange(State state) =>

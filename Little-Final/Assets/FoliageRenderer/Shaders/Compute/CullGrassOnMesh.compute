@@ -6,6 +6,7 @@
 
 #define NUM_THREAD_GROUPS_X 64
 
+#include <HLSLSupport.cginc>
 #include "OnMeshGrassData.cginc"
 
 // Texture Mask
@@ -58,15 +59,16 @@ void Vote(uint3 id : SV_DispatchThreadID) {
     clip_space.y = clip_space.y / 2.0f + 0.5f;
     clip_space.z = -view_space.w;
 
+    const float3 color_mask = _TextureMask.SampleLevel(sampler_TextureMask, _GrassDataBuffer[id.x].uv, 0).xyz; 
+    const bool not_empty_position = _GrassDataBuffer[id.x].position.xyz != float3(0,0,0);
     const bool in_view = clip_space.x < -0.2f || clip_space.x > 1.2f || clip_space.z <= -0.1f ? 0 : 1;
     const bool within_distance = distance(_CameraPosition, mul(_ObjectWorldMatrix, grass_position).xyz) < _Distance;
-    const bool in_mask = ColorIsInRange(
-        _TextureMask.SampleLevel(sampler_TextureMask, _GrassDataBuffer[id.x].uv, 0).xyz
-    );
+    const bool in_mask = ColorIsInRange(color_mask);
 
-    //_VoteBuffer[id.x] = true;
-    //_VoteBuffer[id.x] = in_view * within_distance;
-    _VoteBuffer[id.x] = in_view * within_distance * in_mask;
+    _GrassDataBuffer[id.x].height = dot(color_mask, fixed3(color_mask.xyz));
+    
+    // _VoteBuffer[id.x] = true;
+    _VoteBuffer[id.x] = not_empty_position * within_distance * in_mask * in_view;
 }
 
 // From GPU Gems Chapter 39 'Parallel Prefix Sum (Scan) with CUDA'
