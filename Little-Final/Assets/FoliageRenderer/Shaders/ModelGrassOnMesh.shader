@@ -192,13 +192,14 @@ Shader "Unlit/ModelGrassOnMesh"
             fixed4 frag(v2f i, uint instanceID : SV_INSTANCEID) : SV_Target
             {
                 const float4 col = lerp(lerp(_Albedo1, _OldGrass, i.noise * _OldGrassColorFactor), _Albedo2, i.uv.y);
-                const float3 light_dir = _WorldSpaceLightPos0.xyz;
-                const float ndotl = DotClamped(light_dir, normalize(float3(0, 1, 0)));
+                // const float3 light_dir = _WorldSpaceLightPos0.xyz;
+                // const float ndotl = DotClamped(light_dir, normalize(float3(0, 1, 0)));
 
                 const float4 ao = lerp(_AOColor, 1.0f, i.uv.y);
                 const float4 tip = lerp(0.0f, _TipColor, i.uv.y * i.uv.y);
 
-                const float4 grass_color = (col + tip) * ndotl * ao;
+                // const float4 grass_color = (col + tip) * ndotl * ao;
+                const float4 grass_color = (col + tip) * ao;
 
                 /* Fog */
                 // const float view_distance = length(_WorldSpaceCameraPos - i.worldPos);
