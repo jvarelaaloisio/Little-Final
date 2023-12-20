@@ -2,12 +2,12 @@ Shader "Unlit/ModelGrassOnMesh"
 {
     Properties
     {
-        _Albedo1 ("Base Color 1", Color) = (1, 1, 1)
-        _Albedo2 ("Base Color 2", Color) = (1, 1, 1)
-        _OldGrass ("Old Grass Color", Color) = (1, 1, 1)
+        _Albedo1 ("Tallo", Color) = (1, 1, 1)
+        _Albedo2 ("Base 1", Color) = (1, 1, 1)
+        _OldGrass ("Base Alt", Color) = (1, 1, 1)
         _AOColor ("Ambient Occlusion", Color) = (1, 1, 1)
-        _TipColor ("Tip Color", Color) = (1, 1, 1)
-        _FogColor ("Fog Color", Color) = (1, 1, 1)
+        _TipColor ("Punta", Color) = (1, 1, 1)
+        _Spots ("Spots factor", range(0,1)) = 1
     }
 
     SubShader
@@ -50,6 +50,7 @@ Shader "Unlit/ModelGrassOnMesh"
                 float3 chunkNum : TEXCOORD3;
                 float4 localPos : TEXCOORD4;
                 float4 noise : TEXCOORD5;
+                float id_hash : TEXCOORD6;
             };
 
             sampler2D _WindTex;
@@ -63,13 +64,12 @@ Shader "Unlit/ModelGrassOnMesh"
             float
             _Height,
             _Droop,
-            _FogDensity,
-            _FogOffset,
             _AvoidanceRadius,
             _AvoidanceMaxDisplacement,
             _WildFactor,
             _WildScale,
-            _OldGrassColorFactor;
+            _OldGrassColorFactor,
+            _Spots;
 
             int _ChunkNum;
 
@@ -102,15 +102,27 @@ Shader "Unlit/ModelGrassOnMesh"
                 ));
                 return randValue(id_hash * 100000);
             }
+
+            float SafeRandomRange(float2 seed, float min, float max)
+            {
+                const float2 vector0 = float2(12.9898, 78.233);
+                const float dotProd = dot(seed, vector0);
+                const float sinResult = sin(dotProd);
+                const float sinProduct = mul(sinResult, 43758.55);
+                return  lerp(min, max, frac(sinProduct));
+            }
             
             v2f vert(VertexData v, uint instanceID : SV_INSTANCEID)
             {
                 v2f o;
 
+                
                 // Remap for better user health
                 _Height -= 1;
 
                 const float4 buffered_grass_position = _PositionBuffer[instanceID].position;
+                float safeRand = SafeRandomRange(buffered_grass_position.xy, 0,1);
+                
                 //TODO implement height by mask flow
                 const float mask_height = _PositionBuffer[instanceID].height;
                 const float id_hash = HashFromVector(buffered_grass_position);
@@ -154,6 +166,7 @@ Shader "Unlit/ModelGrassOnMesh"
                 float4 world_position = float4(local_position + buffered_grass_position.xyz, 1.0f);
                 world_position = mul(_ObjectRotationMatrix, world_position);
                 world_position = mul(_ObjectScaleMatrix, world_position);
+                world_position.xz += safeRand * .2;
                 
                 // Apply dynamic avoidance
                 if (_dynamicPositionsCount > 0)
@@ -185,21 +198,25 @@ Shader "Unlit/ModelGrassOnMesh"
                     randValue(randValue(_ChunkNum) * 10 + 2048),
                     randValue(_ChunkNum * 4 + 4096)
                 );
+                o.id_hash = safeRand;
 
                 return o;
             }
 
             fixed4 frag(v2f i, uint instanceID : SV_INSTANCEID) : SV_Target
             {
-                const float4 col = lerp(lerp(_Albedo1, _OldGrass, i.noise * _OldGrassColorFactor), _Albedo2, i.uv.y);
-
+                float4 color2 = lerp(_Albedo2, _OldGrass, i.noise * _OldGrassColorFactor);
+                color2 = lerp(_Albedo1, color2, i.id_hash);
+                
+                const float4 col = lerp(_Albedo1, color2, i.uv.y);
+                
                 const float4 ao = lerp(_AOColor, 1.0f, i.uv.y);
                 const float4 tip = lerp(0.0f, _TipColor, i.uv.y * i.uv.y);
-
+                
                 const float4 grass_color = (col + tip) * ao;
 
                 // return color;
-                return grass_color;
+                return saturate(grass_color);
             }
             ENDCG
         }
