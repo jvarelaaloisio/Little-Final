@@ -13,7 +13,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -151,6 +151,8 @@ Material:
     - _LightFactor4: 1
     - _LightMaskScale: 1
     - _LightMaskScale4: 1
+    - _Light_Factor: 0.5
+    - _Light_MaskScale: 1
     - _Light__Factor: 0.5
     - _Light__MaskScale: 1
     - _LocalVertexOffsetFactor: 1
@@ -175,8 +177,11 @@ Material:
     - _SecondSpeed: 0
     - _ShadowFactor: 0.126
     - _ShadowMaskScale: 0.3
+    - _Shadow_Factor: 0.7
+    - _Shadow_MaskScale: 0.1
     - _Shadow__Factor: 0.1
     - _Shadow__MaskScale: 0.3
+    - _ShowdSpots: 0.06
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -195,6 +200,13 @@ Material:
     - _UVSec: 0
     - _Value: 0
     - _WindSpeed: 1
+    - _Wind_BaseSpeed: 0
+    - _Wind_Direction: 0
+    - _Wind_NoiseAnimationScale: 0.3
+    - _Wind_NoiseFactor: 2
+    - _Wind_PrimarySpeed: 0.2
+    - _Wind_SecondarySpeed: 0
+    - _Wind_WorldNoiseScale: 1
     - _Wind__BaseSpeed: 0.03
     - _Wind__BranchSpeedMovement: 1
     - _Wind__BranchesIntencity: 0.05
@@ -219,10 +231,13 @@ Material:
     - _ColorMultiplier: {r: 0.82496566, g: 0.8773585, b: 0.23589352, a: 1}
     - _ColorMultiply: {r: 0.7169812, g: 0.30776078, b: 0.30776078, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Leaves_BaseColor: {r: 0.08688719, g: 0.255, b: 0.081345, a: 1}
     - _Leaves__BaseColor: {r: 0.1647054, g: 0.37254852, b: 0.14901912, a: 1}
     - _LightColor: {r: 0.8396226, g: 0.7543557, b: 0.11485406, a: 0}
+    - _Light_Color: {r: 0.13828224, g: 0.49, b: 0.063128844, a: 0}
     - _Light__Color: {r: 0.8196079, g: 0.8313726, b: 0.25882304, a: 1}
     - _ShadowColor: {r: 0.078360766, g: 0.19215687, b: 0.0627451, a: 0}
+    - _Shadow_Color: {r: 0.066266336, g: 0.06448024, b: 0.21698111, a: 0}
     - _Shadow__Color: {r: 0.43921524, g: 0.44705886, b: 0.14901912, a: 1}
     - _VTInfoBlock: {r: 0, g: 0, b: 0, a: 0}
     - _Vector0: {r: 0, g: 0.44, b: -0.01, a: 0}

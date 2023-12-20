@@ -51,7 +51,7 @@ LODGroup:
   m_AnimateCrossFading: 1
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.25182217
+  - screenRelativeHeight: 0.09795932
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 8443621355962263001}
@@ -198,7 +198,7 @@ Transform:
   m_Children:
   - {fileID: 5438908118062740992}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &187369574407700854
 PrefabInstance:
@@ -391,6 +391,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a2389caaf86642341a1fb8179f0ebbc9,
         type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a2389caaf86642341a1fb8179f0ebbc9,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
@@ -497,6 +502,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Standar Tree Small_LOD_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 06e7e5aaa9f2dfc428752649682a8a68,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 06e7e5aaa9f2dfc428752649682a8a68,
         type: 3}

@@ -13,7 +13,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -131,6 +131,8 @@ Material:
     - _Hue: 0
     - _LightFactor: 1
     - _LightMaskScale: 1
+    - _Light_Factor: 1
+    - _Light_MaskScale: 1
     - _Light__Factor: 0.3
     - _Light__MaskScale: 1
     - _LocalVertexOffsetFactor: 1
@@ -155,8 +157,11 @@ Material:
     - _SecondSpeed: 0
     - _ShadowFactor: 0.53703296
     - _ShadowMaskScale: 0.3
+    - _Shadow_Factor: 1
+    - _Shadow_MaskScale: 0.2
     - _Shadow__Factor: 0.59
     - _Shadow__MaskScale: 0.54
+    - _ShowdSpots: 0.04
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -174,6 +179,13 @@ Material:
     - _UVSec: 0
     - _Value: 0
     - _WindSpeed: 1
+    - _Wind_BaseSpeed: 0
+    - _Wind_Direction: 0
+    - _Wind_NoiseAnimationScale: 0.3
+    - _Wind_NoiseFactor: 2
+    - _Wind_PrimarySpeed: 0.2
+    - _Wind_SecondarySpeed: 0
+    - _Wind_WorldNoiseScale: 1
     - _Wind__BaseSpeed: 0.03
     - _Wind__Direction: 0
     - _Wind__NoiseAnimationScale: 0.3
@@ -194,10 +206,13 @@ Material:
     - _Color: {r: 0.8396226, g: 0.831078, b: 0.10693307, a: 1}
     - _ColorMultiply: {r: 0.7169812, g: 0.30776078, b: 0.30776078, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Leaves_BaseColor: {r: 0.2627923, g: 0.3207547, b: 0.06808471, a: 1}
     - _Leaves__BaseColor: {r: 0.8396226, g: 0.7877301, b: 0.15348752, a: 1}
     - _LightColor: {r: 0.90588236, g: 0.8626873, b: 0.5607843, a: 0}
+    - _Light_Color: {r: 0.6568802, g: 0.71599996, b: 0.208356, a: 0}
     - _Light__Color: {r: 0.79076105, g: 0.9150943, b: 0.16728415, a: 0}
     - _ShadowColor: {r: 0.28235292, g: 0.2778245, b: 0.18431368, a: 0}
+    - _Shadow_Color: {r: 0.22745098, g: 0.09152715, b: 0.070588246, a: 0}
     - _Shadow__Color: {r: 0.3773585, g: 0.1465267, b: 0.040503267, a: 0}
     - _Vector0: {r: 1, g: 0, b: 0, a: 0}
     - _Vector1: {r: 0, g: 0, b: 0, a: 0}

@@ -198,9 +198,10 @@ Shader "Unlit/ModelGrassOnMesh"
                 const float4 ao = lerp(_AOColor, 1.0f, i.uv.y);
                 const float4 tip = lerp(0.0f, _TipColor, i.uv.y * i.uv.y);
 
+                //const float rand = randValue(instanceID);
                 // const float4 grass_color = (col + tip) * ndotl * ao;
                 const float4 grass_color = (col + tip) * ao;
-
+                
                 /* Fog */
                 // const float view_distance = length(_WorldSpaceCameraPos - i.worldPos);
                 // float fog_factor = (_FogDensity / sqrt(log(2))) * (max(0.0f, view_distance - _FogOffset));
