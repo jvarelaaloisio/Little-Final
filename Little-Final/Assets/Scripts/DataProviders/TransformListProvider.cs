@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DataProviders
 {
-    [CreateAssetMenu(menuName = "_TransformListProvider")]
+    [CreateAssetMenu(menuName = "Data/Providers/Transform List")]
     public class TransformListProvider : DataProvider<List<Transform>>
     {
         public override List<Transform> Value { get; set; } = new();
