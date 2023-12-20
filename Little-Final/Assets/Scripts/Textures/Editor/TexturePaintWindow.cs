@@ -80,7 +80,7 @@ namespace Textures.Editor
             {
                 public const string NoTarget = "There is no active GameObject selected.";
                 public const string NoMeshFilter = "The target gameObject doesn't have a " + nameof(MeshFilter);
-                public const string NoMeshRenderer = "the target gameObject doesn't have a " + nameof(_target.meshRenderer);
+                public const string NoMeshRenderer = "the target gameObject doesn't have a " + nameof(MeshRenderer);
             }
             
             public GameObject gameObject;
