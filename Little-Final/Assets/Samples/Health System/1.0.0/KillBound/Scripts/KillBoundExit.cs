@@ -13,23 +13,28 @@ namespace HealthSystem.Runtime.Components.Damage
 
         private void OnDrawGizmos()
         {
+            Gizmos.color = new Color(1, 0, 0, 0.25f);
             Gizmos.color = Color.red;
-            if (TryGetComponent<BoxCollider>(out var boxCollider))
+            var position = Vector3.zero;
+            
+            if (TryGetComponent(out Collider collider))
+                position = transform.InverseTransformPoint(collider.bounds.center);
+            else if (TryGetComponent(out Collider2D collider2D))
+                position = transform.InverseTransformPoint(collider2D.bounds.center);
+
+            var size = Vector3.one;
+            
+            if (TryGetComponent(out BoxCollider boxCollider))
+                size = boxCollider.size;
+            else if (TryGetComponent(out SphereCollider sphereCollider))
+                size = sphereCollider.bounds.size;
+            else if (TryGetComponent(out CapsuleCollider capsuleCollider))
+                size = capsuleCollider.bounds.size;
+            if (TryGetComponent<MeshFilter>(out var meshFilter))
             {
-                var bounds = boxCollider.bounds;
-                Gizmos.DrawWireCube(bounds.center, bounds.size);
-            }
-            if (TryGetComponent<SphereCollider>(out var sphereCollider))
-            {
-                var center = sphereCollider.bounds.center;
-                var scale = transform.lossyScale;
-                var size = sphereCollider.radius * Mathf.Max(scale.x, scale.y, scale.z);
-                Gizmos.DrawWireSphere(center, size);
-            }
-            if (TryGetComponent<BoxCollider2D>(out var boxCollider2D))
-            {
-                var bounds = boxCollider2D.bounds;
-                Gizmos.DrawWireCube(bounds.center, bounds.size);
+                Gizmos.matrix = transform.localToWorldMatrix;
+                size = meshFilter.sharedMesh.bounds.size;
+                Gizmos.DrawWireMesh(meshFilter.sharedMesh, position, Quaternion.identity, size);
             }
         }
     }

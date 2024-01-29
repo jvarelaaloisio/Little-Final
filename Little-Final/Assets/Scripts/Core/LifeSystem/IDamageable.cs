@@ -2,6 +2,7 @@
 
 namespace Core.LifeSystem
 {
+	[Obsolete]
 	public interface IDamageable
 	{
 		int MaxLifePoints { get; }

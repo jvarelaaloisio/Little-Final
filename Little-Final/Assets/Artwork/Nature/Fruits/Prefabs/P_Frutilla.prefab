@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 4428775972755807247}
   - component: {fileID: 1751770390443398240}
   - component: {fileID: 8862498661953189405}
-  - component: {fileID: 2766274092703511596}
+  - component: {fileID: 5862208134774775893}
   - component: {fileID: 5343002128493634020}
   - component: {fileID: 4959676027531261015}
   - component: {fileID: 334674762602676672}
@@ -221,9 +221,8 @@ MonoBehaviour:
         m_CallState: 2
   debugger: {fileID: 11400000, guid: fb371d2ca97c8124d9d4abd8daeff14c, type: 2}
   resetAfterSeconds: 60
-  resetDamage: 1000
   forceReset: {fileID: 11400000, guid: f1bee943a3bdb9f459fda8de8a196ea5, type: 2}
---- !u!114 &2766274092703511596
+--- !u!114 &5862208134774775893
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -232,26 +231,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3908558111288673973}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47de7ce155d662d4bb7d883ee3ace49b, type: 3}
+  m_Script: {fileID: 11500000, guid: 61e2eb2a48070744c8e921e1d5f2056b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxLifePoints: 4
-  allowOverFlow: 0
-  onLifeChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6814907952974774689}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: UpdateScale
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  <MaxHp>k__BackingField: 4
+  <InitialHp>k__BackingField: 4
+  <CanOverFlowHp>k__BackingField: 0
+  setupInAwake: 1
   onDeath:
     m_PersistentCalls:
       m_Calls:
@@ -279,7 +265,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  debugger: {fileID: 11400000, guid: fb371d2ca97c8124d9d4abd8daeff14c, type: 2}
+  onHeal:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6814907952974774689}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: UpdateScale
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6814907952974774689}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: UpdateScale
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5343002128493634020
 MonoBehaviour:
   m_ObjectHideFlags: 0

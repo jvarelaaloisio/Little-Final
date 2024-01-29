@@ -1,8 +1,10 @@
-﻿using Core.LifeSystem;
+﻿using System;
+using Core.LifeSystem;
 using UnityEngine;
 
 namespace Interactions.Hazards
 {
+	[Obsolete]
 	public class DealDamageOnTrigger : MonoBehaviour
 	{
 		[SerializeField]

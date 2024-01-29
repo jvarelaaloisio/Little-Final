@@ -1,28 +1,22 @@
-﻿using System;
-using System.Collections;
-using Core.Debugging;
+﻿using System.Collections;
 using Core.Interactions;
-using Core.LifeSystem;
 using Events.Channels;
+using HealthSystem.Runtime;
 using UnityEngine;
 
 namespace Interactions.Pickable
 {
-	[RequireComponent(typeof(IDamageable))]
 	public class ResettableItem : PickableItem
 	{
 		[SerializeField]
 		private float resetAfterSeconds = 1;
-		
-		[SerializeField]
-		private int resetDamage = 1000;
 		
 		[Header("Event Channels Listened")]
 		[Tooltip("Can be null")]
 		[SerializeField]
 		private VoidChannelSo forceReset;
 		
-		private IDamageable _damageable;
+		private IHealthComponent _health;
 
 		private Coroutine _deathTimer;
 		
@@ -30,15 +24,20 @@ namespace Interactions.Pickable
 
 		private void Awake()
 		{
-			_damageable = GetComponent<IDamageable>();
+			_health = GetComponent<IHealthComponent>();
+			if (_health == null)
+			{
+				debugger.LogError(DebugTag, $"{nameof(_health)} component not found", this);
+			}
 			forceReset.SubscribeSafely(ResetItem);
 		}
 
 		public override void Interact(IInteractor interactor)
 		{
 			base.Interact(interactor);
-			if (_deathTimer != null) StopCoroutine(_deathTimer);
-			_deathTimer = StartCoroutine(DieInSeconds(resetAfterSeconds));
+			if (_deathTimer != null)
+				StopCoroutine(_deathTimer);
+			_deathTimer = StartCoroutine(ResetIn(resetAfterSeconds));
 		}
 
 		protected override void PutDownInternal()
@@ -48,21 +47,21 @@ namespace Interactions.Pickable
 				StopCoroutine(_deathTimer);
 		}
 		
-		private IEnumerator DieInSeconds(float delay)
+		private IEnumerator ResetIn(float seconds)
 		{
-			yield return new WaitForSeconds(delay);
+			yield return new WaitForSeconds(seconds);
 			ResetItem();
 		}
 
 		private void ResetItem()
 		{
-			if (_damageable == null)
+			if (_health == null)
 			{
 				debugger.LogError(DebugTag, $"Damageable component not found", this);
 				return;
 			}
 
-			_damageable.TakeDamage(resetDamage);
+			_health.Health.Kill();
 		}
 
 		private void OnDestroy()

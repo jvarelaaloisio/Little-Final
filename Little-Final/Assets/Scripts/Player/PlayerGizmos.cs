@@ -28,7 +28,7 @@ namespace Player
 			TryGetComponent(out controller);
 		}
 
-		void Start()
+		private void Start()
 		{
 #if UNITY_EDITOR
 			return;

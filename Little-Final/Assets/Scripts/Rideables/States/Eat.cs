@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Core.Debugging;
-using Core.LifeSystem;
+using HealthSystem.Runtime;
 using UnityEngine;
 
 namespace Rideables.States
@@ -16,7 +16,7 @@ namespace Rideables.States
 		private readonly MonoBehaviour _mono;
 		private Coroutine _eatingCoroutine;
 		private Transform _fruit;
-		private IDamageable _fruitDamageable;
+		private IHealthComponent _fruitHealth;
 
 		public Eat(string name,
 					Transform transform,
@@ -39,9 +39,9 @@ namespace Rideables.States
 		{
 			_fruit = _awareness.Fruit;
 			base.Awake();
-			if (_fruit && _fruit.TryGetComponent(out _fruitDamageable))
+			if (_fruit && _fruit.TryGetComponent(out _fruitHealth))
 			{
-				_fruitDamageable.OnDeath += OnFruitDeath;
+				_fruitHealth.Health.OnDeath += OnFruitDeath;
 			}
 			if (_eatingCoroutine != null)
 			{
@@ -61,8 +61,8 @@ namespace Rideables.States
 
 		public override void Sleep()
 		{
-			if (_fruitDamageable != null)
-				_fruitDamageable.OnDeath -= OnFruitDeath;
+			if (_fruitHealth is { Health: not null })
+				_fruitHealth.Health.OnDeath -= OnFruitDeath;
 			_mono.StopCoroutine(_eatingCoroutine);
 			_eatingCoroutine = null;
 			base.Sleep();
@@ -80,7 +80,7 @@ namespace Rideables.States
 					yield break;
 				}
 
-				if (_fruit.TryGetComponent(out IDamageable damageable))
+				if (_fruit.TryGetComponent(out IHealthComponent damageable))
 					damageable.TakeDamage(_byteDamage);
 
 				yield return waitForPeriod;
