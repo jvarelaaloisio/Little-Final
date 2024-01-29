@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.jvarelaaloisio.health": "1.0.1",
     "com.jvarelaaloisio.prefs": "https://github.com/jvarelaaloisio/UnityPackage-PrefUnits.git",
     "com.laicasaane.unity-editor-icons": "1.0.0",
     "com.marijnzwemmer.unity-toolbar-extender": "https://github.com/marijnz/unity-toolbar-extender.git",
@@ -56,10 +57,17 @@
   },
   "scopedRegistries": [
     {
-      "name": "package.openupm.com",
+      "name": "openupm",
       "url": "https://package.openupm.com",
       "scopes": [
         "com.laicasaane.unity-editor-icons"
+      ]
+    },
+    {
+      "name": "jvarelaaloisio",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.jvarelaaloisio"
       ]
     }
   ]

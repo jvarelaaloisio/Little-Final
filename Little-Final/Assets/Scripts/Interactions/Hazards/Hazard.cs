@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Interactions.Hazards
 {
+	[Obsolete]
 	public abstract class Hazard : MonoBehaviour
 	{
 		#region Variables

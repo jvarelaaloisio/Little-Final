@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Core.Providers;
+using HealthSystem.Runtime;
+using HealthSystem.Runtime.Components;
 using UnityEngine;
 using UnityEngine.Events;
 //using UnityEngine.Rendering.PostProcessing;
@@ -96,6 +98,7 @@ namespace Player
 		[SerializeField]
 		private float deathFadeDuration;
 
+
 		private int _sceneIndex;
 
 		[SerializeField]
@@ -104,9 +107,11 @@ namespace Player
 		[Header("Events")]
 		[SerializeField]
 		private UnityEvent onJump;
-		
+
 		[SerializeField]
 		private UnityEvent onLongJump;
+
+		private IHealthComponent _healthComponent;
 
 		private static readonly int Activate = Shader.PropertyToID(PONCHO_ACTIVATE_FLOAT);
 		private void Start()
@@ -134,8 +139,6 @@ namespace Player
 			controller.onThrew.AddListener(ShowThrewFeedback);
 			controller.OnMount.AddListener(ShowMountingFeedback);
 			controller.OnRide.AddListener(ShowRideFeedback);
-			// controller.OnDeath_OLD += ShowDeathFeedback;
-			controller.onDeath += ShowDeathFeedback;
 			controller.OnGlideChanges += SetFlying;
 			audioManager = FindObjectOfType<AudioManager>();
 			_sceneIndex = gameObject.scene.buildIndex;
@@ -167,14 +170,23 @@ namespace Player
 			GetComponent<PlayerSound>().StopWalk();
 		}
 
+		private void OnValidate()
+		{
+			_healthComponent ??= GetComponent<IHealthComponent>();
+		}
+
 		private void OnEnable()
 		{
 			UpdateManager.Subscribe(this);
+			if (_healthComponent is { Health: not null })
+				_healthComponent.Health.OnDeath += ShowDeathFeedback;
 		}
 
 		private void OnDisable()
 		{
 			UpdateManager.UnSubscribe(this);
+			if (_healthComponent is { Health: not null })
+				_healthComponent.Health.OnDeath -= ShowDeathFeedback;
 		}
 
 		public void OnUpdate()

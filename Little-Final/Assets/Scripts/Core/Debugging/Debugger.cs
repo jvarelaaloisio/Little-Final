@@ -143,6 +143,7 @@ namespace Core.Debugging
 			=> _logger.LogFormat(logType, context, format, args);
 
 		//TODO: Try to get it to work with logInternal
+		[HideInCallstack]
 		public void LogFormat(LogType logType, string format, params object[] args)
 			=> _logger.LogFormat(logType, format, args);
 
@@ -153,6 +154,7 @@ namespace Core.Debugging
 		public void LogException(Exception exception)
 			=> _logger.LogException(exception);
 
+		[HideInCallstack]
 		private void LogInternal(LogType logType, string tag, object message, Object context = null)
 		{
 			if (!enabled || !IsLogTypeAllowed(logType) || filteredTags.Contains(tag))
@@ -221,6 +223,7 @@ namespace Core.Debugging
 
 	public static class DebuggerHelper
 	{
+		[HideInCallstack]
 		public static void LogSafely(this Debugger debugger, string tag, object message, Object context)
 		{
 			if (debugger == null)

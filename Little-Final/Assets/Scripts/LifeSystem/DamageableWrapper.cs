@@ -8,6 +8,7 @@ using Debugger = Core.Debugging.Debugger;
 namespace LifeSystem
 {
 	[AddComponentMenu("Interactions/Damageable")]
+	[Obsolete]
 	public class DamageableWrapper : MonoBehaviour, IDamageable
 	{
 		[SerializeField]

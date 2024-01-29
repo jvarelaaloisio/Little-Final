@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Core;
+using Core.Extensions;
 using Core.Interactions;
 using Core.Stamina;
 using Player.Abilities;
@@ -10,12 +11,14 @@ using Player.States;
 using UnityEngine;
 using UnityEngine.Events;
 using Events.UnityEvents;
+using HealthSystem.Runtime;
+using HealthSystem.Runtime.Components;
 using VarelaAloisio.UpdateManagement.Runtime;
 using Void = Player.States.Void;
 
 namespace Player
 {
-    public class PlayerController : MonoBehaviour, IUpdateable, IDamageHandler, IPlayer, IInteractor, IStaminaContainer
+    public class PlayerController : MonoBehaviour, IUpdateable, IInteractor, IStaminaContainer
     {
         public delegate void StateCallback(State state);
 
@@ -39,7 +42,7 @@ namespace Player
         
         [SerializeField]
         private Transform climbCheckPivot;
-
+        
         [Header("Interactions")]
         [SerializeField]
         private Transform interactionHelper;
@@ -56,10 +59,11 @@ namespace Player
         [Header("Debug")]
         [SerializeField]
         private bool shouldLogTransitions = false;
-
+        
+        private IHealthComponent _healthComponent;
         private IPickable _itemPicked;
         IBody body;
-        DamageHandler damageHandler;
+        [Obsolete]
         private Stamina.Stamina stamina;
         State state;
         private Vector3 _lastSafePosition;
@@ -96,8 +100,6 @@ namespace Player
         public UnityEvent onThrowing;
         public UnityEvent onThrew;
 
-        public SmartEvent onDeath;
-
         public Action<bool> OnGlideChanges = delegate { };
         
         #region Properties
@@ -107,7 +109,6 @@ namespace Player
         public bool LongJumpBuffer { get; set; }
         public Stamina.Stamina Stamina => stamina;
         public State State => state;
-        public DamageHandler DamageHandler => damageHandler;
 
         public int SceneIndex => _sceneIndex;
 
@@ -130,6 +131,15 @@ namespace Player
 
         #endregion
 
+        private void Reset()
+        {
+            _healthComponent ??= GetComponent<HealthComponent>() ?? gameObject.AddComponent<HealthComponent>();
+        }
+
+        private void OnValidate()
+        {
+            _healthComponent ??= GetComponent<HealthComponent>();
+        }
 
         private void Awake()
         {
@@ -138,7 +148,6 @@ namespace Player
             collectableBag = new CollectableBag(PP_Stats.CollectablesForReward,
                                                 UpgradeStamina);
             body = GetComponent<IBody>();
-            damageHandler = new DamageHandler(PP_Stats.LifePoints, PP_Stats.ImmunityTime, OnLifeChanged, _sceneIndex);
             stamina = new Stamina.Stamina(PP_Stats.InitialStamina,
                                         PP_Stats.StaminaRefillDelay,
                                         PP_Stats.StaminaRefillSpeed,
@@ -156,11 +165,20 @@ namespace Player
         {
             UpdateManager.Subscribe(this);
             SaveSafeState(transform.position, transform.rotation);
+            if (_healthComponent != null)
+            {
+                if (_healthComponent.Health != null)
+                    _healthComponent.Health.OnDeath += HandleDeath;
+            }
+            else
+                this.LogError($"{nameof(_healthComponent)} is null!");
         }
 
         private void OnDisable()
         {
             UpdateManager.UnSubscribe(this);
+            if (_healthComponent != null && _healthComponent.Health != null)
+                _healthComponent.Health.OnDeath -= HandleDeath;
         }
 
         public void ChangeState<T>() where T : State, new()
@@ -210,7 +228,7 @@ namespace Player
             isDead = false;
             stamina.RefillCompletely();
             ChangeState<Walk>();
-            damageHandler.ResetLifePoints();
+            _healthComponent.Health.FullyHeal();
             _myTransform.position = LastSafePosition;
             _myTransform.rotation = _lastSafeRotation;
             body.Push(body.Velocity * -1);
@@ -230,11 +248,11 @@ namespace Player
             stamina.RefillCompletely();
         }
 
-        private void OnLifeChanged(float lifePoints)
+        private void HandleDeath()
         {
-            if (isDead || !(lifePoints < 0)) return;
+            if (isDead)
+                return;
             isDead = true;
-            onDeath.Invoke();
             ChangeState<Void>();
             new CountDownTimer(PP_Stats.DeadTime, Revive, SceneIndex).StartTimer();
         }

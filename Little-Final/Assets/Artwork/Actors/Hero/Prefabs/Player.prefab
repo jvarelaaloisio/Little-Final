@@ -852,6 +852,7 @@ GameObject:
   - component: {fileID: 2848432586759233190}
   - component: {fileID: 6637179957253534414}
   - component: {fileID: -7364929631997577867}
+  - component: {fileID: 1513627040958873846}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -903,6 +904,7 @@ MonoBehaviour:
   AbilitiesOnWall: []
   gameManager: {fileID: 11400000, guid: c0c945cf52106ca4c8e76034c77df292, type: 2}
   climbCheckPivot: {fileID: 7574792402906395099}
+  healthComponent: {fileID: 1513627040958873846}
   interactionHelper: {fileID: 1878497753004393544}
   interactionCheckRadius: 0.47
   interactableLayer:
@@ -1123,21 +1125,6 @@ MonoBehaviour:
   onThrew:
     m_PersistentCalls:
       m_Calls: []
-  onDeath:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11400000, guid: f1bee943a3bdb9f459fda8de8a196ea5, type: 2}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: RaiseEvent
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &6687177953548559737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1217,6 +1204,7 @@ MonoBehaviour:
   - {fileID: 5065468767406028637}
   - {fileID: 7257661221088099367}
   controller: {fileID: 6687177953548559742}
+  healthComponent: {fileID: 0}
   blackScreen: {fileID: 0}
   screenFade:
     serializedVersion: 2
@@ -1416,6 +1404,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerRigidBody: {fileID: 3453220764534881402}
   delay: 0.25
+--- !u!114 &1513627040958873846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6687177953548559736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 977f24e1cc38d564a871567808554a16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <MaxHp>k__BackingField: 10
+  <InitialHp>k__BackingField: 10
+  <CanOverFlowHp>k__BackingField: 0
+  setupInAwake: 1
 --- !u!1 &6898763842379415106
 GameObject:
   m_ObjectHideFlags: 0

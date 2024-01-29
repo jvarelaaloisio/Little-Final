@@ -1,5 +1,6 @@
-﻿using Core;
-// using Events.UnityEvents;
+﻿using System.Collections;
+using Core;
+using HealthSystem.Runtime.Components;
 using Interactions.Pickable;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,52 +8,64 @@ using UnityEngine.Events;
 namespace Logic.Code.Others
 {
     [RequireComponent(typeof(PickableItem))]
+    [RequireComponent(typeof(HealthComponent))]
     [RequireComponent(typeof(Rigidbody))]
-    public class PickableRevive : MonoBehaviour, IDamageHandler
+    [DisallowMultipleComponent]
+    public class PickableRevive : MonoBehaviour
     {
-        [SerializeField]
-        private int lifePoints;
-
+        [SerializeField] private float reviveCooldown = 2f;
+        
         [Header("Setup")]
-        [SerializeField]
-        private PickableItem pickableItem;
+        [SerializeField] private PickableItem pickableItem;
 
-        [SerializeField]
-        private Rigidbody rigidbody;
+        [SerializeField] private HealthComponent healthComponent;
 
-        // [Header("Events")]
-        // [SerializeField]
-        // private IntUnityEvent onLifeChanged;
+        [SerializeField] private new Rigidbody rigidbody;
 
-        [SerializeField]
-        private UnityEvent onDeath;
+        [SerializeField] private UnityEvent onDeath;
 
         private TransformData _origin;
 
-        public DamageHandler DamageHandler { get; private set; }
-
+        private void Reset()
+        {
+            pickableItem = GetComponent<PickableItem>();
+            rigidbody = GetComponent<Rigidbody>();
+            healthComponent = GetComponent<HealthComponent>();
+        }
+        
         private void OnValidate()
         {
-            if (!pickableItem)
-                pickableItem = GetComponent<PickableItem>();
-            if (!rigidbody)
-                rigidbody = GetComponent<Rigidbody>();
+            pickableItem ??= GetComponent<PickableItem>();
+            rigidbody ??= GetComponent<Rigidbody>();
+            healthComponent ??= GetComponent<HealthComponent>();
         }
 
         private void Awake()
         {
             _origin = new TransformData(transform);
-            DamageHandler = new DamageHandler(lifePoints, 0, LifeChanged, gameObject.scene.buildIndex);
         }
 
-        private void LifeChanged(float lifePoints)
+        private void OnEnable()
         {
-            // onLifeChanged.Invoke((int) DamageHandler.lifePoints);
-            Debug.Log(DamageHandler.lifePoints);
-            if (DamageHandler.lifePoints > 0)
-                return;
+            healthComponent.Health.OnDeath += HandleDeath;
+        }
+
+        private void OnDisable()
+        {
+            healthComponent.Health.OnDeath -= HandleDeath;
+        }
+
+        private void HandleDeath()
+        {
             onDeath.Invoke();
+            StartCoroutine(ReviveIn(reviveCooldown));
+        }
+
+        private IEnumerator ReviveIn(float delay)
+        {
+            yield return new WaitForSeconds(delay);
             _origin.ApplyDataTo(transform);
+            healthComponent.Health.FullyHeal();
             rigidbody.velocity = Vector3.zero;
         }
     }
