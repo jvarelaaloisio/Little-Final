@@ -14,6 +14,8 @@ namespace Events
 		[SerializeField]
 		private bool destroyComponentAfterEvent = false;
 
+		[SerializeField, TextArea] private string description;
+		
 		[Header("Events")]
 		[SerializeField]
 		private UnityEvent onEvent;
