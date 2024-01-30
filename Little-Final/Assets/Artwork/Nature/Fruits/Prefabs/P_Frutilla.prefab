@@ -68,16 +68,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4428775972755807247}
-  - component: {fileID: 1751770390443398240}
   - component: {fileID: 8862498661953189405}
   - component: {fileID: 5862208134774775893}
-  - component: {fileID: 5343002128493634020}
   - component: {fileID: 4959676027531261015}
+  - component: {fileID: 5343002128493634020}
+  - component: {fileID: 4656857045496093312}
   - component: {fileID: 334674762602676672}
   - component: {fileID: 781928539219432362}
-  - component: {fileID: 5671817175804219044}
   - component: {fileID: 7088276369633447600}
-  - component: {fileID: 4656857045496093312}
   m_Layer: 18
   m_Name: P_Frutilla
   m_TagString: Untagged
@@ -102,65 +100,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!114 &1751770390443398240
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3908558111288673973}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90b8959c6c4c92b46a108db2569d8291, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rigidBody: {fileID: 334674762602676672}
-  onPick:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 949294646476430903}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onPutDown:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 949294646476430903}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  onThrow:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 949294646476430903}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  debugger: {fileID: 11400000, guid: fb371d2ca97c8124d9d4abd8daeff14c, type: 2}
 --- !u!114 &8862498661953189405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,18 +180,6 @@ MonoBehaviour:
   onDeath:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1751770390443398240}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: ForceLoseInteraction
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 5343002128493634020}
         m_TargetAssemblyTypeName: 
         m_MethodName: Destroy
@@ -295,22 +222,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &5343002128493634020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3908558111288673973}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e1cdb9695f544ab9214b840acbd4b28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onBeingDestroyed:
-    m_PersistentCalls:
-      m_Calls: []
-  debugger: {fileID: 11400000, guid: fb371d2ca97c8124d9d4abd8daeff14c, type: 2}
 --- !u!114 &4959676027531261015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,6 +236,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   delay: 2
   destroyComponentAfterEvent: 1
+  description: The fruit grows over the span of a few seconds. Then, the fruit must
+    drop, this event is responsible for the dropping logic.
   onEvent:
     m_PersistentCalls:
       m_Calls:
@@ -352,6 +265,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5343002128493634020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3908558111288673973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e1cdb9695f544ab9214b840acbd4b28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onBeingDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
+  debugger: {fileID: 11400000, guid: fb371d2ca97c8124d9d4abd8daeff14c, type: 2}
+--- !u!114 &4656857045496093312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3908558111288673973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c680f713b0bd68468d34bac9ead6e6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transformListDataProvider: {fileID: 11400000, guid: 18dc60dfe8d98ea449ce5dad196115a6,
+    type: 2}
 --- !u!54 &334674762602676672
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -387,28 +330,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3908558111288673973}
   m_Mesh: {fileID: 7252795065413581681, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
---- !u!64 &5671817175804219044
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3908558111288673973}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7252795065413581681, guid: ec0b2a71d4911df449b956bce853369a, type: 3}
 --- !u!135 &7088276369633447600
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -430,20 +351,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.15
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4656857045496093312
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3908558111288673973}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c680f713b0bd68468d34bac9ead6e6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  transformListDataProvider: {fileID: 11400000, guid: 18dc60dfe8d98ea449ce5dad196115a6,
-    type: 2}
 --- !u!1001 &8038869245959352025
 PrefabInstance:
   m_ObjectHideFlags: 0
