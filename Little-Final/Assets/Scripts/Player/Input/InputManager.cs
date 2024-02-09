@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Player.PlayerInput
@@ -14,6 +15,10 @@ namespace Player.PlayerInput
 			//		Decide which inputReader to use
 			if (SystemInfo.supportsGyroscope)
 				InputReader = new MobileInput();
+			else if (Input.GetJoystickNames().Any(name => name.Contains("Play")))
+			{
+				InputReader = new Ps5Input();
+			}
 			else
 				InputReader = new DesktopInput();
 		}
@@ -44,8 +49,9 @@ namespace Player.PlayerInput
 			=> InputReader.GetThrowInput();
 
 		public static bool CheckInteractInput()
-		{
-			return InputReader.GetInteractInput();
-		}
+			=> InputReader.GetInteractInput();
+
+		public static bool CheckCameraResetInput()
+			=> InputReader.GetCameraResetInput();
 	}
 }

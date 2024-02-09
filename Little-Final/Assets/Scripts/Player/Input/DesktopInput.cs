@@ -37,6 +37,11 @@ public class DesktopInput : IPlayerInput
 		return Input.GetButtonDown("Interact");
 	}
 
+	public bool GetCameraResetInput()
+	{
+		return Input.GetButton("ResetCamera");
+	}
+
 	public bool GetGlideInput()
 	{
 		return Input.GetButton("Jump");
