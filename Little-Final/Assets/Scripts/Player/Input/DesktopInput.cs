@@ -42,6 +42,11 @@ public class DesktopInput : IPlayerInput
 		return Input.GetButton("ResetCamera");
 	}
 
+	public float GetCameraYInput()
+	{
+		return Input.GetAxis("Mouse Y");
+	}
+
 	public bool GetGlideInput()
 	{
 		return Input.GetButton("Jump");

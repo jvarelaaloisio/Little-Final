@@ -47,4 +47,10 @@ public interface IPlayerInput
 	/// </summary>
 	/// <returns></returns>
 	bool GetCameraResetInput();
+
+	/// <summary>
+	/// Returns the input for the Y axis meant for the camera
+	/// </summary>
+	/// <returns></returns>
+	float GetCameraYInput();
 }

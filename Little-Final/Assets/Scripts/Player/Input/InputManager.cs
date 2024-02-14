@@ -27,6 +27,8 @@ namespace Player.PlayerInput
 		public static Vector2 GetHorInput()
 			=> InputReader.GetHorInput();
 
+		public static float GetCameraYInput()
+			=> InputReader.GetCameraYInput();
 		public static bool CheckClimbInput()
 			=> InputReader.GetClimbInput();
 

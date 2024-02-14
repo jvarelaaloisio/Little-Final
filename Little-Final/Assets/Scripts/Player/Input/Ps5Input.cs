@@ -45,6 +45,11 @@ public class Ps5Input : IPlayerInput
         return Input.GetButtonDown("ResetCamera");
     }
 
+    public float GetCameraYInput()
+    {
+        return Input.GetAxis("Mouse Y");
+    }
+
     public bool GetGlideInput()
     {
         return Input.GetButton(JumpBtn);

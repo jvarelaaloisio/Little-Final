@@ -96,6 +96,11 @@ public class MobileInput : MonoBehaviour, IPlayerInput
 		throw new NotImplementedException();
 	}
 
+	public float GetCameraYInput()
+	{
+		throw new NotImplementedException();
+	}
+
 	public bool GetGlideInput()
 	{
 		throw new NotImplementedException();
