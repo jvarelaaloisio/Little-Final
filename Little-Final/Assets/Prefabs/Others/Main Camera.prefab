@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 859958462268357148}
   - component: {fileID: 859958462268357149}
   - component: {fileID: 7164910357979845040}
-  - component: {fileID: 2416293264732320815}
   - component: {fileID: 859958462268357150}
   - component: {fileID: 859958462268357147}
   - component: {fileID: 658383950307125406}
@@ -110,20 +109,9 @@ MonoBehaviour:
   pauseChannel: {fileID: 11400000, guid: 7d34e7dc702f26542a13410e0e45e4fb, type: 2}
   isInputParameter: isInput
   isFlyingParameter: isFlying
---- !u!114 &2416293264732320815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 859958462268357151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d49379e7c266734a886ade065e45beb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  camera: {fileID: 859958462268357148}
-  freeLook: {fileID: 0}
+  isClimbingParameter: isClimbing
+  isLockingParameter: isLocking
+  lockParameter: lock
 --- !u!81 &859958462268357150
 AudioListener:
   m_ObjectHideFlags: 0
