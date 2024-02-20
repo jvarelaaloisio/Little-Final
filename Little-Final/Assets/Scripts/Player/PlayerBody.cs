@@ -190,7 +190,7 @@ public class PlayerBody : MonoBehaviour, IBody
 		{
 			flags[Flag.JUMP_REQUEST] = false;
 			//Physics
-			RigidBody.velocity = Vector3.zero;
+			// RigidBody.velocity = Vector3.zero;
 			RigidBody.AddForce(_jumpForce, ForceMode.Impulse);
 			//Event
 			BodyEvents?.Invoke(BodyEvent.JUMP);
