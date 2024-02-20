@@ -380,6 +380,8 @@ MonoBehaviour:
   origin: 0
   movementSpeed: -1
   autoRecenter: 1
+  recenterAfter: 0
+  recenterDuration: 0
 --- !u!1 &1579883683677640504
 GameObject:
   m_ObjectHideFlags: 0
@@ -1190,6 +1192,7 @@ MonoBehaviour:
   landCollider: {fileID: 0}
   _soundEffects: []
   maxSpeed: 15
+  accelerationRate: 100
   _xMinAngle: 5
   _xMaxAngle: 92
   _yMinAngle: 45

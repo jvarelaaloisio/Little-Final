@@ -16,17 +16,17 @@ namespace Player
 		/// <summary>
 		/// ForceMode
 		/// </summary>
-		public readonly ForceMode ForceMode;
+		public readonly ForceMode Mode;
 
-		public ForceRequest(Vector3 force, ForceMode forceMode = ForceMode.Impulse)
+		public ForceRequest(Vector3 force, ForceMode mode = ForceMode.Impulse)
 		{
 			this.Force = force;
-			ForceMode = forceMode;
+			Mode = mode;
 		}
 
 		public bool Equals(ForceRequest other)
 		{
-			return Force.Equals(other.Force) && ForceMode == other.ForceMode;
+			return Force.Equals(other.Force) && Mode == other.Mode;
 		}
 
 		public override bool Equals(object obj)
@@ -38,7 +38,7 @@ namespace Player
 		{
 			unchecked
 			{
-				return (Force.GetHashCode() * 397) ^ (int) ForceMode;
+				return (Force.GetHashCode() * 397) ^ (int) Mode;
 			}
 		}
 	}

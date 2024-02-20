@@ -36,8 +36,12 @@ namespace Player.Properties
 		[SerializeField]
 		private float timeBeforeFlight;
 
+		[Range(0, 2)]
+		[SerializeField]
+		private float gravityMultiplier = .5f;
 
-		#region Getters
+
+	#region Getters
 		public static float AccelerationFactor => Instance.accelerationFactor;
 		public static float Speed => Instance.speed;
 		public static float TurnSpeed => Instance.turnSpeed;
@@ -46,6 +50,8 @@ namespace Player.Properties
 		public static float StaminaConsumptionDelay => Instance.staminaConsumptionDelay;
 		public static float TimeBeforeFlight => Instance.timeBeforeFlight;
 
-		#endregion
+		public static float GravityMultiplier => Instance.gravityMultiplier;
+
+	#endregion
 	}
 }

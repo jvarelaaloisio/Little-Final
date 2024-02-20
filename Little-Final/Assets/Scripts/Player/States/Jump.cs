@@ -53,7 +53,7 @@ namespace Player.States
 			Vector2 input = InputManager.GetHorInput();
 			Vector3 direction = MoveHelper.GetDirection(input);
 			MoveHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedInTheAir);
-			Body.RequestMovement(new MovementRequest(MyTransform.forward * input.magnitude, currentSpeed));
+			Body.RequestMovement(new MovementRequest(MyTransform.forward * input.magnitude, currentSpeed, currentSpeed));
 
 			CheckForJumpBuffer();
 			CheckClimb();
@@ -77,8 +77,6 @@ namespace Player.States
 			Controller.OnGlideChanges(false);
 			Body.RequestMovement(MovementRequest.InvalidRequest);
 			Body.BodyEvents -= BodyEventsHandler;
-			//-- A glide
-			Body.SetDrag(0);
 		}
 
 		private void BodyEventsHandler(BodyEvent eventType)

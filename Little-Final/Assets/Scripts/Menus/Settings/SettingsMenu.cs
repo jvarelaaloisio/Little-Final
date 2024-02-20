@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Menus;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SettingsMenu : MonoBehaviour
+public class SettingsMenu : Menu
 {
     [Header("Graphics")] 
     public Toggle isFullScreen;
@@ -24,9 +25,10 @@ public class SettingsMenu : MonoBehaviour
         };
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
         foreach (var setting in _settings) setting.Init();
+        base.OnEnable();
     }
 
     private void OnDisable()

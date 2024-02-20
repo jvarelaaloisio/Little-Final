@@ -15,17 +15,19 @@ namespace CharacterMovement
 			return direction;
 		}
 
-		public static void Move(
-			Transform transform,
-			IBody body,
-			Vector3 desiredDirection,
-			float speed)
+		public static void Move(Transform transform,
+		                        IBody body,
+		                        Vector3 desiredDirection,
+		                        float speed,
+		                        float acceleration)
 		{
 			if (!(desiredDirection.magnitude > .1f))
-				return;
-			body.MoveHorizontally(desiredDirection, speed);
+				body.RequestMovement(MovementRequest.InvalidRequest);
+				// return;
+			// body.MoveHorizontally(desiredDirection, speed);
+			body.RequestMovement(new MovementRequest(desiredDirection, speed, acceleration));
 		}
-
+		
 		public static void MoveByForce(
 			Transform transform,
 			IBody body,

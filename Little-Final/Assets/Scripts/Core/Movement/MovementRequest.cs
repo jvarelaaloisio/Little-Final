@@ -11,16 +11,24 @@ namespace Player
 		public readonly Vector3 Direction;
 
 		/// <summary>
+		/// The acceleration for this movement
+		/// </summary>
+		public readonly float Acceleration;
+		
+		/// <summary>
 		/// Goal Speed for the movement
 		/// </summary>
 		public readonly float GoalSpeed;
 
-		public static MovementRequest InvalidRequest => new MovementRequest(Vector3.zero, 0);
+		public static MovementRequest InvalidRequest => new(Vector3.zero, 0, 0);
 
-		public MovementRequest(Vector3 direction, float goalSpeed)
+		public MovementRequest(Vector3 direction,
+		                       float goalSpeed,
+		                       float acceleration)
 		{
 			Direction = direction;
 			GoalSpeed = goalSpeed;
+			Acceleration = acceleration;
 		}
 
 		public Vector3 GetGoalVelocity() => Direction * GoalSpeed;
@@ -50,7 +58,7 @@ namespace Player
 		public override string ToString()
 		{
 			return IsValid()
-						? $"MovementRequest({Direction}, {GoalSpeed})"
+						? $"MovementRequest({Direction}, {GoalSpeed}, {Acceleration})"
 						: $"MovementRequest(Invalid)";
 		}
 

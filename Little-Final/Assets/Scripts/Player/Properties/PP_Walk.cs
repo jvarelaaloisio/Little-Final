@@ -25,7 +25,9 @@ namespace Player.Properties
         [SerializeField] [Range(0, 10, step: .5f)]
         private float throwForce;
 
-        #region Getters
+        [SerializeField] private float acceleration = 1;
+
+    #region Getters
 
         public static float Speed => Instance.speed;
         public static float TurnSpeed => Instance.turnSpeed;
@@ -34,6 +36,8 @@ namespace Player.Properties
         public static float RunStaminaPerSecond => Instance.runStaminaPerSecond;
         public static float ThrowForce => Instance.throwForce;
 
-        #endregion
+        public static float Acceleration => Instance.acceleration;
+
+    #endregion
     }
 }

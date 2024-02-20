@@ -1,4 +1,5 @@
-﻿using CharacterMovement;
+﻿using System;
+using CharacterMovement;
 using Player.PlayerInput;
 using Player.Properties;
 using UnityEngine;
@@ -44,6 +45,7 @@ namespace Player.States
 		/// <summary>
 		/// Reads the input and moves the player horizontally
 		/// </summary>
+		[Obsolete]
 		protected void MoveHorizontally(IBody body, float speed, float turnSpeed)
 		{
 			Vector2 input = InputManager.GetHorInput();
@@ -57,11 +59,11 @@ namespace Player.States
 													PP_Walk.MinSafeAngle))
 			{
 				MoveHelper.Rotate(MyTransform, desiredDirection, turnSpeed);
-				MoveHelper.Move(
-														MyTransform,
-														body,
-														desiredDirection,
-														speed);
+				MoveHelper.Move(MyTransform,
+				                body,
+				                desiredDirection,
+				                speed,
+				                speed);
 			}
 		}
 

@@ -31,7 +31,7 @@ namespace Player.States
 				Vector2 input = InputManager.GetHorInput();
 				Vector3 direction = MoveHelper.GetDirection(input);
 				MoveHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedLongJump);
-				Body.RequestMovement(new MovementRequest(MyTransform.forward, currentSpeed));
+				Body.RequestMovement(new MovementRequest(MyTransform.forward, currentSpeed, currentSpeed));
 				//---------------------------------
 			}
 
