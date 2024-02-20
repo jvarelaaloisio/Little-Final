@@ -14,7 +14,6 @@ namespace HealthSystem.Runtime.Components.Damage
         private void OnDrawGizmos()
         {
             Gizmos.color = new Color(1, 0, 0, 0.25f);
-            Gizmos.color = Color.red;
             var position = Vector3.zero;
             
             if (TryGetComponent(out Collider collider))
