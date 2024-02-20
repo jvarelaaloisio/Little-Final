@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using Core.Extensions;
 using UnityEngine;
 
@@ -14,8 +14,26 @@ namespace Player.PlayerInput
         [ContextMenuItem("Set to current position", nameof(ResetOriginToCurrentPosition))]
         [SerializeField] private float origin = 0;
         [SerializeField] private float movementSpeed = 1;
+        [Header("Recenter")]
         [SerializeField] private bool autoRecenter;
-        
+        [SerializeField] private float recenterAfter;
+        [SerializeField] private float recenterDuration;
+        private float _lastInputTime = 0;
+
+        private void OnEnable()
+        {
+            StartCoroutine(ResetPitchAfter());
+        }
+
+        private IEnumerator ResetPitchAfter()
+        {
+            while (!destroyCancellationToken.IsCancellationRequested)
+            {
+                yield return new WaitUntil(() => Time.time > _lastInputTime + recenterAfter);
+                
+            }
+        }
+
         private void Update()
         {
             if (Input.GetKey(KeyCode.J))
@@ -23,6 +41,10 @@ namespace Player.PlayerInput
                 ResetToOrigin();
             }
             var dir = InputManager.GetCameraYInput();
+            if (dir != 0)
+            {
+                _lastInputTime = Time.time;
+            }
             var vel = dir * movementSpeed * Time.deltaTime;
             if (vel == 0
                 || vel > 0 && WillSurpassUpperBound()
@@ -30,20 +52,17 @@ namespace Player.PlayerInput
             {
                 return;
             }
+
             transform.Translate(0, vel, 0, Space.Self);
 
             bool WillSurpassUpperBound()
-            {
-                return transform.localPosition.y >= upperBound;
-            }
+                => transform.localPosition.y >= upperBound;
 
             bool WillSurpassLowerBound()
-            {
-                return transform.localPosition.y <= lowerBound;
-            }
+                => transform.localPosition.y <= lowerBound;
         }
 
-        public void ResetOriginToCurrentPosition()
+        private void ResetOriginToCurrentPosition()
         {
             origin = transform.localPosition.y;
         }
