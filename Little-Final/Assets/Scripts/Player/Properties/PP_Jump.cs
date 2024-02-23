@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Player.Movement;
 using Player.Properties;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -81,6 +82,8 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	[SerializeField]
 	private LayerMask walls;
 
+	[SerializeField] private StepUpConfigContainer stepUpConfig;
+
 	#region Getters
 
 	public static float JumpForce => Instance.jumpForce;
@@ -100,6 +103,7 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	public static float LongJumpStaminaCost => Instance.longJumpStaminaCost;
 	public static float AwareDistance => Instance.awareDistance;
 	public static LayerMask Walls => Instance.walls;
+	public static StepUpConfigContainer StepUpConfig => Instance.stepUpConfig;
 
 	#endregion
 }

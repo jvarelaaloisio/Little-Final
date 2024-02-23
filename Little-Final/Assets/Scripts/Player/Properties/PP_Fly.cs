@@ -6,17 +6,16 @@ namespace Player.Properties
 	[CreateAssetMenu(menuName = "Properties/Player/Fly", fileName = "PP_Fly")]
 	public class PP_Fly : SingletonScriptable<PP_Fly>
 	{
-		[FormerlySerializedAs("acceleration")]
-		[Range(0, 1500, step: 1f), SerializeField]
-		private float accelerationFactor;
+		[Range(0, 50, step: 1f), SerializeField]
+		private float acceleration;
 		[FormerlySerializedAs("peakSpeed")]
 		[SerializeField]
-		[Range(0, 750, step: 1f)]
+		[Range(0, 50, step: 1f)]
 		private float speed;
-		[Range(0, 100, step: .5f), SerializeField]
+		[Range(0, 50, step: .5f), SerializeField]
 		private float turnSpeed;
 
-		[Range(0, 100, step: .5f), SerializeField]
+		[Range(0, 50, step: .5f), SerializeField]
 		private float drag;
 		[Range(0, 100, step: .5f), SerializeField]
 		private float staminaPerSecond;
@@ -26,7 +25,7 @@ namespace Player.Properties
 		private float accelerationTime;
 
 		#region Getters
-		public static float AccelerationFactor => Instance.accelerationFactor;
+		public static float Acceleration => Instance.acceleration;
 		public static float Speed => Instance.speed;
 		public static float TurnSpeed => Instance.turnSpeed;
 		public static float Drag => Instance.drag;

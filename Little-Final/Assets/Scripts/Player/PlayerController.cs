@@ -13,6 +13,7 @@ using UnityEngine.Events;
 using Events.UnityEvents;
 using HealthSystem.Runtime;
 using HealthSystem.Runtime.Components;
+using Player.Movement;
 using VarelaAloisio.UpdateManagement.Runtime;
 using Void = Player.States.Void;
 
@@ -62,7 +63,7 @@ namespace Player
         
         private IHealthComponent _healthComponent;
         private IPickable _itemPicked;
-        IBody body;
+
         [Obsolete]
         private Stamina.Stamina stamina;
         State state;
@@ -104,7 +105,8 @@ namespace Player
         
         #region Properties
 
-        public IBody Body => body;
+        public IBody Body { get; private set; }
+        public IStepUp StepUp { get; private set; }
         public bool JumpBuffer { get; set; }
         public bool LongJumpBuffer { get; set; }
         public Stamina.Stamina Stamina => stamina;
@@ -147,7 +149,8 @@ namespace Player
             _sceneIndex = gameObject.scene.buildIndex;
             collectableBag = new CollectableBag(PP_Stats.CollectablesForReward,
                                                 UpgradeStamina);
-            body = GetComponent<IBody>();
+            Body = GetComponent<IBody>();
+            StepUp = GetComponent<IStepUp>();
             stamina = new Stamina.Stamina(PP_Stats.InitialStamina,
                                         PP_Stats.StaminaRefillDelay,
                                         PP_Stats.StaminaRefillSpeed,
@@ -231,7 +234,7 @@ namespace Player
             _healthComponent.Health.FullyHeal();
             _myTransform.position = LastSafePosition;
             _myTransform.rotation = _lastSafeRotation;
-            body.Push(body.Velocity * -1);
+            Body.Push(Body.Velocity * -1);
         }
 
         public void ResetJumpBuffers()

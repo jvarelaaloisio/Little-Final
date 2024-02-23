@@ -1,5 +1,7 @@
 ﻿using CharacterMovement;
+using Core.Helpers.Movement;
 using Core.Interactions;
+using Player.Movement;
 using Player.PlayerInput;
 using Player.Properties;
 using UnityEngine;
@@ -57,6 +59,11 @@ namespace Player.States
 
 			CheckForJumpBuffer();
 			CheckClimb();
+			if (Controller.StepUp != null && Controller.StepUp.Can(out var stepPosition, MyTransform.forward, PP_Jump.StepUpConfig))
+			{
+				Controller.StepUp.StepUp(PP_Jump.StepUpConfig, stepPosition, () => Controller.ChangeState<Walk>());
+				Controller.ChangeState<Void>();
+			}
 			Controller.RunAbilityList(Controller.AbilitiesInAir);
 			CheckGlide();
 
@@ -68,7 +75,7 @@ namespace Player.States
 				Controller.ChangeState<Mount>();
 			}
 		}
-
+		
 		public override void OnStateExit()
 		{
 			//-- Deberia irse cuando refactorice para que el controller haga los cambios

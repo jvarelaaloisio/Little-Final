@@ -19,8 +19,6 @@ public class EW_Player : EditorWindow
 	}
 	private void OnGUI()
 	{
-		maxSize = new Vector2(PANEL_WIDTH * 2 + 10, 925);
-		minSize = new Vector2(PANEL_WIDTH * 2 + 10, 925);
 		GUILayout.Label("Stats");
 		Editor.CreateEditor(PP_Stats.Instance).OnInspectorGUI();
 		GUILayout.Space(5);

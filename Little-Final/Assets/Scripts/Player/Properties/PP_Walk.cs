@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Player.Movement;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Player.Properties
@@ -7,7 +8,7 @@ namespace Player.Properties
     [CreateAssetMenu(menuName = "Properties/Player/Walk", fileName = "PP_Walk")]
     public class PP_Walk : SingletonScriptable<PP_Walk>
     {
-        [SerializeField] [Range(0, 100, step: .5f)]
+        [SerializeField] [Range(0, 100, step: .25f)]
         private float speed;
 
         [SerializeField] [Range(0, 100, step: .5f)]
@@ -25,8 +26,11 @@ namespace Player.Properties
         [SerializeField] [Range(0, 10, step: .5f)]
         private float throwForce;
 
-        [SerializeField] private float acceleration = 1;
+        [SerializeField] [Range(0, 25, .25f)]
+        private float acceleration = 1;
 
+        [SerializeField] private StepUpConfigContainer stepUpConfig;
+        
     #region Getters
 
         public static float Speed => Instance.speed;
@@ -35,9 +39,8 @@ namespace Player.Properties
         public static float RunSpeed => Instance.runSpeed;
         public static float RunStaminaPerSecond => Instance.runStaminaPerSecond;
         public static float ThrowForce => Instance.throwForce;
-
         public static float Acceleration => Instance.acceleration;
-
+        public static StepUpConfigContainer StepUpConfig => Instance.stepUpConfig;
     #endregion
     }
 }

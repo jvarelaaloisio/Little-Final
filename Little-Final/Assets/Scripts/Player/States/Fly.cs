@@ -50,8 +50,7 @@ namespace Player.States
 				Vector3 direction = MoveHelper.GetDirection(input);
 				MoveHelper.Rotate(MyTransform, direction, PP_Fly.TurnSpeed);
 				//TODO: Change 4 for editable variable in pp_fly
-				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Fly.Speed, 4));
-				// Controller.MoveByForce(PP_Fly.Force, PP_Fly.TurnSpeed);
+				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Fly.Speed, PP_Fly.Acceleration));
 			}
 		}
 
@@ -71,7 +70,7 @@ namespace Player.States
 			_currentSpeed
 				= Mathf.Lerp(
 					_initialSpeed,
-					PP_Fly.AccelerationFactor,
+					PP_Fly.Acceleration,
 					smoothLerp
 				);
 			Controller.view.SetAccelerationEffect(smoothLerp);

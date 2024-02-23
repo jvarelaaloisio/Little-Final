@@ -1,6 +1,8 @@
 using CharacterMovement;
 using Core.Extensions;
+using Core.Helpers.Movement;
 using Core.Interactions;
+using Player.Movement;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
@@ -58,6 +60,15 @@ namespace Player.States
 				Controller.ChangeState<Jump>();
 
 			CheckClimb();
+
+			if (Controller.StepUp != null && Controller.StepUp.Can(out var stepPosition, MyTransform.forward, PP_Glide.StepUpConfig))
+			{
+				Controller.StepUp.StepUp(PP_Glide.StepUpConfig,
+				                         stepPosition,
+				                         () => Controller.ChangeState<Walk>());
+				Controller.ChangeState<Void>();
+			}
+			
 			CheckForJumpBuffer();
 			Controller.RunAbilityList(Controller.AbilitiesInAir);
 			
@@ -78,6 +89,7 @@ namespace Player.States
 			Body.RequestMovement(MovementRequest.InvalidRequest);
 			Body.BodyEvents -= BodyEventsHandler;
 			Body.CancelConstantForce(_gravitySimulation);
+			Body.Drag = _originalDrag;
 			Body.RigidBody.useGravity = true;
 		}
 
@@ -92,7 +104,7 @@ namespace Player.States
 			else
 			{
 				MoveHelper.Rotate(MyTransform, direction, PP_Glide.TurnSpeed);
-				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Glide.Speed * direction.magnitude, PP_Glide.AccelerationFactor));
+				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Glide.Speed * direction.magnitude, PP_Glide.Acceleration));
 			}
 
 			Controller.OnChangeSpeed(Body.Velocity.IgnoreY().magnitude);
@@ -113,7 +125,6 @@ namespace Player.States
 			if (eventType.Equals(BodyEvent.LAND) && FallHelper.IsGrounded)
 			{
 				Controller.ChangeState<Walk>();
-				Body.RequestForce(new ForceRequest(-Body.Velocity.IgnoreY()));
 			}
 		}
 	}

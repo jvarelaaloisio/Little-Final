@@ -1,6 +1,8 @@
 ﻿using CharacterMovement;
 using Core.Extensions;
+using Core.Helpers.Movement;
 using Core.Interactions;
+using Player.Movement;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
@@ -55,10 +57,6 @@ namespace Player.States
 			Vector2 input = InputManager.GetHorInput();
 
 			bool runInput = InputManager.CheckRunInput();
-			//Speed is halved when walking 
-			float moveSpeed = Mathf.Abs(input.normalized.magnitude * (runInput ? 1 : 0.5f));
-			moveSpeed = body.Velocity.IgnoreY().magnitude;
-			Controller.OnChangeSpeed(moveSpeed);
 
 			Vector3 desiredDirection = MoveHelper.GetDirection(input);
 
@@ -69,7 +67,7 @@ namespace Player.States
 				floorNormal = hit.normal;
 			}
 			Vector3 directionProjectedOnFloor = Vector3.ProjectOnPlane(desiredDirection, floorNormal);
-			Debug.DrawRay(MyTransform.position, directionProjectedOnFloor.normalized / 3, Color.green);
+			Debug.DrawRay(MyTransform.position, directionProjectedOnFloor / 3, Color.green);
 
 			if (MoveHelper.IsSafeAngle(MyTransform.position, directionProjectedOnFloor.normalized, .3f,
 										PP_Walk.MinSafeAngle))
@@ -92,13 +90,27 @@ namespace Player.States
 								desiredDirection.magnitude * PP_Walk.TurnSpeed);
 				MoveHelper.Move(MyTransform,
 								body,
-								desiredDirection,
+								directionProjectedOnFloor,
 								isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed,
 				                PP_Walk.Acceleration);
 			}
 
+			if (input.magnitude > 0
+			    && Controller.StepUp != null
+			    && Controller.StepUp.Can(out var stepPosition, MyTransform.forward, PP_Walk.StepUpConfig))
+			{
+				Controller.StepUp.StepUp(PP_Walk.StepUpConfig,
+				                         stepPosition,
+				                         () => Controller.ChangeState<Walk>());
+				Controller.ChangeState<Void>();
+			}
+
+			float moveSpeed = body.Velocity.IgnoreY().magnitude;
+			Controller.OnChangeSpeed(moveSpeed);
+			
 			if (InputManager.CheckJumpInput())
 				Jump();
+			
 			if (Controller.ItemPicked == null)
 			{
 				CheckClimb();
