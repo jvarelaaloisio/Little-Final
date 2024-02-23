@@ -99,6 +99,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2775901840088077494}
+  - component: {fileID: 7692225601913189730}
   m_Layer: 0
   m_Name: P_StandardTree_Green_Medium
   m_TagString: Untagged
@@ -120,8 +121,31 @@ Transform:
   m_Children:
   - {fileID: 4544132848486013903}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &7692225601913189730
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6591598209206534082}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.38
+  m_Height: 5.2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.74, z: 0.24}
 --- !u!1 &7893096126431661029
 GameObject:
   m_ObjectHideFlags: 0
