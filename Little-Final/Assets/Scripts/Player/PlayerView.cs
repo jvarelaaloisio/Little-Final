@@ -217,6 +217,10 @@ namespace Player
 
 		public void UpdateStamina(float newStaminaAmount)
 		{
+#if DISABLE_UI
+			SetStaminaTransparency(1);
+			return;
+#endif
 			SetStaminaTransparency(0);
 			int circleQty = Mathf.FloorToInt(newStaminaAmount / staminaPerCircle);
 			for (int i = 0; i < staminaUI.Count; i++)
@@ -412,9 +416,12 @@ namespace Player
 			Gizmos.DrawLine(transform.position, controller.LastSafePosition);
 		}
 
-#if UNITY_EDITOR
 		private void OnGUI()
 		{
+#if DISABLE_UI
+			return;
+#endif
+#if UNITY_EDITOR
 			Rect rect = new Rect(10, 400, 250, 550);
 			GUILayout.BeginArea(rect);
 			GUI.skin.label.fontSize = 15;
@@ -424,7 +431,7 @@ namespace Player
 
 			GUILayout.Label("Stamina: " + controller.Stamina.FillState);
 			GUILayout.EndArea();
-		}
 #endif
+		}
 	}
 }

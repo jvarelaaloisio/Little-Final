@@ -165,7 +165,7 @@ namespace Player
         {
             UpdateManager.Subscribe(this);
             SaveSafeState(transform.position, transform.rotation);
-            if (_healthComponent != null)
+            if (_healthComponent != null || TryGetComponent(out _healthComponent))
             {
                 if (_healthComponent.Health != null)
                     _healthComponent.Health.OnDeath += HandleDeath;
@@ -177,7 +177,7 @@ namespace Player
         private void OnDisable()
         {
             UpdateManager.UnSubscribe(this);
-            if (_healthComponent != null && _healthComponent.Health != null)
+            if (_healthComponent is { Health: not null })
                 _healthComponent.Health.OnDeath -= HandleDeath;
         }
 

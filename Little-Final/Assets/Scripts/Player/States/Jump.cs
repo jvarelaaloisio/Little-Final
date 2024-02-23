@@ -50,18 +50,10 @@ namespace Player.States
 				currentSpeed = Mathf.Lerp(0, PP_Jump.Speed, hit.distance / PP_Jump.AwareDistance);
 			}
 
-			//TODO: Delete this and only use moveByForce once the movement tests are finished
-			if (Input.GetKey(KeyCode.RightControl))
-			{
-				MoveHorizontally(Body, PP_Jump.JumpSpeed, PP_Jump.TurnSpeedInTheAir);
-			}
-			else
-			{
-				Vector2 input = InputManager.GetHorInput();
-				Vector3 direction = MoveHelper.GetDirection(input);
-				MoveHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedInTheAir);
-				Body.RequestMovement(new MovementRequest(MyTransform.forward * input.magnitude, currentSpeed));
-			}
+			Vector2 input = InputManager.GetHorInput();
+			Vector3 direction = MoveHelper.GetDirection(input);
+			MoveHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedInTheAir);
+			Body.RequestMovement(new MovementRequest(MyTransform.forward * input.magnitude, currentSpeed));
 
 			CheckForJumpBuffer();
 			CheckClimb();

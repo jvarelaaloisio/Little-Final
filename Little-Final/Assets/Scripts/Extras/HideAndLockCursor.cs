@@ -7,7 +7,9 @@ namespace Extras
 	{
 		private void Awake()
 		{
+#if LOCK_CURSOR
 			Cursor.lockState = CursorLockMode.Confined;
+#endif
 		}
 
 		private void Update()

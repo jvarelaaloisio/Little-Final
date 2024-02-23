@@ -41,4 +41,16 @@ public interface IPlayerInput
 	/// Returns true if the player is pressing the Interact button
 	/// </summary>
 	bool GetInteractInput();
+
+	/// <summary>
+	/// Returns true if the player is pressing the reset camera button
+	/// </summary>
+	/// <returns></returns>
+	bool GetCameraResetInput();
+
+	/// <summary>
+	/// Returns the input for the Y axis meant for the camera
+	/// </summary>
+	/// <returns></returns>
+	float GetCameraYInput();
 }

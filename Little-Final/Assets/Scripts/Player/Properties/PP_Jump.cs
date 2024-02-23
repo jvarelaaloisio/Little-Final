@@ -49,7 +49,7 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	private float longJumpSpeed;
 
 	[SerializeField]
-	[Range(0, 2.5f, step: .5f)]
+	[Range(0, 5f, step: .5f)]
 	private float fallMultiplier;
 
 	//TODO: Revisar que hace este field
