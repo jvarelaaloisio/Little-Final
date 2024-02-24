@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9a0ca7811730514e9b9a7c3a2a049ce, type: 3}
   m_Name: PP_Glide
   m_EditorClassIdentifier: 
-  accelerationFactor: 1
-  speed: 12
-  turnSpeed: 3
-  drag: 10
+  acceleration: 10
+  speed: 6
+  turnSpeed: 1
+  drag: 1
   staminaPerSecond: 10
   staminaConsumptionDelay: 0
   timeBeforeFlight: 3
+  gravityMultiplier: 0.2
+  stepUpConfig: {fileID: 11400000, guid: 37c79b833ff0bea408ec35cab1381af6, type: 2}

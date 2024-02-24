@@ -9,7 +9,7 @@ using VarelaAloisio.UpdateManagement.Runtime;
 
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
+public class PlayerBody : MonoBehaviour, IBody
 {
 	#region Variables
 
@@ -49,15 +49,18 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 
 	AudioManager audioManager;
 
-	Rigidbody rb;
 	private readonly Queue<ForceRequest> _forceRequests = new Queue<ForceRequest>();
+	private readonly HashSet<ForceRequest> _constantForceRequests = new ();
 	private MovementRequest _nextMovement;
 	private Vector3 _jumpForce;
 	private GameObject lastFloor;
 	Vector3 _collisionAngles;
 	public float safeDot;
 
-	#endregion
+	//TODO: Replace with a debug window
+	private float velocityPercentage = 0;
+
+#endregion
 
 	#region Getters
 
@@ -65,14 +68,21 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 
 	public Vector3 Velocity
 	{
-		get => rb.velocity;
-		set => rb.velocity = value;
+		get => RigidBody.velocity;
+		set => RigidBody.velocity = value;
 	}
 
 	public GameObject GameObject => gameObject;
-	public Vector3 LastFloorNormal { get; set; }
+	public Rigidbody RigidBody { get; private set; }
 
-	#endregion
+	public Vector3 LastFloorNormal { get; set; }
+	public float Drag
+	{
+		get => RigidBody.drag;
+		set => RigidBody.drag = value;
+	}
+
+#endregion
 
 	#region Setters
 
@@ -90,7 +100,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 
 	private readonly Dictionary<Flag, bool> flags = new Dictionary<Flag, bool>();
 
-	#endregion
+#endregion
 
 	#endregion
 
@@ -104,48 +114,35 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	void Start()
 	{
 		//TODO:Delete this
-		rb = GetComponent<Rigidbody>();
+		RigidBody = GetComponent<Rigidbody>();
 
 		SetupFlags();
-	}
-
-	private void OnEnable()
-	{
-		UpdateManager.Subscribe(this);
-	}
-
-	private void OnDisable()
-	{
-		UpdateManager.UnSubscribe(this);
-	}
-
-	[Obsolete]
-	public void OnFixedUpdate()
-	{
-		// Debug.DrawRay(transform.position, rb.velocity / 3, Color.cyan);
-		// ControlJump();
-		// AccelerateFall();
-		// ProcessMovementRequests();
 	}
 
 	private void FixedUpdate()
 	{
 		ControlJump();
-		if (!rb.isKinematic)
-			AccelerateFall();
+		// if (!rb.isKinematic)
+		// 	AccelerateFall();
 		ProcessForceRequests();
+		ProcessConstantForceRequests();
 		ProcessMovementRequests();
 		// if (rb.velocity.magnitude > maxSpeed)
 		// 	rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
-		
 	}
 
 	private void ProcessMovementRequests()
 	{
 		if(!_nextMovement.IsValid())
 			return;
-		Vector3 acceleration = (_nextMovement.GetGoalVelocity() - rb.velocity).IgnoreY() * 1000 * Time.fixedDeltaTime;
-		rb.AddForce(acceleration, ForceMode.Force);
+		// Vector3 acceleration = (_nextMovement.GetGoalVelocity() - RigidBody.velocity).IgnoreY() * (_nextMovement.Acceleration * accelerationRate);
+		velocityPercentage = Mathf.Clamp01(_nextMovement.GoalSpeed - Velocity.IgnoreY().magnitude);
+		if (Velocity.IgnoreY().magnitude > _nextMovement.GoalSpeed)
+		{
+			return;
+		}
+		Vector3 acceleration = _nextMovement.Direction * _nextMovement.Acceleration;
+		RigidBody.AddForce(acceleration, ForceMode.Force);
 	}
 
 	#endregion
@@ -160,8 +157,17 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 		while (_forceRequests.Count > 0)
 		{
 			var current = _forceRequests.Dequeue();
-			rb.AddForce(current.Force, current.ForceMode);
+			RigidBody.AddForce(current.Force, current.Mode);
 		}
+	}
+
+	/// <summary>
+	/// Processes the <see cref="_constantForceRequests"/>. This method runs on <see cref="FixedUpdate"/>
+	/// </summary>
+	private void ProcessConstantForceRequests()
+	{
+		foreach (var request in _constantForceRequests)
+			RigidBody.AddForce(request.Force, request.Mode);
 	}
 
 	/// <summary>
@@ -184,8 +190,8 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 		{
 			flags[Flag.JUMP_REQUEST] = false;
 			//Physics
-			rb.velocity = Vector3.zero;
-			rb.AddForce(_jumpForce, ForceMode.Impulse);
+			// RigidBody.velocity = Vector3.zero;
+			RigidBody.AddForce(_jumpForce, ForceMode.Impulse);
 			//Event
 			BodyEvents?.Invoke(BodyEvent.JUMP);
 
@@ -199,15 +205,11 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	/// </summary>
 	public void AccelerateFall()
 	{
-		if (rb.velocity.y < .5 && rb.velocity.y > -10)
+		if (RigidBody.velocity.y < .5 && RigidBody.velocity.y > -10)
 		{
-			rb.velocity += Vector3.up * Physics2D.gravity.y * (PP_Jump.FallMultiplier - 1) * Time.deltaTime;
+			RigidBody.velocity += Vector3.up * Physics2D.gravity.y * (PP_Jump.FallMultiplier - 1) * Time.deltaTime;
 		}
 	}
-
-	public void SetDrag(float value) => rb.drag = value;
-
-	public float GetDrag() => rb.drag;
 
 	void PlaySound(int Index)
 	{
@@ -232,7 +234,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	/// <param name="input"></param>
 	public void MoveHorizontally(Vector3 direction, float speed)
 	{
-		rb.velocity = direction * speed + rb.velocity.y * Vector3.up;
+		RigidBody.velocity = direction * speed + RigidBody.velocity.y * Vector3.up;
 	}
 
 	/// <summary>
@@ -259,7 +261,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	/// </summary>
 	public void StopJump()
 	{
-		rb.velocity += Vector3.up * Physics2D.gravity.y * (PP_Jump.LowJumpMultiplier - 1) * Time.deltaTime;
+		RigidBody.velocity += Vector3.up * Physics2D.gravity.y * (PP_Jump.LowJumpMultiplier - 1) * Time.deltaTime;
 	}
 
 	/// <summary>
@@ -267,6 +269,18 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	/// </summary>
 	/// <param name="request"></param>
 	public void RequestForce(ForceRequest request) => _forceRequests.Enqueue(request);
+	
+	/// <summary>
+	/// Adds a request to the constant forces List
+	/// </summary>
+	/// <param name="request">This force will be applied in every fixed update, scaled by fixedDeltaTime</param>
+	public void RequestConstantForce(ForceRequest request) => _constantForceRequests.Add(request);
+	
+	/// <summary>
+	/// Removes a requests from the constant forces List
+	/// </summary>
+	/// <param name="request"></param>
+	public void CancelConstantForce(ForceRequest request) => _constantForceRequests.Remove(request);
 
 	/// <summary>
 	/// sets the next force to add as simple movement when the fixed update runs.
@@ -275,6 +289,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	/// <param name="request"></param>
 	public void RequestMovementByForce(ForceRequest request)
 	{
+		throw new NotImplementedException();
 	}
 
 	public void RequestMovement(MovementRequest request) => _nextMovement = request;
@@ -286,7 +301,7 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 
 	public void Push(Vector3 direction)
 	{
-		rb.AddForce(direction, ForceMode.Impulse);
+		RigidBody.AddForce(direction, ForceMode.Impulse);
 	}
 
 	public Collider GetLandCollider()
@@ -301,21 +316,18 @@ public class PlayerBody : MonoBehaviour, IFixedUpdateable, IBody
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.gameObject.layer == LayerMask.NameToLayer(INTERACTABLE_LAYER) ||
-			other.gameObject.layer == LayerMask.NameToLayer("OnlyForShadows"))
+		    other.gameObject.layer == LayerMask.NameToLayer("OnlyForShadows"))
 			return;
-		else
+		FallHelper.AddFloor(other.gameObject);
+		flags[Flag.IN_THE_AIR] = false;
+		if (lastFloor != other.gameObject)
 		{
-			FallHelper.AddFloor(other.gameObject);
-			flags[Flag.IN_THE_AIR] = false;
-			if (lastFloor != other.gameObject)
-			{
-				lastFloor = other.gameObject;
-				Physics.Raycast(Position, -transform.up, out RaycastHit hit, 10);
-				LastFloorNormal = hit.normal;
-			}
-
-			BodyEvents?.Invoke(BodyEvent.LAND);
+			lastFloor = other.gameObject;
+			Physics.Raycast(Position, -transform.up, out RaycastHit hit, 10);
+			LastFloorNormal = hit.normal;
 		}
+
+		BodyEvents?.Invoke(BodyEvent.LAND);
 	}
 
 	private void OnTriggerExit(Collider other)

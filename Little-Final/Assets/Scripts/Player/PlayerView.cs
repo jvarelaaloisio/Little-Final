@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core.Extensions;
 using Core.Providers;
 using HealthSystem.Runtime;
 using HealthSystem.Runtime.Components;
@@ -217,10 +218,7 @@ namespace Player
 
 		public void UpdateStamina(float newStaminaAmount)
 		{
-#if DISABLE_UI
-			SetStaminaTransparency(1);
-			return;
-#endif
+#if ENABLE_UI
 			SetStaminaTransparency(0);
 			int circleQty = Mathf.FloorToInt(newStaminaAmount / staminaPerCircle);
 			for (int i = 0; i < staminaUI.Count; i++)
@@ -250,6 +248,10 @@ namespace Player
 			if (Math.Abs(newStaminaAmount - controller.Stamina.MaxStamina)
 				< 0.05f)
 				staminaFadeTimer.StartTimer();
+#else
+			SetStaminaTransparency(1);
+			return;
+#endif
 		}
 
 		public void SetSpeed(float value)
@@ -418,10 +420,7 @@ namespace Player
 
 		private void OnGUI()
 		{
-#if DISABLE_UI
-			return;
-#endif
-#if UNITY_EDITOR
+#if UNITY_EDITOR && ENABLE_UI
 			Rect rect = new Rect(10, 400, 250, 550);
 			GUILayout.BeginArea(rect);
 			GUI.skin.label.fontSize = 15;
@@ -430,6 +429,9 @@ namespace Player
 			GUI.skin.label.normal.textColor = controller.Stamina.IsRefillingActive ? Color.green : Color.red;
 
 			GUILayout.Label("Stamina: " + controller.Stamina.FillState);
+			
+			GUI.skin.label.normal.textColor = Color.white;
+			GUILayout.Label($"Velocity: {controller.Body.Velocity}\n(hor magnitude: {controller.Body.Velocity.IgnoreY().magnitude:F2})");
 			GUILayout.EndArea();
 #endif
 		}

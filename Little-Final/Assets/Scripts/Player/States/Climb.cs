@@ -1,4 +1,5 @@
 ﻿using CharacterMovement;
+using Core.Helpers.Movement;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
@@ -105,7 +106,7 @@ namespace Player.States
 			//Cliff
 			else if (Vector3.Dot(moveDirection, MyTransform.up) > .5f
 					&&
-					ClimbHelper.CanClimbUp(
+					ClimbHelper.CanStepUp(
 											myPosition,
 											MyTransform.up,
 											MyTransform.forward,

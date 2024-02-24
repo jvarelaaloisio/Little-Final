@@ -14,8 +14,6 @@ public interface IBody
 {
 	event BodyEvents BodyEvents;
 	Vector3 Velocity { get; set; }
-	void SetDrag(float value);
-	float GetDrag();
 	void Push(Vector3 directionNormalized, float force);
 	void RequestForce(ForceRequest request);
 	void RequestMovementByForce(ForceRequest request);
@@ -28,5 +26,19 @@ public interface IBody
 	void Jump(Vector3 jumpForce);
 	bool IsInTheAir { get; }
 	GameObject GameObject { get; }
+	Rigidbody RigidBody { get; }
 	Vector3 LastFloorNormal { get; set; }
+	float Drag { get; set; }
+
+	/// <summary>
+	/// Adds a request to the constant forces List
+	/// </summary>
+	/// <param name="request">This force will be applied in every fixed update, scaled by fixedDeltaTime</param>
+	void RequestConstantForce(ForceRequest request);
+
+	/// <summary>
+	/// Removes a requests from the constant forces List
+	/// </summary>
+	/// <param name="request"></param>
+	void CancelConstantForce(ForceRequest request);
 }

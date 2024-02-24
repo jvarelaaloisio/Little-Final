@@ -1,5 +1,8 @@
 using CharacterMovement;
+using Core.Extensions;
+using Core.Helpers.Movement;
 using Core.Interactions;
+using Player.Movement;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
@@ -14,6 +17,9 @@ namespace Player.States
 		protected StaminaConsumer Consumer;
 		protected CountDownTimer SetFlight;
 		private ActionOverTime pushPlayerUp;
+		private ForceRequest _gravitySimulation;
+		private float _originalDrag;
+
 		public Glide() =>
 			Flags = (
 				allowsLanding: true,
@@ -28,7 +34,11 @@ namespace Player.States
 			Body = controller.Body;
 			Body.BodyEvents += BodyEventsHandler;
 			controller.OnGlideChanges(true);
-			Body.SetDrag(PP_Glide.Drag);
+			_originalDrag = Body.Drag;
+			Body.Drag = PP_Glide.Drag;
+			Body.RigidBody.useGravity = false;
+			_gravitySimulation = new ForceRequest(Physics.gravity * PP_Glide.GravityMultiplier, ForceMode.Force);
+			Body.RequestConstantForce(_gravitySimulation);
 
 			SetupConsumer(sceneIndex);
 			Consumer.Start();
@@ -50,6 +60,15 @@ namespace Player.States
 				Controller.ChangeState<Jump>();
 
 			CheckClimb();
+
+			if (Controller.StepUp != null && Controller.StepUp.Can(out var stepPosition, MyTransform.forward, PP_Glide.StepUpConfig))
+			{
+				Controller.StepUp.StepUp(PP_Glide.StepUpConfig,
+				                         stepPosition,
+				                         () => Controller.ChangeState<Walk>());
+				Controller.ChangeState<Void>();
+			}
+			
 			CheckForJumpBuffer();
 			Controller.RunAbilityList(Controller.AbilitiesInAir);
 			
@@ -69,24 +88,26 @@ namespace Player.States
 			SetFlight.StopTimer();
 			Body.RequestMovement(MovementRequest.InvalidRequest);
 			Body.BodyEvents -= BodyEventsHandler;
-			Body.SetDrag(0);
+			Body.CancelConstantForce(_gravitySimulation);
+			Body.Drag = _originalDrag;
+			Body.RigidBody.useGravity = true;
 		}
 
 		protected virtual void Move()
 		{
-			//TODO: Delete this and only use moveByForce once the movement tests are finished
-			if (Input.GetKey(KeyCode.RightControl))
+			Vector2 input = InputManager.GetHorInput();
+			Vector3 direction = MoveHelper.GetDirection(input);
+			if (Vector3.Dot(direction.normalized, MyTransform.forward) < -.5f)
 			{
-				MoveHorizontally(Body, 6f, PP_Glide.TurnSpeed);
+				Body.RequestMovement(new MovementRequest(-Body.Velocity.IgnoreY(), .25f, .25f));
 			}
 			else
 			{
-				Vector2 input = InputManager.GetHorInput();
-				Vector3 direction = MoveHelper.GetDirection(input);
 				MoveHelper.Rotate(MyTransform, direction, PP_Glide.TurnSpeed);
-				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Glide.Speed));
-				// Controller.MoveByForce(PP_Glide.Force, PP_Glide.TurnSpeed);
+				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Glide.Speed * direction.magnitude, PP_Glide.Acceleration));
 			}
+
+			Controller.OnChangeSpeed(Body.Velocity.IgnoreY().magnitude);
 		}
 
 		protected virtual void SetupConsumer(int sceneIndex)

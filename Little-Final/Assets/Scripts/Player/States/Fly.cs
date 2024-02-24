@@ -49,8 +49,8 @@ namespace Player.States
 				Vector2 input = InputManager.GetHorInput();
 				Vector3 direction = MoveHelper.GetDirection(input);
 				MoveHelper.Rotate(MyTransform, direction, PP_Fly.TurnSpeed);
-				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Fly.Speed));
-				// Controller.MoveByForce(PP_Fly.Force, PP_Fly.TurnSpeed);
+				//TODO: Change 4 for editable variable in pp_fly
+				Body.RequestMovement(new MovementRequest(MyTransform.forward, PP_Fly.Speed, PP_Fly.Acceleration));
 			}
 		}
 
@@ -70,16 +70,9 @@ namespace Player.States
 			_currentSpeed
 				= Mathf.Lerp(
 					_initialSpeed,
-					PP_Fly.AccelerationFactor,
+					PP_Fly.Acceleration,
 					smoothLerp
 				);
-			Body.SetDrag(
-				Mathf.Lerp(
-					PP_Glide.Drag,
-					PP_Fly.Drag,
-					smoothLerp
-				)
-			);
 			Controller.view.SetAccelerationEffect(smoothLerp);
 		}
 	}

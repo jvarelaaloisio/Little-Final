@@ -1,5 +1,7 @@
 ﻿using CharacterMovement;
+using Core.Helpers.Movement;
 using Core.Interactions;
+using Player.Movement;
 using Player.PlayerInput;
 using Player.Properties;
 using UnityEngine;
@@ -53,10 +55,15 @@ namespace Player.States
 			Vector2 input = InputManager.GetHorInput();
 			Vector3 direction = MoveHelper.GetDirection(input);
 			MoveHelper.Rotate(MyTransform, direction, PP_Jump.TurnSpeedInTheAir);
-			Body.RequestMovement(new MovementRequest(MyTransform.forward * input.magnitude, currentSpeed));
+			Body.RequestMovement(new MovementRequest(MyTransform.forward * input.magnitude, currentSpeed, currentSpeed));
 
 			CheckForJumpBuffer();
 			CheckClimb();
+			if (Controller.StepUp != null && Controller.StepUp.Can(out var stepPosition, MyTransform.forward, PP_Jump.StepUpConfig))
+			{
+				Controller.StepUp.StepUp(PP_Jump.StepUpConfig, stepPosition, () => Controller.ChangeState<Walk>());
+				Controller.ChangeState<Void>();
+			}
 			Controller.RunAbilityList(Controller.AbilitiesInAir);
 			CheckGlide();
 
@@ -68,7 +75,7 @@ namespace Player.States
 				Controller.ChangeState<Mount>();
 			}
 		}
-
+		
 		public override void OnStateExit()
 		{
 			//-- Deberia irse cuando refactorice para que el controller haga los cambios
@@ -77,8 +84,6 @@ namespace Player.States
 			Controller.OnGlideChanges(false);
 			Body.RequestMovement(MovementRequest.InvalidRequest);
 			Body.BodyEvents -= BodyEventsHandler;
-			//-- A glide
-			Body.SetDrag(0);
 		}
 
 		private void BodyEventsHandler(BodyEvent eventType)

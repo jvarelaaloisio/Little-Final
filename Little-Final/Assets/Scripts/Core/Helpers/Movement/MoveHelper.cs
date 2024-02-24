@@ -1,10 +1,12 @@
-﻿using Player;
+﻿using System;
+using Player;
 using UnityEngine;
 
 namespace CharacterMovement
 {
 	public static class MoveHelper
 	{
+		private static readonly LayerMask InteractableLayerMask = LayerMask.GetMask("Interactable", "Fruit", "Player");
 		public static Vector3 GetDirection(Vector2 input)
 		{
 			var cameraTransform = Camera.main.transform;
@@ -15,17 +17,19 @@ namespace CharacterMovement
 			return direction;
 		}
 
-		public static void Move(
-			Transform transform,
-			IBody body,
-			Vector3 desiredDirection,
-			float speed)
+		public static void Move(Transform transform,
+		                        IBody body,
+		                        Vector3 desiredDirection,
+		                        float speed,
+		                        float acceleration)
 		{
 			if (!(desiredDirection.magnitude > .1f))
-				return;
-			body.MoveHorizontally(desiredDirection, speed);
+				body.RequestMovement(MovementRequest.InvalidRequest);
+				// return;
+			// body.MoveHorizontally(desiredDirection, speed);
+			body.RequestMovement(new MovementRequest(desiredDirection, speed, acceleration));
 		}
-
+		
 		public static void MoveByForce(
 			Transform transform,
 			IBody body,
@@ -69,7 +73,7 @@ namespace CharacterMovement
 												float maxDistance,
 												float minDegrees)
 		{
-			if (Physics.Raycast(position, direction, out RaycastHit hit, maxDistance, ~LayerMask.GetMask("Interactable")) && hit.normal.y * Mathf.Rad2Deg > minDegrees)
+			if (Physics.Raycast(position, direction, out RaycastHit hit, maxDistance, ~InteractableLayerMask) && hit.normal.y * Mathf.Rad2Deg > minDegrees)
 			{
 				Debug.DrawLine(position, hit.point, Color.red);
 				return false;
@@ -88,6 +92,29 @@ namespace CharacterMovement
 									out hit,
 									awareDistance,
 									walls);
+		}
+		
+		[Obsolete("Use StepUpBehaviour/IStepUp")]
+		public static bool CanStepUp(Vector3 actualPosition,
+		                             Vector3 up,
+		                             Vector3 forward,
+		                             float maxUpDistance,
+		                             float maxForwardDistance,
+		                             out RaycastHit hit)
+		{
+			hit = new RaycastHit();
+			var upScaled = up * maxUpDistance;
+			var forwardScaled = forward * maxForwardDistance;
+			if (Physics.Raycast(actualPosition + upScaled, forward, maxForwardDistance, ~InteractableLayerMask))
+				return false;
+			Vector3 targetPosition = actualPosition + upScaled + forwardScaled;
+			var canStepUp = Physics.Raycast(targetPosition, -up, out hit, maxUpDistance, ~InteractableLayerMask);
+			if (canStepUp)
+			{
+				Debug.DrawRay(actualPosition + upScaled, forwardScaled, Color.green, 1f);
+				Debug.DrawRay(targetPosition, -up * hit.distance, Color.red, 1f);
+			}
+			return canStepUp;
 		}
 	}
 }

@@ -23,6 +23,7 @@ namespace Menus.Events
             ImmediateLoadBatch.Validate();
             foreach (var levelBatch in LevelBatches)
                 levelBatch.Validate();
+            ActiveScene.Validate();
         }
 
         /// <summary>

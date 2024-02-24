@@ -1,18 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace CharacterMovement
+namespace Core.Helpers.Movement
 {
 	public static class ClimbHelper
 	{
-		private readonly static LayerMask Interactable;
-
-		static ClimbHelper()
-		{
-			Interactable = LayerMask.GetMask("Interactable");
-		}
-
+		private static readonly LayerMask InteractableLayerMask = LayerMask.GetMask("Interactable", "Fruit");
+		
 		public static bool CanClimb(Vector3 position,
 		                            Vector3 direction,
 		                            float maxDistance,
@@ -24,7 +17,7 @@ namespace CharacterMovement
 				out hit,
 				maxDistance,
 				//TODO:Esto esta hardcodeado la concha de tu hermana
-				~LayerMask.GetMask("NonClimbable", "Interactable", "Fruit")))
+				~LayerMask.GetMask("NonClimbable", "Interactable", "Fruit", "RheaFeet")))
 			{
 				Debug.DrawLine(position, hit.point, Color.white);
 				return hit.normal.y * Mathf.Rad2Deg <= Mathf.Abs(maxDegrees);
@@ -48,7 +41,7 @@ namespace CharacterMovement
 				displacementDirection,
 				out hit,
 				desiredDisplacement,
-				~Interactable))
+				~InteractableLayerMask))
 			{
 				return false;
 			}
@@ -63,7 +56,8 @@ namespace CharacterMovement
 				out hit);
 		}
 
-		public static bool CanClimbUp(Vector3 actualPosition,
+		//TODO: Move to another class. This is now being used by more than the climb related classes
+		public static bool CanStepUp(Vector3 actualPosition,
 		                              Vector3 up,
 		                              Vector3 forward,
 		                              float maxUpDistance,
@@ -71,10 +65,12 @@ namespace CharacterMovement
 		                              out RaycastHit hit)
 		{
 			hit = new RaycastHit();
-			if (Physics.Raycast(actualPosition, up, maxUpDistance, ~Interactable))
+			Debug.DrawRay(actualPosition, up * maxUpDistance, Color.red, 1f);
+			if (Physics.Raycast(actualPosition, up, maxUpDistance, ~InteractableLayerMask))
 				return false;
 			Vector3 targetPosition = actualPosition + up * maxUpDistance + forward * maxForwardDistance;
-			return Physics.Raycast(targetPosition, -up, out hit, maxUpDistance, ~Interactable);
+			Debug.DrawRay(targetPosition, -up, Color.green, 1f);
+			return Physics.Raycast(targetPosition, -up, out hit, maxUpDistance, ~InteractableLayerMask);
 		}
 	}
 }

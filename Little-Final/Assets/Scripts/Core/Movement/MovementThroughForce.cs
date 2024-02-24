@@ -32,7 +32,7 @@ namespace Core.Movement
 			if (direction.magnitude < .1f)
 				return;
 			Debug.DrawRay(transform.position, transform.forward * Speed, Color.white);
-			_mono.StartCoroutine(MoveInFixedUpdate(new MovementRequest(transform.forward, Speed)));
+			_mono.StartCoroutine(MoveInFixedUpdate(new MovementRequest(transform.forward, Speed, Speed)));
 		}
 
 		public void Rotate(Transform transform, Vector3 direction)

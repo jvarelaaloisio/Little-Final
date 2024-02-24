@@ -108,17 +108,7 @@ namespace Menus
             var defaultBackgroundLoadingPriority = Application.backgroundLoadingPriority;
             Application.backgroundLoadingPriority = ThreadPriority.Low;
             yield return new WaitForSeconds(delayBeforeHidingLoadScreen);
-            var activeSceneBuildIndex = _currentLevel.ActiveScene.BuildIndex;
-            if (activeSceneBuildIndex != -1)
-            {
-                var activeScene = SceneManager.GetSceneByBuildIndex(activeSceneBuildIndex);
-                if (activeScene.IsValid())
-                    SceneManager.SetActiveScene(activeScene);
-                else
-                    this.LogError($"Active Scene ({activeScene.name}) is not valid!");
-            }
-            else
-                this.LogError($"Active scene in level ({_currentLevel.ActiveScene}[{activeSceneBuildIndex}]) is not found in build settings!");
+            SetupActiveScene(newLevel);
 
             loadingScreen.gameObject.SetActive(false);
 
@@ -153,6 +143,26 @@ namespace Menus
             }
 
             Application.backgroundLoadingPriority = defaultBackgroundLoadingPriority;
+        }
+
+        private void SetupActiveScene(LevelDataContainer level)
+        {
+            var activeSceneBuildIndex = level.ActiveScene.BuildIndex;
+            if (activeSceneBuildIndex == -1)
+            {
+                this.LogError($"Active scene in level ({level.ActiveScene}[{activeSceneBuildIndex}]) is not found in build settings!");
+                return;
+            }
+
+            var activeScene = SceneManager.GetSceneByBuildIndex(activeSceneBuildIndex);
+            if (!activeScene.IsValid())
+            {
+                this.LogError($"Active Scene ({activeScene.name}) is not valid!");
+                return;
+            }
+
+            SceneManager.SetActiveScene(activeScene);
+            this.Log($"Setting {activeScene.name} as active scene.");
         }
 
         private IEnumerator UpdateLevelLoadProgress(SceneAsyncOperation loadOperation, int scenesAlreadyLoadedQty,
