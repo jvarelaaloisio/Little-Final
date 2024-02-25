@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 namespace Environment.ParticleSystemHelper
 {
@@ -34,16 +32,25 @@ namespace Environment.ParticleSystemHelper
             _collider.isTrigger = true;
         }
 
-        private void Update()
+        private IEnumerator UpdatePosition()
         {
-            if (updatePosition)
+            while (true)
+            {
+                yield return new WaitForEndOfFrame();
+                
+                if(!_invokerTransform) yield break;
+                
                 particle.transform.position = _invokerTransform.position;
+            }
         }
 
         private void OnTriggerEnter(Collider other)
         {
             if (updatePosition)
+            {
                 _invokerTransform = other.transform;
+                StartCoroutine(UpdatePosition());
+            }
             
             PlayParticleSystem();
             onEnterArea?.Invoke();
@@ -74,7 +81,7 @@ namespace Environment.ParticleSystemHelper
 
         private void OnDrawGizmos()
         {
-            if (_collider != null)
+            if (showGizmo && _collider != null)
             {
                 var oldMatrix = Gizmos.matrix;
                 
