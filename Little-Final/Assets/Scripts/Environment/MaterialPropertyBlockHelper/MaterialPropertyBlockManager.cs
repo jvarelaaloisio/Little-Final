@@ -7,11 +7,7 @@ namespace Environment.MaterialPropertyBlockHelper
     [RequireComponent(typeof(Renderer))]
     public class MaterialPropertyBlockManager : MonoBehaviour
     {
-        [SerializeField] private List<PropertyBlockTexture> texturesData;
-        [SerializeField] private List<PropertyBlockColor> colorsData;
-        [SerializeField] private List<PropertyBlockVector4> vectorsData;
-        [SerializeField] private List<PropertyBlockFloat> floatsData;
-        [SerializeField] private List<PropertyBlockInt> integersData;
+        [SerializeField] private PropertyBlockData propertyBlockData;
         
         private Renderer _renderer;
         private MaterialPropertyBlock _propBlock;
@@ -22,7 +18,7 @@ namespace Environment.MaterialPropertyBlockHelper
         }
 
         [ContextMenu("ForceSetMaterialProperties")]
-        private void InitComponentAndSetProperties()
+        public void InitComponentAndSetProperties()
         {
             InitComponent();
             SetMaterialProperties();
@@ -45,41 +41,41 @@ namespace Environment.MaterialPropertyBlockHelper
         
         private void SetMaterialProperties()
         {
-            if (texturesData.Any())
+            if (propertyBlockData.texturesData.Any())
             {
-                foreach (var textureProp in texturesData.Where(propertyBlockTexture => propertyBlockTexture != null))
+                foreach (var textureProp in propertyBlockData.texturesData.Where(propertyBlockTexture => propertyBlockTexture != null))
                 {
                     _propBlock.SetTexture(textureProp.name, textureProp.value);
                 }
             }
             
-            if (vectorsData.Any())
+            if (propertyBlockData.vectorsData.Any())
             {
-                foreach (var vectorProp in vectorsData.Where(propertyBlockTexture => propertyBlockTexture != null))
+                foreach (var vectorProp in propertyBlockData.vectorsData.Where(propertyBlockTexture => propertyBlockTexture != null))
                 {
                     _propBlock.SetVector(vectorProp.name, vectorProp.value);
                 }
             }
             
-            if (colorsData.Any())
+            if (propertyBlockData.colorsData.Any())
             {
-                foreach (var colorProp in colorsData.Where(propertyBlockTexture => propertyBlockTexture != null))
+                foreach (var colorProp in propertyBlockData.colorsData.Where(propertyBlockTexture => propertyBlockTexture != null))
                 {
                     _propBlock.SetColor(colorProp.name, colorProp.value);
                 }
             }
             
-            if (floatsData.Any())
+            if (propertyBlockData.floatsData.Any())
             {
-                foreach (var floatProp in floatsData.Where(propertyBlockTexture => propertyBlockTexture != null))
+                foreach (var floatProp in propertyBlockData.floatsData.Where(propertyBlockTexture => propertyBlockTexture != null))
                 {
                     _propBlock.SetFloat(floatProp.name, floatProp.value);
                 }
             }
             
-            if (integersData.Any())
+            if (propertyBlockData.integersData.Any())
             {
-                foreach (var intProp in integersData.Where(propertyBlockTexture => propertyBlockTexture != null))
+                foreach (var intProp in propertyBlockData.integersData.Where(propertyBlockTexture => propertyBlockTexture != null))
                 {
                     _propBlock.SetInt(intProp.name, intProp.value);
                 }

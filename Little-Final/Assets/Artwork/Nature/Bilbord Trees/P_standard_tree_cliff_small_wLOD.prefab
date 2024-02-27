@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 3736178885208843682}
   - component: {fileID: 8527685599835455114}
   m_Layer: 0
-  m_Name: P_bilboard_standard_tree_cliff_small_wLOD
+  m_Name: P_standard_tree_cliff_small_wLOD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &3736178885208843682
 Transform:
@@ -32,7 +32,7 @@ Transform:
   - {fileID: 3851825053360280649}
   - {fileID: 254659843024300682}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!205 &8527685599835455114
 LODGroup:
@@ -142,6 +142,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c55a954ccee96d6498122eb07bd2b92f,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124681039706073455, guid: c55a954ccee96d6498122eb07bd2b92f,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 6315192630730083159, guid: c55a954ccee96d6498122eb07bd2b92f,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -228,6 +243,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7328787019246580435, guid: 87fb4c52ca454204ab7d1e03f2b11a6c,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 98416164801649228, guid: 87fb4c52ca454204ab7d1e03f2b11a6c,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 87fb4c52ca454204ab7d1e03f2b11a6c,
         type: 3}
       propertyPath: m_Name
@@ -237,6 +262,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 87fb4c52ca454204ab7d1e03f2b11a6c,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 1289522553161714687, guid: 87fb4c52ca454204ab7d1e03f2b11a6c,
         type: 3}

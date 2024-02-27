@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_Bush
+  m_Name: M_FluffyFolliage
   m_Shader: {fileID: 4800000, guid: 3e6bb1954f434654f87ccf0fcd8a33c4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -44,7 +44,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _LeavesAlpha:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: ffba334276e7701479ca39d8bb15ff0e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -56,7 +56,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NoisePatternTexture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 8095a1f622748884d9476cda7163a5d0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -72,7 +72,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture0:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 8095a1f622748884d9476cda7163a5d0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -81,14 +81,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BilbordScale: 1
+    - LOD_FADE: 0
+    - LOD_FADE_CROSSFADE: 0
+    - _BilbordScale: 2
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EffectBlend: 1
-    - _Float0: 0.5
-    - _Float1: 0.1
+    - _Float0: 0.98
+    - _Float1: 1.2
     - _Float2: 2.5
     - _Float3: 2
     - _Float4: 1
@@ -97,15 +99,21 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Inflate: 0
+    - _Keyword0: 0
+    - _LOD_FADE: 0
+    - _LOD_FADE_CROSSFADE: 0
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _RandomFactor: 0
-    - _RandomForceFactor: 0
-    - _SecondaryColorFactor: 0
-    - _ShadowFactor: 0
-    - _Smoothness: 0.5
+    - _RandomFactor: 0.3
+    - _RandomForceFactor: 1.2
+    - _SecondaryColorFactor: 0.5
+    - _ShadowFactor: 0.98
+    - _Shadow_Factor: 0.14705883
+    - _Shadow_MaskScale: 0.01
+    - _ShowdSpots: 0.08
+    - _Smoothness: 0.1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -117,13 +125,13 @@ Material:
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
-    - _BaseColor: {r: 0.30344808, g: 0.6698113, b: 0.26855636, a: 1}
+    - _BaseColor: {r: 0.19215688, g: 0.41960788, b: 0.18823531, a: 1}
     - _Color: {r: 0.3034481, g: 0.6698113, b: 0.2685564, a: 1}
     - _Color0: {r: 0.5570361, g: 0.6320754, b: 0.21168563, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LigthingColor: {r: 0.5570361, g: 0.6320754, b: 0.2116856, a: 0}
+    - _LigthingColor: {r: 0.27058825, g: 0.62352943, b: 0.2509804, a: 0}
     - _MainColor: {r: 0.39215687, g: 0.39215687, b: 0.39215687, a: 1}
-    - _SecondaryColor: {r: 0.55080014, g: 0.8773585, b: 0.5173103, a: 0}
-    - _ShadowSpotsColor: {r: 0.02352941, g: 0.07058821, b: 0.28235298, a: 1}
+    - _SecondaryColor: {r: 0.10196079, g: 0.14901961, b: 0.17254902, a: 1}
+    - _ShadowSpotsColor: {r: 0.02352941, g: 0.070588164, b: 0.28235292, a: 1}
     - _Vector0: {r: 0.42, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

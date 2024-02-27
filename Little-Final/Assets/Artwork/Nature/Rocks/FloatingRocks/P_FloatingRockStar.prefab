@@ -84,7 +84,7 @@ Transform:
   - {fileID: 3738852946643413150}
   - {fileID: 6968872669519446494}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3605863886233812406
 GameObject:
@@ -346,6 +346,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5364472863532215805, guid: ea1a49fe5fb26de4187e3272fa0cd4c2,
+        type: 3}
+      propertyPath: propertyBlockData
+      value: 
+      objectReference: {fileID: 11400000, guid: 9e11bed9b32bda142ac4ce11bdda9067,
+        type: 2}
     - target: {fileID: 6271834110721705631, guid: ea1a49fe5fb26de4187e3272fa0cd4c2,
         type: 3}
       propertyPath: m_Name
@@ -416,6 +422,7 @@ MonoBehaviour:
   periodWhenPlayerIsAway: 0.5
   checkIfThereIsPlayerPeriod: 5
   emissionFactorProperty: _EmissionFac
+  propertyBlockData: {fileID: 11400000, guid: 9e11bed9b32bda142ac4ce11bdda9067, type: 2}
   gameManager: {fileID: 11400000, guid: c0c945cf52106ca4c8e76034c77df292, type: 2}
   renderer: {fileID: 8483743975863991826}
 --- !u!23 &8483743975863991826 stripped

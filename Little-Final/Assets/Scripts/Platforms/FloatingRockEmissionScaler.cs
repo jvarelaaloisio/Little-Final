@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Core;
+using Environment.MaterialPropertyBlockHelper;
 using UnityEngine;
 
 namespace Platforms
@@ -25,6 +26,8 @@ namespace Platforms
 		[Header("Shader Properties")]
 		[SerializeField]
 		private string emissionFactorProperty = "_EmissionFac";
+		// TODO Rework this trash
+		[SerializeField] private PropertyBlockData propertyBlockData;
 
 		private int _emissionFactorId;
 
@@ -53,10 +56,13 @@ namespace Platforms
 				_player = gameManager.Player;
 			}
 
+			var propBlock = new MaterialPropertyBlock();
+			renderer.GetPropertyBlock(propBlock);
+			
 			//CREATE TEMPORAL MATERIAL INSTANCES SO WE DON'T GET UNWANTED GIT CHANGES.
 #if UNITY_EDITOR
-				var tempMat = renderer.sharedMaterial;
-				renderer.sharedMaterial = new Material(tempMat);
+				// var tempMat = renderer.sharedMaterial;
+				// renderer.sharedMaterial = new Material(tempMat);
 #endif
 				_material = renderer.sharedMaterial;
 
@@ -76,7 +82,14 @@ namespace Platforms
 											? 1
 											: Mathf.Lerp(1, 0, distance / maximumDistance);
 
-					_material.SetFloat(_emissionFactorId, emissionValue);
+					// _material.SetFloat(_emissionFactorId, emissionValue);
+					
+					propBlock.SetFloat(_emissionFactorId, emissionValue);
+					
+					// TODO Rework this trash
+					propBlock.SetTexture(propertyBlockData.texturesData[0].name, propertyBlockData.texturesData[0].value);
+					
+					renderer.SetPropertyBlock(propBlock);
 					yield return null;
 				}
 			}
