@@ -1122,7 +1122,8 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.035220116
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2848432586759233190, guid: a6391f8d3b18a5e408952a2a6fb8b97c, type: 3}
     m_RemovedGameObjects:
     - {fileID: 1265494908, guid: a6391f8d3b18a5e408952a2a6fb8b97c, type: 3}
     m_AddedGameObjects:
@@ -1385,7 +1386,7 @@ PrefabInstance:
     - target: {fileID: 6135295185378304477, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
       propertyPath: m_AfterStackBundles.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6135295185378304477, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
@@ -1393,10 +1394,16 @@ PrefabInstance:
       value: PP_RainDropsPPSSettings, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       objectReference: {fileID: 0}
+    - target: {fileID: 6135295185378304477, guid: db91e94b4d0923f4bb41a8c593f487b5,
+        type: 3}
+      propertyPath: m_AfterStackBundles.Array.data[1].assemblyQualifiedName
+      value: M_SpeedLinesPPSSettings, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      objectReference: {fileID: 0}
     - target: {fileID: 7530528372737380344, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
       propertyPath: m_ChildCameras.Array.size
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7530528372737380344, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
@@ -1491,37 +1498,37 @@ PrefabInstance:
     - target: {fileID: 7530528374265684138, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 145.17332
+      value: 1.8484688
       objectReference: {fileID: 0}
     - target: {fileID: 7530528374265684138, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.52765083
+      value: -1.672349
       objectReference: {fileID: 0}
     - target: {fileID: 7530528374265684138, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 118.33702
+      value: -0.69893456
       objectReference: {fileID: 0}
     - target: {fileID: 7530528374265684138, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.23902534
+      value: 0.94627917
       objectReference: {fileID: 0}
     - target: {fileID: 7530528374265684138, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.0077464455
+      value: 0.03066751
       objectReference: {fileID: 0}
     - target: {fileID: 7530528374265684138, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.97047293
+      value: 0.32172427
       objectReference: {fileID: 0}
     - target: {fileID: 7530528374265684138, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.031451542
+      value: -0.01042661
       objectReference: {fileID: 0}
     - target: {fileID: 7541385373353278592, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
@@ -1581,7 +1588,7 @@ PrefabInstance:
     - target: {fileID: 8800648647053558425, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}
       propertyPath: m_ChildCameras.Array.size
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8800648647053558425, guid: db91e94b4d0923f4bb41a8c593f487b5,
         type: 3}

@@ -5,6 +5,7 @@ using Core.Debugging;
 using Core.Extensions;
 using Core.Interactions;
 using Core.Stamina;
+using Events.Channels;
 using Player.Abilities;
 using Player.Collectables;
 using Player.States;
@@ -55,6 +56,8 @@ namespace Player
         private LayerMask interactableLayer;
 
         [SerializeField] private ThrowConfig throwConfig;
+        
+        [SerializeField] private BoolEventChannel pauseChannel;
 
         [Header("Debug")]
         [SerializeField]
@@ -93,7 +96,7 @@ namespace Player
         public SmartEvent OnLongJump;
         public SmartEvent OnLand;
         public SmartEvent OnClimb;
-        public SmartEvent<float> onBuffed;
+        public FloatSmartEvent onBuffed = new();
 
         public UnityEvent OnMount;
         public UnityEvent OnRide;
@@ -117,7 +120,7 @@ namespace Player
             get => _buffMultiplier;
             set
             {
-                // onBuffed.Invoke(value);
+                onBuffed.Invoke(value);
                 _buffMultiplier = value;
             }
         }
@@ -192,6 +195,7 @@ namespace Player
             }
             else
                 this.LogError($"{nameof(_healthComponent)} is null!");
+            pauseChannel.SubscribeSafely(HandlePause);
         }
 
         private void OnDisable()
@@ -199,6 +203,7 @@ namespace Player
             UpdateManager.UnSubscribe(this);
             if (_healthComponent is { Health: not null })
                 _healthComponent.Health.OnDeath -= HandleDeath;
+            pauseChannel.UnsubscribeSafely(HandlePause);
         }
 
         public void ChangeState<T>() where T : State, new()
@@ -280,6 +285,14 @@ namespace Player
             stamina.RefillCompletely();
         }
 
+        private void HandlePause(bool obj)
+        {
+            if (obj)
+                ChangeState<Void>();
+            else
+                ChangeState<Walk>();
+        }
+
         private void HandleDeath()
         {
             if (isDead)
@@ -289,7 +302,7 @@ namespace Player
             new CountDownTimer(PP_Stats.DeadTime, Revive, SceneIndex).StartTimer();
         }
 
-        #endregion
+    #endregion
 
         public bool CanInteract(out IInteractable interactable)
         {

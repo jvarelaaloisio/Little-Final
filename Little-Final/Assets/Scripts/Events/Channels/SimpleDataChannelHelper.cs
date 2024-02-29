@@ -10,6 +10,14 @@ namespace Events.Channels
 		{
 			if (eventChannel) eventChannel.Subscribe(handler);
 		}
+		
+		public static bool UnsubscribeSafely<T>(
+			this EventChannel<T> channel,
+			in Action<T> handler)
+		{
+			if (channel) channel.Unsubscribe(handler);
+			return channel;
+		}
 
 		public static void RaiseEventSafely<T>(
 			this EventChannel<T> eventChannel,

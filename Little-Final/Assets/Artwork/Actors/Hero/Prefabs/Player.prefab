@@ -5744,7 +5744,6 @@ GameObject:
   - component: {fileID: 6687177953548559743}
   - component: {fileID: 1596317607466841938}
   - component: {fileID: 2698818014731140002}
-  - component: {fileID: 2848432586759233190}
   - component: {fileID: 6637179957253534414}
   - component: {fileID: -7364929631997577867}
   - component: {fileID: 1513627040958873846}
@@ -5809,6 +5808,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 270336
   throwConfig: {fileID: 11400000, guid: 1bcd573553d3b4c45b8a07074d6455a3, type: 2}
+  pauseChannel: {fileID: 11400000, guid: 7d34e7dc702f26542a13410e0e45e4fb, type: 2}
   shouldLogTransitions: 0
   debugger: {fileID: 11400000, guid: a778cf4fa9fa8dc458175c1ad3a0c3f6, type: 2}
   OnJump:
@@ -5883,6 +5883,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onBuffed:
+    m_PersistentCalls:
+      m_Calls: []
   OnMount:
     m_PersistentCalls:
       m_Calls:
@@ -6267,14 +6270,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hand: {fileID: 7237131533710722388}
---- !u!81 &2848432586759233190
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6687177953548559736}
-  m_Enabled: 1
 --- !u!114 &6637179957253534414
 MonoBehaviour:
   m_ObjectHideFlags: 0

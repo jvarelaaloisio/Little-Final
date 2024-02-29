@@ -1,9 +1,9 @@
 ﻿using Events.Channels;
 using UnityEngine;
 
-namespace UI
+namespace Menus
 {
-    public class ControlPanel : MonoBehaviour
+    public class ControlPanel : Menu
     {
         [SerializeField] private GameObject container;
 
@@ -19,14 +19,14 @@ namespace UI
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape)) Toggle();
+            if (Input.GetButtonDown("Pause")) Toggle();
         }
 
         public void Toggle()
         {
             _isOn = !_isOn;
             container.SetActive(_isOn);
-            if (pauseChannel) pauseChannel.RaiseEvent(_isOn);
+            pauseChannel.RaiseEventSafely(_isOn);
         }
     }
 }

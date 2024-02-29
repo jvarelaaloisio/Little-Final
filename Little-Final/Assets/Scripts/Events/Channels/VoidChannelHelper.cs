@@ -11,6 +11,7 @@ namespace Events.Channels
 			if (channel) channel.Subscribe(handler);
 			return channel;
 		}
+		
 		public static bool UnsubscribeSafely(
 			this VoidChannelSo channel,
 			in Action handler)
