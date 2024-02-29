@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace Environment.MaterialPropertyBlockHelper
         
         private Renderer _renderer;
         private MaterialPropertyBlock _propBlock;
-
+        
         private void Start()
         {
             InitComponentAndSetProperties();
@@ -43,7 +44,7 @@ namespace Environment.MaterialPropertyBlockHelper
         {
             if (propertyBlockData.texturesData.Any())
             {
-                foreach (var textureProp in propertyBlockData.texturesData.Where(propertyBlockTexture => propertyBlockTexture != null))
+                foreach (var textureProp in propertyBlockData.texturesData.Where(pbd => pbd != null))
                 {
                     _propBlock.SetTexture(textureProp.name, textureProp.value);
                 }
@@ -51,7 +52,7 @@ namespace Environment.MaterialPropertyBlockHelper
             
             if (propertyBlockData.vectorsData.Any())
             {
-                foreach (var vectorProp in propertyBlockData.vectorsData.Where(propertyBlockTexture => propertyBlockTexture != null))
+                foreach (var vectorProp in propertyBlockData.vectorsData.Where(pbd => pbd != null))
                 {
                     _propBlock.SetVector(vectorProp.name, vectorProp.value);
                 }
@@ -59,7 +60,7 @@ namespace Environment.MaterialPropertyBlockHelper
             
             if (propertyBlockData.colorsData.Any())
             {
-                foreach (var colorProp in propertyBlockData.colorsData.Where(propertyBlockTexture => propertyBlockTexture != null))
+                foreach (var colorProp in propertyBlockData.colorsData.Where(pbd => pbd != null))
                 {
                     _propBlock.SetColor(colorProp.name, colorProp.value);
                 }
@@ -67,7 +68,7 @@ namespace Environment.MaterialPropertyBlockHelper
             
             if (propertyBlockData.floatsData.Any())
             {
-                foreach (var floatProp in propertyBlockData.floatsData.Where(propertyBlockTexture => propertyBlockTexture != null))
+                foreach (var floatProp in propertyBlockData.floatsData.Where(pbd => pbd != null))
                 {
                     _propBlock.SetFloat(floatProp.name, floatProp.value);
                 }
@@ -75,7 +76,7 @@ namespace Environment.MaterialPropertyBlockHelper
             
             if (propertyBlockData.integersData.Any())
             {
-                foreach (var intProp in propertyBlockData.integersData.Where(propertyBlockTexture => propertyBlockTexture != null))
+                foreach (var intProp in propertyBlockData.integersData.Where(obd => obd != null))
                 {
                     _propBlock.SetInt(intProp.name, intProp.value);
                 }
