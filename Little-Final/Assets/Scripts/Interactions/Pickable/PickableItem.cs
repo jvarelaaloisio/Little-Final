@@ -13,6 +13,9 @@ namespace Interactions.Pickable
 		[Header("Setup")]
 		[SerializeField]
 		private Rigidbody rigidBody;
+		
+		[SerializeField]
+		private new Collider collider;
 
 		[Header("Events")]
 		public TransformUnityEvent onPick;
@@ -27,16 +30,16 @@ namespace Interactions.Pickable
 
 		private IInteractor _picker;
 
-		private void OnValidate()
+		protected virtual void OnValidate()
 		{
-			if (!rigidBody)
-				rigidBody = GetComponent<Rigidbody>();
+			rigidBody ??= GetComponent<Rigidbody>();
+			collider ??= GetComponent<Collider>();
 		}
 
 		public virtual void Interact(IInteractor interactor)
 		{
 			Transform userTransform = interactor.transform;
-			debugger.Log(name, $"item picked by {userTransform.name}", this);
+			debugger.LogSafely(name, $"item picked by {userTransform.name}", this);
 			_picker = interactor;
 			if (userTransform.TryGetComponent(out HandContainer handContainer))
 			{
@@ -51,22 +54,26 @@ namespace Interactions.Pickable
 				debugger.LogError(name, $"No hand container found on user.\nuser: {userTransform.name}", this);
 			}
 			rigidBody.isKinematic = true;
+			if (collider)
+				collider.enabled = false;
 			onPick.Invoke(_picker.transform);
 		}
 
 		public virtual void Leave()
 		{
-			debugger.Log(name, $"item put down by {_picker.transform.name}", this);
+			debugger.LogSafely(name, $"item put down by {_picker.transform.name}", this);
 			PutDownInternal();
 			onPutDown.Invoke();
 		}
 
-		public virtual void Throw(float force, Vector3 direction)
+		public virtual void Throw(Vector3 scaledDirection)
 		{
-			debugger.Log(name, $"item thrown by {_picker.transform.name}" +
-								$"\nForce: {force}; Direction: {direction} ", this);
+			debugger.LogSafely(name, $"item thrown by {_picker.transform.name}" +
+								$"\nForce: {scaledDirection};", this);
 			PutDownInternal();
-			rigidBody.AddForce(direction * force, ForceMode.Impulse);
+			rigidBody.AddForce(scaledDirection, ForceMode.Impulse);
+			if (collider)
+				collider.enabled = true;
 			onThrow.Invoke(_picker.transform);
 		}
 
@@ -79,6 +86,8 @@ namespace Interactions.Pickable
 		{
 			transform.SetParent(null);
 			rigidBody.isKinematic = false;
+			if (collider)
+				collider.enabled = true;
 		}
 	}
 }

@@ -43,6 +43,8 @@ public class PlayerBody : MonoBehaviour, IBody
 		_colTimeToOff = 0,
 		climbTimeToOff = 0.05f;
 
+	[SerializeField] private LayerMask floorMask;
+	
 	#endregion
 
 	#region Private
@@ -122,20 +124,15 @@ public class PlayerBody : MonoBehaviour, IBody
 	private void FixedUpdate()
 	{
 		ControlJump();
-		// if (!rb.isKinematic)
-		// 	AccelerateFall();
 		ProcessForceRequests();
 		ProcessConstantForceRequests();
 		ProcessMovementRequests();
-		// if (rb.velocity.magnitude > maxSpeed)
-		// 	rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
 	}
 
 	private void ProcessMovementRequests()
 	{
 		if(!_nextMovement.IsValid())
 			return;
-		// Vector3 acceleration = (_nextMovement.GetGoalVelocity() - RigidBody.velocity).IgnoreY() * (_nextMovement.Acceleration * accelerationRate);
 		velocityPercentage = Mathf.Clamp01(_nextMovement.GoalSpeed - Velocity.IgnoreY().magnitude);
 		if (Velocity.IgnoreY().magnitude > _nextMovement.GoalSpeed)
 		{
@@ -190,7 +187,7 @@ public class PlayerBody : MonoBehaviour, IBody
 		{
 			flags[Flag.JUMP_REQUEST] = false;
 			//Physics
-			// RigidBody.velocity = Vector3.zero;
+			RigidBody.velocity = RigidBody.velocity.IgnoreY();
 			RigidBody.AddForce(_jumpForce, ForceMode.Impulse);
 			//Event
 			BodyEvents?.Invoke(BodyEvent.JUMP);
@@ -315,8 +312,7 @@ public class PlayerBody : MonoBehaviour, IBody
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject.layer == LayerMask.NameToLayer(INTERACTABLE_LAYER) ||
-		    other.gameObject.layer == LayerMask.NameToLayer("OnlyForShadows"))
+		if (!floorMask.ContainsLayer(other.gameObject.layer))
 			return;
 		FallHelper.AddFloor(other.gameObject);
 		flags[Flag.IN_THE_AIR] = false;

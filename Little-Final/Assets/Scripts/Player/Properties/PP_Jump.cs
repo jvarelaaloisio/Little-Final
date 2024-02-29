@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Player.Movement;
+﻿using Player.Movement;
 using Player.Properties;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -10,8 +8,7 @@ using UnityEngine.Serialization;
 public class PP_Jump : SingletonScriptable<PP_Jump>
 {
 	[SerializeField]
-	[Range(0, 100, step: .5f)]
-	private float jumpForce;
+	private Vector3 force = new(0, 5.5f, 2);
 
 	[FormerlySerializedAs("acceleration")]
 	[SerializeField]
@@ -70,9 +67,8 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	[UnityEngine.Range(0, 3)]
 	private float coyoteTime;
 
-	[SerializeField]
-	[UnityEngine.Range(0, 3)]
-	private float distanceToGround;
+	[Range(0, 1, 0.05f)]
+	[SerializeField] private float jumpBufferDistance = .5f;
 
 	[Header("wall awareness")]
 	[SerializeField]
@@ -83,10 +79,11 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	private LayerMask walls;
 
 	[SerializeField] private StepUpConfigContainer stepUpConfig;
+	[SerializeField] private bool loseItem = false;
 
 	#region Getters
 
-	public static float JumpForce => Instance.jumpForce;
+	public static Vector3 Force => Instance.force;
 	public static float AccelerationFactor => Instance.accelerationFactor;
 	public static float LongAccelerationFactor => Instance.longAccelerationFactor;
 	public static float Speed => Instance.speed;
@@ -99,11 +96,12 @@ public class PP_Jump : SingletonScriptable<PP_Jump>
 	public static float TurnSpeedInTheAir => Instance.turnSpeedInTheAir;
 	public static float TurnSpeedLongJump => Instance.turnSpeedLongJump;
 	public static float CoyoteTime => Instance.coyoteTime;
-	public static float DistanceToGround => Instance.distanceToGround;
 	public static float LongJumpStaminaCost => Instance.longJumpStaminaCost;
+	public static float JumpBufferDistance => Instance.jumpBufferDistance;
 	public static float AwareDistance => Instance.awareDistance;
 	public static LayerMask Walls => Instance.walls;
 	public static StepUpConfigContainer StepUpConfig => Instance.stepUpConfig;
+	public static bool LoseItem => Instance.loseItem;
 
-	#endregion
+#endregion
 }

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Core;
+using Core.Debugging;
 using Core.Extensions;
 using Core.Interactions;
 using Core.Stamina;
@@ -19,7 +19,7 @@ using Void = Player.States.Void;
 
 namespace Player
 {
-    public class PlayerController : MonoBehaviour, IUpdateable, IInteractor, IStaminaContainer
+    public class PlayerController : MonoBehaviour, IUpdateable, IInteractor, IStaminaContainer, IBuffable
     {
         public delegate void StateCallback(State state);
 
@@ -54,12 +54,12 @@ namespace Player
         [SerializeField]
         private LayerMask interactableLayer;
 
-        [SerializeField]
-        private float throwDelay;
+        [SerializeField] private ThrowConfig throwConfig;
 
         [Header("Debug")]
         [SerializeField]
         private bool shouldLogTransitions = false;
+        [SerializeField] private Debugger debugger;
         
         private IHealthComponent _healthComponent;
         private IPickable _itemPicked;
@@ -67,6 +67,7 @@ namespace Player
         [Obsolete]
         private Stamina.Stamina stamina;
         State state;
+        public Throw ThrowState { get; private set; }
         private Vector3 _lastSafePosition;
         private Quaternion _lastSafeRotation;
         private bool isDead;
@@ -92,23 +93,35 @@ namespace Player
         public SmartEvent OnLongJump;
         public SmartEvent OnLand;
         public SmartEvent OnClimb;
+        public SmartEvent<float> onBuffed;
 
         public UnityEvent OnMount;
         public UnityEvent OnRide;
         public UnityEvent OnDismount;
         public UnityEvent onPick;
         public UnityEvent onPutDown;
-        public UnityEvent onThrowing;
         public UnityEvent onThrew;
 
         public Action<bool> OnGlideChanges = delegate { };
-        
-        #region Properties
+        [SerializeField] private float _buffMultiplier = 1;
+
+    #region Properties
 
         public IBody Body { get; private set; }
         public IStepUp StepUp { get; private set; }
         public bool JumpBuffer { get; set; }
         public bool LongJumpBuffer { get; set; }
+
+        public float BuffMultiplier
+        {
+            get => _buffMultiplier;
+            set
+            {
+                // onBuffed.Invoke(value);
+                _buffMultiplier = value;
+            }
+        }
+
         public Stamina.Stamina Stamina => stamina;
         public State State => state;
 
@@ -156,6 +169,10 @@ namespace Player
                                         PP_Stats.StaminaRefillSpeed,
                                         SceneIndex);
             gameManager.Player = _myTransform;
+            
+            if (!throwConfig)
+                debugger.LogError(name, $"{throwConfig} is null!", this);
+            ThrowState = new Throw(throwConfig, debugger);
         }
 
         private void Start()
@@ -188,6 +205,18 @@ namespace Player
         {
             state.OnStateExit();
             state = new T();
+            if (shouldLogTransitions)
+                Debug.Log($"{name}changed to state: {state.GetType()}");
+            OnStateChanges(state);
+            state.OnStateEnter(this, SceneIndex);
+        }
+        
+        public void ChangeState(string id)
+        {
+            state.OnStateExit();
+            if (id != nameof(Throw))
+                return;
+            state = ThrowState;
             if (shouldLogTransitions)
                 Debug.Log($"{name}changed to state: {state.GetType()}");
             OnStateChanges(state);
@@ -322,23 +351,19 @@ namespace Player
             LoseInteraction();
         }
 
-        public void ThrowItem(float force)
+        /// <summary>
+        /// Throws the held item
+        /// </summary>
+        /// <param name="force">Force based on transform direction to throw the item</param>
+        public void ThrowItem(Vector3 force)
         {
-            onThrowing.Invoke();
-            StartCoroutine(ThrowItemAfterDelay(throwDelay));
-
-            IEnumerator ThrowItemAfterDelay(float delay)
-            {
-                yield return new WaitForSeconds(delay);
-                if (ItemPicked != null)
-                {
-                    ItemPicked.Throw(force, _myTransform.forward + _myTransform.up);
-                    _itemPicked = null;
-                    onThrew.Invoke();
-                }
-            }
+            if (ItemPicked == null)
+                return;
+            ItemPicked.Throw(_myTransform.TransformDirection(force));
+            _itemPicked = null;
+            onThrew.Invoke();
         }
-
+        
         public void LoseInteraction()
         {
             _itemPicked = null;

@@ -47,8 +47,8 @@ namespace Player.PlayerInput
 		public static bool CheckPickInput()
 			=> InputReader.GetPickInput();
 
-		public static bool CheckThrowInput()
-			=> InputReader.GetThrowInput();
+		public static bool IsHoldingInteract()
+			=> InputReader.IsHoldingInteract();
 
 		public static bool CheckInteractInput()
 			=> InputReader.GetInteractInput();

@@ -1,8 +1,6 @@
 ﻿using CharacterMovement;
 using Core.Extensions;
-using Core.Helpers.Movement;
 using Core.Interactions;
-using Player.Movement;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
@@ -13,7 +11,6 @@ namespace Player.States
 {
 	public class Walk : State
 	{
-		private IBody body;
 		private CountDownTimer coyoteEffect;
 		private StaminaConsumer _runningConsumer;
 		private bool isRunning;
@@ -22,7 +19,7 @@ namespace Player.States
 		{
 			base.OnStateEnter(controller, sceneIndex);
 			controller.OnLand.Invoke();
-			body = controller.GetComponent<PlayerBody>();
+			Body = controller.GetComponent<PlayerBody>();
 			isRunning = false;
 
 			_runningConsumer = new StaminaConsumer(controller.Stamina,
@@ -37,18 +34,7 @@ namespace Player.States
 									);
 			Physics.Raycast(MyTransform.position, -MyTransform.up, out RaycastHit hit, 10,
 							~LayerMask.GetMask("Interactable"));
-			body.LastFloorNormal = hit.normal;
-			if (controller.LongJumpBuffer)
-			{
-				controller.ResetJumpBuffers();
-				isRunning = true;
-				Jump();
-			}
-			else if (controller.JumpBuffer)
-			{
-				controller.ResetJumpBuffers();
-				Jump();
-			}
+			Body.LastFloorNormal = hit.normal;
 		}
 
 		public override void OnStateUpdate()
@@ -60,7 +46,7 @@ namespace Player.States
 
 			Vector3 desiredDirection = MoveHelper.GetDirection(input);
 
-			var floorNormal = body.LastFloorNormal;
+			var floorNormal = Body.LastFloorNormal;
 			if (Physics.Raycast(MyTransform.position, -MyTransform.up, out RaycastHit hit, 10,
 			                    ~LayerMask.GetMask("Interactable")))
 			{
@@ -89,9 +75,9 @@ namespace Player.States
 								desiredDirection,
 								desiredDirection.magnitude * PP_Walk.TurnSpeed);
 				MoveHelper.Move(MyTransform,
-								body,
+								Body,
 								directionProjectedOnFloor,
-								isRunning ? PP_Walk.RunSpeed : PP_Walk.Speed,
+								PP_Walk.Speed * Controller.BuffMultiplier,
 				                PP_Walk.Acceleration);
 			}
 
@@ -105,11 +91,11 @@ namespace Player.States
 				Controller.ChangeState<Void>();
 			}
 
-			float moveSpeed = body.Velocity.IgnoreY().magnitude;
+			float moveSpeed = Body.Velocity.IgnoreY().magnitude;
 			Controller.OnChangeSpeed(moveSpeed);
 			
 			if (InputManager.CheckJumpInput())
-				Jump();
+				Jump(desiredDirection, false);
 			
 			if (Controller.ItemPicked == null)
 			{
@@ -119,12 +105,7 @@ namespace Player.States
 			if (InputManager.CheckInteractInput())
 			{
 				if (Controller.HasItem())
-				{
-					if (isRunning)
-						Controller.ThrowItem(PP_Walk.ThrowForce);
-					else
-						Controller.PutDownItem();
-				}
+					Controller.ChangeState(nameof(Throw));
 				else if (Controller.CanInteract(out var interactable))
 				{
 					switch (interactable)
@@ -147,28 +128,10 @@ namespace Player.States
 			Controller.RunAbilityList(Controller.AbilitiesOnLand);
 		}
 
-		private void Jump()
-		{
-			body.Jump(Vector3.up * (isRunning ? PP_Jump.LongJumpForce : PP_Jump.JumpForce));
-			if (isRunning)
-			{
-				Controller.Stamina.ConsumeStamina(PP_Jump.LongJumpStaminaCost);
-				Controller.OnLongJump.Invoke();
-				Controller.ChangeState<LongJump>();
-			}
-			else
-			{
-				Controller.OnJump.Invoke();
-				Controller.ChangeState<Jump>();
-			}
-		}
-
 		public override void OnStateExit()
 		{
 			coyoteEffect.StopTimer();
 			_runningConsumer.Stop();
-			if (Controller.HasItem())
-				Controller.PutDownItem();
 		}
 
 		private void OnCoyoteFinished()

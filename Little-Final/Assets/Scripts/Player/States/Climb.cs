@@ -10,8 +10,6 @@ namespace Player.States
 {
 	public class Climb : State
 	{
-		private IBody _body;
-
 		private Vector3 _originPosition,
 			_targetPosition;
 
@@ -31,8 +29,10 @@ namespace Player.States
 		{
 			base.OnStateEnter(controller, sceneIndex);
 			MyTransform = controller.transform;
-			_body = controller.Body;
 
+			if (Controller.HasItem())
+				Controller.PutDownItem();
+			
 			if (controller.Stamina.FillState < 1)
 			{
 				controller.ChangeState<Jump>();
@@ -95,7 +95,7 @@ namespace Player.States
 				{
 					if (!_consumer.IsConsuming)
 						_consumer.Start();
-					_body.MoveByTransform(moveDirection, PP_Climb.ClimbSpeed);
+					Body.MoveByTransform(moveDirection, PP_Climb.ClimbSpeed);
 					//Rotation
 					Physics.Raycast(myPosition, MyTransform.forward, out var forwardHit,
 						PP_Climb.MaxDistanceToTriggerClimb, ~LayerMask.GetMask("NonClimbable", "Interactable"));

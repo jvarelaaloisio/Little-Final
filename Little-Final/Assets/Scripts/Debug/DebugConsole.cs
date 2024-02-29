@@ -230,7 +230,7 @@ public class DebugConsole : MonoBehaviour
 		string feedback = "";
 		foreach (string s in savedPositions.Keys)
 		{
-			feedback += string.Format("Name: {0}, Position: {1}", s, savedPositions[s]);
+			feedback += string.Format("{0}: {1}\n", s, savedPositions[s]);
 		}
 		if (feedback == "")
 			WriteFeedback("No positions were found");
