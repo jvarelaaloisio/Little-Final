@@ -115,7 +115,6 @@ Shader "Unlit/ModelGrassOnMesh"
             v2f vert(VertexData v, uint instanceID : SV_INSTANCEID)
             {
                 v2f o;
-
                 
                 // Remap for better user health
                 _Height -= 1;
@@ -221,4 +220,5 @@ Shader "Unlit/ModelGrassOnMesh"
             ENDCG
         }
     }
+    FallBack "Diffuse"
 }

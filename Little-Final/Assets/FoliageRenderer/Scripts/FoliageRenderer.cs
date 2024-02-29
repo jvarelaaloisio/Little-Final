@@ -7,6 +7,7 @@ using Core.Providers;
 using FoliageRenderer.Scripts.Data;
 using FoliageRenderer.Scripts.Data.Terrain;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Serialization;
 using static System.Runtime.InteropServices.Marshal;
 
@@ -38,6 +39,9 @@ namespace FoliageRenderer.Scripts
         [SerializeField] private float drop = .2f;
         [SerializeField] private float fogDensity;
         [SerializeField] private float fogOffset;
+        [SerializeField] private Color tipColor;
+        [SerializeField] private Color talloColor;
+        [SerializeField] private Color oldTalloColor;
 
         [Header("Optimization")] [SerializeField]
         private DataProvider<Camera> cameraProvider;
@@ -138,7 +142,10 @@ namespace FoliageRenderer.Scripts
             //Optimization - Cull Mask
             TolerancePropID = Shader.PropertyToID("_Tolerance"),
             TargetColorPropID = Shader.PropertyToID("_TargetColor"),
-            TextureMaskPropID = Shader.PropertyToID("_TextureMask");
+            TextureMaskPropID = Shader.PropertyToID("_TextureMask"),
+            TalloColorPropID = Shader.PropertyToID("_talloColor"),
+            OldTalloColorPropID = Shader.PropertyToID("_oldTip"),
+            TipColorPropID = Shader.PropertyToID("_TipColor");
 
         #endregion
 
@@ -274,6 +281,9 @@ namespace FoliageRenderer.Scripts
                     _chunks[i].material.SetFloat(FogDensityPropID, fogDensity);
                     _chunks[i].material.SetFloat(FogOffsetPropID, fogOffset);
                     _chunks[i].material.SetFloat(OldGrassColorFactorPropID, oldGrassColorFactor);
+                    _chunks[i].material.SetColor(TalloColorPropID, talloColor);
+                    _chunks[i].material.SetColor(OldTalloColorPropID, oldTalloColor);
+                    _chunks[i].material.SetColor(TipColorPropID, tipColor);
                 }
 #endif
                 //TODO Optimize this
@@ -286,12 +296,12 @@ namespace FoliageRenderer.Scripts
                 if (noLOD)
                 {
                     Graphics.DrawMeshInstancedIndirect(grassMesh, 0, _chunks[i].material, FieldBounds,
-                        _chunks[i].argsBuffer);
+                        _chunks[i].argsBuffer, 0, null, ShadowCastingMode.Off, true);
                 }
                 else
                 {
                     Graphics.DrawMeshInstancedIndirect(grassLODMesh, 0, _chunks[i].material, FieldBounds,
-                        _chunks[i].argsBufferLOD);
+                        _chunks[i].argsBuffer, 0, null, ShadowCastingMode.Off, true);
                 }
             }
         }
