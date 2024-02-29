@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7364208851856282330
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b7ce853669ab78498fbf41b508e5116, type: 3}
+  m_Name: M_SpeedLinesPPSSettings
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  _LineQty:
+    overrideState: 1
+    value: 5
+  _Center:
+    overrideState: 1
+    value: {x: 0.5, y: 0.5, z: 0, w: 0}
+  _CenterMaskSize:
+    overrideState: 1
+    value: 0.08
+  _CenterMaskEdge:
+    overrideState: 1
+    value: 0.6
+  _LineDensity:
+    overrideState: 1
+    value: 0.5
+  _LineFalloff:
+    overrideState: 1
+    value: 0.183
+  _Speed:
+    overrideState: 1
+    value: -0.04
+--- !u!114 &-2978040501332712303
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b77c5407dc277943b591ade9e6b18c5, type: 3}
+  m_Name: LensDistortion
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  intensity:
+    overrideState: 1
+    value: -20
+  intensityX:
+    overrideState: 0
+    value: 0.5
+  intensityY:
+    overrideState: 0
+    value: 0.5
+  centerX:
+    overrideState: 0
+    value: 0
+  centerY:
+    overrideState: 0
+    value: 0
+  scale:
+    overrideState: 0
+    value: 1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e6292b2c06870d4495f009f912b9600, type: 3}
+  m_Name: PP_FlyFX
+  m_EditorClassIdentifier: 
+  settings:
+  - {fileID: -7364208851856282330}
+  - {fileID: -2978040501332712303}
