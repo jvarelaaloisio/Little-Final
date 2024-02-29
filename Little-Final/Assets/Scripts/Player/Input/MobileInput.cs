@@ -81,7 +81,7 @@ public class MobileInput : MonoBehaviour, IPlayerInput
 		throw new NotImplementedException();
 	}
 
-	public bool GetThrowInput()
+	public bool IsHoldingInteract()
 	{
 		throw new NotImplementedException();
 	}

@@ -30,7 +30,7 @@ public class Ps5Input : IPlayerInput
         return Input.GetButtonDown("Pick");
     }
 
-    public bool GetThrowInput()
+    public bool IsHoldingInteract()
     {
         return Input.GetButton("Throw");
     }

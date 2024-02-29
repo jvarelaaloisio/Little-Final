@@ -1,5 +1,6 @@
 ﻿using System;
 using CharacterMovement;
+using Core.Extensions;
 using Core.Helpers.Movement;
 using Player.PlayerInput;
 using Player.Properties;
@@ -17,7 +18,9 @@ namespace Player.States
 
 		protected PlayerController Controller;
 		protected Transform MyTransform;
-		private LayerMask _interactable;
+		protected LayerMask Interactable;
+		protected LayerMask Floor = LayerMask.GetMask("Default", "Floor", "Collider");
+		protected IBody Body;
 
 		/// <summary>
 		/// Runs once when the state starts
@@ -27,9 +30,10 @@ namespace Player.States
 		/// <param name="sceneIndex">the index where the player lives</param>
 		public virtual void OnStateEnter(PlayerController controller, int sceneIndex)
 		{
-			_interactable = LayerMask.GetMask("Interactable");
+			Interactable = LayerMask.GetMask("Interactable");
 			Controller = controller;
 			MyTransform = controller.transform;
+			Body = controller.Body;
 		}
 
 		/// <summary>
@@ -105,8 +109,8 @@ namespace Player.States
 				Physics.Raycast(
 								MyTransform.position,
 								-MyTransform.up,
-								.5f,
-								~_interactable))
+								PP_Jump.JumpBufferDistance,
+								Floor))
 			{
 				Controller.LongJumpBuffer = true;
 			}
@@ -114,12 +118,25 @@ namespace Player.States
 					Physics.Raycast(
 									MyTransform.position,
 									-MyTransform.up,
-									.5f,
-									~_interactable))
+									PP_Jump.JumpBufferDistance,
+									Floor))
 			{
-				Controller.JumpBuffer = true;
+				Jump(InputManager.GetHorInput(), true);
+				// Controller.JumpBuffer = true;
 			}
 		}
 		//-----------------------------------------------------------
+		protected void Jump(Vector3 direction, bool isBuffered)
+		{
+			var force = new Vector3(direction.x * PP_Jump.Force.x,
+			                        PP_Jump.Force.y,
+			                        direction.z * PP_Jump.Force.z * Controller.BuffMultiplier);
+			Body.Jump(force);
+			if (isBuffered)
+				Controller.OnLongJump.Invoke();
+			else
+				Controller.OnJump.Invoke();
+			Controller.ChangeState<Jump>();
+		}
 	}
 }

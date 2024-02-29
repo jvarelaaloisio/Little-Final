@@ -6,9 +6,6 @@ namespace Interactions.Pickable
 	public class FruitFeedback : MonoBehaviour
 	{
 		[SerializeField]
-		private float[] scales = new float[5];
-
-		[SerializeField]
 		private FruitMeshData[] fruitMeshData;
 
 		[SerializeField]
@@ -23,9 +20,9 @@ namespace Interactions.Pickable
 			if (!meshRenderer) TryGetComponent(out meshRenderer);
 		}
 
-		public void UpdateScale(int pos)
+		public void UpdateMesh(int pos)
 		{
-			pos = Mathf.Clamp(0, pos, scales.Length - 1);
+			pos = Mathf.Clamp(0, pos, fruitMeshData.Length - 1);
 			meshFilter.mesh = fruitMeshData[pos].Mesh;
 			meshRenderer.sharedMaterial = fruitMeshData[pos].Material;
 		}

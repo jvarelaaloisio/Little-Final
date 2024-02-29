@@ -1,4 +1,5 @@
 ﻿using System;
+using Audio;
 using UnityEngine;
 using UnityEngine.Audio;
 using VarelaAloisio.UpdateManagement.Runtime;
@@ -28,6 +29,7 @@ public class AudioManager : MonoBehaviour
 	AudioSource[] Sources;
 	public AudioMixer Mixer;
 	public AudioMixerSnapshot[] SnapshotsVolDown, SnapshotsVolUp;
+	[SerializeField] private AudioManagerProvider provider;
 	private CountDownTimer randomCut;
 	private CountDownTimer playNextSong;
 	private int _sceneIndex;
@@ -35,7 +37,18 @@ public class AudioManager : MonoBehaviour
 	#endregion
 
 	#region Unity
-	void Start()
+
+	private void OnEnable()
+	{
+		provider.Value = this;
+	}
+
+	private void OnDisable()
+	{
+		if (provider.Value == this)
+			provider.Value = null;
+	}
+	private void Start()
 	{
 		_sceneIndex = gameObject.scene.buildIndex;
 		randomCut = new CountDownTimer(Random.Range(minSongRandomCut, maxSongRandomCut), CutMusic, _sceneIndex);

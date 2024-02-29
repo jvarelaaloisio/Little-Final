@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Core.Providers;
 using Events.Channels;
 using Player.PlayerInput;
@@ -36,9 +37,15 @@ namespace Player
 		[SerializeField] private string isLockingParameter = "isLocking";
 		[SerializeField] private string lockParameter = "lock";
 
-		private void Start()
+		private IEnumerator Start()
 		{
-			view.Controller.OnStateChanges += HandleStateChange;
+			SetLock(true);
+			yield return null;
+			while (!destroyCancellationToken.IsCancellationRequested)
+			{
+				SetLock(InputManager.CheckCameraResetInput());
+				yield return null;
+			}
 		}
 
 		private void OnEnable()
@@ -46,6 +53,7 @@ namespace Player
 			pauseChannel.SubscribeSafely(SetPause);
 			UpdateManager.Subscribe(this);
 			cameraProvider.TrySetValue(GetComponent<Camera>());
+			view.Controller.OnStateChanges += HandleStateChange;
 		}
 
 		private void OnDisable()
@@ -53,6 +61,7 @@ namespace Player
 			pauseChannel.Unsubscribe(SetPause);
 			UpdateManager.UnSubscribe(this);
 			cameraProvider.TrySetValue(null);
+			view.Controller.OnStateChanges -= HandleStateChange;
 		}
 
 		private void HandleStateChange(State state)
@@ -63,11 +72,9 @@ namespace Player
 			                 state is Climb);
 		}
 
-		private void Update()
+		private void SetLock(bool resetInput)
 		{
-			// if (InputManager.CheckCameraResetInput())
-			// 	animator.SetTrigger("lock");
-				animator.SetBool(isLockingParameter, InputManager.CheckCameraResetInput());
+			animator.SetBool(isLockingParameter, resetInput);
 		}
 
 		public void OnLateUpdate()

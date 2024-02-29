@@ -40,6 +40,7 @@ namespace Player.Properties
 		private float gravityMultiplier = .5f;
 
 		[SerializeField] private StepUpConfigContainer stepUpConfig;
+		[SerializeField] private bool loseItem = false;
 
 	#region Getters
 		public static float Acceleration => Instance.acceleration;
@@ -51,6 +52,7 @@ namespace Player.Properties
 		public static float TimeBeforeFlight => Instance.timeBeforeFlight;
 		public static float GravityMultiplier => Instance.gravityMultiplier;
 		public static StepUpConfigContainer StepUpConfig => Instance.stepUpConfig;
+		public static bool LoseItem => Instance.loseItem;
 
 	#endregion
 	}

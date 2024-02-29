@@ -33,7 +33,7 @@ namespace Player.States
 				_rideable.UseAbility();
 			if (InputManager.CheckInteractInput())
 			{
-				Controller.Body.Jump(Vector3.up * PP_Jump.JumpForce - MyTransform.forward * PP_Jump.JumpForce);
+				Controller.Body.Jump(MyTransform.TransformDirection(-PP_Jump.Force));
 				Controller.ChangeState<Jump>();
 			}
 		}

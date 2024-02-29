@@ -13,7 +13,6 @@ namespace Player.States
 {
 	public class Glide : State
 	{
-		protected IBody Body;
 		protected StaminaConsumer Consumer;
 		protected CountDownTimer SetFlight;
 		private ActionOverTime pushPlayerUp;
@@ -31,8 +30,11 @@ namespace Player.States
 		public override void OnStateEnter(PlayerController controller, int sceneIndex)
 		{
 			base.OnStateEnter(controller, sceneIndex);
-			Body = controller.Body;
 			Body.BodyEvents += BodyEventsHandler;
+			
+			if (PP_Glide.LoseItem && Controller.HasItem())
+				Controller.PutDownItem();
+			
 			controller.OnGlideChanges(true);
 			_originalDrag = Body.Drag;
 			Body.Drag = PP_Glide.Drag;
