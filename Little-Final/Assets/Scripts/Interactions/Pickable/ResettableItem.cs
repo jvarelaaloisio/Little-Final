@@ -9,7 +9,7 @@ namespace Interactions.Pickable
 	public class ResettableItem : PickableItem
 	{
 		[SerializeField]
-		private float resetAfterSeconds = 1;
+		private float resetAfterSeconds = 120;
 		
 		[Header("Event Channels Listened")]
 		[Tooltip("Can be null")]

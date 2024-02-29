@@ -27,9 +27,9 @@ public class DesktopInput : IPlayerInput
 		return Input.GetButtonDown("Pick");
 	}
 
-	public bool GetThrowInput()
+	public bool IsHoldingInteract()
 	{
-		return Input.GetButton("Throw");
+		return Input.GetButton("Interact");
 	}
 
 	public bool GetInteractInput()

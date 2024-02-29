@@ -879,6 +879,12 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1391711822}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1391711824 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7050648583619401141, guid: f4239085cb06a22489515b5d876005dd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1391711822}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1702837046
 GameObject:
   m_ObjectHideFlags: 0
@@ -1002,10 +1008,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2016321523}
-  - component: {fileID: 2016321524}
   - component: {fileID: 2016321522}
   - component: {fileID: 2016321521}
   - component: {fileID: 2016321520}
+  - component: {fileID: 2016321524}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1109,6 +1115,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 346b04654e433b44bb667737a68cd2e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultSelection: {fileID: 1391711824}
+  horizontalAxis: Horizontal
+  verticalAxis: Vertical
   container: {fileID: 527298777}
   pauseChannel: {fileID: 11400000, guid: 7d34e7dc702f26542a13410e0e45e4fb, type: 2}
 --- !u!1001 &2128722556

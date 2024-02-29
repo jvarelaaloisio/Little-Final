@@ -35,7 +35,7 @@ public interface IPlayerInput
 	/// Returns true if the player is pressing the throw button
 	/// </summary>
 	/// <returns></returns>
-	bool GetThrowInput();
+	bool IsHoldingInteract();
 
 	/// <summary>
 	/// Returns true if the player is pressing the Interact button

@@ -25,8 +25,6 @@ namespace CharacterMovement
 		{
 			if (!(desiredDirection.magnitude > .1f))
 				body.RequestMovement(MovementRequest.InvalidRequest);
-				// return;
-			// body.MoveHorizontally(desiredDirection, speed);
 			body.RequestMovement(new MovementRequest(desiredDirection, speed, acceleration));
 		}
 		

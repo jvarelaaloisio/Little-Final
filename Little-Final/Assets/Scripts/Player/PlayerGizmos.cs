@@ -52,6 +52,8 @@ namespace Player
 				Gizmos.DrawWireSphere(controller.InteractionHelper.position, controller.InteractionCheckRadius);
 				Gizmos.DrawSphere(controller.InteractionHelper.position, controller.InteractionCheckRadius);
 			}
+			Gizmos.color = Color.yellow;
+			Gizmos.DrawRay(transform.position, PP_Jump.JumpBufferDistance * -transform.up);
 		}
 	}
 }

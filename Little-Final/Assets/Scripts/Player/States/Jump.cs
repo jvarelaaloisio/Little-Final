@@ -1,4 +1,5 @@
 ﻿using CharacterMovement;
+using Core.Extensions;
 using Core.Helpers.Movement;
 using Core.Interactions;
 using Player.Movement;
@@ -11,7 +12,6 @@ namespace Player.States
 {
 	public class Jump : State
 	{
-		protected IBody Body;
 
 		private const float MIN_TIME_BEFORE_GLIDE = .1f;
 		private bool _canGlide = false;
@@ -28,7 +28,9 @@ namespace Player.States
 			base.OnStateEnter(controller, sceneIndex);
 			MyTransform = controller.transform;
 
-			Body = controller.Body;
+			if (PP_Jump.LoseItem && Controller.HasItem())
+				Controller.PutDownItem();
+			
 			Body.BodyEvents += BodyEventsHandler;
 
 			_waitBeforeGlide = new CountDownTimer(

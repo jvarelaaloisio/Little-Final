@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 537b3c2bab840fe4da1a69f77f94a517, type: 3}
   m_Name: PP_Jump
   m_EditorClassIdentifier: 
-  jumpForce: 5.5
+  force: {x: 0, y: 5.5, z: 1}
   accelerationFactor: 3
   longAccelerationFactor: 25
   speed: 3
@@ -26,7 +26,7 @@ MonoBehaviour:
   turnSpeedInTheAir: 3
   turnSpeedLongJump: 1.5
   coyoteTime: 0.1
-  distanceToGround: 0.21
+  jumpBufferDistance: 0.45000002
   awareDistance: 1
   walls:
     serializedVersion: 2

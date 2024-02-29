@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Core.Extensions;
 using Core.Providers;
@@ -115,9 +116,9 @@ namespace Player
 		private IHealthComponent _healthComponent;
 
 		private static readonly int Activate = Shader.PropertyToID(PONCHO_ACTIVATE_FLOAT);
-		private void Start()
+		private IEnumerator Start()
 		{
-			//CREATE TEMPORAL MATERIAL INSTANCES SO WE DON'T GET UNWANTED GIT CHANGES.
+			yield return null;
 #if UNITY_EDITOR
 			Renderer renderer = playerShadow.GetComponent<Renderer>();
 			renderer.sharedMaterial = new Material(playerShadowMaterial);
@@ -136,8 +137,8 @@ namespace Player
 			controller.OnClimb += ShowClimbFeedback;
 			controller.onPick.AddListener(ShowPickFeedback);
 			controller.onPutDown.AddListener(ShowPutDownFeedback);
-			controller.onThrowing.AddListener(ShowThrowingFeedback);
 			controller.onThrew.AddListener(ShowThrewFeedback);
+			controller.ThrowState.OnThrowing += ShowThrowingFeedback;
 			controller.OnMount.AddListener(ShowMountingFeedback);
 			controller.OnRide.AddListener(ShowRideFeedback);
 			controller.OnGlideChanges += SetFlying;
@@ -149,13 +150,6 @@ namespace Player
 			staminaUI.ForEach(ui => ui.color = maxStamina);
 			SetStaminaTransparency(1);
 			_staminaOriginalScale = staminaRings.localScale;
-			//TODO: Limpiá esto, sucio de mierda
-			_mainCamera = Camera.main;
-			//if ((_mainCamera = Camera.main).TryGetComponent(out PostProcessVolume postProcessVolume))
-			//	if (postProcessVolume.profile.TryGetSettings(out lensDistortionSettings))
-			//	{
-			//		originalDistorsionIntensity = lensDistortionSettings.intensity;
-			//	}
 
 			FadePoncho(0);
 			ponchoTurnOff = new ActionOverTime(ponchoTurnOffTime, FadePoncho, _sceneIndex);
@@ -178,6 +172,7 @@ namespace Player
 
 		private void OnEnable()
 		{
+			_mainCamera = Camera.main;
 			UpdateManager.Subscribe(this);
 			if (_healthComponent is { Health: not null })
 				_healthComponent.Health.OnDeath += ShowDeathFeedback;
@@ -429,6 +424,7 @@ namespace Player
 			GUI.skin.label.normal.textColor = controller.Stamina.IsRefillingActive ? Color.green : Color.red;
 
 			GUILayout.Label("Stamina: " + controller.Stamina.FillState);
+			GUILayout.Label($"Buff: {Controller.BuffMultiplier:f2}");
 			
 			GUI.skin.label.normal.textColor = Color.white;
 			GUILayout.Label($"Velocity: {controller.Body.Velocity}\n(hor magnitude: {controller.Body.Velocity.IgnoreY().magnitude:F2})");
