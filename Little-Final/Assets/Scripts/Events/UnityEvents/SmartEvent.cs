@@ -49,11 +49,13 @@ namespace Events.UnityEvents
         }
         
         public static implicit operator Action<T>(SmartEvent<T> original) => original.OnEventInternal;
+        
         public static SmartEvent<T> operator +(SmartEvent<T> original, Action<T> action)
         {
             original.AddListener(action.Invoke);
             return original;
         }
+        
         public static SmartEvent<T> operator -(SmartEvent<T> original, Action<T> action)
         {
             original.RemoveListener(action.Invoke);

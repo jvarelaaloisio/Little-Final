@@ -6,16 +6,14 @@ namespace Player.PlayerInput
 {
 	public static class InputManager
 	{
-		private static readonly IPlayerInput InputReader;
+		public static IPlayerInput InputReader { get; set; }
 		private static Vector2 _getHorInput;
 
 		#region Constructor
 		static InputManager()
 		{
 			//		Decide which inputReader to use
-			if (SystemInfo.supportsGyroscope)
-				InputReader = new MobileInput();
-			else if (Input.GetJoystickNames().Any(name => name.Contains("Play")))
+			if (Input.GetJoystickNames().Any(name => name.Contains("Play")))
 			{
 				InputReader = new Ps5Input();
 			}

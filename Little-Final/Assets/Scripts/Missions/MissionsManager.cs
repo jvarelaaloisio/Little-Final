@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Core.Extensions;
 using Core.Providers;
 using UnityEngine;
@@ -10,6 +9,7 @@ namespace Missions
     {
         [SerializeField] private List<Mission> missions = new();
         [SerializeField] private DataProvider<MissionsManager> provider;
+        
 
         private void OnEnable()
         {

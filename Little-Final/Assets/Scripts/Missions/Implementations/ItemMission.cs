@@ -3,6 +3,7 @@ using Core.Extensions;
 using Core.Helpers;
 using Core.Items;
 using Events.Channels;
+using Events.UnityEvents;
 using UnityEngine;
 
 namespace Missions.Implementations
@@ -14,8 +15,18 @@ namespace Missions.Implementations
         [SerializeField] private int quantityNeeded;
         [SerializeField] private InventoryEventChannel inventoryUpdateChannel;
         [SerializeField] private Mission _mission;
+        public Action<int> onItemQtyChanged;
+        public Action<Mission, int> onMissionAdded;
+        
 
-        public override Mission Get => _mission;
+        public override Mission Get
+        {
+            get
+            {
+                onMissionAdded.Invoke(_mission, quantityNeeded);
+                return _mission;
+            }
+        }
 
         private void OnEnable()
         {
@@ -30,13 +41,13 @@ namespace Missions.Implementations
 
         private void HandleInventoryUpdate(Inventory inventory)
         {
-            if (inventory.Items.TryGetValue(itemId.Get, out var item))
+            if (!inventory.Items.TryGetValue(itemId.Get, out var item))
+                return;
+            onItemQtyChanged.Invoke(item.Quantity);
+            this.Log($"{nameof(inventory)} updated. {item.ID.name}'s quantity: {item.Quantity}");
+            if (item.Quantity >= quantityNeeded)
             {
-                this.Log($"{nameof(inventory)} updated. {item.ID.name}'s quantity: {item.Quantity}");
-                if (item.Quantity >= quantityNeeded)
-                {
-                    Get.Complete();
-                }
+                Get.Complete();
             }
         }
     }
