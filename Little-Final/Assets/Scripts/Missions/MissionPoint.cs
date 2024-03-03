@@ -1,4 +1,5 @@
-﻿using Core.Interactions;
+﻿using Core.Extensions;
+using Core.Interactions;
 using Core.Providers;
 using UnityEngine;
 
@@ -12,8 +13,10 @@ namespace Missions
         {
             if (missionsManagerProvider.TryGetValue(out var missionsManager))
             {
-                missionsManager.AddMission(mission.Get);
+                missionsManager.AddMission(mission.Add());
             }
+            else
+                this.LogWarning($"{nameof(missionsManager)} not found!");
             base.Interact(interactor);
         }
     }

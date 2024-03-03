@@ -5812,6 +5812,7 @@ GameObject:
   - component: {fileID: -7364929631997577867}
   - component: {fileID: 1513627040958873846}
   - component: {fileID: 7662670499699291716}
+  - component: {fileID: 4090090675012073260}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -6428,6 +6429,23 @@ MonoBehaviour:
   maxStepFloorNormalAngle: 30
   debugger: {fileID: 11400000, guid: a778cf4fa9fa8dc458175c1ad3a0c3f6, type: 2}
   debugTag: StepUp
+--- !u!114 &4090090675012073260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6687177953548559736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb5f425897de7a64a88eb1eca662a88e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnItemAdded:
+    m_PersistentCalls:
+      m_Calls: []
+  inventoryUpdateChannel: {fileID: 11400000, guid: a6a4fdc43cc7996479d0851756c19cf3,
+    type: 2}
 --- !u!1 &6898763842379415106
 GameObject:
   m_ObjectHideFlags: 0

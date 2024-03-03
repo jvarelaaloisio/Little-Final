@@ -60,6 +60,8 @@ namespace UI
             {
                 StartCoroutine(AddIcons(_currentQuantity, quantityToAdd));
             }
+
+            _currentQuantity = qty;
         }
 
         private IEnumerator AddIcons(int currentQuantity, int quantityToAdd)

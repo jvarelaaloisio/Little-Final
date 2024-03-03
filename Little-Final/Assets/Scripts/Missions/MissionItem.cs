@@ -46,6 +46,7 @@ namespace Missions
             if (durationAfterAddDelay > 0)
                 yield return new WaitForSeconds(durationAfterAddDelay);
             inputOverride.StopReplacing();
+            gameObject.SetActive(false);
         }
         
         private void OnDrawGizmosSelected()

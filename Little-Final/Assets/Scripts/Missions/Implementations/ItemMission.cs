@@ -19,14 +19,7 @@ namespace Missions.Implementations
         public Action<Mission, int> onMissionAdded;
         
 
-        public override Mission Get
-        {
-            get
-            {
-                onMissionAdded.Invoke(_mission, quantityNeeded);
-                return _mission;
-            }
-        }
+        public override Mission Get => _mission;
 
         private void OnEnable()
         {
@@ -37,6 +30,12 @@ namespace Missions.Implementations
         private void OnDisable()
         {
             inventoryUpdateChannel.UnsubscribeSafely(HandleInventoryUpdate);
+        }
+
+        public override Mission Add()
+        {
+            onMissionAdded.Invoke(_mission, quantityNeeded);
+            return base.Add();
         }
 
         private void HandleInventoryUpdate(Inventory inventory)
