@@ -20,8 +20,8 @@ Shader "Lemu/FX/GodRays"
 		Tags{ "RenderType" = "Transparent"  "Queue" = "Transparent+0" "IgnoreProjector" = "True" "IsEmissive" = "true"  }
 		Cull Back
 		CGINCLUDE
-		#include "UnityShaderVariables.cginc"
 		#include "UnityCG.cginc"
+		#include "UnityShaderVariables.cginc"
 		#include "UnityPBSLighting.cginc"
 		#include "Lighting.cginc"
 		#pragma target 3.0
@@ -97,29 +97,9 @@ Shader "Lemu/FX/GodRays"
 
 		void surf( Input i , inout SurfaceOutput o )
 		{
-			float4 temp_output_21_0_g2 = _EmissionColor;
-			float4 color20_g2 = IsGammaSpace() ? float4(0.509434,0.509434,0.509434,0) : float4(0.2228772,0.2228772,0.2228772,0);
-			float2 temp_cast_0 = (0.1).xx;
-			float3 ase_worldPos = i.worldPos;
-			float2 appendResult5_g2 = (float2(ase_worldPos.x , ase_worldPos.z));
-			float temp_output_2_0_g2 = ( 0.01 * 1.5 );
-			float2 panner10_g8 = ( 1.0 * _Time.y * temp_cast_0 + ( appendResult5_g2 * temp_output_2_0_g2 ));
-			float simplePerlin2D11_g8 = snoise( panner10_g8 );
-			simplePerlin2D11_g8 = simplePerlin2D11_g8*0.5 + 0.5;
-			float temp_output_8_0_g2 = simplePerlin2D11_g8;
-			float2 temp_cast_1 = (0.1).xx;
-			float2 panner10_g12 = ( 1.0 * _Time.y * temp_cast_1 + ( appendResult5_g2 * 0.01 ));
-			float simplePerlin2D11_g12 = snoise( panner10_g12 );
-			simplePerlin2D11_g12 = simplePerlin2D11_g12*0.5 + 0.5;
-			float2 temp_cast_2 = (0.1).xx;
-			float2 panner10_g11 = ( 1.0 * _Time.y * temp_cast_2 + ( appendResult5_g2 * ( temp_output_2_0_g2 * 4.0 ) ));
-			float simplePerlin2D11_g11 = snoise( panner10_g11 );
-			simplePerlin2D11_g11 = simplePerlin2D11_g11*0.5 + 0.5;
-			float3 _Vector2 = float3(0,-1.6,1);
-			float temp_output_16_0_g2 = saturate( (_Vector2.y + (( ( ( temp_output_8_0_g2 * simplePerlin2D11_g12 ) + ( 1.0 - simplePerlin2D11_g11 ) ) * temp_output_8_0_g2 ) - 0.0) * (_Vector2.z - _Vector2.y) / (1.0 - 0.0)) );
-			float4 lerpResult24_g2 = lerp( temp_output_21_0_g2 , saturate( ( temp_output_21_0_g2 * color20_g2 ) ) , ( temp_output_16_0_g2 * 1.0 ));
-			float4 OUT_BaseColor109 = ( lerpResult24_g2 * _EmissiveFactor );
+			float4 OUT_BaseColor109 = ( _EmissionColor * _EmissiveFactor );
 			o.Emission = OUT_BaseColor109.rgb;
+			float3 ase_worldPos = i.worldPos;
 			float3 ase_worldViewDir = normalize( UnityWorldSpaceViewDir( ase_worldPos ) );
 			float3 ase_worldNormal = i.worldNormal;
 			float fresnelNdotV16 = dot( ase_worldNormal, ase_worldViewDir );
@@ -135,9 +115,9 @@ Shader "Lemu/FX/GodRays"
 			float MASK_DistanceMask100 = saturate( (-1.7 + (cameraDepthFade54 - 0.0) * (1.8 - -1.7) / (1.0 - 0.0)) );
 			float3 ase_vertex3Pos = mul( unity_WorldToObject, float4( i.worldPos , 1 ) );
 			float MASK_VerticalGradient102 = saturate( (_VerticalGradientMask + (ase_vertex3Pos.z - 0.0) * (7.76 - _VerticalGradientMask) / (1.0 - 0.0)) );
-			float2 temp_cast_4 = (BigWindSpeed).xx;
+			float2 temp_cast_1 = (BigWindSpeed).xx;
 			float3 appendResult43 = (float3(ase_worldPos.x , 0.0 , ase_worldPos.z));
-			float2 panner10_g13 = ( 1.0 * _Time.y * temp_cast_4 + ( appendResult43 * WindIntensity ).xy);
+			float2 panner10_g13 = ( 1.0 * _Time.y * temp_cast_1 + ( appendResult43 * WindIntensity ).xy);
 			float simplePerlin2D11_g13 = snoise( panner10_g13 );
 			simplePerlin2D11_g13 = simplePerlin2D11_g13*0.5 + 0.5;
 			float MASK_WindMask104 = ( BigWindFactor * simplePerlin2D11_g13 );
@@ -267,16 +247,16 @@ Node;AmplifyShaderEditor.FresnelNode;16;-1424,-128;Inherit;False;Standard;WorldN
 Node;AmplifyShaderEditor.GetLocalVarNode;110;512,512;Inherit;False;109;OUT_BaseColor;1;0;OBJECT;;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;107;512,608;Inherit;False;106;OUT_Opacity;1;0;OBJECT;;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;46;-464,848;Inherit;False;Property;_OpacityFactor;Opacity Factor;0;0;Create;True;0;0;0;False;0;False;1;1;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.ColorNode;1;-1632,-512;Inherit;False;Property;_EmissionColor;Emission Color;1;0;Create;True;0;0;0;False;0;False;0,0,0,0;0.9959494,1,0.75,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ColorNode;1;-1632,-512;Inherit;False;Property;_EmissionColor;Emission Color;1;0;Create;True;0;0;0;False;0;False;0,0,0,0;0.9023281,0.9150943,0.7467515,1;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RangedFloatNode;113;-1632,-336;Inherit;False;Property;_EmissiveFactor;Emissive Factor;2;0;Create;True;0;0;0;False;0;False;1;1;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;19;-1632,-128;Inherit;False;Property;_FresnelScale;Fresnel Scale;3;0;Create;True;0;0;0;False;0;False;1.1;1.1;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;28;-1633,-32;Inherit;False;Property;_FresnelPower;Fresnel Power;4;0;Create;True;0;0;0;False;0;False;0.26;0.2;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;48;-1632,304;Inherit;False;Property;_VolumenMaskFactor;VolumenMask Factor;6;0;Create;True;0;0;0;False;0;False;5.5;9;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;28;-1633,-32;Inherit;False;Property;_FresnelPower;Fresnel Power;4;0;Create;True;0;0;0;False;0;False;0.26;0.26;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;48;-1632,304;Inherit;False;Property;_VolumenMaskFactor;VolumenMask Factor;6;0;Create;True;0;0;0;False;0;False;5.5;5.5;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;55;-1649,448;Inherit;False;Property;_CameraDistanceMaskFactor;Camera DistanceMaskFactor;5;0;Create;True;0;0;0;False;0;False;8;8;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;58;-1648,576;Inherit;False;Constant;_DistanceMaskLevelsMin;DistanceMask LevelsMin;6;0;Create;True;0;0;0;False;0;False;-1.7;-1.7;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;59;-1648,656;Inherit;False;Constant;_DistanceMaskLelvelsMax;DistanceMask LelvelsMax;7;0;Create;True;0;0;0;False;0;False;1.8;1.8;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;73;-1632,1072;Inherit;False;Constant;_VerticalGradLvMax;VerticalGrad LvMax;7;0;Create;True;0;0;0;False;0;False;7.76;7.76;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;70;-1632,992;Inherit;False;Property;_VerticalGradientMask;VerticalGradient Mask;7;0;Create;True;0;0;0;False;0;False;0;0.3;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;70;-1632,992;Inherit;False;Property;_VerticalGradientMask;VerticalGradient Mask;7;0;Create;True;0;0;0;False;0;False;0;0;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.WorldPosInputsNode;42;-1632,1504;Inherit;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.RangedFloatNode;36;-1632,1312;Inherit;False;Global;BigWindSpeed;BigWindSpeed;3;0;Create;True;0;0;0;False;0;False;1;0.35;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;38;-1632,1408;Inherit;False;Global;WindIntensity;WindIntensity;3;0;Create;True;0;0;0;False;0;False;0;0.2;0;0;0;1;FLOAT;0
@@ -306,7 +286,7 @@ WireConnection;96;0;52;0
 WireConnection;98;0;47;0
 WireConnection;102;0;71;0
 WireConnection;95;21;1;0
-WireConnection;112;0;95;0
+WireConnection;112;0;1;0
 WireConnection;112;1;113;0
 WireConnection;100;0;61;0
 WireConnection;61;0;57;0
@@ -328,4 +308,4 @@ WireConnection;104;0;40;0
 WireConnection;171;2;110;0
 WireConnection;171;9;107;0
 ASEEND*/
-//CHKSM=584C8C22E8DA2229E104BEF7CDB06B7DFEFA5A63
+//CHKSM=8AB9ECCAC2ED85C182953145BDE9EA09C76FDD88
