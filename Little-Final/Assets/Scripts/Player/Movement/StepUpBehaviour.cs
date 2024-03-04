@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Core.Debugging;
+using Core.Extensions;
 using UnityEngine;
 
 namespace Player.Movement
@@ -19,6 +20,12 @@ namespace Player.Movement
 
         [SerializeField] private string debugTag = "StepUp";
 
+
+        public bool Should(Vector3 direction, StepUpConfig configOverride = null)
+        {
+            configOverride ??= config;
+            return Physics.Raycast(GetFeetPosition(), direction, configOverride.StepDistance, configOverride.StepMask);
+        }
 
         public bool Can(out Vector3 stepPosition, Vector3 direction, StepUpConfig configOverride = null)
         {
@@ -76,9 +83,15 @@ namespace Player.Movement
             return transform.position + transform.up * (-distanceToFeet + maxStepHeight);
         }
 
+        private Vector3 GetFeetPosition()
+        {
+            var feetPosition = transform.position;
+            feetPosition.y -= distanceToFeet;
+            return feetPosition;
+        }
+
         private void OnDrawGizmosSelected()
         {
-            // var origin = transform.position + offset;
             var origin = GetStepOrigin(config.MaxStepHeight);
             var upScaled = transform.up * config.MaxStepHeight;
             var forwardScaled = transform.forward * config.StepDistance;
@@ -89,6 +102,8 @@ namespace Player.Movement
             Gizmos.DrawRay(targetPosition, -upScaled);
             Gizmos.color = Color.blue;
             Gizmos.DrawRay(transform.position, -transform.up * distanceToFeet);
+            Gizmos.color = Color.gray;
+            Gizmos.DrawRay(GetFeetPosition(), forwardScaled);
         }
     }
 }

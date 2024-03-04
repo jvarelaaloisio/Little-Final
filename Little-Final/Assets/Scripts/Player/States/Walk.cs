@@ -83,6 +83,7 @@ namespace Player.States
 
 			if (input.magnitude > 0
 			    && Controller.StepUp != null
+			    && Controller.StepUp.Should(directionProjectedOnFloor, PP_Walk.StepUpConfig)
 			    && Controller.StepUp.Can(out var stepPosition, MyTransform.forward, PP_Walk.StepUpConfig))
 			{
 				Controller.StepUp.StepUp(PP_Walk.StepUpConfig,
