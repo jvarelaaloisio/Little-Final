@@ -2,12 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Core.Extensions;
-using Core.Providers;
 using HealthSystem.Runtime;
-using HealthSystem.Runtime.Components;
 using UnityEngine;
 using UnityEngine.Events;
-//using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 using VarelaAloisio.UpdateManagement.Runtime;
 

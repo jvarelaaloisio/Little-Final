@@ -4,6 +4,7 @@ using Core;
 using Core.Debugging;
 using Core.Extensions;
 using Core.Interactions;
+using Core.Providers;
 using Core.Stamina;
 using Events.Channels;
 using Player.Abilities;
@@ -59,6 +60,8 @@ namespace Player
         
         [SerializeField] private BoolEventChannel pauseChannel;
 
+        [SerializeField] private DataProvider<Transform> dataProvider;
+        
         [Header("Debug")]
         [SerializeField]
         private bool shouldLogTransitions = false;
@@ -196,6 +199,7 @@ namespace Player
             else
                 this.LogError($"{nameof(_healthComponent)} is null!");
             pauseChannel.SubscribeSafely(HandlePause);
+            dataProvider.TrySetValue(transform);
         }
 
         private void OnDisable()
@@ -204,6 +208,9 @@ namespace Player
             if (_healthComponent is { Health: not null })
                 _healthComponent.Health.OnDeath -= HandleDeath;
             pauseChannel.UnsubscribeSafely(HandlePause);
+            if (dataProvider.TryGetValue(out var value)
+                && value == transform)
+                dataProvider.Value = null;
         }
 
         public void ChangeState<T>() where T : State, new()

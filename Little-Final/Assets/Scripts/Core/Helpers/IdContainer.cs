@@ -7,7 +7,7 @@ namespace Core.Helpers
 	public class IdContainer : ScriptableObject
 	{
 		[SerializeField]
-		private string name;
+		private new string name;
 
 		public Data Get => new Data(name, GetHashCode());
 

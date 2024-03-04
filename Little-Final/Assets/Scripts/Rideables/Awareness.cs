@@ -110,18 +110,14 @@ namespace Rideables
 					+ $"\nfruit: {_fruit}");
 		}
 
-		private void OnDrawGizmos()
+		private void OnDrawGizmosSelected()
 		{
 			Gizmos.color = Color.yellow;
 			Gizmos.DrawWireSphere(transform.position, playerAwarenessRadius);
-			Gizmos.color = Color.green;
-			Gizmos.DrawWireSphere(transform.position, fruitAwarenessRadius);
-		}
-
-		private void OnDrawGizmosSelected()
-		{
 			Gizmos.color = new Color(1, 1, .15f, .25f);
 			Gizmos.DrawSphere(transform.position, playerAwarenessRadius);
+			Gizmos.color = Color.green;
+			Gizmos.DrawWireSphere(transform.position, fruitAwarenessRadius);
 			Gizmos.color = new Color(.35f, 1, .15f, .1f);
 			Gizmos.DrawSphere(transform.position, fruitAwarenessRadius);
 		}

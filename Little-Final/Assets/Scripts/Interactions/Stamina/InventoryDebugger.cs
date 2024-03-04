@@ -26,7 +26,7 @@ public class InventoryDebugger : MonoBehaviour
 
     private void HandleItemAdded(IIdentification itemId, Item item)
     {
-        Debug.Log($"{name}: Item added ({item})");
+        Debug.Log($"{name}: Item added ({item.ID.name})");
         item.onQuantityChanged += LogItemQtyChanged;
     }
 

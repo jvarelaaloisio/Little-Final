@@ -16,6 +16,19 @@ namespace CharacterMovement
 			Vector3 direction = input.x * right + input.y * forward;
 			return direction;
 		}
+		
+		public static Vector2 GetInput(Vector3 direction)
+		{
+			var cameraTransform = Camera.main.transform;
+			var forward = cameraTransform.TransformDirection(Vector3.forward);
+			forward.y = 0;
+			var right = cameraTransform.TransformDirection(Vector3.right);
+
+			Vector2 input;
+			input.x = Vector3.Dot(direction, right);
+			input.y = Vector3.Dot(direction, forward);
+			return input;
+		}
 
 		public static void Move(Transform transform,
 		                        IBody body,
