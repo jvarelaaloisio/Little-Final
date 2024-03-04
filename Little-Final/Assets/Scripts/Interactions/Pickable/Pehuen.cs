@@ -16,6 +16,7 @@ namespace Interactions.Pickable
 		private BuffTarget _lastBuffTarget;
 		private Coroutine _resetCoroutine;
 		private Coroutine _applicationCoroutine;
+		[SerializeField] private float defaultBuffValue = 1f;
 
 		protected override void OnValidate()
 		{
@@ -54,7 +55,6 @@ namespace Interactions.Pickable
 
 		private IEnumerator ApplyWhileLoosingLife(IBuffable buffable)
 		{
-			var originalValue = buffable.BuffMultiplier;
 			while (healthComponent.Health.HP > 0)
 			{
 				yield return new WaitForSeconds(buffDelay);
@@ -63,7 +63,7 @@ namespace Interactions.Pickable
 
 				yield return new WaitUntil(BuffEnded);
 				
-				bool BuffEnded() => Math.Abs(buffable.BuffMultiplier - originalValue) < .001f;
+				bool BuffEnded() => Math.Abs(buffable.BuffMultiplier - defaultBuffValue) < .001f;
 			}
 		}
 
