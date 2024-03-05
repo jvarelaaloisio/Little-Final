@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class lb_BirdController : MonoBehaviour {
 	public int idealNumberOfBirds;
@@ -75,12 +76,7 @@ public class lb_BirdController : MonoBehaviour {
 		currentCamera = cam;
 	}
 
-	void Start () {
-		//find the camera
-		if (currentCamera == null){
-			currentCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-		}
-
+	private void Start () {
 		if(idealNumberOfBirds >= maximumNumberOfBirds){
 			idealNumberOfBirds = maximumNumberOfBirds-1;
 		}
@@ -166,7 +162,7 @@ public class lb_BirdController : MonoBehaviour {
 		return point;
 	}
 
-	void UpdateBirds(){
+	private void UpdateBirds(){
 		//this function is called once a second
 		if(activeBirds < idealNumberOfBirds  && AreThereActiveTargets()){
 			//if there are less than ideal birds active, spawn a bird
@@ -176,13 +172,19 @@ public class lb_BirdController : MonoBehaviour {
 			SpawnBird();
 		}
 
-		//check one bird every second to see if it should be unspawned
-		if(myBirds[birdIndex].activeSelf && BirdOffCamera (myBirds[birdIndex].transform.position) && Vector3.Distance(myBirds[birdIndex].transform.position,currentCamera.transform.position) > unspawnDistance){
-			//if the bird is off camera and at least unsapwnDistance units away lets unspawn
-			Unspawn(myBirds[birdIndex]);
+		foreach (var myBird in myBirds.Where(go => go.activeSelf))
+		{
+			//check one bird every second to see if it should be unspawned
+			var birdPosition = myBird.transform.position;
+			var cameraPosition = currentCamera.transform.position;
+			if(BirdOffCamera (birdPosition) && Vector3.Distance(birdPosition,cameraPosition) > unspawnDistance){
+				//if the bird is off camera and at least unsapwnDistance units away lets unspawn
+				Debug.DrawLine(cameraPosition, birdPosition, Color.red, 1f);
+				Unspawn(myBird);
+			}
 		}
 
-		birdIndex = birdIndex == myBirds.Length-1 ? 0:birdIndex+1;
+		// birdIndex = birdIndex == myBirds.Length-1 ? 0:birdIndex+1;
 	}
 
 	//this function will cycle through targets removing those outside of the unspawnDistance

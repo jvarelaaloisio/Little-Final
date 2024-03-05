@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Core.Providers;
 using UnityEngine;
 
@@ -11,13 +12,27 @@ namespace Environment
         [SerializeField] private DataProvider<Camera> cameraProvider;
 
 
-        private IEnumerator Start()
+        private void OnEnable()
+        {
+            StartCoroutine(Spawn());
+        }
+
+        private void OnDisable()
+        {
+            StopCoroutine(Spawn());
+        }
+
+        private IEnumerator Spawn()
         {
             Camera camera = null;
             yield return new WaitUntil(() => cameraProvider.TryGetValue(out camera));
+            birdControl.enabled = true;
             birdControl.currentCamera = camera;
-            yield return new WaitForEndOfFrame();
-            birdControl.SpawnAmount(quantity);
+            while(!destroyCancellationToken.IsCancellationRequested)
+            {
+                yield return new WaitForSeconds(1);
+                birdControl.SpawnAmount(quantity);
+            }
         }
     }
 }
