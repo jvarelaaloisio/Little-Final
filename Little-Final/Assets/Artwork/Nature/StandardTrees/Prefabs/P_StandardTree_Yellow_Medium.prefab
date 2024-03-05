@@ -143,10 +143,18 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4192420028563106371, guid: 7eee08ee66cc53c4896da5ee6d9476ed,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8903083207009848189}
     - targetCorrespondingSourceObject: {fileID: 9055617999495986027, guid: 7eee08ee66cc53c4896da5ee6d9476ed,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 628399933767272754}
+    - targetCorrespondingSourceObject: {fileID: 5251508439066195327, guid: 7eee08ee66cc53c4896da5ee6d9476ed,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5633120471601287644}
     - targetCorrespondingSourceObject: {fileID: 3131427092068825290, guid: 7eee08ee66cc53c4896da5ee6d9476ed,
         type: 3}
       insertIndex: -1
@@ -170,20 +178,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34dfe18f39dcc314a93cd8ee17f6c572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  texturesData: []
-  colorsData:
-  - name: _BaseColor
-    value: {r: 0.16078432, g: 0.33333334, b: 0.16078432, a: 0}
-  - name: _SecondaryColor
-    value: {r: 0.24313726, g: 0.19762766, b: 0.1254902, a: 0}
-  - name: _LigthingColor
-    value: {r: 0.24949813, g: 0.8113208, b: 0.23344605, a: 0}
-  - name: _ShadowSpotsColor
-    value: {r: 0.039215688, g: 0.011764706, b: 0.31764707, a: 0}
-  vectorsData: []
-  floatsData: []
-  integersData: []
   propertyBlockData: {fileID: 11400000, guid: f0ab1cdf650a5cd46be51a945b9b965c, type: 2}
+--- !u!1 &3506500588673038443 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5251508439066195327, guid: 7eee08ee66cc53c4896da5ee6d9476ed,
+    type: 3}
+  m_PrefabInstance: {fileID: 8667332166340594964}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5633120471601287644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3506500588673038443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34dfe18f39dcc314a93cd8ee17f6c572, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  propertyBlockData: {fileID: 11400000, guid: 2eba00025ea10b74fa7f30650378678c, type: 2}
+--- !u!1 &4784788055585253207 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4192420028563106371, guid: 7eee08ee66cc53c4896da5ee6d9476ed,
+    type: 3}
+  m_PrefabInstance: {fileID: 8667332166340594964}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8903083207009848189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4784788055585253207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34dfe18f39dcc314a93cd8ee17f6c572, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  propertyBlockData: {fileID: 11400000, guid: 2eba00025ea10b74fa7f30650378678c, type: 2}
 --- !u!4 &5072826430972518480 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4480730249844763972, guid: 7eee08ee66cc53c4896da5ee6d9476ed,
@@ -208,17 +241,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34dfe18f39dcc314a93cd8ee17f6c572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  texturesData: []
-  colorsData:
-  - name: _BaseColor
-    value: {r: 0.16078432, g: 0.33333334, b: 0.16078432, a: 0}
-  - name: _SecondaryColor
-    value: {r: 0.24313726, g: 0.19762766, b: 0.1254902, a: 0}
-  - name: _LigthingColor
-    value: {r: 0.24949813, g: 0.8113208, b: 0.23344605, a: 0}
-  - name: _ShadowSpotsColor
-    value: {r: 0.039215688, g: 0.011764706, b: 0.31764707, a: 0}
-  vectorsData: []
-  floatsData: []
-  integersData: []
   propertyBlockData: {fileID: 11400000, guid: f0ab1cdf650a5cd46be51a945b9b965c, type: 2}

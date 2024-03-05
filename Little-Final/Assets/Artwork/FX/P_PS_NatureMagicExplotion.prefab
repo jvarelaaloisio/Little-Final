@@ -25,15 +25,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7441262801805118375}
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8323552363466333325}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!199 &7441262801805118361
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -259,8 +259,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 0.2807801, g: 0.6603774, b: 0.052954797, a: 0.2}
-      maxColor: {r: 0.93923545, g: 0.99215686, b: 0.28627458, a: 0.4}
+      minColor: {r: 0, g: 0.37385702, b: 1, a: 0.2}
+      maxColor: {r: 0, g: 1, b: 0.8542311, a: 0.4}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -324,8 +324,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.4
-      minScalar: 0.09
+      scalar: 0.6
+      minScalar: 0.2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1310,23 +1310,23 @@ ParticleSystem:
       maxGradient:
         serializedVersion: 2
         key0: {r: 0, g: 0, b: 0, a: 0}
-        key1: {r: 0.2407173, g: 0.78431374, b: 0, a: 1}
-        key2: {r: 1, g: 0.9864793, b: 0, a: 1}
+        key1: {r: 0, g: 1, b: 0.9495225, a: 1}
+        key2: {r: 0, g: 1, b: 0.12042332, a: 1}
         key3: {r: 0, g: 0, b: 0, a: 0}
-        key4: {r: 0, g: 0.98239845, b: 1, a: 0.039215688}
+        key4: {r: 0, g: 0, b: 0, a: 0.039215688}
         key5: {r: 1, g: 1, b: 1, a: 0.039215688}
         key6: {r: 1, g: 1, b: 1, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 0
-        ctime1: 21823
+        ctime1: 9445
         ctime2: 43646
         ctime3: 65535
-        ctime4: 45875
+        ctime4: 65535
         ctime5: 65535
         ctime6: 65535
         ctime7: 0
         atime0: 0
-        atime1: 21823
+        atime1: 6361
         atime2: 43646
         atime3: 65535
         atime4: 65535
@@ -1549,8 +1549,8 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0
-      minScalar: 1
+      scalar: 2
+      minScalar: 8
       maxCurve:
         serializedVersion: 2
         m_Curve:

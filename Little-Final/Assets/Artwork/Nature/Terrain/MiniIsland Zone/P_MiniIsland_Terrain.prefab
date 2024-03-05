@@ -184,6 +184,9 @@ MonoBehaviour:
   drop: 0.2
   fogDensity: 0.05
   fogOffset: 30
+  tipColor: {r: 0, g: 0, b: 0, a: 0}
+  talloColor: {r: 0, g: 0, b: 0, a: 0}
+  oldTalloColor: {r: 0, g: 0, b: 0, a: 0}
   cameraProvider: {fileID: 11400000, guid: 34d06f3dd6112ba48af2bb4ba8dd0ffa, type: 2}
   grassLODMesh: {fileID: -875046394390484430, guid: 3ee8d80b901e419448e2ab95355be8c9,
     type: 3}
@@ -197,6 +200,7 @@ MonoBehaviour:
   windStrength: 0.7
   computeWindGenerator: {fileID: 7200000, guid: fd556ce3dd43b5d489abc4f0ce130011,
     type: 3}
+  updateValuesInEditorPlaymode: 0
 --- !u!1001 &7377497490269813603
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -260,6 +264,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 8f6ebc95d4696d449a4a4dcec7356a17,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: db3ffdd910780ac4eaefd4384eb897c8, type: 2}
     - target: {fileID: 919132149155446097, guid: 8f6ebc95d4696d449a4a4dcec7356a17,
         type: 3}
       propertyPath: m_Name
@@ -268,7 +277,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8f6ebc95d4696d449a4a4dcec7356a17,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1082845851823618718}
   m_SourcePrefab: {fileID: 100100000, guid: 8f6ebc95d4696d449a4a4dcec7356a17, type: 3}
 --- !u!4 &7055059911807556744 stripped
 Transform:
@@ -276,3 +289,22 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7377497490269813603}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7684068062291756594 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 8f6ebc95d4696d449a4a4dcec7356a17,
+    type: 3}
+  m_PrefabInstance: {fileID: 7377497490269813603}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1082845851823618718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7684068062291756594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34dfe18f39dcc314a93cd8ee17f6c572, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  propertyBlockData: {fileID: 11400000, guid: 2eba00025ea10b74fa7f30650378678c, type: 2}
