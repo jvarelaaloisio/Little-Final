@@ -7,13 +7,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_FluffyFolliage
-  m_Shader: {fileID: 4800000, guid: 3e6bb1954f434654f87ccf0fcd8a33c4, type: 3}
+  m_Name: M_Weeds
+  m_Shader: {fileID: 4800000, guid: d0caca0b4a9b1f0468d469d90ebd242e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 0
+  m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -23,6 +23,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BaseColor:
+        m_Texture: {fileID: 2800000, guid: 765c48f94a33cb4479e01292d8f0a446, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -43,10 +47,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _LeavesAlpha:
-        m_Texture: {fileID: 2800000, guid: ffba334276e7701479ca39d8bb15ff0e, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -55,7 +55,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _NoisePatternTexture:
+    - _Noise:
         m_Texture: {fileID: 2800000, guid: 8095a1f622748884d9476cda7163a5d0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -67,74 +67,40 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _StandarTreeLeaves:
-        m_Texture: {fileID: 2800000, guid: ffba334276e7701479ca39d8bb15ff0e, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture0:
-        m_Texture: {fileID: 2800000, guid: 8095a1f622748884d9476cda7163a5d0, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _texcoord:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - LOD_FADE: 0
-    - LOD_FADE_CROSSFADE: 0
-    - _BilbordScale: 1
     - _BumpScale: 1
-    - _CameraLength: 1
-    - _CameraMask: 32.95
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _EffectBlend: 1
-    - _Float0: 0.98
-    - _Float1: -46.4
-    - _Float2: 2.5
-    - _Float3: -0.01
-    - _Float4: 0.24
-    - _Float5: 0.5
+    - _Float0: 0.1
+    - _Float1: 0.2
+    - _Float2: -3
+    - _Float3: 1
+    - _Float4: 0.2
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Inflate: 0
-    - _Keyword0: 0
-    - _LOD_FADE: 0
-    - _LOD_FADE_CROSSFADE: 0
-    - _LigthFactor: 1
+    - _Max: 1
     - _Metallic: 0
+    - _Min: -1
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _RandomFactor: 0.3
-    - _RandomForceFactor: 1.2
-    - _SecondaryColorFactor: 0.5
-    - _ShadowFactor: 0.23
-    - _Shadow_Factor: 0.14705883
-    - _Shadow_MaskScale: 0.01
-    - _ShowdSpots: 0.08
-    - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _Speed: 0.05
     - _SrcBlend: 1
+    - _Strength: 1
     - _UVSec: 0
-    - _WindIntencity: 2
-    - _WindIntensity: 0.1
-    - _WindSpeed: 2
-    - _WindTurbulence: 3
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
-    - _BaseColor: {r: 0.19215664, g: 0.4196076, b: 0.18823507, a: 1}
-    - _Color: {r: 0.3034481, g: 0.6698113, b: 0.2685564, a: 1}
-    - _Color0: {r: 0.5570361, g: 0.6320754, b: 0.21168563, a: 0}
+    - _Axis: {r: 1, g: 0, b: 1, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LigthingColor: {r: 0.27058798, g: 0.62352943, b: 0.25098014, a: 0}
-    - _MainColor: {r: 0.39215687, g: 0.39215687, b: 0.39215687, a: 1}
-    - _SecondaryColor: {r: 0.10196053, g: 0.14901936, b: 0.17254877, a: 1}
-    - _ShadowSpotsColor: {r: 0.02352941, g: 0.07058797, b: 0.2823527, a: 1}
-    - _Vector0: {r: 0.42, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
