@@ -1,92 +1,125 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using Core.Debugging;
-using Player;
+using Core.Extensions;
+using Core.Providers;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-[RequireComponent(typeof(PlayerController))]
-public class PlayerSound : MonoBehaviour
+namespace Player
 {
-	public AudioClip walk,
-		fly;
-
-	[SerializeField]
-	private AudioClip[] jumpSfx;
-	[SerializeField]
-	private AudioClip[] walkSfx;
-
-
-	public AudioSource loopingSfx;
-	AudioManager audioManager;
-
-	private bool _isWalkPlaying,
-		_isFlyPlaying;
-
-	[Header("Debug")]
-	[SerializeField]
-	private Debugger debugger;
-
-	void Start()
+	[RequireComponent(typeof(PlayerController))]
+	public class PlayerSound : MonoBehaviour
 	{
-		GetComponent<PlayerController>();
-		audioManager = FindObjectOfType<AudioManager>();
-	}
+		[SerializeField] private DataProvider<AudioManager> audioManagerProvider;
+		[SerializeField] private PlayerController playerController;
+		public AudioClip walk,
+		                 fly;
 
-	public void PlayJump()
-	{
-		loopingSfx.Stop();
-		_isWalkPlaying = false;
-		_isFlyPlaying = false;
-		if (jumpSfx.Length < 1)
-			debugger.LogError(transform.name, $"No jump sfx were supplied");
-		else
-			audioManager?.PlayCharacterSound(jumpSfx[Random.Range(0, jumpSfx.Length - 1)]);
-	}
+		[SerializeField] private AudioClip[] jumpSfx;
+		[SerializeField] private AudioClip[] landSfx;
+		[SerializeField] private AudioClip[] walkSfx;
 
-	public void PlayWalk()
-	{
-		if (_isWalkPlaying)
-			return;
-		_isWalkPlaying = true;
-		if (walkSfx.Length < 1)
-			debugger.LogError(transform.name, $"No walk sfx were supplied");
-		else
-			loopingSfx.clip = walkSfx[Random.Range(0, walkSfx.Length - 1)];
-		// loopingSfx.clip = walk;
-		loopingSfx.Play();
-	}
 
-	public void StopWalk()
-	{
-		loopingSfx.Stop();
-		_isWalkPlaying = false;
-	}
+		public AudioSource loopingSfx;
 
-	public void PlayFly()
-	{
-		if (!_isFlyPlaying)
+		private bool _isWalkPlaying,
+		             _isFlyPlaying;
+
+		[Header("Debug")]
+		[SerializeField]
+		private Debugger debugger;
+
+
+		private void OnValidate()
 		{
-			_isFlyPlaying = true;
-			loopingSfx.clip = fly;
+			playerController ??= GetComponent<PlayerController>();
+		}
+
+		private void Start()
+		{
+			FindObjectOfType<AudioManager>();
+		}
+
+		private void OnEnable()
+		{
+			if (!playerController)
+			{
+				this.LogWarning($"{nameof(playerController)} is null!");
+				return;
+			}
+
+			playerController.OnLand += HandleLand;
+			playerController.OnJump += PlayJump;
+		}
+
+		private void OnDisable()
+		{
+			if (!playerController)
+				return;
+
+			playerController.OnLand -= HandleLand;
+			playerController.OnJump -= PlayJump;
+		}
+
+		private void HandleLand() => Play(landSfx);
+
+		public void PlayJump()
+		{
+			loopingSfx.Stop();
+			_isWalkPlaying = false;
+			_isFlyPlaying = false;
+			if (jumpSfx.Length < 1)
+				debugger.LogError(transform.name, $"No jump sfx were supplied");
+			else
+				Play(jumpSfx);
+		}
+
+		[Obsolete]
+		public void PlayWalk()
+		{
+			if (_isWalkPlaying)
+				return;
+			_isWalkPlaying = true;
+			if (walkSfx.Length < 1)
+				debugger.LogError(transform.name, $"No walk sfx were supplied");
+			else
+				loopingSfx.clip = walkSfx[Random.Range(0, walkSfx.Length - 1)];
 			loopingSfx.Play();
 		}
-	}
 
-	public void StopFly()
-	{
-		loopingSfx.Stop();
-		_isFlyPlaying = false;
-	}
+		[Obsolete]
+		public void StopWalk()
+		{
+			loopingSfx.Stop();
+			_isWalkPlaying = false;
+		}
+		
+		public void PlayFly()
+		{
+			if (!_isFlyPlaying)
+			{
+				_isFlyPlaying = true;
+				loopingSfx.clip = fly;
+				loopingSfx.Play();
+			}
+		}
 
-	// private IEnumerator PlayWalkLook()
-	// {
-	// 	
-	// }
+		public void StopFly()
+		{
+			loopingSfx.Stop();
+			_isFlyPlaying = false;
+		}
+
+		public void Play(AudioClip[] sfx)
+		{
+			if (sfx == null || sfx.Length < 1)
+			{
+				this.LogWarning($"No sfx provided!");
+				return;
+			}
+			if (audioManagerProvider.TryGetValue(out var manager))
+				manager.Play(sfx[Random.Range(0, sfx.Length)], AudioManager.SoundIndex.Character);
+		}
+	}
 }
-
-// public static class EnumerableExtensions
-// {
-// 	public static T GetRandom<T>(IEnumerable<T> enumerable)
-// 	{
-// 		int length = enumerable.
-// 	}
-// }
