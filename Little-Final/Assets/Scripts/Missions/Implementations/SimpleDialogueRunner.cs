@@ -1,20 +1,23 @@
 using System;
 using System.Collections;
 using Core.Extensions;
+using Core.Missions;
 using Events.UnityEvents;
 using TMPro;
 using UnityEngine;
 
-namespace UI
+namespace Missions.Implementations
 {
-    public class SimpleDialogueBehaviour : MonoBehaviour
+    public class SimpleDialogueRunner : MonoBehaviour
     {
+        [SerializeField] private GameObject dialogueContainer;
         [SerializeField] private TMP_Text tmpText;
         [SerializeField] private string skipButton = "Jump";
         [SerializeField] private Config config;
         
         private int _currentPhraseIndex;
         private int _currentChar;
+        private bool _isRunning = false;
 
         [field: SerializeField] public Dialogue Dialogue { get; set; }
 
@@ -27,10 +30,47 @@ namespace UI
             tmpText ??= GetComponent<TMP_Text>();
         }
 
-        private IEnumerator Start()
+        private void Update()
         {
-            yield return null;
+            if (!_isRunning || IsFinished())
+                return;
+            if (Input.GetButtonDown(skipButton))
+            {
+                this.Log($"Skipping phrase");
+                AdvancePhrase();
+                if (IsFinished())
+                    return;
+                if (_dialogueCoroutine != null)
+                    StopCoroutine(_dialogueCoroutine);
+                _dialogueCoroutine = StartCoroutine(ShowDialogue());
+            }
+        }
+
+        public void Run(Dialogue dialogueOverride = null)
+        {
+            _isRunning = true;
+            if (dialogueContainer)
+                dialogueContainer.SetActive(true);
+            if (dialogueOverride)
+                SetDialogue(dialogueOverride);
+            if (_dialogueCoroutine != null)
+                StopCoroutine(_dialogueCoroutine);
             _dialogueCoroutine = StartCoroutine(ShowDialogue());
+        }
+
+        public void Deactivate()
+        {
+            if (dialogueContainer)
+                dialogueContainer.SetActive(false);
+            _isRunning = false;
+        }
+
+        public void SetDialogue(Dialogue dialogue)
+        {
+            Dialogue = dialogue;
+            this.Log($"{nameof(Dialogue)} set to {dialogue.name}");
+            _currentPhraseIndex = 0;
+            _currentChar = 1;
         }
 
         private IEnumerator ShowDialogue()
@@ -42,13 +82,12 @@ namespace UI
                 yield break;
             }
             OnStartPhrase.Invoke();
-            while (!destroyCancellationToken.IsCancellationRequested)
+            while (!destroyCancellationToken.IsCancellationRequested
+                   && !IsFinished())
             {
-                if (IsFinished())
-                    yield break;
-
                 var phrase = Dialogue.Phrases[_currentPhraseIndex];
-                tmpText.text = phrase[.._currentChar];
+                var currentIndex = Mathf.Min(_currentChar, phrase.Length);
+                tmpText.text = phrase[..currentIndex];
                 _currentChar++;
                 if (_currentChar > phrase.Length)
                 {
@@ -61,32 +100,17 @@ namespace UI
             }
         }
 
-        private bool IsFinished()
+        public bool IsFinished()
         {
             if (!Dialogue)
                 return true;
             return _currentPhraseIndex >= Dialogue.Phrases.Count;
         }
 
-        private void Update()
-        {
-            if (IsFinished())
-                return;
-            if (Input.GetButtonDown(skipButton))
-            {
-                AdvancePhrase();
-                if (IsFinished())
-                    return;
-                if (_dialogueCoroutine != null)
-                    StopCoroutine(_dialogueCoroutine);
-                StartCoroutine(ShowDialogue());
-            }
-        }
-
         private void AdvancePhrase()
         {
             _currentPhraseIndex++;
-            _currentChar = 0;
+            _currentChar = 1;
             if (IsFinished())
             {
                 this.Log("Finished dialogue!");

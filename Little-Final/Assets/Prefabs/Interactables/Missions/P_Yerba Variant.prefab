@@ -478,7 +478,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3345145233054107592, guid: f6d5a42583ff22d469762c0d5af8d16a,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5911551706685346628}
+      addedObject: {fileID: 5688625470193094540}
     - targetCorrespondingSourceObject: {fileID: 5893531658544401488, guid: f6d5a42583ff22d469762c0d5af8d16a,
         type: 3}
       insertIndex: -1
@@ -542,7 +542,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 2
+  m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2090064556212190350
 MonoBehaviour:
@@ -556,13 +556,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 179efbffca23449dae2850d555cd5c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cinematicDirector: {fileID: 8559580576672230865}
+  inputOverride: {fileID: 5688625470193094540}
+  interactRange: 0.3
+  rangeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  playerSpot: {fileID: 0}
+  onFinishedSequence:
+    m_PersistentCalls:
+      m_Calls: []
   value: 1
   itemId: {fileID: 11400000, guid: bf9266160b8b93742a40893a1e458111, type: 2}
-  cinematicDirector: {fileID: 8559580576672230865}
-  inputOverride: {fileID: 5911551706685346628}
-  pickRange: 0.3
   delayBeforeAddingItem: 6.5
-  pickRangeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 0.5019608}
 --- !u!65 &3227926827174523206
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -584,7 +588,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.254, y: 0.5, z: 0.15}
   m_Center: {x: -0.01, y: 0, z: -0.02}
---- !u!114 &5911551706685346628
+--- !u!114 &5688625470193094540
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -593,7 +597,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6584514157103724118}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b77b181e2e3053347aa1a6d61cb38913, type: 3}
+  m_Script: {fileID: 11500000, guid: 54a5ddd441574276bb226c84024e44b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerProvider: {fileID: 11400000, guid: c24e252ef0c06b64b96e389f6696cf39, type: 2}

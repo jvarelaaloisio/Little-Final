@@ -58,18 +58,18 @@ namespace Player.States
 			if (MoveHelper.IsSafeAngle(MyTransform.position, directionProjectedOnFloor.normalized, .3f,
 										PP_Walk.MinSafeAngle))
 			{
-				if (input.magnitude > .1f && runInput && Controller.Stamina.FillState > 0)
-				{
-					if (!_runningConsumer.IsConsuming)
-						_runningConsumer.Start();
-
-					isRunning = true;
-				}
-				else if (_runningConsumer.IsConsuming)
-				{
-					_runningConsumer.Stop();
-					isRunning = false;
-				}
+				// if (input.magnitude > .1f && runInput && Controller.Stamina.FillState > 0)
+				// {
+				// 	if (!_runningConsumer.IsConsuming)
+				// 		_runningConsumer.Start();
+				//
+				// 	isRunning = true;
+				// }
+				// else if (_runningConsumer.IsConsuming)
+				// {
+				// 	_runningConsumer.Stop();
+				// 	isRunning = false;
+				// }
 
 				MoveHelper.Rotate(MyTransform,
 								desiredDirection,

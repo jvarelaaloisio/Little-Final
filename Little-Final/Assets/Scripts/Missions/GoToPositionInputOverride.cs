@@ -1,5 +1,4 @@
-using System;
-using CharacterMovement;
+﻿using CharacterMovement;
 using Core.Extensions;
 using Core.Providers;
 using Player.PlayerInput;
@@ -24,6 +23,12 @@ namespace Sequences
             InputManager.InputReader = this;
         }
 
+        public void SetDestination(Vector3 destination)
+        {
+            _destination = destination;
+            HasArrived = false;
+        }
+
         public void StopReplacing()
         {
             if (_lastInput != null)
@@ -36,7 +41,7 @@ namespace Sequences
             Vector3 positionToPlayer = Vector3.zero;
             if (playerProvider.TryGetValue(out var player))
             {
-                positionToPlayer = _destination - player.position;
+                positionToPlayer = (_destination - player.position).IgnoreY();
                 if (positionToPlayer.magnitude > _acceptableDistance)
                 {
                     Debug.DrawRay(player.position, positionToPlayer, Color.blue);
