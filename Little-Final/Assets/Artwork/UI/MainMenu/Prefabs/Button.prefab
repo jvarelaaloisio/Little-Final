@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2583781013226257528}
   - component: {fileID: 181848055699296018}
   - component: {fileID: 314571164779168937}
+  - component: {fileID: 3944956647462612345}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -38,8 +39,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 40}
+  m_AnchoredPosition: {x: -15.3896, y: -8.794}
+  m_SizeDelta: {x: 169.2207, y: 22.4119}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5167344428962811531
 CanvasRenderer:
@@ -69,7 +70,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 34f3cbf027882f847b1681dc867537e1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2651b85c2a4db1c4285c38d547f933e3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -108,11 +109,11 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: cff0fa2e5b13ee242bf783dc160a9c15,
+    m_HighlightedSprite: {fileID: 21300000, guid: cf8f0845fb9dd6949b517b8693eb188a,
       type: 3}
-    m_PressedSprite: {fileID: 21300000, guid: a4a24f7b7e7d9b64593fcc30fd67d615, type: 3}
-    m_SelectedSprite: {fileID: 21300000, guid: cff0fa2e5b13ee242bf783dc160a9c15, type: 3}
-    m_DisabledSprite: {fileID: 21300000, guid: b93d946c921b866499a5aa9e510eb468, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: d49caa09c1c19a14c9ece8d71563053d, type: 3}
+    m_SelectedSprite: {fileID: 21300000, guid: 7a018a06dc2f3854bb25c67dc9c92cf2, type: 3}
+    m_DisabledSprite: {fileID: 21300000, guid: d49caa09c1c19a14c9ece8d71563053d, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -233,6 +234,51 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3944956647462612345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7050648583619401141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8768380177227609627}
+          m_TargetAssemblyTypeName: 
+          m_MethodName: 
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: 
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8768380177227609627}
+          m_TargetAssemblyTypeName: 
+          m_MethodName: 
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: 
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &8768380177227609627
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,8 +314,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -10, y: -10}
+  m_AnchoredPosition: {x: 38.6, y: -3.8}
+  m_SizeDelta: {x: 8.6873, y: 1.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5183907089470975615
 CanvasRenderer:
@@ -301,8 +347,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Placeholder
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d19959c99406b8742861b0fcac629fb6, type: 2}
-  m_sharedMaterial: {fileID: -4038352038276372103, guid: d19959c99406b8742861b0fcac629fb6,
+  m_fontAsset: {fileID: 11400000, guid: 386bc1e4bcbef1b49ad0174933236a6a, type: 2}
+  m_sharedMaterial: {fileID: -5722235672214696098, guid: 386bc1e4bcbef1b49ad0174933236a6a,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -327,14 +373,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25.3
-  m_fontSizeBase: 24
+  m_fontSize: 16.35
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 8
   m_fontSizeMax: 40
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
