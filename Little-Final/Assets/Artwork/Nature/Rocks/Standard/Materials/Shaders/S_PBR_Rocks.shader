@@ -98,9 +98,9 @@ Shader "Nature/PBR_Rocks"
 			float2 temp_cast_0 = (_NoiseTiling).xx;
 			float3 ase_worldPos = i.worldPos;
 			float4 triplanar87 = TriplanarSampling87( _NoiseTexture, ase_worldPos, ase_worldNormal, 1.0, temp_cast_0, 1.0, 0 );
-			float temp_output_10_0_g8 = _WearFactor;
-			float temp_output_11_0_g8 = (0.0 + (( saturate( temp_output_8_0_g5 ) * saturate( temp_output_8_0_g3 ) * triplanar87.x ) - 0.0) * (1.0 - 0.0) / ((1.0 + (temp_output_10_0_g8 - 0.0) * (0.0 - 1.0) / (1.0 - 0.0)) - 0.0));
-			float M_Wear78 = saturate( temp_output_11_0_g8 );
+			float temp_output_10_0_g11 = _WearFactor;
+			float temp_output_11_0_g11 = (0.0 + (( saturate( temp_output_8_0_g5 ) * saturate( temp_output_8_0_g3 ) * triplanar87.x ) - 0.0) * (1.0 - 0.0) / ((1.0 + (temp_output_10_0_g11 - 0.0) * (0.0 - 1.0) / (1.0 - 0.0)) - 0.0));
+			float M_Wear78 = saturate( temp_output_11_0_g11 );
 			float4 lerpResult98 = lerp( lerpResult71 , ( saturate( lerpBlendMode97 )) , M_Wear78);
 			float4 OUT_BaseColor105 = lerpResult98;
 			o.Albedo = OUT_BaseColor105.rgb;
@@ -236,7 +236,7 @@ Node;AmplifyShaderEditor.RangedFloatNode;89;-2496,-336;Inherit;False;Property;_N
 Node;AmplifyShaderEditor.TriplanarNode;87;-2304,-448;Inherit;True;Spherical;World;False;NoiseRef;_NoiseRef;white;0;None;Mid Texture 0;_MidTexture0;white;-1;None;Bot Texture 0;_BotTexture0;white;-1;None;NoiseTriplanar;Tangent;10;0;SAMPLER2D;;False;5;FLOAT;1;False;1;SAMPLER2D;;False;6;FLOAT;0;False;2;SAMPLER2D;;False;7;FLOAT;0;False;9;FLOAT3;0,0,0;False;8;FLOAT;1;False;3;FLOAT2;1,1;False;4;FLOAT;1;False;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;77;-1888,-640;Inherit;False;3;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;91;-1888,-512;Inherit;False;Property;_WearFactor;Wear Factor;7;0;Create;True;0;0;0;False;0;False;0;0.99;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;92;-1600,-640;Inherit;False;OverrideMaxValue;-1;;8;a223fd650b6f3ed49990d9e847af2115;4,18,1,21,1,19,0,17,0;2;9;FLOAT;0;False;10;FLOAT;0;False;1;FLOAT;16
+Node;AmplifyShaderEditor.FunctionNode;92;-1600,-640;Inherit;False;OverrideMaxValue;-1;;11;a223fd650b6f3ed49990d9e847af2115;4,18,1,21,1,19,0,17,0;2;9;FLOAT;0;False;10;FLOAT;0;False;1;FLOAT;16
 Node;AmplifyShaderEditor.RegisterLocalVarNode;78;-1344,-640;Inherit;False;M_Wear;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SamplerNode;1;-2240,-64;Inherit;True;Property;_BaseColor;Base Color;0;2;[Header];[NoScaleOffset];Create;True;1;PBR settings;0;0;False;1;Space(10);False;-1;None;d7c7f73fe32c947469da8d07645ffe0b;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.TexturePropertyNode;115;-2784,-448;Inherit;True;Property;_NoiseTexture;Noise Texture;12;2;[Header];[NoScaleOffset];Create;True;1;Noise settings;0;0;False;1;Space(10);False;None;4cb1ca0c46287974c8eb5469458bbdd7;False;white;Auto;Texture2D;-1;0;2;SAMPLER2D;0;SAMPLERSTATE;1
@@ -244,7 +244,7 @@ Node;AmplifyShaderEditor.SamplerNode;88;-2784,-736;Inherit;True;Property;_Curvat
 Node;AmplifyShaderEditor.RangedFloatNode;9;-1632,128;Inherit;False;Property;_RoughnessMin;Roughness Min;4;0;Create;True;0;0;0;False;0;False;0.79;-0.58;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;14;-1632,224;Inherit;False;Property;_RoughnessMax;Roughness Max;5;0;Create;True;0;0;0;False;0;False;0.91;0.97;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.ColorNode;93;-2784,288;Inherit;False;Property;_WearColor;Wear Color;6;1;[Header];Create;True;1;Wear settings;0;0;False;1;Space(10);False;1,1,1,0;0.8509804,0.8509804,0.8084314,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.ColorNode;69;-2784,32;Inherit;False;Property;_ShadowColor;Shadow Color;10;1;[Header];Create;True;1;Shadow settings;0;0;False;1;Space(10);False;0.0471698,0.05283017,0.1886792,0;0.1492968,0.1553888,0.5188679,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ColorNode;69;-2784,32;Inherit;False;Property;_ShadowColor;Shadow Color;10;1;[Header];Create;True;1;Shadow settings;0;0;False;1;Space(10);False;0.0471698,0.05283017,0.1886792,0;0.1492967,0.1553887,0.5188677,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RangedFloatNode;67;-1056,-816;Inherit;False;Property;_ShadowFactor;Shadow Factor;11;0;Create;True;0;0;0;False;0;False;0;1;0;1;0;1;FLOAT;0
 WireConnection;83;9;88;1
 WireConnection;83;14;82;0
@@ -284,4 +284,4 @@ WireConnection;92;9;77;0
 WireConnection;92;10;91;0
 WireConnection;78;0;92;16
 ASEEND*/
-//CHKSM=ABC863EDE05BBD38F006304D1DD01360B4A340A4
+//CHKSM=CF5D4017C5D767D911AD11A5BC1EA0113622F85D
