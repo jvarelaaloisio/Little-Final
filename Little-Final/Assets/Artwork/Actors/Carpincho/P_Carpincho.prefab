@@ -145,6 +145,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9177584276540063111}
   - component: {fileID: 2955338739951418739}
+  - component: {fileID: 6106069574395138115}
   m_Layer: 0
   m_Name: Sequence_TalkToCapybara
   m_TagString: Untagged
@@ -200,14 +201,29 @@ PlayableDirector:
     value: {fileID: 4646062180524918359}
   - key: {fileID: 691722506272066162, guid: d0688519f1c537e4b85bf4de4745e012, type: 2}
     value: {fileID: 2577385614180478453}
-  - key: {fileID: 2156095860307493709, guid: 1a86633abe5cd8041820c4e93beff6cd, type: 2}
-    value: {fileID: 1789576917446047664}
   m_ExposedReferences:
     m_References:
     - 70edf91397eccf645b0b0ffa6477dea6: {fileID: 6211139343305099327}
     - 42fe55e1ca5ca3c4ea24a794c4670cb1: {fileID: 6211139343305099327}
     - 6c3c6788ac83a0f4ebf577fcf16c489b: {fileID: 0}
     - 082489244130bb042b350ad694da0d8a: {fileID: 0}
+--- !u!114 &6106069574395138115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767103150992052483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a46158836af20d443a4a9f07540f6f10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playableDirector: {fileID: 2955338739951418739}
+  playerAnimatorProvider: {fileID: 11400000, guid: c9fdde37849b851499bd996331b32c19,
+    type: 2}
+  playerAnimatorTrackKey: 
+  cameraBrainTrackKey: Cinemachine Track
 --- !u!1 &1789576917446047664
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,13 +236,15 @@ GameObject:
   - component: {fileID: 8745029610935291701}
   - component: {fileID: 8481836017977848695}
   - component: {fileID: 8349476782565662220}
+  - component: {fileID: 2322479553446751808}
+  - component: {fileID: 2536156031832723308}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1625422733756763487
 RectTransform:
   m_ObjectHideFlags: 0
@@ -311,6 +329,69 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &2322479553446751808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789576917446047664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a56a484e8c14bff459b7291270147644, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueContainer: {fileID: 3177767350966802734}
+  tmpText: {fileID: 6928696827276453386}
+  skipButton: Jump
+  config:
+    <CharactersPerSecond>k__BackingField: 25
+    <MinPhraseDuration>k__BackingField: 2.5
+  <Dialogue>k__BackingField: {fileID: 11400000, guid: 5cd103631ced9444eb24c2881d27366f,
+    type: 2}
+  onFinished:
+    m_PersistentCalls:
+      m_Calls: []
+  OnStartPhrase:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2536156031832723308}
+        m_TargetAssemblyTypeName: Audio.Sfx, LemuTeam.Lemu.Audio
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2536156031832723308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789576917446047664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb11f640729ea12498adb11cf18ae5d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundType: 5
+  audioManagerProvider: {fileID: 11400000, guid: c34804be513e2674fb6b3b7fe45084f4,
+    type: 2}
+  sfx:
+  - {fileID: 8300000, guid: 0a12869a2be57444bbbb254318752cd2, type: 3}
+  - {fileID: 8300000, guid: 9caa9d878861c7a43a86afb915a4f846, type: 3}
+  - {fileID: 8300000, guid: 1bc12d87ffa241244a3b0b73530e1cf3, type: 3}
+  - {fileID: 8300000, guid: 82028a67d01f132498341b70cb27d935, type: 3}
+  - {fileID: 8300000, guid: eed1e1bdb69c2d042a1ebd331f4fb521, type: 3}
+  - {fileID: 8300000, guid: f88cfa4b2cf1d2e49a477bf4da6b2a89, type: 3}
+  - {fileID: 8300000, guid: d7ff7b3dc7d4be747a06162390e612cc, type: 3}
+  - {fileID: 8300000, guid: bc0a6f09074fb03478356ae0e8c52c69, type: 3}
+  - {fileID: 8300000, guid: 43b8ad3f741988a43b3017b116ba3757, type: 3}
 --- !u!1 &3177767350966802734
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,15 +401,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4360631270148356203}
-  - component: {fileID: 4344711899945686650}
-  - component: {fileID: 4263947727377565363}
   m_Layer: 0
   m_Name: DialogueBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4360631270148356203
 RectTransform:
   m_ObjectHideFlags: 0
@@ -351,67 +430,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 200}
   m_SizeDelta: {x: -100, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4344711899945686650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3177767350966802734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a56a484e8c14bff459b7291270147644, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tmpText: {fileID: 6928696827276453386}
-  skipButton: Jump
-  config:
-    <CharactersPerSecond>k__BackingField: 25
-    <MinPhraseDuration>k__BackingField: 2.5
-  <Dialogue>k__BackingField: {fileID: 11400000, guid: 5cd103631ced9444eb24c2881d27366f,
-    type: 2}
-  onFinished:
-    m_PersistentCalls:
-      m_Calls: []
-  OnStartPhrase:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4263947727377565363}
-        m_TargetAssemblyTypeName: Audio.Sfx, LemuTeam.Lemu.Audio
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &4263947727377565363
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3177767350966802734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb11f640729ea12498adb11cf18ae5d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioManagerProvider: {fileID: 11400000, guid: c34804be513e2674fb6b3b7fe45084f4,
-    type: 2}
-  sfx:
-  - {fileID: 8300000, guid: 0a12869a2be57444bbbb254318752cd2, type: 3}
-  - {fileID: 8300000, guid: 9caa9d878861c7a43a86afb915a4f846, type: 3}
-  - {fileID: 8300000, guid: 1bc12d87ffa241244a3b0b73530e1cf3, type: 3}
-  - {fileID: 8300000, guid: 82028a67d01f132498341b70cb27d935, type: 3}
-  - {fileID: 8300000, guid: eed1e1bdb69c2d042a1ebd331f4fb521, type: 3}
-  - {fileID: 8300000, guid: f88cfa4b2cf1d2e49a477bf4da6b2a89, type: 3}
-  - {fileID: 8300000, guid: d7ff7b3dc7d4be747a06162390e612cc, type: 3}
-  - {fileID: 8300000, guid: bc0a6f09074fb03478356ae0e8c52c69, type: 3}
-  - {fileID: 8300000, guid: 43b8ad3f741988a43b3017b116ba3757, type: 3}
 --- !u!1 &4549991351520518046
 GameObject:
   m_ObjectHideFlags: 0
@@ -572,7 +590,6 @@ GameObject:
   - component: {fileID: 6685770654524638026}
   - component: {fileID: 4908886638936894542}
   - component: {fileID: 2413441906347768803}
-  - component: {fileID: 8275045869253206296}
   m_Layer: 13
   m_Name: P_Carpincho
   m_TagString: Untagged
@@ -593,10 +610,11 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8441041321443997583}
+  - {fileID: 2715813200764453474}
   - {fileID: 9177584276540063111}
   - {fileID: 16719144397247989}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6685770654524638026
 MonoBehaviour:
@@ -622,7 +640,7 @@ MonoBehaviour:
     type: 2}
   missionsManagerProvider: {fileID: 11400000, guid: 80a4940b258b0df42b3b1a19bfce7eb3,
     type: 2}
-  dialogueRunner: {fileID: 4344711899945686650}
+  dialogueRunner: {fileID: 2322479553446751808}
   talkSequence: {fileID: 11400000, guid: 1a86633abe5cd8041820c4e93beff6cd, type: 2}
   finishMissionSequence: {fileID: 11400000, guid: 1a86633abe5cd8041820c4e93beff6cd,
     type: 2}
@@ -637,6 +655,7 @@ MonoBehaviour:
   finishMissionDialogue: {fileID: 11400000, guid: 3962b1d3fd516db4bb685ddad3325237,
     type: 2}
   thanksDialogue: {fileID: 11400000, guid: eef045822fb92bc4da8178a5f9b291f5, type: 2}
+  sequenceSetupDuration: 1
 --- !u!114 &4908886638936894542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -671,13 +690,45 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!136 &8275045869253206296
+--- !u!1 &6263203773310410582
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2715813200764453474}
+  - component: {fileID: 8917262848043488658}
+  m_Layer: 16
+  m_Name: Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2715813200764453474
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6263203773310410582}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4868224269566916435}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &8917262848043488658
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6046608406360465250}
+  m_GameObject: {fileID: 6263203773310410582}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

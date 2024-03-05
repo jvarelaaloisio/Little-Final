@@ -6115,7 +6115,7 @@ MonoBehaviour:
   climbTimeToOff: 0.05
   floorMask:
     serializedVersion: 2
-    m_Bits: 79873
+    m_Bits: 71681
   safeDot: 0.75
 --- !u!114 &6687177953548559741
 MonoBehaviour:
@@ -6200,16 +6200,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25fef21b17732824186b8b73d67897a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioManagerProvider: {fileID: 11400000, guid: c34804be513e2674fb6b3b7fe45084f4,
+    type: 2}
+  playerController: {fileID: 6687177953548559742}
   walk: {fileID: 8300000, guid: b67138f0b4a440f47b87d0a427ad065c, type: 3}
   fly: {fileID: 8300000, guid: 3ac742220f7f6574aa6f2e234ed85d89, type: 3}
   jumpSfx:
-  - {fileID: 8300000, guid: 3ec2807e62dc58f4ea1fe0c23f6f6315, type: 3}
-  - {fileID: 8300000, guid: 4e2d0b195c77a07419396fd850215c67, type: 3}
-  walkSfx:
-  - {fileID: 8300000, guid: 297cd038a0c0273488ead8bec554827e, type: 3}
-  - {fileID: 8300000, guid: 865368f2ee009b349a9ef1a0c53b6972, type: 3}
-  - {fileID: 8300000, guid: c5bdaa1f3d620fa45bbc3d1e4e6e93a1, type: 3}
-  - {fileID: 8300000, guid: df6bcc8bc5676e944bd1f9fb830ac35d, type: 3}
+  - {fileID: 8300000, guid: 9cd407197b8e1af4a9cafdd1b5f3533b, type: 3}
+  - {fileID: 8300000, guid: 7ab4ae5a5e45a6344ba8e4cddb2a66ce, type: 3}
+  - {fileID: 8300000, guid: 7dde64bc3cdd30440a733de53e686330, type: 3}
+  - {fileID: 8300000, guid: 63fababf40e037048b4ac326c0e692c9, type: 3}
+  - {fileID: 8300000, guid: bc6c9bc9d1aadf44ea59796438aac8f1, type: 3}
+  - {fileID: 8300000, guid: 3ebab66eaae55864686b6c434ce411cb, type: 3}
+  - {fileID: 8300000, guid: 67b50adc7c7b580448ab4a8fefd1ce1e, type: 3}
+  - {fileID: 8300000, guid: 2a6db3cf985499344912d896121a7f2b, type: 3}
+  landSfx:
+  - {fileID: 8300000, guid: f393e3516bafd554989858ba8a9188e1, type: 3}
+  - {fileID: 8300000, guid: 423133468025a784d9a65cf5948996f8, type: 3}
+  - {fileID: 8300000, guid: 1aa1691b0035a4a4582b94d0acf6fc96, type: 3}
+  - {fileID: 8300000, guid: c5eb2b73e2a622f41b3b3f1a6bee4baa, type: 3}
+  - {fileID: 8300000, guid: ec7d7fc9a3ceb8c4ea36be1e73dbe410, type: 3}
+  - {fileID: 8300000, guid: d732f92c01da5d14bb507a39b9c2896c, type: 3}
+  - {fileID: 8300000, guid: 5bd42808b0541934fa3780378e790fd5, type: 3}
+  - {fileID: 8300000, guid: c70f2b5fed39e4a4c93b2c9ba5dc8f00, type: 3}
+  walkSfx: []
   loopingSfx: {fileID: 2722491085779822242}
   debugger: {fileID: 11400000, guid: a778cf4fa9fa8dc458175c1ad3a0c3f6, type: 2}
 --- !u!54 &3453220764534881402
@@ -7670,6 +7684,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3443098221772417480}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8358587156856688602}
   m_SourcePrefab: {fileID: 100100000, guid: 9a3d8f15efa1ca44e997d847eb633fe0, type: 3}
 --- !u!137 &1909967389973753508 stripped
 SkinnedMeshRenderer:
@@ -7715,6 +7733,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1974879248156685916}
   provider: {fileID: 11400000, guid: c9fdde37849b851499bd996331b32c19, type: 2}
+--- !u!114 &8358587156856688602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5099150437230507676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb11f640729ea12498adb11cf18ae5d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundType: 4
+  audioManagerProvider: {fileID: 11400000, guid: c34804be513e2674fb6b3b7fe45084f4,
+    type: 2}
+  sfx:
+  - {fileID: 8300000, guid: e6f13145ad0ffd146a2e0ba9ef5742e5, type: 3}
+  - {fileID: 8300000, guid: 65042946db0f3884c8e08a1b373e041e, type: 3}
+  - {fileID: 8300000, guid: c198fc66adc21ab4d8fef1735f3bdf79, type: 3}
+  - {fileID: 8300000, guid: d79e109a22b1c5e4d8d29fc23e906531, type: 3}
+  - {fileID: 8300000, guid: 3d2bcb97e35990a43bb0c806c96569d6, type: 3}
+  - {fileID: 8300000, guid: db37bbf59e4ecce4ca23264039fa2c58, type: 3}
+  - {fileID: 8300000, guid: 1312ec57dae995e4fb2baeefa27b04a0, type: 3}
+  - {fileID: 8300000, guid: 73a6e56da71349f42b0f6fcc8e517237, type: 3}
 --- !u!4 &5586718511630560294 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
