@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using Core.Extensions;
+using Core.Missions;
 using Missions;
 using Missions.Implementations;
 using UnityEngine;
@@ -45,6 +46,14 @@ namespace UI
                 var icon = Instantiate(iconPrefab, iconParent);
                 icon.color = iconColorOff;
             }
+
+            mission.onFinish += HandleFinishedMission;
+        }
+
+        private void HandleFinishedMission(Mission mission)
+        {
+            mission.onFinish -= HandleFinishedMission;
+            iconParent.gameObject.SetActive(false);
         }
 
         private void OnDisable()
