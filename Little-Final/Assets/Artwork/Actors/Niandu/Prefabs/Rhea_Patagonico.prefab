@@ -245,6 +245,7 @@ GameObject:
   - component: {fileID: 5146297979641172958}
   - component: {fileID: 125044613563964441}
   - component: {fileID: 7164236843013545264}
+  - component: {fileID: 6787929512177601429}
   m_Layer: 0
   m_Name: Niandu
   m_TagString: Untagged
@@ -454,6 +455,30 @@ MonoBehaviour:
   - m_Rig: {fileID: 2935037973387798910}
     m_Active: 1
   m_Effectors: []
+--- !u!114 &6787929512177601429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590211163628187719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb11f640729ea12498adb11cf18ae5d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundType: 4
+  audioManagerProvider: {fileID: 11400000, guid: c34804be513e2674fb6b3b7fe45084f4,
+    type: 2}
+  sfx:
+  - {fileID: 8300000, guid: e6f13145ad0ffd146a2e0ba9ef5742e5, type: 3}
+  - {fileID: 8300000, guid: 65042946db0f3884c8e08a1b373e041e, type: 3}
+  - {fileID: 8300000, guid: c198fc66adc21ab4d8fef1735f3bdf79, type: 3}
+  - {fileID: 8300000, guid: d79e109a22b1c5e4d8d29fc23e906531, type: 3}
+  - {fileID: 8300000, guid: 3d2bcb97e35990a43bb0c806c96569d6, type: 3}
+  - {fileID: 8300000, guid: db37bbf59e4ecce4ca23264039fa2c58, type: 3}
+  - {fileID: 8300000, guid: 1312ec57dae995e4fb2baeefa27b04a0, type: 3}
+  - {fileID: 8300000, guid: 73a6e56da71349f42b0f6fcc8e517237, type: 3}
 --- !u!1 &694357145289404708
 GameObject:
   m_ObjectHideFlags: 0
@@ -1096,13 +1121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34dfe18f39dcc314a93cd8ee17f6c572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  texturesData:
-  - name: _Niandu_BaseColor
-    value: {fileID: 2800000, guid: 30b9598f40748354e9aff8557ad17d9f, type: 3}
-  colorsData: []
-  vectorsData: []
-  floatsData: []
-  integersData: []
   propertyBlockData: {fileID: 11400000, guid: bb0190d7e0dcfee4e854bea6773898d0, type: 2}
 --- !u!1 &2053950958369516199
 GameObject:

@@ -170,6 +170,7 @@ namespace Player
 		{
 			_mainCamera = Camera.main;
 			UpdateManager.Subscribe(this);
+			_healthComponent ??= GetComponent<IHealthComponent>();
 			if (_healthComponent is { Health: not null })
 				_healthComponent.Health.OnDeath += ShowDeathFeedback;
 		}

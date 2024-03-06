@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Core.Extensions;
+using Core.Missions;
 using Core.Providers;
 using UnityEngine;
 
@@ -36,8 +37,10 @@ namespace Missions
 
         public void FinishMission(Mission mission)
         {
-            if (HasMission(mission))
-                missions[mission].IsFinished = true;
+            if (!HasMission(mission))
+                return;
+            missions[mission].IsFinished = true;
+            mission.Finish();
         }
 
         public bool TryGetStatus(Mission mission, out Status status)

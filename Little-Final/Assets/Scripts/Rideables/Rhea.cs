@@ -352,8 +352,6 @@ namespace Rideables
 			if (direction.magnitude < .01f
 				&& Time.time - _runningStart > .25f)
 			{
-				debugger.Log(MOVEMENT_DEBUG_TAG, "Started moving", this);
-
 				_runningStart = Time.time;
 			}
 			_lastMoveDirection = direction;

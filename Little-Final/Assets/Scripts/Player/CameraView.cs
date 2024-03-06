@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
+using Core.Extensions;
 using Core.Providers;
 using Events.Channels;
 using Player.PlayerInput;
 using Player.States;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using VarelaAloisio.UpdateManagement.Runtime;
 
 namespace Player
@@ -36,6 +38,13 @@ namespace Player
 		[SerializeField] private string isClimbingParameter = "isClimbing";
 		[SerializeField] private string isLockingParameter = "isLocking";
 		[SerializeField] private string lockParameter = "lock";
+		
+		[Header("PostProcesses")]
+		[SerializeField] private PostProcessVolume buffVolume;
+		[SerializeField] private float buffVolumeMinimum = 1.5f;
+		[SerializeField] private PostProcessVolume flightVolume;
+		[SerializeField] private AnimationCurve buffOnOffCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+		private Coroutine _buffVolumeCoroutine;
 
 		private IEnumerator Start()
 		{
@@ -54,6 +63,7 @@ namespace Player
 			UpdateManager.Subscribe(this);
 			cameraProvider.TrySetValue(GetComponent<Camera>());
 			view.Controller.OnStateChanges += HandleStateChange;
+			view.Controller.onBuffed.AddListener(HandleBuffChanged);
 		}
 
 		private void OnDisable()
@@ -62,12 +72,16 @@ namespace Player
 			UpdateManager.UnSubscribe(this);
 			cameraProvider.TrySetValue(null);
 			view.Controller.OnStateChanges -= HandleStateChange;
+			view.Controller.onBuffed.RemoveListener(HandleBuffChanged);
 		}
 
 		private void HandleStateChange(State state)
 		{
+			var isFly = state is Fly;
 			animator.SetBool(isFlyingParameter,
-			                 state is Fly);
+			                 isFly);
+			if (flightVolume)
+				flightVolume.weight = isFly ? 1 : 0;
 			animator.SetBool(isClimbingParameter,
 			                 state is Climb);
 		}
@@ -84,6 +98,26 @@ namespace Player
 				+ Mathf.Abs(Input.GetAxis(CAMERA_Y));
 			animator.SetBool(isInputParameter,
 			                 cameraInput > 0);
+		}
+
+		private void HandleBuffChanged(float buffMultiplier)
+		{
+			buffVolume.weight = buffMultiplier >= buffVolumeMinimum ? 1 : 0;
+		}
+
+		private IEnumerator LerpVolumeWeight(PostProcessVolume volume, AnimationCurve curve, float targetValue)
+		{
+			var origin = volume.weight;
+			var start = Time.time;
+			float now = 0;
+			do
+			{
+				now = Time.time;
+				var lerp = (now - start);
+				var slerp = curve.Evaluate(lerp);
+				volume.weight = Mathf.Lerp(origin, targetValue, slerp);
+				yield return null;
+			} while (now < start + curve.Duration());
 		}
 
 		private void SetPause(bool value)

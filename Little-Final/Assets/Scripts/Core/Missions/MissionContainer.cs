@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Core.Missions;
+using UnityEngine;
 
 namespace Missions
 {
