@@ -19,6 +19,7 @@ namespace Player
 		[SerializeField] private AudioClip[] jumpSfx;
 		[SerializeField] private AudioClip[] landSfx;
 		[SerializeField] private AudioClip[] walkSfx;
+		[SerializeField] private AudioClip[] mountSfx;
 
 
 		public AudioSource loopingSfx;
@@ -36,11 +37,6 @@ namespace Player
 			playerController ??= GetComponent<PlayerController>();
 		}
 
-		private void Start()
-		{
-			FindObjectOfType<AudioManager>();
-		}
-
 		private void OnEnable()
 		{
 			if (!playerController)
@@ -51,6 +47,7 @@ namespace Player
 
 			playerController.OnLand += HandleLand;
 			playerController.OnJump += PlayJump;
+			playerController.OnMount.AddListener(HandleMount);
 		}
 
 		private void OnDisable()
@@ -60,6 +57,7 @@ namespace Player
 
 			playerController.OnLand -= HandleLand;
 			playerController.OnJump -= PlayJump;
+			playerController.OnMount.RemoveListener(HandleMount);
 		}
 
 		private void HandleLand() => Play(landSfx);
@@ -73,6 +71,11 @@ namespace Player
 				debugger.LogError(transform.name, $"No jump sfx were supplied");
 			else
 				Play(jumpSfx);
+		}
+
+		private void HandleMount()
+		{
+			Play(mountSfx);
 		}
 
 		[Obsolete]
@@ -94,7 +97,7 @@ namespace Player
 			loopingSfx.Stop();
 			_isWalkPlaying = false;
 		}
-		
+
 		public void PlayFly()
 		{
 			if (!_isFlyPlaying)
