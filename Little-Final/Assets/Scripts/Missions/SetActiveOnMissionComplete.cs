@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using Core.Missions;
+using UnityEngine;
 
 namespace Missions
 {
     public class SetActiveOnMissionComplete : MonoBehaviour
     {
         [SerializeField] private MissionContainer mission;
+        [SerializeField] private GameObject controlledGO;
         [SerializeField] private bool active;
 
         private void OnEnable()
@@ -19,7 +21,8 @@ namespace Missions
 
         private void HandleMissionComplete(Mission obj)
         {
-            gameObject.SetActive(active);
+            if (controlledGO)
+                controlledGO.SetActive(active);
         }
     }
 }
