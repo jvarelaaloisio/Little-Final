@@ -72,7 +72,6 @@ namespace Player
 		public Vector3 playerShadowOffset;
 		public Animator animator;
 		private bool _isControllingStaminaPosition = true;
-		CameraView cameraView;
 		ActionOverTime staminaFade;
 		CountDownTimer staminaFadeTimer;
 		//private LensDistortion lensDistortionSettings;
@@ -143,7 +142,7 @@ namespace Player
 			_sceneIndex = gameObject.scene.buildIndex;
 			staminaFade = new ActionOverTime(staminaFadeTime, SetStaminaTransparency, _sceneIndex, true);
 			staminaFadeTimer = new CountDownTimer(staminaFadeDelay, staminaFade.StartAction, _sceneIndex);
-			cameraView = FindObjectOfType<CameraView>();
+			FindObjectOfType<CameraView>();
 			staminaUI.ForEach(ui => ui.color = maxStamina);
 			SetStaminaTransparency(1);
 			_staminaOriginalScale = staminaRings.localScale;
@@ -171,6 +170,7 @@ namespace Player
 		{
 			_mainCamera = Camera.main;
 			UpdateManager.Subscribe(this);
+			_healthComponent ??= GetComponent<IHealthComponent>();
 			if (_healthComponent is { Health: not null })
 				_healthComponent.Health.OnDeath += ShowDeathFeedback;
 		}
@@ -248,10 +248,6 @@ namespace Player
 
 		public void SetSpeed(float value)
 		{
-			if (value > 0)
-				GetComponent<PlayerSound>().PlayWalk();
-			else
-				GetComponent<PlayerSound>().StopWalk();
 			animator.SetFloat(speedParameter, value);
 		}
 

@@ -10,7 +10,7 @@ public class AudioManager : MonoBehaviour
 	#region Variables
 	readonly float[] relations = { 25, 75 };
 
-	enum SoundIndex
+	public enum SoundIndex
 	{
 		Music,
 		Ambient1,
@@ -40,6 +40,7 @@ public class AudioManager : MonoBehaviour
 
 	private void OnEnable()
 	{
+		Sources = GetComponentsInChildren<AudioSource>();
 		provider.Value = this;
 	}
 
@@ -52,7 +53,6 @@ public class AudioManager : MonoBehaviour
 	{
 		_sceneIndex = gameObject.scene.buildIndex;
 		randomCut = new CountDownTimer(Random.Range(minSongRandomCut, maxSongRandomCut), CutMusic, _sceneIndex);
-		Sources = GetComponentsInChildren<AudioSource>();
 		SelectMainMusic();
 	}
 
@@ -136,6 +136,11 @@ public class AudioManager : MonoBehaviour
 	public void PlayEffect(AudioClip NewClip)
 	{
 		Sources[(int)SoundIndex.Effect].PlayOneShot(NewClip);
+	}
+
+	public void Play(AudioClip clip, SoundIndex index)
+	{
+		Sources[(int)index].PlayOneShot(clip);
 	}
 
 	/// <summary>

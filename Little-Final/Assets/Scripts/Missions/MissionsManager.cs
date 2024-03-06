@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Core.Extensions;
 using Core.Providers;
 using UnityEngine;
@@ -7,7 +8,7 @@ namespace Missions
 {
     public class MissionsManager : MonoBehaviour
     {
-        [SerializeField] private List<Mission> missions = new();
+        [SerializeField] private Dictionary<Mission, Status> missions = new();
         [SerializeField] private DataProvider<MissionsManager> provider;
         
 
@@ -25,15 +26,40 @@ namespace Missions
 
         public void AddMission(Mission mission)
         {
-            missions.Add(mission);
+            missions.Add(mission, new Status());
             mission.onComplete += HandleMissionComplete;
             this.Log($"Adding mission {mission.Name}", this);
         }
 
+        public bool HasMission(Mission mission)
+            => missions.ContainsKey(mission);
+
+        public void FinishMission(Mission mission)
+        {
+            if (HasMission(mission))
+                missions[mission].IsFinished = true;
+        }
+
+        public bool TryGetStatus(Mission mission, out Status status)
+        {
+            return missions.TryGetValue(mission, out status);
+        }
+        
         private void HandleMissionComplete(Mission mission)
         {
-            missions.Remove(mission);
-            this.Log($"Mission {mission.Name} complete!", this);
+            if (HasMission(mission))
+            {
+                missions[mission].IsComplete = true;
+                this.Log($"Mission {mission.Name} complete!", this);
+            }
+            else
+                this.LogError($"{mission.Name} wasn't added!");
+        }
+
+        public class Status
+        {
+            public bool IsComplete { get; set; } = false;
+            public bool IsFinished { get; set; } = false;
         }
     }
 }

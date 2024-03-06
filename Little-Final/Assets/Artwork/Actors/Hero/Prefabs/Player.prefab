@@ -34,6 +34,7 @@ RectTransform:
   - {fileID: 867497660292907426}
   - {fileID: 2762915695215223943}
   - {fileID: 1659823757318831185}
+  - {fileID: 3453220765033135859}
   m_Father: {fileID: 7680600215329642347}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5473,6 +5474,82 @@ Transform:
   m_Father: {fileID: 7680600215329642347}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3453220765033135820
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3453220765033135859}
+  - component: {fileID: 3453220765033135858}
+  - component: {fileID: 3453220765033135821}
+  m_Layer: 5
+  m_Name: BlackScreen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3453220765033135859
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3453220765033135820}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 433140966}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &3453220765033135858
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3453220765033135820}
+  m_CullTransparentMesh: 0
+--- !u!114 &3453220765033135821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3453220765033135820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &3746615366193881054
 GameObject:
   m_ObjectHideFlags: 0
@@ -5846,7 +5923,7 @@ Transform:
   - {fileID: 5125565747167214897}
   - {fileID: 9047317413940923686}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6687177953548559742
 MonoBehaviour:
@@ -6115,7 +6192,7 @@ MonoBehaviour:
   climbTimeToOff: 0.05
   floorMask:
     serializedVersion: 2
-    m_Bits: 79873
+    m_Bits: 71681
   safeDot: 0.75
 --- !u!114 &6687177953548559741
 MonoBehaviour:
@@ -6173,14 +6250,32 @@ MonoBehaviour:
   - {fileID: 5065468767406028637}
   - {fileID: 7257661221088099367}
   controller: {fileID: 6687177953548559742}
-  blackScreen: {fileID: 0}
+  blackScreen: {fileID: 3453220765033135821}
   screenFade:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 21.983324
+      outSlope: 21.983324
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.01765492
+    - serializedVersion: 3
+      time: 1.0000663
+      value: -0.00048374292
+      inSlope: -20.613264
+      outSlope: -20.613264
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.019692838
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  deathFadeDuration: 0
+  deathFadeDuration: 3
   shadowMinDot: 0.85
   onJump:
     m_PersistentCalls:
@@ -6200,16 +6295,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25fef21b17732824186b8b73d67897a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioManagerProvider: {fileID: 11400000, guid: c34804be513e2674fb6b3b7fe45084f4,
+    type: 2}
+  playerController: {fileID: 6687177953548559742}
   walk: {fileID: 8300000, guid: b67138f0b4a440f47b87d0a427ad065c, type: 3}
   fly: {fileID: 8300000, guid: 3ac742220f7f6574aa6f2e234ed85d89, type: 3}
   jumpSfx:
-  - {fileID: 8300000, guid: 3ec2807e62dc58f4ea1fe0c23f6f6315, type: 3}
-  - {fileID: 8300000, guid: 4e2d0b195c77a07419396fd850215c67, type: 3}
-  walkSfx:
-  - {fileID: 8300000, guid: 297cd038a0c0273488ead8bec554827e, type: 3}
-  - {fileID: 8300000, guid: 865368f2ee009b349a9ef1a0c53b6972, type: 3}
-  - {fileID: 8300000, guid: c5bdaa1f3d620fa45bbc3d1e4e6e93a1, type: 3}
-  - {fileID: 8300000, guid: df6bcc8bc5676e944bd1f9fb830ac35d, type: 3}
+  - {fileID: 8300000, guid: 9cd407197b8e1af4a9cafdd1b5f3533b, type: 3}
+  - {fileID: 8300000, guid: 7ab4ae5a5e45a6344ba8e4cddb2a66ce, type: 3}
+  - {fileID: 8300000, guid: 7dde64bc3cdd30440a733de53e686330, type: 3}
+  - {fileID: 8300000, guid: 63fababf40e037048b4ac326c0e692c9, type: 3}
+  - {fileID: 8300000, guid: bc6c9bc9d1aadf44ea59796438aac8f1, type: 3}
+  - {fileID: 8300000, guid: 3ebab66eaae55864686b6c434ce411cb, type: 3}
+  - {fileID: 8300000, guid: 67b50adc7c7b580448ab4a8fefd1ce1e, type: 3}
+  - {fileID: 8300000, guid: 2a6db3cf985499344912d896121a7f2b, type: 3}
+  landSfx:
+  - {fileID: 8300000, guid: f393e3516bafd554989858ba8a9188e1, type: 3}
+  - {fileID: 8300000, guid: 423133468025a784d9a65cf5948996f8, type: 3}
+  - {fileID: 8300000, guid: 1aa1691b0035a4a4582b94d0acf6fc96, type: 3}
+  - {fileID: 8300000, guid: c5eb2b73e2a622f41b3b3f1a6bee4baa, type: 3}
+  - {fileID: 8300000, guid: ec7d7fc9a3ceb8c4ea36be1e73dbe410, type: 3}
+  - {fileID: 8300000, guid: d732f92c01da5d14bb507a39b9c2896c, type: 3}
+  - {fileID: 8300000, guid: 5bd42808b0541934fa3780378e790fd5, type: 3}
+  - {fileID: 8300000, guid: c70f2b5fed39e4a4c93b2c9ba5dc8f00, type: 3}
+  walkSfx: []
   loopingSfx: {fileID: 2722491085779822242}
   debugger: {fileID: 11400000, guid: a778cf4fa9fa8dc458175c1ad3a0c3f6, type: 2}
 --- !u!54 &3453220764534881402
@@ -7670,6 +7779,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3443098221772417480}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8358587156856688602}
   m_SourcePrefab: {fileID: 100100000, guid: 9a3d8f15efa1ca44e997d847eb633fe0, type: 3}
 --- !u!137 &1909967389973753508 stripped
 SkinnedMeshRenderer:
@@ -7715,6 +7828,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1974879248156685916}
   provider: {fileID: 11400000, guid: c9fdde37849b851499bd996331b32c19, type: 2}
+--- !u!114 &8358587156856688602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5099150437230507676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb11f640729ea12498adb11cf18ae5d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundType: 4
+  audioManagerProvider: {fileID: 11400000, guid: c34804be513e2674fb6b3b7fe45084f4,
+    type: 2}
+  sfx:
+  - {fileID: 8300000, guid: e6f13145ad0ffd146a2e0ba9ef5742e5, type: 3}
+  - {fileID: 8300000, guid: 65042946db0f3884c8e08a1b373e041e, type: 3}
+  - {fileID: 8300000, guid: c198fc66adc21ab4d8fef1735f3bdf79, type: 3}
+  - {fileID: 8300000, guid: d79e109a22b1c5e4d8d29fc23e906531, type: 3}
+  - {fileID: 8300000, guid: 3d2bcb97e35990a43bb0c806c96569d6, type: 3}
+  - {fileID: 8300000, guid: db37bbf59e4ecce4ca23264039fa2c58, type: 3}
+  - {fileID: 8300000, guid: 1312ec57dae995e4fb2baeefa27b04a0, type: 3}
+  - {fileID: 8300000, guid: 73a6e56da71349f42b0f6fcc8e517237, type: 3}
 --- !u!4 &5586718511630560294 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
