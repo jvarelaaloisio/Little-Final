@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028435, g: 0.22571555, b: 0.3069234, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -239,7 +239,7 @@ PrefabInstance:
     - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
         type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8073410059099985034, guid: f9eef882194434f48bbe2d88b03be426,
         type: 3}
@@ -386,21 +386,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 763416113}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &50952198
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 50952190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9dc8b20d75bc4bec982ec978e0f1e4fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mission: {fileID: 11400000, guid: ee1d959235ead1741a49dfe2c3b0f3a2, type: 2}
-  activeByDefault: 1
-  active: 0
 --- !u!1 &66592441
 GameObject:
   m_ObjectHideFlags: 0
@@ -4190,7 +4175,7 @@ Transform:
   - {fileID: 982157912}
   - {fileID: 234722614}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &205769044
 GameObject:
@@ -4221,7 +4206,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &231770633
 PrefabInstance:
@@ -4510,7 +4495,7 @@ Transform:
   - {fileID: 582701925657293439}
   - {fileID: 582701924548702036}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &408599721
 GameObject:
@@ -6039,11 +6024,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6046608406360465250, guid: a391da80842c7fe47b4f013bfac5a421,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 50952198}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a391da80842c7fe47b4f013bfac5a421, type: 3}
 --- !u!1 &805115780
 GameObject:
@@ -11420,7 +11401,7 @@ Transform:
   - {fileID: 1552663384}
   - {fileID: 1914857021}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1859742750
 GameObject:
@@ -11704,6 +11685,53 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1931364768}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1997551222
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1997551223}
+  - component: {fileID: 1997551224}
+  m_Layer: 0
+  m_Name: DeactivateCapyWhenMissionIsComplete
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1997551223
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997551222}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1997551224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997551222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dc8b20d75bc4bec982ec978e0f1e4fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mission: {fileID: 11400000, guid: ee1d959235ead1741a49dfe2c3b0f3a2, type: 2}
+  controlledGO: {fileID: 50952190}
+  active: 0
 --- !u!43 &2015407290
 Mesh:
   m_ObjectHideFlags: 0
@@ -11903,7 +11931,7 @@ Transform:
   - {fileID: 1293925604}
   - {fileID: 18161105}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &2134162146
 Mesh:

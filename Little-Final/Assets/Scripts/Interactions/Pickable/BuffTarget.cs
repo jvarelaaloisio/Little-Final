@@ -26,7 +26,7 @@ namespace Interactions.Pickable
         
         public void Reset()
         {
-            target.BuffMultiplier = originalValue;
+            target.BuffMultiplier = 1;
             OnReset?.Invoke();
         }
     }
