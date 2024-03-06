@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Random = UnityEngine.Random;
 
 public class lb_BirdController : MonoBehaviour {
 	public int idealNumberOfBirds;
@@ -119,8 +121,10 @@ public class lb_BirdController : MonoBehaviour {
 		}
 
 		//find all the targets
-		GameObject[] groundTargets = GameObject.FindGameObjectsWithTag("lb_groundTarget");
-		GameObject[] perchTargets = GameObject.FindGameObjectsWithTag("lb_perchTarget");
+		// GameObject[] groundTargets = GameObject.FindGameObjectsWithTag("lb_groundTarget");
+		// GameObject[] perchTargets = GameObject.FindGameObjectsWithTag("lb_perchTarget");
+		GameObject[] groundTargets = Array.Empty<GameObject>();
+		GameObject[] perchTargets = Array.Empty<GameObject>();
 
 		for (int i=0;i<groundTargets.Length;i++){
 			if(Vector3.Distance (groundTargets[i].transform.position,currentCamera.transform.position)<unspawnDistance){
