@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Missions
+namespace Core.Missions
 {
     [Serializable]
     public class Mission
@@ -9,14 +9,14 @@ namespace Missions
         [SerializeField] private string name;
 
         public Action<Mission> onComplete;
-        public Action<Mission> onDeliver;
+        public Action<Mission> onFinish;
         public string Name => name;
 
         public Mission(string name)
         {
             this.name = name;
             onComplete = delegate { };
-            onDeliver = delegate { };
+            onFinish = delegate { };
         }
 
         public void Complete()
@@ -24,9 +24,9 @@ namespace Missions
             onComplete(this);
         }
 
-        public void Deliver()
+        public void Finish()
         {
-            onDeliver(this);
+            onFinish(this);
         }
     }
 }

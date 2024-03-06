@@ -69,7 +69,7 @@ namespace Missions
 
         private IEnumerator FinishMission(MissionsManager missionsManager)
         {
-            cinematicDirector.Play(finishMissionSequence);
+            cinematicDirector.Play(talkSequence);
             if (giveMissionDialogue)
                 dialogueRunner.Run(finishMissionDialogue);
             else
@@ -80,6 +80,9 @@ namespace Missions
             yield return new WaitUntil(dialogueRunner.IsFinished);
             dialogueRunner.Deactivate();
             missionsManager.FinishMission(Mission.Get);
+            cinematicDirector.Play(finishMissionSequence);
+            yield return new WaitForSeconds((float)finishMissionSequence.duration);
+            yield return Thank(missionsManager);
         }
         
         private IEnumerator RepeatMissionTask(MissionsManager missionsManager)
@@ -93,6 +96,7 @@ namespace Missions
                 yield break;
             }
             yield return new WaitUntil(dialogueRunner.IsFinished);
+            dialogueRunner.Deactivate();
         }
         
         private IEnumerator Thank(MissionsManager missionsManager)
@@ -106,6 +110,7 @@ namespace Missions
                 yield break;
             }
             yield return new WaitUntil(dialogueRunner.IsFinished);
+            dialogueRunner.Deactivate();
         }
     }
 }

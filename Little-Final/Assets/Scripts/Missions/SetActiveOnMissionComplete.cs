@@ -1,14 +1,20 @@
-﻿using UnityEngine;
+﻿using Core.Missions;
+using UnityEngine;
 
 namespace Missions
 {
     public class SetActiveOnMissionComplete : MonoBehaviour
     {
         [SerializeField] private MissionContainer mission;
+        [SerializeField] private bool activeByDefault = true;
         [SerializeField] private bool active;
 
         private void OnEnable()
         {
+            if (!activeByDefault)
+            {
+                gameObject.SetActive(false);
+            }
             mission.Get.onComplete += HandleMissionComplete;
         }
         
