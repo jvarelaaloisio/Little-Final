@@ -26,7 +26,7 @@ namespace Spawning
 		private IEnumerator Spawn()
 		{
 			yield return new WaitForSeconds(spawnDelay);
-			debugger.Log(name, $"Spawning\nPrefab: {prefab.name}");
+			debugger.LogSafely(name, $"Spawning\nPrefab: {prefab.name}", this);
 			GameObject instance = Instantiate(prefab, transform.position, transform.rotation);
 			SceneManager.MoveGameObjectToScene(instance, gameObject.scene);
 			if (!instance.TryGetComponent(out IDestroyable destroyable))
