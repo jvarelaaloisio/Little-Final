@@ -66,6 +66,7 @@ namespace Interactions.Pickable
 
 		private void OnDestroy()
 		{
+			ForceLoseInteraction();
 			forceReset.UnsubscribeSafely(ResetItem);
 		}
 	}

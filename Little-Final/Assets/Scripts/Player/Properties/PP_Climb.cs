@@ -27,8 +27,11 @@ namespace Player.Properties
 		[Range(0, 10, step: .2f)]
 		private float staminaConsumingDelay;
 
+		[SerializeField]
+		private float rotationSpeed = 1;
 
-		#region Getters
+
+	#region Getters
 		public static float ClimbPositioningTime => Instance.climbPositioningTime;
 		public static float ClimbMinTime => Instance.climbMinTime;
 		public static float ClimbSpeed => Instance.climbSpeed;
@@ -38,6 +41,9 @@ namespace Player.Properties
 		public static float ClimbingPositionOffset => Instance.climbingPositionOffset;
 		public static float StaminaPerSecond => Instance.staminaPerSecond;
 		public static float StaminaConsumingDelay => Instance.staminaConsumingDelay;
-		#endregion
+
+		public static float RotationSpeed => Instance.rotationSpeed;
+
+	#endregion
 	}
 }

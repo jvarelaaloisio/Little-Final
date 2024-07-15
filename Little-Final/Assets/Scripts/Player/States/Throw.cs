@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Debugging;
+using Core.Interactions;
 using Player.PlayerInput;
 using UnityEngine;
 
@@ -25,13 +26,12 @@ namespace Player.States
             _beggining = Time.time;
             OnThrowPercentageUpdate(0);
             controller.Body.RequestMovement(MovementRequest.InvalidRequest);
+            controller.onPutDown.AddListener(HandlePutDown);
             OnThrowing();
         }
 
         public override void OnStateUpdate()
         {
-            if (!Controller.HasItem())
-                Controller.ChangeState<Walk>();
             if (!InputManager.IsHoldingInteract())
             {
                 Controller.PutDownItem();
@@ -46,6 +46,7 @@ namespace Player.States
             {
                 _debugger.LogSafely(Controller.name, $"Throwing Item", Controller);
                 OnThrowPercentageUpdate(1);
+                Controller.onPutDown.RemoveListener(HandlePutDown);
                 Controller.ThrowItem(_config.Force);
                 Controller.ChangeState<Walk>();
             }
@@ -54,6 +55,11 @@ namespace Player.States
         public override void OnStateExit()
         {
             OnThrowPercentageUpdate(0);
+        }
+
+        private void HandlePutDown()
+        {
+            Controller.ChangeState<Walk>();
         }
     }
 }

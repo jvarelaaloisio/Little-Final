@@ -6,6 +6,9 @@ namespace Menus.Events
     public abstract class LevelLoadBatch
     {
         public abstract int Length { get; }
+        /// <summary>
+        /// Called on Unity's OnValidate
+        /// </summary>
         public virtual void Validate() { }
 
         public abstract IEnumerable<SceneAsyncOperation> GetLoadBatch();

@@ -99,7 +99,9 @@ namespace Player.States
 					//Rotation
 					Physics.Raycast(myPosition, MyTransform.forward, out var forwardHit,
 						PP_Climb.MaxDistanceToTriggerClimb, ~LayerMask.GetMask("NonClimbable", "Interactable"));
-					MyTransform.rotation = Quaternion.LookRotation(-forwardHit.normal).normalized;
+					// MyTransform.rotation = Quaternion.LookRotation(-forwardHit.normal).normalized;
+					Quaternion targetRotation = Quaternion.LookRotation(-forwardHit.normal).normalized;
+					MyTransform.rotation = Quaternion.RotateTowards(MyTransform.rotation, targetRotation, PP_Climb.RotationSpeed * Time.deltaTime);
 					Debug.DrawLine(myPosition, hit.point, Color.yellow);
 				}
 			}

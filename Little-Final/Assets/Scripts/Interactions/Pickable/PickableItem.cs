@@ -61,7 +61,8 @@ namespace Interactions.Pickable
 
 		public virtual void Leave()
 		{
-			debugger.LogSafely(name, $"item put down by {_picker.transform.name}", this);
+			if (transform != null && _picker != null && _picker.transform != null)
+				debugger.LogSafely(name, $"item put down by {_picker.transform.name}", this);
 			PutDownInternal();
 			onPutDown.Invoke();
 		}
