@@ -1,0 +1,6 @@
+using Core.Providers;
+using UnityEngine;
+
+[AddComponentMenu("Data/Populate T Provider")]
+[RequireComponent(typeof(T))]
+public class #SCRIPTNAME# : PopulateComponentProvider<T> { }
