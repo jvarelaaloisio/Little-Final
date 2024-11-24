@@ -1,4 +1,5 @@
 using CharacterMovement;
+using Core.Gameplay;
 using Core.Interactions;
 using Player.PlayerInput;
 using UnityEngine;
@@ -9,9 +10,9 @@ namespace Player.States
 	{
 		private IRideable _rideable;
 
-		public override void OnStateEnter(PlayerController controller, int sceneIndex)
+		public override void OnStateEnter(PlayerController controller, IInputReader inputReader, int sceneIndex)
 		{
-			base.OnStateEnter(controller, sceneIndex);
+			base.OnStateEnter(controller, inputReader, sceneIndex);
 			_rideable = controller.Rideable;
 			if (_rideable == null)
 			{

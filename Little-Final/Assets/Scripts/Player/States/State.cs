@@ -1,6 +1,7 @@
 ﻿using System;
 using CharacterMovement;
 using Core.Extensions;
+using Core.Gameplay;
 using Core.Helpers.Movement;
 using Player.PlayerInput;
 using Player.Properties;
@@ -10,12 +11,7 @@ namespace Player.States
 {
 	public abstract class State
 	{
-		//Estas flags son para que los metodos que están de más los corra en controller
-		public (bool allowsLanding,
-			bool allowsJump,
-			bool allowsJumpBuffer,
-			bool allowsClimb) Flags;
-
+		protected IInputReader InputReader;
 		protected PlayerController Controller;
 		protected Transform MyTransform;
 		protected LayerMask Interactable;
@@ -28,10 +24,11 @@ namespace Player.States
 		/// </summary>
 		/// <param name="controller"></param>
 		/// <param name="sceneIndex">the index where the player lives</param>
-		public virtual void OnStateEnter(PlayerController controller, int sceneIndex)
+		public virtual void OnStateEnter(PlayerController controller, IInputReader inputReader, int sceneIndex)
 		{
 			Interactable = LayerMask.GetMask("Interactable");
 			Controller = controller;
+			InputReader = inputReader;
 			MyTransform = controller.transform;
 			Body = controller.Body;
 		}

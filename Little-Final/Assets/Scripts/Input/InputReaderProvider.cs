@@ -1,7 +1,6 @@
 using Core.Gameplay;
 using Core.Providers;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Input
 {

@@ -1,5 +1,6 @@
 ﻿using CharacterMovement;
 using Core.Extensions;
+using Core.Gameplay;
 using Core.Helpers.Movement;
 using Core.Interactions;
 using Player.Movement;
@@ -17,15 +18,10 @@ namespace Player.States
 		private bool _canGlide = false;
 
 		private CountDownTimer _waitBeforeGlide;
-
-		public Jump()
+		
+		public override void OnStateEnter(PlayerController controller, IInputReader inputReader, int sceneIndex)
 		{
-			Flags.allowsLanding = true;
-		}
-
-		public override void OnStateEnter(PlayerController controller, int sceneIndex)
-		{
-			base.OnStateEnter(controller, sceneIndex);
+			base.OnStateEnter(controller, inputReader, sceneIndex);
 			MyTransform = controller.transform;
 
 			if (PP_Jump.LoseItem && Controller.HasItem())

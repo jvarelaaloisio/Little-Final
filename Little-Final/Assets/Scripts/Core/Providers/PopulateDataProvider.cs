@@ -13,14 +13,19 @@ namespace Core.Providers
                 this.LogWarning($"{nameof(provider)} is null! this component won't have any effect.");
                 return;
             }
+            if (value == null)
+            {
+                this.LogWarning($"{nameof(value)} is null! this component won't have any effect.");
+                return;
+            }
 
-            if (!provider.Value.Equals(value))
+            if (!provider.Value?.Equals(value) ?? false)
                 provider.Value = value;
         }
         
         protected void Depopulate(T value)
         {
-            if (provider && provider.Value.Equals(value))
+            if (provider && (provider.Value?.Equals(value) ?? false))
                 provider.Value = default;
         }
     }

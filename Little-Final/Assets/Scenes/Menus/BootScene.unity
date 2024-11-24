@@ -473,6 +473,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2104678819}
   - component: {fileID: 2104678820}
+  - component: {fileID: 2104678822}
   - component: {fileID: 2104678821}
   m_Layer: 0
   m_Name: PlayerInput
@@ -540,6 +541,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   provider: {fileID: 11400000, guid: 7fa8b5fe8f4930049ba13a411900a4d8, type: 2}
+--- !u!114 &2104678822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2104678818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dcd90aa8e41ace47814015c8a0e087f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gamepadSchemes:
+  - Gamepad
+  moveActionName: Move
+  cameraActionName: Camera
 --- !u!1 &2127119370
 GameObject:
   m_ObjectHideFlags: 0

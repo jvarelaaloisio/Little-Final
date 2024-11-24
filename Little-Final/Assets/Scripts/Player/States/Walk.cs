@@ -1,5 +1,6 @@
 ﻿using CharacterMovement;
 using Core.Extensions;
+using Core.Gameplay;
 using Core.Interactions;
 using Player.PlayerInput;
 using Player.Properties;
@@ -15,9 +16,9 @@ namespace Player.States
 		private StaminaConsumer _runningConsumer;
 		private bool isRunning;
 
-		public override void OnStateEnter(PlayerController controller, int sceneIndex)
+		public override void OnStateEnter(PlayerController controller, IInputReader inputReader, int sceneIndex)
 		{
-			base.OnStateEnter(controller, sceneIndex);
+			base.OnStateEnter(controller, inputReader, sceneIndex);
 			controller.OnLand.Invoke();
 			Body = controller.GetComponent<PlayerBody>();
 			isRunning = false;

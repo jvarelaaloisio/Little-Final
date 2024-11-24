@@ -1,4 +1,5 @@
 ﻿using CharacterMovement;
+using Core.Gameplay;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;
@@ -13,9 +14,9 @@ namespace Player.States
 		private float _currentSpeed;
 		private ActionOverTime _accelerate;
 
-		public override void OnStateEnter(PlayerController controller, int sceneIndex)
+		public override void OnStateEnter(PlayerController controller, IInputReader inputReader, int sceneIndex)
 		{
-			base.OnStateEnter(controller, sceneIndex);
+			base.OnStateEnter(controller, inputReader, sceneIndex);
 			_initialSpeed = Body.Velocity.magnitude;
 			_accelerate
 				= new ActionOverTime(
