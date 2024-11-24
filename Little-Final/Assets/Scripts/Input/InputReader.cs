@@ -13,8 +13,15 @@ namespace Input
         [Header("Setup")]
         [SerializeField] private string[] gamepadSchemes = { "Gamepad" };
         [Header("Actions")]
-        [SerializeField] private string moveActionName = "Move";
-        [SerializeField] private string cameraActionName = "Camera";
+        [SerializeField] private InputActionReference moveInput;
+        [SerializeField] private InputActionReference cameraInput;
+        [SerializeField] private InputActionReference centerCameraInput;
+        [SerializeField] private InputActionReference jumpInput;
+        [SerializeField] private InputActionReference glideInput;
+        [SerializeField] private InputActionReference climbInput;
+        [SerializeField] private InputActionReference interactInput;
+        [SerializeField] private InputActionReference abilityInput;
+        [SerializeField] private InputActionReference pauseInput;
         
         private PlayerInput _playerInput;
         private Coroutine _gamepadCameraCoroutine;
@@ -22,33 +29,90 @@ namespace Input
 
         public event Action<Vector2> OnMoveInput = delegate { };
         public event Action<Vector2> OnCameraInput = delegate { };
+        public event Action OnCenterCameraPressed = delegate { };
+        public event Action OnJumpPressed = delegate { };
+        public event Action OnJumpReleased = delegate { };
+        public event Action OnGlidePressed = delegate { };
+        public event Action OnGlideReleased = delegate { };
+        public event Action OnClimbPressed = delegate { };
+        public event Action OnClimbReleased = delegate { };
+        public event Action OnInteractPressed = delegate { };
+        public event Action OnInteractReleased = delegate { };
+        public event Action OnAbilityPressed = delegate { };
+        public event Action OnAbilityReleased = delegate { };
+        public event Action OnPause = delegate { };
+
         private void OnEnable()
         {
-            var actions = playerInput.actions;
             playerInput.onControlsChanged += HandleControlChanged;
-            actions.FindAction(moveActionName).performed += HandleMove;
+            if (moveInput?.action is { } moveAction)
+                moveAction.performed += HandleMove;
+            if (cameraInput?.action is { } cameraAction)
+            {
+                cameraAction.performed += HandleCamera;
+                cameraAction.canceled += HandleCamera;
+            }
+            if (centerCameraInput?.action is { } centerCameraAction)
+            {
+                centerCameraAction.started += _ => OnCenterCameraPressed();
+            }
+            if (jumpInput?.action is { } jumpAction)
+            {
+                jumpAction.started += _ => OnJumpPressed();
+                jumpAction.canceled += _ => OnJumpReleased();
+            }
+            if (glideInput?.action is { } glideAction)
+            {
+                glideAction.started += _ => OnGlidePressed();
+                glideAction.canceled += _ => OnGlideReleased();
+            }
+            if (climbInput?.action is { } climbAction)
+            {
+                climbAction.started += _ => OnClimbPressed();
+                climbAction.canceled += _ => OnClimbReleased();
+            }
+            if (interactInput?.action is { } interactAction)
+            {
+                interactAction.started += _ => OnInteractPressed();
+                interactAction.canceled += _ => OnInteractReleased();
+            }
+            if (abilityInput?.action is { } abilityAction)
+            {
+                abilityAction.started += _ => OnAbilityPressed();
+                abilityAction.canceled += _ => OnAbilityReleased();
+            }
+            if (pauseInput?.action is { } pauseAction)
+                pauseAction.performed += _ => OnPause();
         }
 
         private void HandleControlChanged(PlayerInput ctx)
         {
-            var actions = ctx.actions;
-            if (gamepadSchemes.Contains(ctx.currentControlScheme))
+            if (!cameraInput)
             {
-                _gamepadCameraCoroutine ??= StartCoroutine(HandleGamepadCamera(actions.FindAction(cameraActionName)));
-                actions.FindAction(cameraActionName).performed -= HandleCamera;
+                Debug.LogError($"{name}: {nameof(cameraInput)} is null!");
+                return;
+            }
+
+            var cameraAction = cameraInput.action;
+            var isGamepad = gamepadSchemes.Contains(ctx.currentControlScheme);
+            if (isGamepad)
+            {
+                _gamepadCameraCoroutine ??= StartCoroutine(HandleGamepadCamera(cameraAction));
+                cameraAction.performed -= HandleCamera;
             }
             else
             {
                 if (_gamepadCameraCoroutine != null)
                     StopCoroutine(_gamepadCameraCoroutine);
-                actions.FindAction(cameraActionName).performed += HandleCamera;
+                cameraAction.performed -= HandleCamera;
+                cameraAction.performed += HandleCamera;
             }
         }
 
         private IEnumerator HandleGamepadCamera(InputAction action)
         {
             yield return null;
-            NotifyCamera(action.ReadValue<Vector2>());
+            NotifyCamera(action.ReadValue<Vector2>() * Time.deltaTime);
         }
 
         private void HandleCamera(InputAction.CallbackContext ctx)
