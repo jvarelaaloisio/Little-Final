@@ -60,7 +60,7 @@ namespace Player.States
 			{
 				Controller.StepUp.StepUp(PP_Glide.StepUpConfig,
 				                         stepPosition,
-				                         () => Controller.ChangeState<Walk>());
+				                         () => Controller.ChangeState<Walk_OLD>());
 				Controller.ChangeState<Void>();
 			}
 			
@@ -119,7 +119,7 @@ namespace Player.States
 		{
 			if (eventType.Equals(BodyEvent.LAND) && FallHelper.IsGrounded)
 			{
-				Controller.ChangeState<Walk>();
+				Controller.ChangeState<Walk_OLD>();
 			}
 		}
 	}

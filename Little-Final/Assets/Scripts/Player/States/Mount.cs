@@ -19,7 +19,7 @@ namespace Player.States
             if (_rideable == null)
             {
                 Debug.Log("no rideable found");
-                controller.ChangeState<Walk>();
+                controller.ChangeState<Walk_OLD>();
                 return;
             }
             _mount = _rideable.GetMount();

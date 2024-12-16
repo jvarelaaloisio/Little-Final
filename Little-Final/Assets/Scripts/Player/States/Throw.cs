@@ -36,7 +36,7 @@ namespace Player.States
             if (!InputManager.IsHoldingInteract())
             {
                 Controller.PutDownItem();
-                Controller.ChangeState<Walk>();
+                Controller.ChangeState<Walk_OLD>();
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace Player.States
                 OnThrowPercentageUpdate(1);
                 Controller.onPutDown.RemoveListener(HandlePutDown);
                 Controller.ThrowItem(_config.Force);
-                Controller.ChangeState<Walk>();
+                Controller.ChangeState<Walk_OLD>();
             }
         }
 
@@ -60,7 +60,7 @@ namespace Player.States
 
         private void HandlePutDown()
         {
-            Controller.ChangeState<Walk>();
+            Controller.ChangeState<Walk_OLD>();
         }
     }
 }

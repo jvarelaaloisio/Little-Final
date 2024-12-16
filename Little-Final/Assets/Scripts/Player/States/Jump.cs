@@ -59,7 +59,7 @@ namespace Player.States
 			CheckClimb();
 			if (Controller.StepUp != null && Controller.StepUp.Can(out var stepPosition, MyTransform.forward, PP_Jump.StepUpConfig))
 			{
-				Controller.StepUp.StepUp(PP_Jump.StepUpConfig, stepPosition, () => Controller.ChangeState<Walk>());
+				Controller.StepUp.StepUp(PP_Jump.StepUpConfig, stepPosition, () => Controller.ChangeState<Walk_OLD>());
 				Controller.ChangeState<Void>();
 			}
 			Controller.RunAbilityList(Controller.AbilitiesInAir);
@@ -88,7 +88,7 @@ namespace Player.States
 		{
 			if (eventType.Equals(BodyEvent.LAND)
 				&& FallHelper.IsGrounded)
-				Controller.ChangeState<Walk>();
+				Controller.ChangeState<Walk_OLD>();
 		}
 
 		//-- A Glide

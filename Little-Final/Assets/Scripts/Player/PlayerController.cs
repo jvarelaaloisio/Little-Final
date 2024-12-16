@@ -187,7 +187,7 @@ namespace Player
 
         private void Start()
         {
-            state = new Walk();
+            state = new Walk_OLD();
             state.OnStateEnter(this, inputReader, SceneIndex);
         }
 
@@ -275,7 +275,7 @@ namespace Player
         {
             isDead = false;
             stamina.RefillCompletely();
-            ChangeState<Walk>();
+            ChangeState<Walk_OLD>();
             _healthComponent.Health.FullyHeal();
             _myTransform.position = LastSafePosition;
             _myTransform.rotation = _lastSafeRotation;
@@ -301,7 +301,7 @@ namespace Player
             if (obj)
                 ChangeState<Void>();
             else
-                ChangeState<Walk>();
+                ChangeState<Walk_OLD>();
         }
 
         private void HandleDeath()
