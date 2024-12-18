@@ -47,5 +47,23 @@ namespace Core.Extensions
                     Debug.LogError($"{nameof(TCaller)}: {nameof(TTarget)} is null!");
             return !isNull;
         }
+
+        /// <summary>
+        /// Checks if target is null and logs if needed.
+        /// </summary>
+        /// <param name="target">The object to null-check</param>
+        /// <param name="shouldLogErrorIfNull">If the target is null, should an error be logged</param>
+        /// <typeparam name="T">The Type of the object that is calling this method</typeparam>
+        /// <returns><para>False if target is null</para>
+        /// <para>True if target is <b>not</b> null</para>
+        /// </returns>
+        [HideInCallstack]
+        public static bool IsNotNull<T>(this T target, bool shouldLogErrorIfNull = true)
+        {
+            var isNull = target == null;
+            if (isNull && shouldLogErrorIfNull)
+                Debug.LogError($"{nameof(T)}: Reference is null!");
+            return !isNull;
+        }
     }
 }
