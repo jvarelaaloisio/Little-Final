@@ -2,9 +2,9 @@ using System.Text.RegularExpressions;
 
 namespace Editor.Utils
 {
-    public class PascalCaseSplitter
+    public class PascalCaseUtils
     {
-        public static string SplitPascalCase(string input)
+        public static string Split(string input)
         {
             if (string.IsNullOrEmpty(input))
             {

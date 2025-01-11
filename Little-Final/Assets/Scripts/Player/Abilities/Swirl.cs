@@ -34,7 +34,7 @@ public class Swirl : Ability
 		_controller.GetComponent<Rigidbody>().useGravity = true;
 		IsOnCoolDown = false;
 		if (FallHelper.IsGrounded)
-			_controller.ChangeState<Walk>();
+			_controller.ChangeState<Walk_OLD>();
 		else
 			_controller.ChangeState<LongJump>();
 	}

@@ -1,4 +1,5 @@
-﻿using Core.Interactions;
+﻿using Core.Gameplay;
+using Core.Interactions;
 using Player.Properties;
 using UnityEngine;
 
@@ -11,14 +12,14 @@ namespace Player.States
         private IRideable _rideable;
         private float _startTime;
 
-        public override void OnStateEnter(PlayerController controller, int sceneIndex)
+        public override void OnStateEnter(PlayerController controller, IInputReader inputReader, int sceneIndex)
         {
-            base.OnStateEnter(controller, sceneIndex);
+            base.OnStateEnter(controller, inputReader, sceneIndex);
             _rideable = Controller.Rideable;
             if (_rideable == null)
             {
                 Debug.Log("no rideable found");
-                controller.ChangeState<Walk>();
+                controller.ChangeState<Walk_OLD>();
                 return;
             }
             _mount = _rideable.GetMount();

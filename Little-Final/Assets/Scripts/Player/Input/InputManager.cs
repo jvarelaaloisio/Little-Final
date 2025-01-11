@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Player.PlayerInput
 {
+	[Obsolete]
 	public static class InputManager
 	{
 		public static IPlayerInput InputReader { get; set; }

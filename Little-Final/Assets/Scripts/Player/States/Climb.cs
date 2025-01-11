@@ -1,4 +1,5 @@
 ﻿using CharacterMovement;
+using Core.Gameplay;
 using Core.Helpers.Movement;
 using Player.PlayerInput;
 using Player.Properties;
@@ -21,13 +22,11 @@ namespace Player.States
 		private ActionOverTime _getInPosition;
 		private CountDownTimer _afterCliff;
 		private Transform _currentWall;
-		private readonly int _groundMask;
+		private readonly int _groundMask = LayerMask.GetMask("default", "Floor");
 
-		public Climb() => _groundMask = LayerMask.GetMask("default", "Floor");
-
-		public override void OnStateEnter(PlayerController controller, int sceneIndex)
+		public override void OnStateEnter(PlayerController controller, IInputReader inputReader, int sceneIndex)
 		{
-			base.OnStateEnter(controller, sceneIndex);
+			base.OnStateEnter(controller, inputReader, sceneIndex);
 			MyTransform = controller.transform;
 
 			if (Controller.HasItem())

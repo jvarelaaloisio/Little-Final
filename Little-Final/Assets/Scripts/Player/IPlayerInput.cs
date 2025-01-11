@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+[Obsolete]
 public interface IPlayerInput
 {
 	/// <summary>

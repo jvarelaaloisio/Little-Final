@@ -1,5 +1,6 @@
 using CharacterMovement;
 using Core.Extensions;
+using Core.Gameplay;
 using Core.Helpers.Movement;
 using Core.Interactions;
 using Player.Movement;
@@ -18,18 +19,10 @@ namespace Player.States
 		private ActionOverTime pushPlayerUp;
 		private ForceRequest _gravitySimulation;
 		private float _originalDrag;
-
-		public Glide() =>
-			Flags = (
-				allowsLanding: true,
-				allowsJump: false,
-				allowsJumpBuffer: true,
-				allowsClimb: true
-			);
-
-		public override void OnStateEnter(PlayerController controller, int sceneIndex)
+		
+		public override void OnStateEnter(PlayerController controller, IInputReader inputReader, int sceneIndex)
 		{
-			base.OnStateEnter(controller, sceneIndex);
+			base.OnStateEnter(controller, inputReader, sceneIndex);
 			Body.BodyEvents += BodyEventsHandler;
 			
 			if (PP_Glide.LoseItem && Controller.HasItem())
@@ -67,7 +60,7 @@ namespace Player.States
 			{
 				Controller.StepUp.StepUp(PP_Glide.StepUpConfig,
 				                         stepPosition,
-				                         () => Controller.ChangeState<Walk>());
+				                         () => Controller.ChangeState<Walk_OLD>());
 				Controller.ChangeState<Void>();
 			}
 			
@@ -126,7 +119,7 @@ namespace Player.States
 		{
 			if (eventType.Equals(BodyEvent.LAND) && FallHelper.IsGrounded)
 			{
-				Controller.ChangeState<Walk>();
+				Controller.ChangeState<Walk_OLD>();
 			}
 		}
 	}

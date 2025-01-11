@@ -1,5 +1,7 @@
-﻿using CharacterMovement;
+﻿using System;
+using CharacterMovement;
 using Core.Extensions;
+using Core.Gameplay;
 using Core.Interactions;
 using Player.PlayerInput;
 using Player.Properties;
@@ -9,18 +11,17 @@ using VarelaAloisio.UpdateManagement.Runtime;
 
 namespace Player.States
 {
-	public class Walk : State
+	[Obsolete]
+	public class Walk_OLD : State
 	{
 		private CountDownTimer coyoteEffect;
 		private StaminaConsumer _runningConsumer;
-		private bool isRunning;
 
-		public override void OnStateEnter(PlayerController controller, int sceneIndex)
+		public override void OnStateEnter(PlayerController controller, IInputReader inputReader, int sceneIndex)
 		{
-			base.OnStateEnter(controller, sceneIndex);
+			base.OnStateEnter(controller, inputReader, sceneIndex);
 			controller.OnLand.Invoke();
 			Body = controller.GetComponent<PlayerBody>();
-			isRunning = false;
 
 			_runningConsumer = new StaminaConsumer(controller.Stamina,
 													PP_Walk.RunStaminaPerSecond,
@@ -42,8 +43,6 @@ namespace Player.States
 			//------- MOVEMENT ------- 
 			Vector2 input = InputManager.GetHorInput();
 
-			bool runInput = InputManager.CheckRunInput();
-
 			Vector3 desiredDirection = MoveHelper.GetDirection(input);
 
 			var floorNormal = Body.LastFloorNormal;
@@ -58,19 +57,6 @@ namespace Player.States
 			if (MoveHelper.IsSafeAngle(MyTransform.position, directionProjectedOnFloor.normalized, .3f,
 										PP_Walk.MinSafeAngle))
 			{
-				// if (input.magnitude > .1f && runInput && Controller.Stamina.FillState > 0)
-				// {
-				// 	if (!_runningConsumer.IsConsuming)
-				// 		_runningConsumer.Start();
-				//
-				// 	isRunning = true;
-				// }
-				// else if (_runningConsumer.IsConsuming)
-				// {
-				// 	_runningConsumer.Stop();
-				// 	isRunning = false;
-				// }
-
 				MoveHelper.Rotate(MyTransform,
 								desiredDirection,
 								desiredDirection.magnitude * PP_Walk.TurnSpeed);
@@ -88,7 +74,7 @@ namespace Player.States
 			{
 				Controller.StepUp.StepUp(PP_Walk.StepUpConfig,
 				                         stepPosition,
-				                         () => Controller.ChangeState<Walk>());
+				                         () => Controller.ChangeState<Walk_OLD>());
 				Controller.ChangeState<Void>();
 			}
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+[Obsolete]
 public class DesktopInput : IPlayerInput
 {
 	public Vector2 GetHorInput()

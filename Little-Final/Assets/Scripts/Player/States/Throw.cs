@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Debugging;
+using Core.Gameplay;
 using Core.Interactions;
 using Player.PlayerInput;
 using UnityEngine;
@@ -20,9 +21,9 @@ namespace Player.States
             _debugger = debugger;
         }
 
-        public override void OnStateEnter(PlayerController controller, int sceneIndex)
+        public override void OnStateEnter(PlayerController controller, IInputReader inputReader, int sceneIndex)
         {
-            base.OnStateEnter(controller, sceneIndex);
+            base.OnStateEnter(controller, inputReader, sceneIndex);
             _beggining = Time.time;
             OnThrowPercentageUpdate(0);
             controller.Body.RequestMovement(MovementRequest.InvalidRequest);
@@ -35,7 +36,7 @@ namespace Player.States
             if (!InputManager.IsHoldingInteract())
             {
                 Controller.PutDownItem();
-                Controller.ChangeState<Walk>();
+                Controller.ChangeState<Walk_OLD>();
                 return;
             }
 
@@ -48,7 +49,7 @@ namespace Player.States
                 OnThrowPercentageUpdate(1);
                 Controller.onPutDown.RemoveListener(HandlePutDown);
                 Controller.ThrowItem(_config.Force);
-                Controller.ChangeState<Walk>();
+                Controller.ChangeState<Walk_OLD>();
             }
         }
 
@@ -59,7 +60,7 @@ namespace Player.States
 
         private void HandlePutDown()
         {
-            Controller.ChangeState<Walk>();
+            Controller.ChangeState<Walk_OLD>();
         }
     }
 }

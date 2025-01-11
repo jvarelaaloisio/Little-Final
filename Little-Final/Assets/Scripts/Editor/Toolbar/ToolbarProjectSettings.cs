@@ -12,7 +12,7 @@ namespace Editor.Toolbar
         
         private const string BootScenePathKey = PrefsKeyPrefix + "BootScenePath";
         public static StringPref BootScenePath { get; } = new(EditorPrefs, BootScenePathKey, "Assets/Scenes/Menus/BootScene.unity");
-        private static readonly string BootScenePathLabel = PascalCaseSplitter.SplitPascalCase(nameof(BootScenePath));
+        private static readonly string BootScenePathLabel = PascalCaseUtils.Split(nameof(BootScenePath));
 
         [SettingsProvider]
         public static SettingsProvider CreateToolbarsSettingsProvider()

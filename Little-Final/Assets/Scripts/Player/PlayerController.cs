@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core;
 using Core.Debugging;
 using Core.Extensions;
+using Core.Gameplay;
 using Core.Interactions;
 using Core.Providers;
 using Core.Stamina;
@@ -110,6 +111,9 @@ namespace Player
 
         public Action<bool> OnGlideChanges = delegate { };
         [SerializeField] private float _buffMultiplier = 1;
+        
+        [SerializeField] private DataProvider<IInputReader> inputReaderProvider;
+        private IInputReader inputReader;
 
     #region Properties
 
@@ -183,8 +187,8 @@ namespace Player
 
         private void Start()
         {
-            state = new Walk();
-            state.OnStateEnter(this, SceneIndex);
+            state = new Walk_OLD();
+            state.OnStateEnter(this, inputReader, SceneIndex);
         }
 
         private void OnEnable()
@@ -220,7 +224,7 @@ namespace Player
             if (shouldLogTransitions)
                 Debug.Log($"{name}changed to state: {state.GetType()}");
             OnStateChanges(state);
-            state.OnStateEnter(this, SceneIndex);
+            state.OnStateEnter(this, inputReader, SceneIndex);
         }
         
         public void ChangeState(string id)
@@ -232,7 +236,7 @@ namespace Player
             if (shouldLogTransitions)
                 Debug.Log($"{name}changed to state: {state.GetType()}");
             OnStateChanges(state);
-            state.OnStateEnter(this, SceneIndex);
+            state.OnStateEnter(this, inputReader, SceneIndex);
         }
 
         public void RunAbilityList(in IEnumerable<Ability> abilities)
@@ -271,7 +275,7 @@ namespace Player
         {
             isDead = false;
             stamina.RefillCompletely();
-            ChangeState<Walk>();
+            ChangeState<Walk_OLD>();
             _healthComponent.Health.FullyHeal();
             _myTransform.position = LastSafePosition;
             _myTransform.rotation = _lastSafeRotation;
@@ -297,7 +301,7 @@ namespace Player
             if (obj)
                 ChangeState<Void>();
             else
-                ChangeState<Walk>();
+                ChangeState<Walk_OLD>();
         }
 
         private void HandleDeath()
