@@ -45,9 +45,7 @@ namespace User
         }
 
         private void AddGravity()
-        {
-            _character?.TryAddContinuousForce(Physics.gravity * Mathf.Max(0, fallingGravityMultiplier - 1));
-        }
+            => _character?.TryAddContinuousForce(Physics.gravity * Mathf.Max(0, fallingGravityMultiplier - 1));
 
         private void OnEnable()
         {
@@ -106,6 +104,7 @@ namespace User
             
             _character.Movement.direction = directionProjectedOnFloor;
         }
+        
         private void OnGUI()
         {
 #if UNITY_EDITOR && ENABLE_UI
