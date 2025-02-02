@@ -19,7 +19,7 @@ namespace Core.Providers
                 return;
             }
 
-            if (!provider.Value?.Equals(value) ?? false)
+            if (!provider.Value?.Equals(value) ?? true)
                 provider.Value = value;
         }
         

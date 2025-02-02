@@ -409,17 +409,20 @@ namespace Player
 		private void OnGUI()
 		{
 #if UNITY_EDITOR && ENABLE_UI
-			Rect rect = new Rect(10, 400, 250, 550);
+			Rect rect = new Rect(10, 200, 250, 100);
+			GUI.Box(rect, Texture2D.blackTexture);
 			GUILayout.BeginArea(rect);
 			GUI.skin.label.fontSize = 15;
 			GUI.skin.label.normal.textColor = Color.white;
 			GUILayout.Label("State: " + controller.State.GetType());
 			GUI.skin.label.normal.textColor = controller.Stamina.IsRefillingActive ? Color.green : Color.red;
-
+			
 			GUILayout.Label("Stamina: " + controller.Stamina.FillState);
 			GUILayout.Label($"Buff: {Controller.BuffMultiplier:f2}");
 			
-			GUI.skin.label.normal.textColor = Color.white;
+			GUI.skin.label.normal.textColor = Color.cyan;
+			GUILayout.Label($"Move input : {Player.PlayerInput.InputManager.GetHorInput()}");
+			GUILayout.Label($"input magnitude : {controller.directionMagnitude}");
 			GUILayout.Label($"Velocity: {controller.Body.Velocity}\n(hor magnitude: {controller.Body.Velocity.IgnoreY().magnitude:F2})");
 			GUILayout.EndArea();
 #endif

@@ -41,5 +41,8 @@ namespace Player
 				return (Force.GetHashCode() * 397) ^ (int) Mode;
 			}
 		}
+
+		public override string ToString()
+			=> $"ForceRequest(Force: {Force}, Mode: {Mode})";
 	}
 }

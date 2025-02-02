@@ -114,8 +114,9 @@ namespace Player
         
         [SerializeField] private DataProvider<IInputReader> inputReaderProvider;
         private IInputReader inputReader;
+        public float directionMagnitude;
 
-    #region Properties
+        #region Properties
 
         public IBody Body { get; private set; }
         public IStepUp StepUp { get; private set; }

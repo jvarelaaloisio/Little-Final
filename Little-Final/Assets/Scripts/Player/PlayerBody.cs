@@ -139,6 +139,7 @@ public class PlayerBody : MonoBehaviour, IBody
 			return;
 		}
 		Vector3 acceleration = _nextMovement.Direction * _nextMovement.Acceleration;
+		Debug.DrawRay(transform.position, _nextMovement.Direction, Color.cyan);
 		RigidBody.AddForce(acceleration, ForceMode.Force);
 	}
 
