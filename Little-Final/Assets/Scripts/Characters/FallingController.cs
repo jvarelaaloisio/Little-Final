@@ -27,16 +27,22 @@ namespace Characters
         /// </summary>
         public void Update()
         {
-            switch (IsFalling)
+            ValidateIfFallingStateHasChanged();
+            return;
+
+            void ValidateIfFallingStateHasChanged()
             {
-                case true when _rigidbody.velocity.y > -0.1f:
-                    IsFalling = false;
-                    OnStopFalling();
-                    break;
-                case false when _rigidbody.velocity.y < -0.1f:
-                    IsFalling = true;
-                    OnStartFalling();
-                    break;
+                switch (IsFalling)
+                {
+                    case true when _rigidbody.velocity.y > -0.1f:
+                        IsFalling = false;
+                        OnStopFalling();
+                        break;
+                    case false when _rigidbody.velocity.y < -0.1f:
+                        IsFalling = true;
+                        OnStartFalling();
+                        break;
+                }
             }
         }
     }
