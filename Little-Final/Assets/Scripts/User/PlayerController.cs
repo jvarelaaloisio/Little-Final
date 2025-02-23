@@ -1,12 +1,14 @@
 using System.Collections;
+using Acting;
 using Characters;
+using Core.Extensions;
 using Core.Gameplay;
 using Core.Providers;
 using UnityEngine;
 
 namespace User
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour, ISetup<PhysicsCharacter>
     {
         [Header("Providers")]
         [SerializeField] private DataProvider<IInputReader> inputReaderProvider;
@@ -14,15 +16,20 @@ namespace User
         [Header("Movement")]
         [SerializeField] private float acceleration = 20;
         [SerializeField] private float goalSpeed = 2;
+        [SerializeField] private float fallingGravityMultiplier = 2.5f;
         
         private PhysicsCharacter _character;
         private Vector2 _input;
         private float _directionMagnitude;
-        [SerializeField] private float fallingGravityMultiplier = 2.5f;
+        private Coroutine _enableCoroutine;
+        
+        public Actor Actor => _character.Actor;
 
         private void OnValidate()
         {
             if (!Application.isPlaying || !_character)
+                return;
+            if (!_character)
                 return;
             _character.Movement.goalSpeed = goalSpeed;
             _character.Movement.acceleration = acceleration;
@@ -30,9 +37,6 @@ namespace User
 
         private void Start()
         {
-            _character = gameObject.AddComponent<PhysicsCharacter>();
-            _character.overrideLifeCycle = true;
-            _character.Setup(new PhysicsCharacter.Data());
             _character.Movement.goalSpeed = goalSpeed;
             _character.Movement.acceleration = acceleration;
             _character.FallingController.OnStartFalling += AddGravity;
@@ -40,16 +44,14 @@ namespace User
         }
 
         private void RestoreGravity()
-        {
-            _character.RemoveContinuousForce(Physics.gravity * Mathf.Max(0, fallingGravityMultiplier - 1));
-        }
+            => _character.RemoveContinuousForce(Physics.gravity * Mathf.Max(0, fallingGravityMultiplier - 1));
 
         private void AddGravity()
             => _character?.TryAddContinuousForce(Physics.gravity * Mathf.Max(0, fallingGravityMultiplier - 1));
 
         private void OnEnable()
         {
-            StartCoroutine(EnableCoroutine());
+            _enableCoroutine = StartCoroutine(EnableCoroutine());
             return;
 
             IEnumerator EnableCoroutine()
@@ -63,16 +65,20 @@ namespace User
 
         private void OnDisable()
         {
+            _enableCoroutine.TryStop(this);
             if (!inputReaderProvider.TryGetValue(out var inputReader))
                 return;
             inputReader.OnMoveInput -= UpdateMovement;
             inputReader.OnJumpPressed -= StartJump;
         }
 
-        private void StartJump()
+        public void Setup(PhysicsCharacter data)
         {
-            _character.AddForce(Vector3.up * 5.5f);
+            _character = data;
         }
+
+        private void StartJump()
+            => _character.AddForce(Vector3.up * 5.5f);
 
         private void UpdateMovement(Vector2 input)
         {
@@ -104,7 +110,7 @@ namespace User
             
             _character.Movement.direction = directionProjectedOnFloor;
         }
-        
+
         private void OnGUI()
         {
 #if UNITY_EDITOR && ENABLE_UI

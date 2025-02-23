@@ -3,19 +3,22 @@ using UnityEngine;
 
 namespace Characters
 {
-    public abstract class Character<TData> : MonoBehaviour
+    public abstract class Character<TData> : MonoBehaviour, ISetup<TData>
     {
+        [Tooltip("If true, this component will be disabled until it's setup and initialized.")]
+        [field: SerializeField] public bool OverrideLifeCycle { get; set; }
+
         /// <summary>
-        /// Specifies if the <see cref="Setup"/> method has been run or not.
+        /// Specifies if the <see cref="Setup"/> method has been called or not.
         /// <remarks>If the character is not set, <see cref="Actor"/> might be null.</remarks>
         /// </summary>
-        protected bool IsSet = false;
+        public bool IsSet { get; protected set; }= false;
+
         public Actor<TData> Actor { get; private set; }
-        [field: SerializeField] public bool overrideLifeCycle { get; set; }
 
         protected virtual void Awake()
         {
-            if (overrideLifeCycle)
+            if (OverrideLifeCycle)
                 enabled = false;
         }
 
@@ -30,10 +33,18 @@ namespace Characters
             IsSet = true;
         }
 
+        /// <summary>
+        /// Sets <see cref="IsSet"/> to false, base definition doesn't affect <see cref="Actor"/>.
+        /// </summary>
+        public virtual void Clear()
+            => IsSet = false;
+
         public virtual void Initialize()
         {
             if (IsSet is false)
                 Debug.LogWarning($"{name}: Setup hasn't been called before initialize");
+            if (OverrideLifeCycle)
+                enabled = true;
         }
     }
 }

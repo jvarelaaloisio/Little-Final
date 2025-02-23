@@ -7,9 +7,9 @@ using UnityEngine;
 namespace Characters
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PhysicsCharacter : Character<PhysicsCharacter.Data>
+    public class PhysicsCharacter : Character<PhysicsCharacter.IData>
     {
-        public class Data { }
+        public interface IData { }
         
         private Rigidbody _rigidbody;
         public Rigidbody rigidbody => _rigidbody ??= GetComponent<Rigidbody>();
