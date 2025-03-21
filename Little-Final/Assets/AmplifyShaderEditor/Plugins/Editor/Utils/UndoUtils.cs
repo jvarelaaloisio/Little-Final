@@ -14,15 +14,12 @@ namespace AmplifyShaderEditor
 			{
 				Undo.undoRedoPerformed -= onUndoRedo;
 				Undo.undoRedoPerformed += onUndoRedo;
-			}			
+			}
 		}
 
 		public static void UnregisterUndoRedoCallback( Undo.UndoRedoCallback onUndoRedo )
 		{
-			if ( Preferences.GlobalEnableUndo )
-			{
-				Undo.undoRedoPerformed -= onUndoRedo;
-			}
+			Undo.undoRedoPerformed -= onUndoRedo;
 		}
 
 		public static void RegisterCompleteObjectUndo( UnityEngine.Object objectToUndo, string name )
