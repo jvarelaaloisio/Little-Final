@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Core.Attributes;
 using Core.Extensions;
@@ -7,9 +8,10 @@ using UnityEngine;
 namespace Characters
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PhysicsCharacter : Character<PhysicsCharacter.IData>
+    public class PhysicsCharacter : Character<PhysicsCharacter.Data>
     {
-        public interface IData { }
+        [Serializable]
+        public class Data { }
         
         private Rigidbody _rigidbody;
         public Rigidbody rigidbody => _rigidbody ??= GetComponent<Rigidbody>();

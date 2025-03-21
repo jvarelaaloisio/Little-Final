@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Spawning {
     public class OldPlayerSpawner : MonoBehaviour {
-        [SerializeField] private InterfaceRef<PhysicsCharacter.IData> data;
+        [SerializeField] private InterfaceRef<PhysicsCharacter.Data> data;
         
         public PhysicsCharacter characterPrefab;
         [SerializeField] private bool spawnInStart;
@@ -56,7 +56,7 @@ namespace Spawning {
         protected abstract void HandleSpawn(TSetup newBorn);
     }
 
-    public class PlayerSpawner : Spawner<PhysicsCharacter, PhysicsCharacter.IData>
+    public class PlayerSpawner : Spawner<PhysicsCharacter, PhysicsCharacter.Data>
     {
         protected override void HandleSpawn(PhysicsCharacter newBorn)
         {

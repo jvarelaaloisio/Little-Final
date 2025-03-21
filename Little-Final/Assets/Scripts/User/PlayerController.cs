@@ -19,7 +19,7 @@ namespace User
         [SerializeField] private float fallingGravityMultiplier = 2.5f;
         
         private PhysicsCharacter _character;
-        private Vector2 _input;
+        private Vector2 _lastInput;
         private float _directionMagnitude;
         private Coroutine _enableCoroutine;
         
@@ -37,10 +37,8 @@ namespace User
 
         private void Start()
         {
-            _character.Movement.goalSpeed = goalSpeed;
-            _character.Movement.acceleration = acceleration;
-            _character.FallingController.OnStartFalling += AddGravity;
-            _character.FallingController.OnStopFalling += RestoreGravity;
+            if (_character)
+                Setup(_character);
         }
 
         private void RestoreGravity()
@@ -58,7 +56,7 @@ namespace User
             {
                 IInputReader inputReader = null;
                 yield return new WaitUntil(() => inputReaderProvider.TryGetValue(out inputReader));
-                inputReader.OnMoveInput += UpdateMovement;
+                inputReader.OnMoveInput += HandleMoveInput;
                 inputReader.OnJumpPressed += StartJump;
             }
         }
@@ -68,21 +66,25 @@ namespace User
             _enableCoroutine.TryStop(this);
             if (!inputReaderProvider.TryGetValue(out var inputReader))
                 return;
-            inputReader.OnMoveInput -= UpdateMovement;
+            inputReader.OnMoveInput -= HandleMoveInput;
             inputReader.OnJumpPressed -= StartJump;
         }
 
         public void Setup(PhysicsCharacter data)
         {
             _character = data;
+            _character.Movement.goalSpeed = goalSpeed;
+            _character.Movement.acceleration = acceleration;
+            _character.FallingController.OnStartFalling += AddGravity;
+            _character.FallingController.OnStopFalling += RestoreGravity;
         }
 
         private void StartJump()
             => _character.AddForce(Vector3.up * 5.5f);
 
-        private void UpdateMovement(Vector2 input)
+        private void HandleMoveInput(Vector2 input)
         {
-            _input = input;
+            _lastInput = input;
             if(!_character)
                 return;
             
@@ -119,7 +121,7 @@ namespace User
             GUILayout.BeginArea(rect);
             GUI.skin.label.fontSize = 15;
             GUI.skin.label.normal.textColor = Color.cyan;
-            GUILayout.Label($"Move input : {_input}");
+            GUILayout.Label($"Move input : {_lastInput}");
             GUILayout.Label($"input magnitude : {_directionMagnitude}");
             GUILayout.Label($"Velocity   : {GetComponent<Rigidbody>().velocity}");
             GUILayout.EndArea();
