@@ -1,15 +1,15 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 namespace Editor.UIToolkit
 {
     public class FsmEditor : EditorWindow
     {
-        [SerializeField]
-        private VisualTreeAsset m_VisualTreeAsset = default;
-        [SerializeField]
-        private VisualTreeAsset node = default;
+        [SerializeField] private VisualTreeAsset m_VisualTreeAsset = default;
+        [SerializeField] private VisualTreeAsset nodePrefab = default;
+        [field: SerializeField] public Texture2D GrabCursor { get; set; }
 
         private Node _node;
 
@@ -32,12 +32,15 @@ namespace Editor.UIToolkit
             // Instantiate UXML
             VisualElement labelFromUXML = m_VisualTreeAsset.Instantiate();
             root.Add(labelFromUXML);
-            if (node)
+            var slots = root.Q<VisualElement>("slots");
+            if (nodePrefab)
             {
-                var nodeChild = node.Instantiate();
+                var nodeChild = nodePrefab.Instantiate();
+                nodeChild.style.width = 200;
+                nodeChild.style.height = 200;
                 nodeChild.style.position = new StyleEnum<UnityEngine.UIElements.Position>(UnityEngine.UIElements.Position.Absolute);
-                _node = new Node(nodeChild);
-                root.Add(nodeChild);
+                _node = new Node(nodeChild, root, new Node.Data {GrabCursor = GrabCursor});
+                slots.Add(nodeChild);
             }
         }
     }

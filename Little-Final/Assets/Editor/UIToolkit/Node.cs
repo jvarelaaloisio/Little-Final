@@ -1,22 +1,38 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Cursor = UnityEngine.Cursor;
 
 namespace Editor.UIToolkit
 {
     public class Node : PointerManipulator
     {
-        // Write a constructor to set target and store a reference to the
-        // root of the visual tree.
-        public Node(VisualElement target)
+        [Serializable]
+        public class Data
+        {
+            [field: SerializeField] public Texture2D GrabCursor { get; set; }
+        }
+
+        private readonly Data _data;
+
+        public Node(VisualElement target, VisualElement root, Data data)
         {
             this.target = target;
-            root = target.parent;
+            this.Root = root;
+            _data = data;
         }
+
+        private Vector2 TargetStartPosition { get; set; }
+
+        private Vector3 PointerStartPosition { get; set; }
+
+        private bool Enabled { get; set; }
+
+        private VisualElement Root { get; }
 
         protected override void RegisterCallbacksOnTarget()
         {
-            // Register the four callbacks on target.
             target.RegisterCallback<PointerDownEvent>(PointerDownHandler);
             target.RegisterCallback<PointerMoveEvent>(PointerMoveHandler);
             target.RegisterCallback<PointerUpEvent>(PointerUpHandler);
@@ -25,40 +41,34 @@ namespace Editor.UIToolkit
 
         protected override void UnregisterCallbacksFromTarget()
         {
-            // Un-register the four callbacks from target.
             target.UnregisterCallback<PointerDownEvent>(PointerDownHandler);
             target.UnregisterCallback<PointerMoveEvent>(PointerMoveHandler);
             target.UnregisterCallback<PointerUpEvent>(PointerUpHandler);
             target.UnregisterCallback<PointerCaptureOutEvent>(PointerCaptureOutHandler);
         }
 
-        private Vector2 targetStartPosition { get; set; }
-        private Vector3 pointerStartPosition { get; set; }
-        private bool enabled { get; set; }
-
-        private VisualElement root { get; }
-
         // This method stores the starting position of target and the pointer,
         // makes target capture the pointer, and denotes that a drag is now in progress.
         private void PointerDownHandler(PointerDownEvent evt)
         {
-            targetStartPosition = target.transform.position;
-            pointerStartPosition = evt.position;
+            TargetStartPosition = target.transform.position;
+            PointerStartPosition = evt.position;
             target.CapturePointer(evt.pointerId);
-            enabled = true;
+            Cursor.SetCursor(_data.GrabCursor, Vector2.zero, CursorMode.Auto);
+            Enabled = true;
         }
 
         // This method checks whether a drag is in progress and whether target has captured the pointer.
         // If both are true, calculates a new position for target within the bounds of the window.
         private void PointerMoveHandler(PointerMoveEvent evt)
         {
-            if (enabled && target.HasPointerCapture(evt.pointerId))
+            if (Enabled && target.HasPointerCapture(evt.pointerId))
             {
-                Vector3 pointerDelta = evt.position - pointerStartPosition;
+                Vector3 pointerDelta = evt.position - PointerStartPosition;
                 target.transform.position =
                     new Vector2(
-                        Mathf.Clamp(targetStartPosition.x + pointerDelta.x, 0, target.panel.visualTree.worldBound.width),
-                        Mathf.Clamp(targetStartPosition.y + pointerDelta.y, 0, target.panel.visualTree.worldBound.height));
+                        Mathf.Clamp(TargetStartPosition.x + pointerDelta.x, 0, target.panel.visualTree.worldBound.width),
+                        Mathf.Clamp(TargetStartPosition.y + pointerDelta.y, 0, target.panel.visualTree.worldBound.height));
             }
         }
 
@@ -66,7 +76,7 @@ namespace Editor.UIToolkit
         // If both are true, makes target release the pointer.
         private void PointerUpHandler(PointerUpEvent evt)
         {
-            if (enabled && target.HasPointerCapture(evt.pointerId))
+            if (Enabled && target.HasPointerCapture(evt.pointerId))
             {
                 target.ReleasePointer(evt.pointerId);
             }
@@ -79,9 +89,9 @@ namespace Editor.UIToolkit
         // if there is no overlapping slot.
         private void PointerCaptureOutHandler(PointerCaptureOutEvent evt)
         {
-            if (enabled)
+            if (Enabled)
             {
-                VisualElement slotsContainer = root.Q<VisualElement>("slots");
+                VisualElement slotsContainer = target.parent;
                 UQueryBuilder<VisualElement> allSlots = slotsContainer.Query<VisualElement>(className: "slot");
                 UQueryBuilder<VisualElement> overlappingSlots = allSlots.Where(OverlapsTarget);
                 VisualElement closestOverlappingSlot = FindClosestSlot(overlappingSlots);
@@ -92,8 +102,9 @@ namespace Editor.UIToolkit
                     closestPos = new Vector2(closestPos.x - 5, closestPos.y - 5);
                 }
 
-                target.transform.position = closestOverlappingSlot != null ? closestPos : targetStartPosition;
-                enabled = false;
+                if (closestOverlappingSlot != null)
+                    target.transform.position = closestPos;
+                Enabled = false;
             }
         }
 
@@ -122,7 +133,7 @@ namespace Editor.UIToolkit
         private Vector3 RootSpaceOfSlot(VisualElement slot)
         {
             Vector2 slotWorldSpace = slot.parent.LocalToWorld(slot.layout.position);
-            return root.WorldToLocal(slotWorldSpace);
+            return Root.WorldToLocal(slotWorldSpace);
         }
     }
 }
