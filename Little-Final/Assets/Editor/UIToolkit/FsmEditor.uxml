@@ -1,9 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <ui:Template name="state node panel" src="project://database/Assets/Editor/UIToolkit/state%20node%20panel.uxml?fileID=9197481963319205126&amp;guid=769132346490037d78367e5a9bff8853&amp;type=3#state node panel" />
     <Style src="project://database/Assets/Editor/UIToolkit/FsmEditor.uss?fileID=7433441132597879392&amp;guid=530b7f0e0dbbc0913ad5037559f1322b&amp;type=3#FsmEditor" />
     <ui:Label text="Hello World! From UXML" />
     <ui:Label text="Hello World! With Style" class="custom-label" />
-    <ui:Instance template="state node panel" name="state node panel" style="position: absolute; width: 200px; height: 200px; top: 311px; left: 330px;" />
-    <ui:Instance template="state node panel" name="state node panel" style="position: absolute; width: 200px; height: 200px; top: 184px; left: 85px;" />
     <ui:VisualElement name="slots" style="flex-grow: 1;" />
 </ui:UXML>

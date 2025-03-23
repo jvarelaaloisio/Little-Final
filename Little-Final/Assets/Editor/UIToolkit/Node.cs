@@ -1,5 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Cursor = UnityEngine.Cursor;
@@ -12,6 +16,8 @@ namespace Editor.UIToolkit
         public class Data
         {
             [field: SerializeField] public Texture2D GrabCursor { get; set; }
+            [field: SerializeField] public string Title { get; set; } = "Title";
+            [field: SerializeField] public object targetObject { get; set; }
         }
 
         private readonly Data _data;
@@ -30,6 +36,74 @@ namespace Editor.UIToolkit
         private bool Enabled { get; set; }
 
         private VisualElement Root { get; }
+
+        public async void SetupGUI()
+        {
+            if (target == null)
+                return;
+            if (target.TryFindChild("title", out TextElement title))
+                title.text = _data.Title;
+            if (target.TryFindChild("properties", out ListView properties)
+                && properties.TryFindChild("unity-content-container", out VisualElement content))
+            {
+                //properties.hierarchy.Add(new BlackboardField(););
+                // var labelType = TryGetFieldOfType<string>().FirstOrDefault();
+                // if (labelType != null)
+                // {
+                //     var constructorInfo = labelType.GetConstructor(Type.EmptyTypes);
+                //     var textField = (VisualElement)constructorInfo.Invoke(Array.Empty<object>());
+                //     properties.hierarchy.Add(textField);
+                // }
+
+                foreach (var field in _data.targetObject
+                                           .GetType()
+                                           .GetFields(BindingFlags.Default
+                                                      | BindingFlags.Instance
+                                                      | BindingFlags.Public
+                                                      | BindingFlags.NonPublic))
+                {
+                    var attribute = field.GetCustomAttribute<SerializeInNodeAttribute>();
+                    if (attribute is { FieldType: not null }
+                        && typeof(VisualElement).IsAssignableFrom(attribute.FieldType))
+                    {
+                        var baseField = Activator.CreateInstance(attribute.FieldType);
+                        //Let's assume the field type inherits from baseField
+                        var labelProperty = attribute.FieldType.GetProperty("label");
+                        if (labelProperty != null)
+                        {
+                            labelProperty.SetValue(baseField, field.Name);
+                        }
+                        var valueProperty = attribute.FieldType.GetProperty("value");
+                        if (valueProperty != null)
+                        {
+                            valueProperty.SetValue(baseField, field.GetValue(_data.targetObject));
+                        }
+                        var visualElement = baseField as VisualElement;
+                        visualElement.name = _data.targetObject.GetType().Name + "." + field.Name;
+                        content?.Add(visualElement);
+                    }
+                }
+                // properties.hierarchy.Add(new TextField());
+            }
+        }
+
+        public static IEnumerable<Type> TryGetFieldOfType<T>()
+        {
+            // Get the assembly where BaseField<> is defined
+            var assembly = typeof(BaseField<>).Assembly;
+
+            // Get all types in the assembly
+            var allTypes = assembly.GetTypes();
+
+            // Filter types that inherit from BaseField<>
+            var labelFieldTypes = allTypes.Where(t =>
+                !t.IsAbstract
+                && t.BaseType is { IsGenericType: true });
+            var inheritors = labelFieldTypes.Where(t => t.InheritsFrom(typeof(BaseField<>)));
+
+            var castedTypes = inheritors.Where(t => t.BaseType.GetGenericArguments().FirstOrDefault() == typeof(T));
+            return castedTypes;
+        }
 
         protected override void RegisterCallbacksOnTarget()
         {
