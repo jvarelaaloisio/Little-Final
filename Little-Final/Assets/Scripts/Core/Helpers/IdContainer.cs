@@ -42,6 +42,9 @@ namespace Core.Helpers
 				this.name = name;
 				this.hashCode = hashCode;
 			}
+
+			public bool Equals(IIdentification other)
+				=> hashCode == other?.hashCode;
 		}
 	}
 }
