@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Acting
 {
-    public abstract class Actor : IActor, IHavePreBehaviours, IHavePostBehaviours
+    public abstract class Actor : IActor, IHavePreBehaviours<IActor>, IHavePostBehaviours<IActor>
     {
         
         private readonly SemaphoreSlim _semaphoreSlim = new(1, 1);

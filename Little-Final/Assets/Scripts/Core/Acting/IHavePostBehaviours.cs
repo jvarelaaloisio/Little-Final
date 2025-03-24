@@ -4,9 +4,14 @@ using System.Threading.Tasks;
 
 namespace Core.Acting
 {
-	public interface IHavePostBehaviours
+	/// <summary>
+	/// An interface that allows for id based postBehaviours to be added and removed. 
+	/// </summary>
+	/// <typeparam name="TTarget">The user that runs the behaviours</typeparam>
+	public interface IHavePostBehaviours<out TTarget>
 	{
-		bool TryAddPostBehaviour(Func<IActor, CancellationToken, Task> behaviour, string actionId = IActor.Wildcard);
-		void RemovePostBehaviour(Func<IActor, CancellationToken, Task> behaviour, string actionId = IActor.Wildcard);
+		public const string Wildcard = "";
+		bool TryAddPostBehaviour(Func<TTarget, CancellationToken, Task> behaviour, string actionId = Wildcard);
+		void RemovePostBehaviour(Func<TTarget, CancellationToken, Task> behaviour, string actionId = Wildcard);
 	}
 }

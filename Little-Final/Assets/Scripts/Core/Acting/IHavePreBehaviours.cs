@@ -4,9 +4,14 @@ using System.Threading.Tasks;
 
 namespace Core.Acting
 {
-	public interface IHavePreBehaviours
+	/// <summary>
+	/// An interface that allows for id based preBehaviours to be added and removed. 
+	/// </summary>
+	/// <typeparam name="TTarget">The user that runs the behaviours</typeparam>
+	public interface IHavePreBehaviours<out TTarget>
 	{
-		bool TryAddPreBehaviour(Func<IActor, CancellationToken, Task> behaviour, string actionId = IActor.Wildcard);
-		void RemovePreBehaviour(Func<IActor, CancellationToken, Task> behaviour, string actionId = IActor.Wildcard);
+		public const string Wildcard = "";
+		bool TryAddPreBehaviour(Func<TTarget, CancellationToken, Task> behaviour, string actionId = Wildcard);
+		void RemovePreBehaviour(Func<TTarget, CancellationToken, Task> behaviour, string actionId = Wildcard);
 	}
 }
