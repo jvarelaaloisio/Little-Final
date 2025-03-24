@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Characters
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PhysicsCharacter : Character<PhysicsCharacter.Data>
+    public class PhysicsCharacter : Character<PhysicsCharacter.Data>, IPhysicsCharacter
     {
         [Serializable]
         public class Data { }
@@ -18,10 +18,11 @@ namespace Characters
 
         private readonly HashSet<ForceRequest> _forceRequests = new ();
         private readonly HashSet<ForceRequest> _continuousForceRequests = new ();
-        [field: SerializeReadOnly] public MovementData Movement { get; private set; } = MovementData.InvalidRequest;
-        public FallingController FallingController { get; private set; }
+        [SerializeField] private FallingController _fallingController;
 
-        public Vector3 Velocity
+        public IFallingController FallingController => _fallingController;
+
+        public override Vector3 Velocity
         {
             get => rigidbody.velocity;
             set => rigidbody.velocity = value;
@@ -30,11 +31,11 @@ namespace Characters
         protected override void Awake()
         {
             base.Awake();
-            FallingController = new FallingController(rigidbody);
+            _fallingController = new FallingController(rigidbody);
         }
 
         private void Update()
-            => FallingController.Update();
+            => _fallingController.Update();
 
         private void FixedUpdate()
         {
@@ -49,7 +50,7 @@ namespace Characters
         /// <remarks>Validations for simple, double and multiple jumps must be done by the controlling class.</remarks>
         /// </summary>
         /// <param name="force">This value will be multiplied with <see cref="Transform"/>.<see cref="Transform.up"/></param>
-        public void Jump(float force)
+        public override void Jump(float force)
             => AddForce(transform.up * force);
 
         /// <summary>

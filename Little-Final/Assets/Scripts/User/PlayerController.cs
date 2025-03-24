@@ -1,10 +1,14 @@
 using System.Collections;
-using Acting;
 using Characters;
+using Core.Acting;
 using Core.Extensions;
 using Core.Gameplay;
+using Core.Helpers;
 using Core.Providers;
+using Core.References;
+using FsmAsync;
 using UnityEngine;
+using User.States;
 
 namespace User
 {
@@ -13,27 +17,19 @@ namespace User
         [Header("Providers")]
         [SerializeField] private DataProvider<IInputReader> inputReaderProvider;
         
-        [Header("Movement")]
-        [SerializeField] private float acceleration = 20;
-        [SerializeField] private float goalSpeed = 2;
         [SerializeField] private float fallingGravityMultiplier = 2.5f;
+        
+        [Header("State IDs")]
+        [SerializeField] private IdContainer idleId;
+        [SerializeField] private IdContainer walkId;
         
         private PhysicsCharacter _character;
         private Vector2 _lastInput;
         private float _directionMagnitude;
         private Coroutine _enableCoroutine;
         
-        public Actor Actor => _character.Actor;
-
-        private void OnValidate()
-        {
-            if (!Application.isPlaying || !_character)
-                return;
-            if (!_character)
-                return;
-            _character.Movement.goalSpeed = goalSpeed;
-            _character.Movement.acceleration = acceleration;
-        }
+        private FiniteStateMachine<IIdentification> _stateMachine;
+        public IActor Actor => _character.Actor;
 
         private void Start()
         {
@@ -73,10 +69,31 @@ namespace User
         public void Setup(PhysicsCharacter data)
         {
             _character = data;
-            _character.Movement.goalSpeed = goalSpeed;
-            _character.Movement.acceleration = acceleration;
             _character.FallingController.OnStartFalling += AddGravity;
             _character.FallingController.OnStopFalling += RestoreGravity;
+            SetupFsm(_character);
+        }
+
+        private async void SetupFsm(PhysicsCharacter character)
+        {
+            State idle = new Idle
+            {
+                Name = "idle",
+                Character = character,
+                InputReader = inputReaderProvider.Value,
+            };
+            State walk = new Walk
+            {
+                Name = "walk",
+                Character = character,
+                InputReader = inputReaderProvider.Value,
+            };
+            _stateMachine = FiniteStateMachine<IIdentification>.Build(name)
+                                                               .ThatLogsTransitions(Debug.unityLogger)
+                                                               .ThatTransitionsBetween(idleId.Get,idle, walk)
+                                                               .ThatTransitionsBetween(walkId.Get, walk, idle)
+                                                               .Done();
+            await _stateMachine.Start(idle);
         }
 
         private void StartJump()

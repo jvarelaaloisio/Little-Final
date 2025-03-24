@@ -1,14 +1,14 @@
 using System;
 using System.Collections;
 using Core.Debugging;
-using Core.Extensions;
+using Core.Movement;
 using UnityEngine;
 
 namespace Player.Movement
 {
     public class StepUpBehaviour : MonoBehaviour, IStepUp
     {
-        [SerializeField] private StepUpConfig config;
+        [SerializeField] private IStepUp.Config config;
         [SerializeField] private Vector3 offset;
         [SerializeField] private float distanceToFeet = 0.2f;
         [SerializeField] private float minStepHeight = .1f;
@@ -21,13 +21,13 @@ namespace Player.Movement
         [SerializeField] private string debugTag = "StepUp";
 
 
-        public bool Should(Vector3 direction, StepUpConfig configOverride = null)
+        public bool Should(Vector3 direction, IStepUp.Config configOverride = null)
         {
             configOverride ??= config;
             return Physics.Raycast(GetFeetPosition(), direction, configOverride.StepDistance, configOverride.StepMask);
         }
 
-        public bool Can(out Vector3 stepPosition, Vector3 direction, StepUpConfig configOverride = null)
+        public bool Can(out Vector3 stepPosition, Vector3 direction, IStepUp.Config configOverride = null)
         {
             stepPosition = Vector3.negativeInfinity;
             configOverride ??= config;
@@ -54,12 +54,12 @@ namespace Player.Movement
             return false;
         }
 
-        public void StepUp(StepUpConfig configOverride, Vector3 point, Action callback = null)
+        public void StepUp(IStepUp.Config configOverride, Vector3 point, Action callback = null)
         {
             StartCoroutine(StepUpCoroutine(configOverride, point, callback));
         }
 
-        public IEnumerator StepUpCoroutine(StepUpConfig configOverride, Vector3 destination, Action callback = null)
+        public IEnumerator StepUpCoroutine(IStepUp.Config configOverride, Vector3 destination, Action callback = null)
         {
             configOverride ??= config;
             var origin = transform.position;

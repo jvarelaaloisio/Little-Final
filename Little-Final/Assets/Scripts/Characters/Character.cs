@@ -1,9 +1,12 @@
 using Acting;
+using Core.Acting;
+using Core.Attributes;
+using Core.References;
 using UnityEngine;
 
 namespace Characters
 {
-    public abstract class Character<TData> : MonoBehaviour, ISetup<TData>
+    public abstract class Character<TData> : MonoBehaviour, ISetup<TData>, ICharacter<TData>
     {
         [Tooltip("If true, this component will be disabled until it's setup and initialized.")]
         [field: SerializeField] public bool OverrideLifeCycle { get; set; }
@@ -14,7 +17,9 @@ namespace Characters
         /// </summary>
         public bool IsSet { get; protected set; }= false;
 
-        public Actor<TData> Actor { get; private set; }
+        public IActor<TData> Actor { get; private set; }
+        [field: SerializeReadOnly] public MovementData Movement { get; set; } = MovementData.InvalidRequest;
+        public abstract Vector3 Velocity { get; set; }
 
         protected virtual void Awake()
         {
@@ -46,5 +51,7 @@ namespace Characters
             if (OverrideLifeCycle)
                 enabled = true;
         }
+
+        public abstract void Jump(float force);
     }
 }

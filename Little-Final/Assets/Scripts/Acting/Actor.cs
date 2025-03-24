@@ -2,17 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Acting;
 using UnityEngine;
 
 namespace Acting
 {
-    public abstract class Actor
+    public abstract class Actor : IActor, IHavePreBehaviours, IHavePostBehaviours
     {
-        /// <summary>
-        /// Value used as common action id to store tasks in <see cref="PreBehavioursByAction"/> and <see cref="PostBehavioursByAction"/>.
-        /// Any behaviour stored in Wildcard will be run once anytime an action is done.
-        /// </summary>
-        public const string Wildcard = "";
         
         private readonly SemaphoreSlim _semaphoreSlim = new(1, 1);
         /// <summary>
@@ -27,34 +23,34 @@ namespace Acting
 
         public abstract bool TrySetData(object data);
         
-        protected readonly Dictionary<string, HashSet<Func<Actor, CancellationToken, Task>>> PreBehavioursByAction = new();
+        protected readonly Dictionary<string, HashSet<Func <IActor, CancellationToken, Task>>> PreBehavioursByAction = new();
         
-        protected readonly Dictionary<string, HashSet<Func<Actor, CancellationToken, Task>>> PostBehavioursByAction = new();
+        protected readonly Dictionary<string, HashSet<Func <IActor, CancellationToken, Task>>> PostBehavioursByAction = new();
 
-        public bool TryAddPreBehaviour(Func<Actor, CancellationToken, Task> behaviour, string actionId = Wildcard)
+        public bool TryAddPreBehaviour(Func <IActor, CancellationToken, Task> behaviour, string actionId = IActor.Wildcard)
             => TryAddBehaviour(PreBehavioursByAction, actionId, behaviour);
 
-        public bool TryAddPostBehaviour(Func<Actor, CancellationToken, Task> behaviour, string actionId = Wildcard)
+        public bool TryAddPostBehaviour(Func <IActor, CancellationToken, Task> behaviour, string actionId = IActor.Wildcard)
             => TryAddBehaviour(PostBehavioursByAction, actionId, behaviour);
         
-        public void RemovePreBehaviour(Func<Actor, CancellationToken, Task> behaviour, string actionId = Wildcard)
+        public void RemovePreBehaviour(Func <IActor, CancellationToken, Task> behaviour, string actionId = IActor.Wildcard)
             => RemoveBehaviour(PreBehavioursByAction, actionId, behaviour);
 
-        public void RemovePostBehaviour(Func<Actor, CancellationToken, Task> behaviour, string actionId = Wildcard)
+        public void RemovePostBehaviour(Func <IActor, CancellationToken, Task> behaviour, string actionId = IActor.Wildcard)
             => RemoveBehaviour(PostBehavioursByAction, actionId, behaviour);
 
-        private static bool TryAddBehaviour(Dictionary<string, HashSet<Func<Actor, CancellationToken, Task>>> behavioursByAction, string actionId, Func<Actor, CancellationToken, Task> behaviour)
+        private static bool TryAddBehaviour(Dictionary<string, HashSet<Func <IActor, CancellationToken, Task>>> behavioursByAction, string actionId, Func <IActor, CancellationToken, Task> behaviour)
         {
             if (behavioursByAction.TryGetValue(actionId, out var behaviours))
                 return behaviours.Add(behaviour);
             
-            behaviours = new HashSet<Func<Actor, CancellationToken, Task>>();
+            behaviours = new HashSet<Func <IActor, CancellationToken, Task>>();
             behavioursByAction.Add(actionId, behaviours);
             behaviours.Add(behaviour);
             return true;
         }
         
-        private static void RemoveBehaviour(Dictionary<string, HashSet<Func<Actor, CancellationToken, Task>>> behavioursByAction, string actionId, Func<Actor, CancellationToken, Task> behaviour)
+        private static void RemoveBehaviour(Dictionary<string, HashSet<Func <IActor, CancellationToken, Task>>> behavioursByAction, string actionId, Func <IActor, CancellationToken, Task> behaviour)
         {
             if (behavioursByAction.TryGetValue(actionId, out var behaviours))
                 behaviours.Remove(behaviour);
@@ -66,9 +62,9 @@ namespace Acting
         /// <param name="behaviour">The action task.</param>
         /// <param name="token"></param>
         /// <param name="actionId">Used to determine which pre- and post-behaviours should run. Default is <see cref="Wildcard"/>.</param>
-        public async Task Act(Func<Actor, CancellationToken, Task> behaviour,
+        public async Task Act(Func<IActor, CancellationToken, Task> behaviour,
                               CancellationToken token,
-                              string actionId = Wildcard)
+                              string actionId = IActor.Wildcard)
         {
             try
             {
@@ -84,14 +80,14 @@ namespace Acting
             {
                 await RunWildcards(this, PreBehavioursByAction, token);
             
-                if (actionId != Wildcard)
+                if (actionId != IActor.Wildcard)
                     await RunBehavioursWithId(this, actionId, PreBehavioursByAction, token);
 
                 await behaviour(this, token);
 
                 await RunWildcards(this, PostBehavioursByAction, token);
             
-                if (actionId != Wildcard)
+                if (actionId != IActor.Wildcard)
                     await RunBehavioursWithId(this, actionId, PostBehavioursByAction, token);
             }
             finally
@@ -101,20 +97,20 @@ namespace Acting
             
             return;
             
-            static async Task RunWildcards(Actor actor,
-                                           Dictionary<string, HashSet<Func<Actor, CancellationToken, Task>>> behavioursByAction,
+            static async Task RunWildcards(IActor actor,
+                                           Dictionary<string, HashSet<Func <IActor, CancellationToken, Task>>> behavioursByAction,
                                            CancellationToken cancellationToken)
             {
-                if (behavioursByAction.TryGetValue(Wildcard, out var commonPreActions))
+                if (behavioursByAction.TryGetValue(IActor.Wildcard, out var commonPreActions))
                 {
                     foreach (var preAction in commonPreActions)
                         await preAction(actor, cancellationToken);
                 }
             }
             
-            static async Task RunBehavioursWithId(Actor actor,
+            static async Task RunBehavioursWithId(IActor actor,
                                            string actionId,
-                                           Dictionary<string, HashSet<Func<Actor, CancellationToken, Task>>> behavioursByAction,
+                                           Dictionary<string, HashSet<Func <IActor, CancellationToken, Task>>> behavioursByAction,
                                            CancellationToken cancellationToken)
             {
                 if (behavioursByAction.TryGetValue(actionId, out var behaviours))
@@ -126,7 +122,7 @@ namespace Acting
         }
     }
     
-    public class Actor<TData> : Actor
+    public class Actor<TData> : Actor, IActor<TData>
     {
         /// <summary>
         /// Data used by the actor.

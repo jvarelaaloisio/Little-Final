@@ -14,13 +14,13 @@ namespace FsmAsync
 	    private readonly Dictionary<TKey, Transition> _transitions = new();
         private readonly string _tag;
 		private bool _shouldLogTransitions = false;
+		private ILogger _logger;
+
 
 		private FiniteStateMachine(string ownerTag = "")
 		{
 			_tag = ownerTag != "" ? $"<b>{ownerTag} (FSM)</b>" : "<b>FSM</b>";
 		}
-
-		private ILogger _logger;
 
 		/// <summary>
 		/// Event triggered when the state changes.
@@ -32,6 +32,8 @@ namespace FsmAsync
 		/// Current state running in the FSM
 		/// </summary>
 		public State Current { get; private set; }
+
+		public bool AllowInvalidTransitions { get; set; } = false;
 
 		/// <summary>
 		/// Call this to start the FSM
@@ -52,6 +54,11 @@ namespace FsmAsync
 			if (!TryGetTransition(key, out var transition))
 				return false;
 
+			if (transition.From != Current && !AllowInvalidTransitions)
+			{
+				_logger.LogError(_tag, $"Transition({key}).From({transition.From.Name}) != {Current.Name} & {nameof(AllowInvalidTransitions)}: false");
+				return false;
+			}
 
 			await transition.Do();
 			Current = transition.To;
@@ -101,6 +108,16 @@ namespace FsmAsync
 				return this;
 			}
 
+			/// <summary>
+			/// Sets <see cref="FiniteStateMachine{TKey}.AllowInvalidTransitions"/> to true.
+			/// </summary>
+			/// <param name="allowInvalidTransitions"></param>
+			/// <returns></returns>
+			public Builder ThatAllowsInvalidTransitions(bool allowInvalidTransitions = true)
+			{
+				_finiteStateMachine.AllowInvalidTransitions = allowInvalidTransitions;
+				return this;
+			}
 
 			public Builder ThatTriggersOnTransition(Action<Transition> eventHandler)
 			{

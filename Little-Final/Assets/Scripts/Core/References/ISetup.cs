@@ -1,4 +1,4 @@
-namespace Acting {
+namespace Core.References {
     public interface ISetup {
         public void Setup();
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Characters
 {
-    public class FallingController
+    public class FallingController : IFallingController
     {
         private readonly Rigidbody _rigidbody;
 

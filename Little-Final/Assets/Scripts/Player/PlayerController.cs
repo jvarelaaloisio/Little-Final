@@ -5,6 +5,7 @@ using Core.Debugging;
 using Core.Extensions;
 using Core.Gameplay;
 using Core.Interactions;
+using Core.Movement;
 using Core.Providers;
 using Core.Stamina;
 using Events.Channels;
