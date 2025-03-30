@@ -51,8 +51,8 @@ namespace Player
 
 		public override string ToString() =>
 			IsValid()
-				? $"MovementRequest({Direction}, {GoalSpeed}, {Acceleration})"
-				: $"MovementRequest(Invalid)";
+				? $"Movement({Direction}, {GoalSpeed}, {Acceleration})"
+				: $"Movement(Invalid)";
 
 		public static bool operator ==(MovementRequest one, MovementRequest two) => one.Equals(two);
 

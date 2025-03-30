@@ -52,8 +52,8 @@ namespace Characters
 
         public override string ToString() =>
             IsValid()
-                ? $"MovementRequest({direction}, {goalSpeed}, {acceleration})"
-                : $"MovementRequest(Invalid)";
+                ? $"Movement({direction}, {goalSpeed}, {acceleration})"
+                : $"Movement(Invalid)";
 
         public static bool operator ==(MovementData one, MovementData two) => one.Equals(two);
 

@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -27,12 +29,13 @@ namespace FsmAsync
         public State To { get; }
         public List<Func<(State from, State to), UniTask>> OnTransition { get; }
 
-        public async UniTask Do()
+        public async UniTask Do(CancellationToken token, Hashtable data = null)
         {
+            data ??= new Hashtable();
             if (From is null)
                 _logger?.LogError(_loggerTag, $"{nameof(From)} is null");
             else
-                await From.Sleep();
+                await From.Sleep(data, token);
 
             foreach (var task in OnTransition)
                 await task((From, To));
@@ -41,7 +44,7 @@ namespace FsmAsync
                 _logger?.LogError(_loggerTag, $"{nameof(To)} is null");
             else
             {
-                await To.Awake();
+                await To.Awake(data, token);
                 _logger?.Log(_loggerTag, $"transitioned: {Colored(From?.Name, "yellow")} -> {Colored(To.Name, "green")}");
             }
         }

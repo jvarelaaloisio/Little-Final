@@ -45,6 +45,9 @@ namespace Core.Helpers
 
 			public bool Equals(IIdentification other)
 				=> hashCode == other?.hashCode;
+
+			public override string ToString()
+				=> name;
 		}
 	}
 }

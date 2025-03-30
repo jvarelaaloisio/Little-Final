@@ -409,21 +409,30 @@ namespace Player
 		private void OnGUI()
 		{
 #if UNITY_EDITOR && ENABLE_UI
-			Rect rect = new Rect(10, 200, 250, 100);
-			GUI.Box(rect, Texture2D.blackTexture);
+			Rect rect = new Rect(10, 200, 300, 200);
+			Color textureColor = new Color(0, 0, 0, .75f);
+
+			Texture2D blackTexture = new Texture2D(1, 1);
+			blackTexture.SetPixel(0, 0, textureColor);
+			blackTexture.Apply();
+			GUI.Box(rect, blackTexture, GUIStyle.none);
+			GUI.DrawTexture(rect, blackTexture);
 			GUILayout.BeginArea(rect);
 			GUI.skin.label.fontSize = 15;
-			GUI.skin.label.normal.textColor = Color.white;
-			GUILayout.Label("State: " + controller.State.GetType());
-			GUI.skin.label.normal.textColor = controller.Stamina.IsRefillingActive ? Color.green : Color.red;
-			
-			GUILayout.Label("Stamina: " + controller.Stamina.FillState);
-			GUILayout.Label($"Buff: {Controller.BuffMultiplier:f2}");
 			
 			GUI.skin.label.normal.textColor = Color.cyan;
-			GUILayout.Label($"Move input : {Player.PlayerInput.InputManager.GetHorInput()}");
-			GUILayout.Label($"input magnitude : {controller.directionMagnitude}");
-			GUILayout.Label($"Velocity: {controller.Body.Velocity}\n(hor magnitude: {controller.Body.Velocity.IgnoreY().magnitude:F2})");
+			//GUILayout.Label($"Move input : {Player.PlayerInput.InputManager.GetHorInput()}");
+			var goalSpeed = ((PlayerBody)controller.Body).NextMovement.GoalSpeed;
+			var speed = controller.Body.Velocity.IgnoreY().magnitude;
+			GUILayout.Label($"{1.0f * speed / goalSpeed:f2}");
+			//GUILayout.Label($"Velocity: {controller.Body.Velocity}");
+			
+			GUI.skin.label.normal.textColor = Color.white;
+			//GUILayout.Label("State: " + controller.State.GetType());
+			GUI.skin.label.normal.textColor = controller.Stamina.IsRefillingActive ? Color.green : Color.red;
+			
+			//GUILayout.Label("Stamina: " + controller.Stamina.FillState);
+			//GUILayout.Label($"Buff: {Controller.BuffMultiplier:f2}");
 			GUILayout.EndArea();
 #endif
 		}

@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -15,12 +17,12 @@ namespace FsmAsync
 	    /// <summary>
 	    /// Called once when the FSM enters the State
 	    /// </summary>
-	    public List<Func<State, UniTask>> OnAwake { get; } = new();
+	    public List<Func<(State state, CancellationToken token), UniTask>> OnAwake { get; } = new();
 
 	    /// <summary>
 	    /// Called once when the FSM exits the State
 	    /// </summary>
-	    public List<Func<State, UniTask>> OnSleep { get; } = new();
+	    public List<Func<(State state, CancellationToken token), UniTask>> OnSleep { get; } = new();
 
 	    [field: SerializeField]public string Name { get; set; }
 
@@ -28,20 +30,21 @@ namespace FsmAsync
 	    /// Method called once when entering this state and after exiting the last one.
 	    /// <remarks>Always call base method so the corresponding event is raised</remarks>
 	    /// </summary>
-	    public virtual async UniTask Awake()
+	    //TODO: refactor to UniTask<Hashtable>
+	    public virtual async UniTask Awake(Hashtable transitionData, CancellationToken token)
 	    {
 		    foreach (var task in OnAwake)
-			    await task(this);
+			    await task((this, token));
 	    }
 
 	    /// <summary>
 		/// Method called once when exiting this state and before entering another.
 		/// <remarks>Always call base method so the corresponding event is raised</remarks>
 		/// </summary>
-		public virtual async UniTask Sleep()
+		public virtual async UniTask Sleep(Hashtable transitionData, CancellationToken token)
 	    {
 		    foreach (var task in OnSleep)
-			    await task(this);
+			    await task((this, token));
 	    }
 
 	    public static implicit operator bool(State state) => state != null;

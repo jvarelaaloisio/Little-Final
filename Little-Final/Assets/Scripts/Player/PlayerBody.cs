@@ -90,6 +90,12 @@ public class PlayerBody : MonoBehaviour, IBody
 
 	public bool IsInTheAir => flags[Flag.IN_THE_AIR];
 
+	public MovementRequest NextMovement
+	{
+		get => _nextMovement;
+		set => _nextMovement = value;
+	}
+
 	#endregion
 
 	#region Flags
@@ -139,7 +145,6 @@ public class PlayerBody : MonoBehaviour, IBody
 			return;
 		}
 		Vector3 acceleration = _nextMovement.Direction * _nextMovement.Acceleration;
-		Debug.DrawRay(transform.position, _nextMovement.Direction, Color.cyan);
 		RigidBody.AddForce(acceleration, ForceMode.Force);
 	}
 

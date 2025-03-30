@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3141152933974347311}
   - component: {fileID: 152519353912065941}
   - component: {fileID: 4657716566232113223}
-  - component: {fileID: 9086821597470918680}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -84,29 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &9086821597470918680
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5167175153209301229}
-  m_Material: {fileID: 13400000, guid: c548a2b088782a5428993b15313aec29, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 512
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6359899068279565172
 GameObject:
   m_ObjectHideFlags: 0
@@ -118,6 +94,7 @@ GameObject:
   - component: {fileID: 335042604340918724}
   - component: {fileID: 8639353930731474083}
   - component: {fileID: 4968763546092149725}
+  - component: {fileID: 5954322368455738055}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -155,9 +132,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputReaderProvider: {fileID: 11400000, guid: 7fa8b5fe8f4930049ba13a411900a4d8,
     type: 2}
-  acceleration: 13
-  goalSpeed: 1.5
   fallingGravityMultiplier: 1.5
+  idle:
+    <Name>k__BackingField: Idle
+  walk:
+    <Name>k__BackingField: Walk
+    acceleration: 13
+    goalSpeed: 1.5
+    turnSpeed: 3
+    minSafeAngle: 3
+    floor:
+      serializedVersion: 2
+      m_Bits: 333825
+    stepUpConfig: {fileID: 11400000, guid: 0247ee27fb2e26e4380b2ceb7bf0a338, type: 2}
+    lastInputId: {fileID: 11400000, guid: b6aabdcce16f6e6cfa0957b728388be9, type: 2}
+  stopId: {fileID: 11400000, guid: 5d8f5c8ef68e5ff2c9fbe10de3b1721c, type: 2}
+  moveId: {fileID: 11400000, guid: c63887a800c240c5a8e156f8b93b9bf7, type: 2}
+  lastInputId: {fileID: 11400000, guid: b6aabdcce16f6e6cfa0957b728388be9, type: 2}
 --- !u!54 &4968763546092149725
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -185,3 +176,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!136 &5954322368455738055
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6359899068279565172}
+  m_Material: {fileID: 13400000, guid: c548a2b088782a5428993b15313aec29, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 512
+  m_LayerOverridePriority: 100
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.06
+  m_Height: 0.4
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}

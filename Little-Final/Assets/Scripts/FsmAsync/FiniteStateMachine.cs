@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -39,19 +41,23 @@ namespace FsmAsync
 		/// Call this to start the FSM
 		/// </summary>
 		/// <param name="state">The start state</param>
-		public async UniTask Start(State state)
+		public async UniTask Start(State state, CancellationToken token)
 		{
 			Current = state;
-			await Current.Awake();
+			await Current.Awake(new Hashtable(), token);
 		}
 
 		/// <summary>
 		/// Do a transition previously added to this FSM.
 		/// </summary>
 		/// <param name="key">Key identifier for the transition <see cref="AddTransition"/></param>
-		public async UniTask<bool> TryTransitionTo(TKey key)
+		/// <param name="data"></param>
+		public async UniTask<bool> TryTransitionTo(TKey key, CancellationToken token, Hashtable data = null)
 		{
 			if (!TryGetTransition(key, out var transition))
+				return false;
+
+			if (transition.To == Current)
 				return false;
 
 			if (transition.From != Current && !AllowInvalidTransitions)
@@ -60,7 +66,7 @@ namespace FsmAsync
 				return false;
 			}
 
-			await transition.Do();
+			await transition.Do(token, data);
 			Current = transition.To;
 			OnTransition(transition);
 			return true;
@@ -140,14 +146,16 @@ namespace FsmAsync
 													Func<(State from, State to),
 													UniTask> onTransition = null)
 			{
-				if (_finiteStateMachine.TryAddTransition(key, from, to, out var transition))
-					transition.OnTransition.Add(onTransition);
-				else
+				var addedTransition = _finiteStateMachine.TryAddTransition(key, from, to, out var transition);
+				if (addedTransition)
 				{
-					throw new ArgumentException(
-						$"Invalid {nameof(key)} (already exists: {_finiteStateMachine._transitions.ContainsKey(key)})",
-						nameof(key));
+					if (onTransition != null)
+						transition.OnTransition.Add(onTransition);
 				}
+				else
+					_finiteStateMachine._logger?.LogError(_finiteStateMachine._tag, $"Couldn't add transition: {key}: ({from?.Name} - {to?.Name})");
+				if (addedTransition && onTransition != null)
+					transition.OnTransition.Add(onTransition);
 				return this;
 			}
 
