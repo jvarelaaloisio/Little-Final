@@ -112,6 +112,10 @@ namespace Player
 		private IHealthComponent _healthComponent;
 
 		private static readonly int Activate = Shader.PropertyToID(PONCHO_ACTIVATE_FLOAT);
+		private Texture2D _blackTexture;
+
+		private Texture2D BlackTexture => _blackTexture ??= new Texture2D(1, 1);
+
 		private IEnumerator Start()
 		{
 			yield return null;
@@ -412,11 +416,10 @@ namespace Player
 			Rect rect = new Rect(10, 200, 300, 200);
 			Color textureColor = new Color(0, 0, 0, .75f);
 
-			Texture2D blackTexture = new Texture2D(1, 1);
-			blackTexture.SetPixel(0, 0, textureColor);
-			blackTexture.Apply();
-			GUI.Box(rect, blackTexture, GUIStyle.none);
-			GUI.DrawTexture(rect, blackTexture);
+			BlackTexture.SetPixel(0, 0, textureColor);
+			BlackTexture.Apply();
+			GUI.Box(rect, BlackTexture, GUIStyle.none);
+			GUI.DrawTexture(rect, BlackTexture);
 			GUILayout.BeginArea(rect);
 			GUI.skin.label.fontSize = 15;
 			

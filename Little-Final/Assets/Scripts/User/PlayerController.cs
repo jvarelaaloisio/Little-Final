@@ -36,6 +36,10 @@ namespace User
         private Coroutine _enableCoroutine;
         
         private FiniteStateMachine<IIdentification> _stateMachine;
+        private Texture2D _blackTexture;
+
+        public Texture2D BlackTexture => _blackTexture ??= new Texture2D(1, 1);
+
         public IActor Actor => _character.Actor;
 
         private void Start()
@@ -131,11 +135,10 @@ namespace User
             Rect rect = new Rect(10, 50, 300, 150);
             Color textureColor = new Color(0, 0, 0, .75f);
 
-            Texture2D blackTexture = new Texture2D(1, 1);
-            blackTexture.SetPixel(0, 0, textureColor);
-            blackTexture.Apply();
-            GUI.Box(rect, blackTexture, GUIStyle.none);
-            GUI.DrawTexture(rect, blackTexture);
+            BlackTexture.SetPixel(0, 0, textureColor);
+            BlackTexture.Apply();
+            GUI.Box(rect, BlackTexture, GUIStyle.none);
+            GUI.DrawTexture(rect, BlackTexture);
             GUILayout.BeginArea(rect);
             GUI.skin.label.fontSize = 15;
             GUI.skin.label.normal.textColor = Color.cyan;
