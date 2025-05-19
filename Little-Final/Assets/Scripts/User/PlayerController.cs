@@ -7,7 +7,6 @@ using Core.Gameplay;
 using Core.Helpers;
 using Core.Providers;
 using Core.References;
-using Cysharp.Threading.Tasks;
 using FsmAsync;
 using UnityEngine;
 using User.States;
@@ -36,10 +35,8 @@ namespace User
         private Coroutine _enableCoroutine;
         
         private FiniteStateMachine<IIdentification> _stateMachine;
-        private Texture2D _blackTexture;
-
-        public Texture2D BlackTexture => _blackTexture ??= new Texture2D(1, 1);
-
+        private AutoMap<Texture2D> BlackTexture = new(() => new Texture2D(1, 1));
+        
         public IActor Actor => _character.Actor;
 
         private void Start()
@@ -135,8 +132,8 @@ namespace User
             Rect rect = new Rect(10, 50, 300, 150);
             Color textureColor = new Color(0, 0, 0, .75f);
 
-            BlackTexture.SetPixel(0, 0, textureColor);
-            BlackTexture.Apply();
+            BlackTexture.Value.SetPixel(0, 0, textureColor);
+            BlackTexture.Value.Apply();
             GUI.Box(rect, BlackTexture, GUIStyle.none);
             GUI.DrawTexture(rect, BlackTexture);
             GUILayout.BeginArea(rect);
