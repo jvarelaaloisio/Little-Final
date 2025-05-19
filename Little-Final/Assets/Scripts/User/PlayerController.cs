@@ -23,10 +23,15 @@ namespace User
         [Header("States")]
         [SerializeField] private Idle idle = new() {Name = "Idle"};
         [SerializeField] private Walk walk = new() {Name = "Walk"};
+        [SerializeField] private Jump jump = new() {Name = "Jump"};
+        [SerializeField] private Idle fall = new() {Name = "Fall"};
+        [SerializeField] private Walk walkWhileFalling = new() {Name = "walkWhileFalling"};
         
         [Header("Ids")]
         [SerializeField] private IdContainer stopId;
         [SerializeField] private IdContainer moveId;
+        [SerializeField] private IdContainer jumpId;
+        [SerializeField] private IdContainer landId;
         [SerializeField] private IdContainer lastInputId;
         
         private PhysicsCharacter _character;
@@ -99,11 +104,28 @@ namespace User
             walk.InputReader = inputReaderProvider?.Value;
             walk.Logger = Debug.unityLogger;
             
+            walkWhileFalling.Character = character;
+            walkWhileFalling.InputReader = inputReaderProvider?.Value;
+            walkWhileFalling.Logger = Debug.unityLogger;
+            
             //TODO:Add jump
+            jump.Character = character;
+            jump.InputReader = inputReaderProvider?.Value;
+            jump.Logger = Debug.unityLogger;
             _stateMachine = FiniteStateMachine<IIdentification>.Build(name)
                                                                .ThatLogsTransitions(Debug.unityLogger)
                                                                .ThatTransitionsBetween(stopId.Get, walk, idle)
+                                                               .ThatTransitionsBetween(landId.Get, fall, idle)
+                                                               
                                                                .ThatTransitionsBetween(moveId.Get,idle, walk)
+                                                               .ThatTransitionsBetween(moveId.Get,fall, walkWhileFalling)
+                                                               .ThatTransitionsBetween(moveId.Get,jump, walkWhileFalling)
+                                                               
+                                                               .ThatTransitionsBetween(jumpId.Get,idle, jump)
+                                                               .ThatTransitionsBetween(jumpId.Get,walk, jump)
+                                                               
+                                                               .ThatTransitionsBetween(stopId.Get, walkWhileFalling, fall)
+                                                               .ThatTransitionsBetween(stopId.Get, jump, fall)
                                                                .Done();
             await _stateMachine.Start(idle, destroyCancellationToken);
         }
