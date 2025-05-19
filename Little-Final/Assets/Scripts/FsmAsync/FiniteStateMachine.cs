@@ -13,7 +13,7 @@ namespace FsmAsync
     /// <typeparam name="TKey">The key Type to access the different states</typeparam>
     public class FiniteStateMachine<TKey> where TKey : IEquatable<TKey>
     {
-	    private readonly Dictionary<TKey, Transition> _transitions = new();
+	    private readonly Dictionary<int, Transition> _transitions = new();
         private readonly string _tag;
 		private bool _shouldLogTransitions = false;
 		private ILogger _logger;
@@ -54,7 +54,7 @@ namespace FsmAsync
 		/// <param name="data"></param>
 		public async UniTask<bool> TryTransitionTo(TKey key, CancellationToken token, Hashtable data = null)
 		{
-			if (!TryGetTransition(key, out var transition))
+			if (!TryGetTransition(Current, key, out var transition))
 				return false;
 
 			if (transition.To == Current)
@@ -79,13 +79,16 @@ namespace FsmAsync
 		}
 
 		public bool TryAddTransition(TKey key, Transition transition)
-			=> _transitions.TryAdd(key, transition);
+		{
+			var hashKey = HashCode.Combine(key, transition.From);
+			return _transitions.TryAdd(hashKey, transition);
+		}
 
-		public bool TryGetTransition(TKey key, out Transition transition)
-			=> _transitions.TryGetValue(key, out transition);
+		public bool TryGetTransition(State from, TKey key, out Transition transition)
+			=> _transitions.TryGetValue(HashCode.Combine(key, from), out transition);
 
-		public bool TryRemoveTransition(TKey key, out Transition transition)
-			=> _transitions.Remove(key, out transition);
+		public bool TryRemoveTransition(State from, TKey key, out Transition transition)
+			=> _transitions.Remove(HashCode.Combine(key, from), out transition);
 
 		/// <summary>
 		/// Builder method to simplify code.
