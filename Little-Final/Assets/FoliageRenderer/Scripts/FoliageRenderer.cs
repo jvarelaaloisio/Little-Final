@@ -247,6 +247,7 @@ namespace FoliageRenderer.Scripts
 
         private void Update()
         {
+            //TODO: Move this to OnEnable
             if (_currentCamera == null)
             {
                 enabled = false;
@@ -259,7 +260,7 @@ namespace FoliageRenderer.Scripts
             var viewProjectionMatrix = projectionMatrix * worldToLocalMatrix;
 
             GenerateWind();
-            if(dynamicObjectsDataProvider && dynamicObjectsDataProvider.Value.Count != _dynamicPositionBuffer.count)
+            if(dynamicObjectsDataProvider && dynamicObjectsDataProvider.Value.Count != _dynamicPositionBuffer?.count)
                 InitializeDynamicPositionsBuffer(dynamicObjectsDataProvider.Value.Count);
 
             for (var i = 0; i < numChunks * numChunks; ++i)
@@ -289,7 +290,7 @@ namespace FoliageRenderer.Scripts
                 //TODO Optimize this
                 if (dynamicObjectsDataProvider && dynamicObjectsDataProvider.Value.Any())
                 {
-                    _dynamicPositionBuffer.SetData(dynamicObjectsDataProvider.Value.Select(p => p.position).ToArray());
+                    _dynamicPositionBuffer?.SetData(dynamicObjectsDataProvider.Value.Select(p => p.position).ToArray());
                     _chunks[i].material.SetBuffer(DynamicPositionsBufferPropID, _dynamicPositionBuffer);
                 }
 
