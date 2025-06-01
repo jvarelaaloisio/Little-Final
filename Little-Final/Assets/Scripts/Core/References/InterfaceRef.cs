@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Core.Extensions;
 using UnityEngine;
 
 namespace Core.References
@@ -8,9 +10,18 @@ namespace Core.References
     {
         [SerializeField] private UnityEngine.Object reference;
         private UnityEngine.Object _oldReference;
+
+        /// <summary>
+        /// true if there is a reference assigned.
+        /// </summary>
+        public bool HasValue => reference;
+        
+        /// <summary>
+        /// The Reference
+        /// </summary>
         public T Ref
         {
-            get => reference != null ? (T)(object)reference : default;
+            get => HasValue ? (T)(object)reference : default;
             set
             {
                 reference = value as UnityEngine.Object;
@@ -18,10 +29,20 @@ namespace Core.References
             }
         }
 
+        /// <summary>
+        /// Called on EditorApplication.update, used before serializing the object from memory to text.
+        /// </summary>
         public void OnBeforeSerialize()
-            => Validate();
+        {
+            if (_oldReference != reference)
+                Validate();
+        }
 
-        public void OnAfterDeserialize() { }
+        /// <summary>
+        /// Called when unity loads the object and deserializes it.
+        /// </summary>
+        public void OnAfterDeserialize()
+            => _oldReference = reference;
 
         private void Validate()
         {
@@ -29,7 +50,7 @@ namespace Core.References
                 && gameObject.TryGetComponent(out T target))
                 reference = target as UnityEngine.Object;
 
-            if (reference != null && reference is not T)
+            if (reference && reference is not T)
             {
                 Debug.LogError($"{reference.GetType().Name} does not implement {typeof(T)}");
                 reference = _oldReference;
@@ -38,6 +59,20 @@ namespace Core.References
             {
                 _oldReference = reference;
             }
+        }
+
+        /// <summary>
+        /// Checks if the reference is valid for the given T. Currently not in use.
+        /// </summary>
+        /// <param name="reference">The target</param>
+        /// <returns>true if reference implements T or has a component which implements T</returns>
+        public static bool IsValid(UnityEngine.Object reference)
+        {
+            if (reference is GameObject gameObject
+                && gameObject.TryGetComponent(out T target))
+                reference = target as UnityEngine.Object;
+
+            return !reference || reference is T;
         }
     }
 }

@@ -13,27 +13,27 @@ namespace FsmAsync
     /// <typeparam name="TKey">The key Type to access the different states</typeparam>
     public class FiniteStateMachine<TKey> where TKey : IEquatable<TKey>
     {
-	    private readonly Dictionary<int, Transition> _transitions = new();
-        private readonly string _tag;
-		private bool _shouldLogTransitions = false;
-		private ILogger _logger;
+	    private readonly Dictionary<int, ITransition> _transitions = new();
+	    public string Tag { get; }
+        public bool ShouldLogTransitions { get; private set; } = false;
+        public ILogger Logger { get; private set; } = null;
 
 
 		private FiniteStateMachine(string ownerTag = "")
 		{
-			_tag = ownerTag != "" ? $"<b>{ownerTag} (FSM)</b>" : "<b>FSM</b>";
+			Tag = ownerTag != "" ? $"<b>{ownerTag} (FSM)</b>" : "<b>FSM</b>";
 		}
 
 		/// <summary>
 		/// Event triggered when the state changes.
 		/// </summary>
-		//TODO: Check if this should be replaced with the same UniTask list as in the Transition struct
-		public event Action<Transition> OnTransition = delegate { };
+		//TODO: Check if this should be replaced with the same UniTask list as in the ITransition struct
+		public event Action<ITransition> OnTransition = delegate { };
 
 		/// <summary>
 		/// Current state running in the FSM
 		/// </summary>
-		public State Current { get; private set; }
+		public IState Current { get; private set; }
 
 		public bool AllowInvalidTransitions { get; set; } = false;
 
@@ -41,10 +41,10 @@ namespace FsmAsync
 		/// Call this to start the FSM
 		/// </summary>
 		/// <param name="state">The start state</param>
-		public async UniTask Start(State state, CancellationToken token)
+		public async UniTask Start(IState state, CancellationToken token)
 		{
 			Current = state;
-			await Current.Awake(new Hashtable(), token);
+			await Current.Enter(new Hashtable(), token);
 		}
 
 		/// <summary>
@@ -62,7 +62,7 @@ namespace FsmAsync
 
 			if (transition.From != Current && !AllowInvalidTransitions)
 			{
-				_logger.LogError(_tag, $"Transition({key}).From({transition.From.Name}) != {Current.Name} & {nameof(AllowInvalidTransitions)}: false");
+				Logger.LogError(Tag, $"ITransition({key}).From({transition.From.Name}) != {Current.Name} & {nameof(AllowInvalidTransitions)}: false");
 				return false;
 			}
 
@@ -72,22 +72,16 @@ namespace FsmAsync
 			return true;
 		}
 
-		public bool TryAddTransition(TKey key, State from, State to, out Transition transition)
-		{
-			transition = new Transition(from, to, _shouldLogTransitions ? _logger : null, _tag);
-			return TryAddTransition(key, transition);
-		}
-
-		public bool TryAddTransition(TKey key, Transition transition)
+		public bool TryAddTransition(TKey key, ITransition transition)
 		{
 			var hashKey = HashCode.Combine(key, transition.From);
 			return _transitions.TryAdd(hashKey, transition);
 		}
 
-		public bool TryGetTransition(State from, TKey key, out Transition transition)
+		public bool TryGetTransition(IState from, TKey key, out ITransition transition)
 			=> _transitions.TryGetValue(HashCode.Combine(key, from), out transition);
 
-		public bool TryRemoveTransition(State from, TKey key, out Transition transition)
+		public bool TryRemoveTransition(IState from, TKey key, out ITransition transition)
 			=> _transitions.Remove(HashCode.Combine(key, from), out transition);
 
 		/// <summary>
@@ -112,8 +106,8 @@ namespace FsmAsync
 
 			public Builder ThatLogsTransitions(ILogger logger, bool shouldLogTransitions = true)
 			{
-				_finiteStateMachine._logger = logger;
-				_finiteStateMachine._shouldLogTransitions = shouldLogTransitions;
+				_finiteStateMachine.Logger = logger;
+				_finiteStateMachine.ShouldLogTransitions = shouldLogTransitions;
 				return this;
 			}
 
@@ -128,7 +122,7 @@ namespace FsmAsync
 				return this;
 			}
 
-			public Builder ThatTriggersOnTransition(Action<Transition> eventHandler)
+			public Builder ThatTriggersOnTransition(Action<ITransition> eventHandler)
 			{
 				_finiteStateMachine.OnTransition += eventHandler;
 				return this;
@@ -144,9 +138,9 @@ namespace FsmAsync
 			/// <returns></returns>
 			/// <exception cref="ArgumentException">If key is duplicated</exception>
 			public Builder ThatTransitionsBetween(TKey key,
-													State from,
-													State to,
-													Func<(State from, State to),
+													IState from,
+													IState to,
+													Func<(IState from, IState to),
 													UniTask> onTransition = null)
 			{
 				var addedTransition = _finiteStateMachine.TryAddTransition(key, from, to, out var transition);
@@ -156,7 +150,7 @@ namespace FsmAsync
 						transition.OnTransition.Add(onTransition);
 				}
 				else
-					_finiteStateMachine._logger?.LogError(_finiteStateMachine._tag, $"Couldn't add transition: {key}: ({from?.Name} - {to?.Name})");
+					_finiteStateMachine.Logger?.LogError(_finiteStateMachine.Tag, $"Couldn't add transition: {key}: ({from?.Name} - {to?.Name})");
 				if (addedTransition && onTransition != null)
 					transition.OnTransition.Add(onTransition);
 				return this;

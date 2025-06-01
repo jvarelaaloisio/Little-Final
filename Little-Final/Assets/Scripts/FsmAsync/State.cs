@@ -7,43 +7,34 @@ using UnityEngine;
 
 namespace FsmAsync
 {
-    /// <summary>
-    /// State used by the Finite State Machine (FSM) Class
-    /// </summary>
-    /// <typeparam name="TKey">The key Type to access the different states</typeparam>
-    [Serializable]
-    public class State
+	/// <summary>
+	/// State used by the Finite State Machine (FSM) Class
+	/// </summary>
+	[Serializable]
+    public class State : IState
     {
-	    /// <summary>
-	    /// Called once when the FSM enters the State
-	    /// </summary>
-	    public List<Func<(State state, CancellationToken token), UniTask>> OnAwake { get; } = new();
+	    [field: SerializeField] public string Name { get; set; }
 
-	    /// <summary>
-	    /// Called once when the FSM exits the State
-	    /// </summary>
-	    public List<Func<(State state, CancellationToken token), UniTask>> OnSleep { get; } = new();
+	    /// <inheritdoc />
+	    public ILogger Logger { get; set; }
 
-	    [field: SerializeField]public string Name { get; set; }
+	    /// <inheritdoc />
+	    public List<Func<(IState state, CancellationToken token), UniTask>> OnEnter { get; } = new();
 
-	    /// <summary>
-	    /// Method called once when entering this state and after exiting the last one.
-	    /// <remarks>Always call base method so the corresponding event is raised</remarks>
-	    /// </summary>
-	    //TODO: refactor to UniTask<Hashtable>
-	    public virtual async UniTask Awake(Hashtable transitionData, CancellationToken token)
+	    /// <inheritdoc />
+	    public List<Func<(IState state, CancellationToken token), UniTask>> OnExit { get; } = new();
+
+	    /// <inheritdoc />
+	    public virtual async UniTask Enter(Hashtable transitionData, CancellationToken token)
 	    {
-		    foreach (var task in OnAwake)
+		    foreach (var task in OnEnter)
 			    await task((this, token));
 	    }
 
-	    /// <summary>
-		/// Method called once when exiting this state and before entering another.
-		/// <remarks>Always call base method so the corresponding event is raised</remarks>
-		/// </summary>
-		public virtual async UniTask Sleep(Hashtable transitionData, CancellationToken token)
+	    /// <inheritdoc />
+		public virtual async UniTask Exit(Hashtable transitionData, CancellationToken token)
 	    {
-		    foreach (var task in OnSleep)
+		    foreach (var task in OnExit)
 			    await task((this, token));
 	    }
 

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Core.Providers
 {
-    public abstract class DataProvider<T> : ScriptableObject
+    public abstract class DataProvider<T> : ScriptableObject, IDataProvider<T>
     {
         public virtual T Value { get; set; }
         

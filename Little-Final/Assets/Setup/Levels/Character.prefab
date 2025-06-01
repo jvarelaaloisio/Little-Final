@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 8639353930731474083}
   - component: {fileID: 4968763546092149725}
   - component: {fileID: 5954322368455738055}
+  - component: {fileID: -8857404774138357859}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -130,24 +131,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a5acce725fb4df1bcd5b5bced5c85a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputReaderProvider: {fileID: 11400000, guid: 7fa8b5fe8f4930049ba13a411900a4d8,
-    type: 2}
+  inputReaderProvider:
+    reference: {fileID: 11400000, guid: f9ec6ddbbb5f2654486095ba9d3a333d, type: 2}
   fallingGravityMultiplier: 1.5
   idle:
-    <Name>k__BackingField: Idle
+    reference: {fileID: 11400000, guid: 8883deab33b5ad742974f391bf41e8cc, type: 2}
   walk:
-    <Name>k__BackingField: Walk
-    acceleration: 13
-    goalSpeed: 1.5
-    turnSpeed: 3
-    minSafeAngle: 3
-    floor:
-      serializedVersion: 2
-      m_Bits: 333825
-    stepUpConfig: {fileID: 11400000, guid: 0247ee27fb2e26e4380b2ceb7bf0a338, type: 2}
-    lastInputId: {fileID: 11400000, guid: b6aabdcce16f6e6cfa0957b728388be9, type: 2}
+    reference: {fileID: 11400000, guid: 5b42414015b01b647aeba31d0cdc59c0, type: 2}
+  jump:
+    reference: {fileID: 11400000, guid: 932412a9f832fcb4fb04b51b26697835, type: 2}
+  fall:
+    reference: {fileID: 11400000, guid: 8883deab33b5ad742974f391bf41e8cc, type: 2}
+  walkWhileFalling:
+    reference: {fileID: 11400000, guid: 5276bcf8650bec54fb8840833268afa3, type: 2}
   stopId: {fileID: 11400000, guid: 5d8f5c8ef68e5ff2c9fbe10de3b1721c, type: 2}
   moveId: {fileID: 11400000, guid: c63887a800c240c5a8e156f8b93b9bf7, type: 2}
+  jumpId: {fileID: 11400000, guid: 22332e9ecb428e444b79a90a287886c7, type: 2}
+  landId: {fileID: 11400000, guid: 85b77a626a702954981623499f6e9f9f, type: 2}
   lastInputId: {fileID: 11400000, guid: b6aabdcce16f6e6cfa0957b728388be9, type: 2}
 --- !u!54 &4968763546092149725
 Rigidbody:
@@ -199,3 +199,19 @@ CapsuleCollider:
   m_Height: 0.4
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-8857404774138357859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6359899068279565172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cd15a7c7a684903bce47a36689061f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxFloorTrackingDistance: 100
+  floor:
+    serializedVersion: 2
+    m_Bits: 71681

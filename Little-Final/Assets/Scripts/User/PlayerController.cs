@@ -7,6 +7,8 @@ using Core.Gameplay;
 using Core.Helpers;
 using Core.Providers;
 using Core.References;
+using Cysharp.Threading.Tasks;
+using DataProviders.Async;
 using FsmAsync;
 using UnityEngine;
 using User.States;
@@ -16,16 +18,16 @@ namespace User
     public class PlayerController : MonoBehaviour, ISetup<PhysicsCharacter>
     {
         [Header("Providers")]
-        [SerializeField] private DataProvider<IInputReader> inputReaderProvider;
+        [SerializeField] private InterfaceRef<IDataProviderAsync<IInputReader>> inputReaderProvider;
         
         [SerializeField] private float fallingGravityMultiplier = 2.5f;
         
         [Header("States")]
-        [SerializeField] private Idle idle = new() {Name = "Idle"};
-        [SerializeField] private Walk walk = new() {Name = "Walk"};
-        [SerializeField] private Jump jump = new() {Name = "Jump"};
-        [SerializeField] private Idle fall = new() {Name = "Fall"};
-        [SerializeField] private Walk walkWhileFalling = new() {Name = "walkWhileFalling"};
+        [SerializeField] private InterfaceRef<ICharacterState> idle;
+        [SerializeField] private InterfaceRef<ICharacterState> walk;
+        [SerializeField] private InterfaceRef<ICharacterState> jump;
+        [SerializeField] private InterfaceRef<ICharacterState> fall;
+        [SerializeField] private InterfaceRef<ICharacterState> walkWhileFalling;
         
         [Header("Ids")]
         [SerializeField] private IdContainer stopId;
@@ -56,28 +58,27 @@ namespace User
         private void AddGravity()
             => _character?.TryAddContinuousForce(Physics.gravity * Mathf.Max(0, fallingGravityMultiplier - 1));
 
-        private void OnEnable()
+        private async void OnEnable()
         {
-            _enableCoroutine = StartCoroutine(EnableCoroutine());
-            return;
-
-            IEnumerator EnableCoroutine()
+            if (inputReaderProvider.Ref == null)
             {
-                IInputReader inputReader = null;
-                yield return new WaitUntil(() => inputReaderProvider.TryGetValue(out inputReader));
-                inputReader.OnMoveInput += HandleMoveInput;
-                inputReader.OnJumpPressed += StartJump;
+                Debug.LogError($"{name} <color=grey>({nameof(PlayerController)})</color>: {nameof(inputReaderProvider)} is null!");
+                return;
             }
+            var inputReader = await inputReaderProvider.Ref.GetValueAsync(destroyCancellationToken);
+            inputReader.OnMoveInput += HandleMoveInput;
+            inputReader.OnJumpPressed += StartJump;
         }
 
         private void OnDisable()
         {
             _enableCoroutine.TryStop(this);
-            if (!inputReaderProvider.TryGetValue(out var inputReader))
-                return;
-            inputReader.OnMoveInput -= HandleMoveInput;
-            inputReader.OnJumpPressed -= StartJump;
-            _stateMachine.Current.Sleep(new Hashtable(), destroyCancellationToken);
+            if (inputReaderProvider.Ref.TryGetValue(out var inputReader))
+            {
+                inputReader.OnMoveInput -= HandleMoveInput;
+                inputReader.OnJumpPressed -= StartJump;
+            }
+            _stateMachine.Current.Exit(new Hashtable(), destroyCancellationToken).Forget();
         }
 
         public void Setup(PhysicsCharacter data)
@@ -88,46 +89,43 @@ namespace User
             SetupFsm(_character);
         }
 
-        private void Update()
-        {
-            Debug.DrawRay(transform.position + Vector3.up, walk._directionProjectedOnFloor / 3, Color.cyan);
-        }
-
         private async void SetupFsm(PhysicsCharacter character)
         {
             //THOUGHT: These states should be loaded from a file in the future. And that file should be created from the FSM Editor
-            idle.Character = character;
-            idle.InputReader = inputReaderProvider?.Value;
-            idle.Logger = Debug.unityLogger;
+            if (!character.TryGetComponent(out IFloorTracker floorTracker))
+            {
+                Debug.LogError($"{name}: {nameof(floorTracker)} component was not found in character!");
+                return;
+            }
+            idle.Ref.Character = character;
+            idle.Ref.Logger = Debug.unityLogger;
             
-            walk.Character = character;
-            walk.InputReader = inputReaderProvider?.Value;
-            walk.Logger = Debug.unityLogger;
+            walk.Ref.Character = character;
+            walk.Ref.Logger = Debug.unityLogger;
             
-            walkWhileFalling.Character = character;
-            walkWhileFalling.InputReader = inputReaderProvider?.Value;
-            walkWhileFalling.Logger = Debug.unityLogger;
+            walkWhileFalling.Ref.Character = character;
+            walkWhileFalling.Ref.Logger = Debug.unityLogger;
             
-            //TODO:Add jump
-            jump.Character = character;
-            jump.InputReader = inputReaderProvider?.Value;
-            jump.Logger = Debug.unityLogger;
+            jump.Ref.Character = character;
+            jump.Ref.Logger = Debug.unityLogger;
+            
             _stateMachine = FiniteStateMachine<IIdentification>.Build(name)
                                                                .ThatLogsTransitions(Debug.unityLogger)
-                                                               .ThatTransitionsBetween(stopId.Get, walk, idle)
-                                                               .ThatTransitionsBetween(landId.Get, fall, idle)
                                                                
-                                                               .ThatTransitionsBetween(moveId.Get,idle, walk)
-                                                               .ThatTransitionsBetween(moveId.Get,fall, walkWhileFalling)
-                                                               .ThatTransitionsBetween(moveId.Get,jump, walkWhileFalling)
+                                                               .ThatTransitionsBetween(stopId.Get, walk.Ref, idle.Ref)
+                                                               .ThatTransitionsBetween(landId.Get, fall.Ref, idle.Ref)
                                                                
-                                                               .ThatTransitionsBetween(jumpId.Get,idle, jump)
-                                                               .ThatTransitionsBetween(jumpId.Get,walk, jump)
+                                                               .ThatTransitionsBetween(moveId.Get, idle.Ref, walk.Ref)
+                                                               .ThatTransitionsBetween(moveId.Get, fall.Ref, walkWhileFalling.Ref)
+                                                               .ThatTransitionsBetween(moveId.Get, jump.Ref, walkWhileFalling.Ref)
                                                                
-                                                               .ThatTransitionsBetween(stopId.Get, walkWhileFalling, fall)
-                                                               .ThatTransitionsBetween(stopId.Get, jump, fall)
+                                                               .ThatTransitionsBetween(jumpId.Get, idle.Ref, jump.Ref)
+                                                               .ThatTransitionsBetween(jumpId.Get, walk.Ref, jump.Ref)
+                                                               
+                                                               .ThatTransitionsBetween(stopId.Get, walkWhileFalling.Ref, fall.Ref)
+                                                               .ThatTransitionsBetween(stopId.Get, jump.Ref, fall.Ref)
                                                                .Done();
-            await _stateMachine.Start(idle, destroyCancellationToken);
+            await _stateMachine.Start(idle.Ref, destroyCancellationToken);
         }
 
         private void StartJump()
@@ -139,6 +137,7 @@ namespace User
             _directionMagnitude = input.magnitude;
             if(!_character)
                 return;
+            //THOUGHT: Should there be a Condition SO that receives an Input and returns an ID so this logic is done by that structure?
             var stateId = input.magnitude > 0.001f ? moveId : stopId;
             var data = new Hashtable();
             if (lastInputId)

@@ -18,11 +18,20 @@ namespace Characters
         public bool IsSet { get; protected set; }= false;
 
         public IActor<TData> Actor { get; private set; }
+
+        /// <inheritdoc />
+        IActor ICharacter.Actor => Actor;
+        
         [field: SerializeReadOnly] public MovementData Movement { get; set; } = MovementData.InvalidRequest;
+
+        /// <inheritdoc />
+        public IFloorTracker FloorTracker { get; set; }
+
         public abstract Vector3 Velocity { get; set; }
 
         protected virtual void Awake()
         {
+            FloorTracker = GetComponent<IFloorTracker>();
             if (OverrideLifeCycle)
                 enabled = false;
         }

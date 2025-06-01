@@ -5,10 +5,12 @@ namespace Characters
 {
 	public interface ICharacter
 	{
+		IActor Actor { get; }
 		MovementData Movement { get; set; }
 		Vector3 Velocity { get; set; }
 		Transform transform { get; }
 		GameObject gameObject { get; }
+		IFloorTracker FloorTracker { get; set; }
 
 		/// <summary>
 		/// Adds an upwards force
@@ -20,6 +22,6 @@ namespace Characters
 
 	public interface ICharacter<TData> : ICharacter
 	{
-		IActor<TData> Actor { get; }
+		new IActor<TData> Actor { get; }
 	}
 }

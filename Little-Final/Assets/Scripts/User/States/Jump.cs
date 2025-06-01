@@ -6,14 +6,16 @@ using UnityEngine;
 
 namespace User.States
 {
+	[CreateAssetMenu(menuName = "States/Character/Jump", fileName = "Jump", order = 0)]
 	[Serializable]
-	public class Jump : UserState
+	public class Jump : CharacterState
 	{
 		[SerializeField] private float force;
-		public override UniTask Awake(Hashtable transitionData, CancellationToken token)
+
+		public override UniTask Enter(Hashtable transitionData, CancellationToken token)
 		{
 			Character.Jump(force);
-			return base.Awake(transitionData, token);
+			return base.Enter(transitionData, token);
 		}
 	}
 }
