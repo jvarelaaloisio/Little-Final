@@ -163,5 +163,22 @@ namespace FsmAsync
 			public FiniteStateMachine<TKey> Done()
 				=> _finiteStateMachine;
 		}
+
+		public async UniTask HandleInput<T>(T data, InputData<TKey> customData, CancellationToken token)
+		{
+			await TryTransitionTo(customData.stateId, token, customData.data);
+		}
+
     }
+	public struct InputData<TKey>
+	{
+		public TKey stateId;
+		public Hashtable data;
+
+		public InputData(TKey stateId, Hashtable data)
+		{
+			this.stateId = stateId;
+			this.data = data;
+		}
+	}
 }

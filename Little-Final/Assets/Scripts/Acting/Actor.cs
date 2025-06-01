@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Acting;
+using Core.Helpers;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Acting
@@ -22,35 +24,50 @@ namespace Acting
         public abstract Type DataType { get; }
 
         public abstract bool TrySetData(object data);
-        
-        protected readonly Dictionary<string, HashSet<Func <IActor, CancellationToken, Task>>> PreBehavioursByAction = new();
-        
-        protected readonly Dictionary<string, HashSet<Func <IActor, CancellationToken, Task>>> PostBehavioursByAction = new();
 
-        public bool TryAddPreBehaviour(Func <IActor, CancellationToken, Task> behaviour, string actionId = IActor.Wildcard)
+        protected IIdentification.Comparer IDComparer;
+        
+        protected readonly Dictionary<IIdentification, HashSet<Func <IActor, CancellationToken, UniTask>>> PreBehavioursByAction;
+        protected readonly HashSet<Func<IActor, CancellationToken, UniTask>> PreBehaviourWildcards = new();
+        
+        protected readonly Dictionary<IIdentification, HashSet<Func <IActor, CancellationToken, UniTask>>> PostBehavioursByAction;
+        protected readonly HashSet<Func<IActor, CancellationToken, UniTask>> PostBehaviourWildcards = new();
+
+        public Actor()
+        {
+            IDComparer = new IIdentification.Comparer();
+            PostBehavioursByAction = new Dictionary<IIdentification, HashSet<Func<IActor, CancellationToken, UniTask>>>(IDComparer);
+            PreBehavioursByAction = new Dictionary<IIdentification, HashSet<Func<IActor, CancellationToken, UniTask>>>(IDComparer);
+        }
+
+        public bool TryAddPreBehaviour(Func <IActor, CancellationToken, UniTask> behaviour, IIdentification actionId = default)
             => TryAddBehaviour(PreBehavioursByAction, actionId, behaviour);
 
-        public bool TryAddPostBehaviour(Func <IActor, CancellationToken, Task> behaviour, string actionId = IActor.Wildcard)
+        public bool TryAddPostBehaviour(Func <IActor, CancellationToken, UniTask> behaviour, IIdentification actionId = default)
             => TryAddBehaviour(PostBehavioursByAction, actionId, behaviour);
         
-        public void RemovePreBehaviour(Func <IActor, CancellationToken, Task> behaviour, string actionId = IActor.Wildcard)
+        public void RemovePreBehaviour(Func <IActor, CancellationToken, UniTask> behaviour, IIdentification actionId = default)
             => RemoveBehaviour(PreBehavioursByAction, actionId, behaviour);
 
-        public void RemovePostBehaviour(Func <IActor, CancellationToken, Task> behaviour, string actionId = IActor.Wildcard)
+        public void RemovePostBehaviour(Func <IActor, CancellationToken, UniTask> behaviour, IIdentification actionId = default)
             => RemoveBehaviour(PostBehavioursByAction, actionId, behaviour);
 
-        private static bool TryAddBehaviour(Dictionary<string, HashSet<Func <IActor, CancellationToken, Task>>> behavioursByAction, string actionId, Func <IActor, CancellationToken, Task> behaviour)
+        private static bool TryAddBehaviour(Dictionary<IIdentification, HashSet<Func <IActor, CancellationToken, UniTask>>> behavioursByAction,
+                                            IIdentification actionId,
+                                            Func <IActor, CancellationToken, UniTask> behaviour)
         {
             if (behavioursByAction.TryGetValue(actionId, out var behaviours))
                 return behaviours.Add(behaviour);
             
-            behaviours = new HashSet<Func <IActor, CancellationToken, Task>>();
+            behaviours = new HashSet<Func <IActor, CancellationToken, UniTask>>();
             behavioursByAction.Add(actionId, behaviours);
             behaviours.Add(behaviour);
             return true;
         }
         
-        private static void RemoveBehaviour(Dictionary<string, HashSet<Func <IActor, CancellationToken, Task>>> behavioursByAction, string actionId, Func <IActor, CancellationToken, Task> behaviour)
+        private static void RemoveBehaviour(Dictionary<IIdentification, HashSet<Func <IActor, CancellationToken, UniTask>>> behavioursByAction,
+                                            IIdentification actionId,
+                                            Func <IActor, CancellationToken, UniTask> behaviour)
         {
             if (behavioursByAction.TryGetValue(actionId, out var behaviours))
                 behaviours.Remove(behaviour);
@@ -62,9 +79,9 @@ namespace Acting
         /// <param name="behaviour">The action task.</param>
         /// <param name="token"></param>
         /// <param name="actionId">Used to determine which pre- and post-behaviours should run. Default is <see cref="Wildcard"/>.</param>
-        public async Task Act(Func<IActor, CancellationToken, Task> behaviour,
+        public async UniTask Act(Func<IActor, CancellationToken, UniTask> behaviour,
                               CancellationToken token,
-                              string actionId = IActor.Wildcard)
+                              IIdentification actionId = default)
         {
             try
             {
@@ -78,47 +95,75 @@ namespace Acting
 
             try
             {
-                await RunWildcards(this, PreBehavioursByAction, token);
+                await RunBehaviours(this, PreBehaviourWildcards, token);
             
-                if (actionId != IActor.Wildcard)
+                if (actionId != default)
                     await RunBehavioursWithId(this, actionId, PreBehavioursByAction, token);
 
                 await behaviour(this, token);
 
-                await RunWildcards(this, PostBehavioursByAction, token);
+                await RunBehaviours(this, PostBehaviourWildcards, token);
             
-                if (actionId != IActor.Wildcard)
+                if (actionId != default)
                     await RunBehavioursWithId(this, actionId, PostBehavioursByAction, token);
             }
             finally
             {
                 _semaphoreSlim.Release();
             }
-            
-            return;
-            
-            static async Task RunWildcards(IActor actor,
-                                           Dictionary<string, HashSet<Func <IActor, CancellationToken, Task>>> behavioursByAction,
-                                           CancellationToken cancellationToken)
+        }
+
+        /// <inheritdoc />
+        public async UniTask Act<TActionData>(Func<IActor, TActionData, CancellationToken, UniTask> behaviour,
+                                              TActionData actionData,
+                                              CancellationToken token,
+                                              IIdentification actionId = default)
+        {
+            try
             {
-                if (behavioursByAction.TryGetValue(IActor.Wildcard, out var commonPreActions))
-                {
-                    foreach (var preAction in commonPreActions)
-                        await preAction(actor, cancellationToken);
-                }
+                await _semaphoreSlim.WaitAsync(-1, token);
             }
-            
-            static async Task RunBehavioursWithId(IActor actor,
-                                           string actionId,
-                                           Dictionary<string, HashSet<Func <IActor, CancellationToken, Task>>> behavioursByAction,
-                                           CancellationToken cancellationToken)
+            catch (Exception e)
             {
-                if (behavioursByAction.TryGetValue(actionId, out var behaviours))
-                {
-                    foreach (var preAction in behaviours)
-                        await preAction(actor, cancellationToken);
-                }
+                Debug.LogException(e);
+                return;
             }
+
+            try
+            {
+                await RunBehaviours(this, PreBehaviourWildcards, token);
+            
+                if (actionId != default)
+                    await RunBehavioursWithId(this, actionId, PreBehavioursByAction, token);
+
+                await behaviour(this, actionData, token);
+
+                await RunBehaviours(this, PostBehaviourWildcards, token);
+            
+                if (actionId != default)
+                    await RunBehavioursWithId(this, actionId, PostBehavioursByAction, token);
+            }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
+        }
+
+        private static async UniTask RunBehavioursWithId(IActor actor,
+                                                         IIdentification actionId,
+                                                         Dictionary<IIdentification, HashSet<Func<IActor, CancellationToken, UniTask>>> behavioursByAction,
+                                                         CancellationToken cancellationToken)
+        {
+            if (behavioursByAction.TryGetValue(actionId, out var behaviours))
+                await RunBehaviours(actor, behaviours, cancellationToken);
+        }
+
+        private static async UniTask RunBehaviours(IActor actor,
+                                                   HashSet<Func<IActor, CancellationToken, UniTask>> behaviours,
+                                                   CancellationToken cancellationToken)
+        {
+            foreach (var preAction in behaviours)
+                await preAction(actor, cancellationToken);
         }
     }
     

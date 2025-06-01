@@ -1,6 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Helpers;
+using Cysharp.Threading.Tasks;
 
 namespace Core.Acting
 {
@@ -10,8 +12,7 @@ namespace Core.Acting
 	/// <typeparam name="TTarget">The user that runs the behaviours</typeparam>
 	public interface IHavePreBehaviours<out TTarget>
 	{
-		public const string Wildcard = "";
-		bool TryAddPreBehaviour(Func<TTarget, CancellationToken, Task> behaviour, string actionId = Wildcard);
-		void RemovePreBehaviour(Func<TTarget, CancellationToken, Task> behaviour, string actionId = Wildcard);
+		bool TryAddPreBehaviour(Func<TTarget, CancellationToken, UniTask> behaviour, IIdentification actionId = default);
+		void RemovePreBehaviour(Func<TTarget, CancellationToken, UniTask> behaviour, IIdentification actionId = default);
 	}
 }

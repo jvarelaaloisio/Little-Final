@@ -16,7 +16,9 @@ namespace VarelaAloisio.Editor
 		public static bool Implements(this Type type, Type @interface)
 		{
 			return type.GetInterfaces()
-			               .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == @interface.GetGenericTypeDefinition()
+			               .Any(i => i == @interface
+			                         || i.IsGenericType && @interface.IsGenericType &&
+			                         i.GetGenericTypeDefinition() == @interface.GetGenericTypeDefinition()
 			                         && i.GenericTypeArguments.SequenceEqual(@interface.GenericTypeArguments));
 		}
 		

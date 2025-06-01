@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using Core.Extensions;
 using Core.References;
 using Cysharp.Threading.Tasks;
+using Editor.Search;
 using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
@@ -28,7 +30,7 @@ namespace VarelaAloisio.Editor
 			if (!_isInitialized && !_isInitializing)
 				Initialize(property).Forget();
 			EditorGUI.BeginDisabledGroup(_isInitializing);
-			ObjectField.DoObjectField(position, _referenceProperty, typeof(Object), label, _searchContext, SearchViewFlags.HideSearchBar);
+			ObjectField.DoObjectField(position, _referenceProperty, typeof(Object), label, _searchContext, SearchProjectSettings.SearchViewFlags);
 			EditorGUI.EndDisabledGroup();
 		}
 
@@ -46,7 +48,9 @@ namespace VarelaAloisio.Editor
 			var fieldType = fieldInfo.FieldType;
 			_interfaceType = fieldType.IsArray
 				                 ? fieldType?.GetElementType()?.GetGenericArguments().FirstOrDefault()
-				                 : fieldType?.GetGenericArguments()?.FirstOrDefault();
+				                 : fieldType.Implements(typeof(ICollection))
+					                 ? fieldType.GetGenericArguments()?.FirstOrDefault()?.GetGenericArguments()?.FirstOrDefault()
+					                 : fieldType?.GetGenericArguments()?.FirstOrDefault();
 #if BENCHMARK_EDITOR
 			var getTypeSpan = stopwatch.Elapsed;
 			stopwatch.Restart();

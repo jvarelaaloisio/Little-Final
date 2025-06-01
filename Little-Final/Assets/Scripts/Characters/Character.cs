@@ -27,6 +27,9 @@ namespace Characters
         /// <inheritdoc />
         public IFloorTracker FloorTracker { get; set; }
 
+        /// <inheritdoc />
+        public abstract IFallingController FallingController { get; }
+
         public abstract Vector3 Velocity { get; set; }
 
         protected virtual void Awake()

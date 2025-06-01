@@ -18,9 +18,9 @@ namespace Characters
 
         private readonly HashSet<ForceRequest> _forceRequests = new ();
         private readonly HashSet<ForceRequest> _continuousForceRequests = new ();
-        [SerializeField] private FallingController _fallingController;
+        private FallingController _fallingController;
 
-        public IFallingController FallingController => _fallingController;
+        public override IFallingController FallingController => _fallingController;
 
         public override Vector3 Velocity
         {

@@ -1,6 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Helpers;
+using Cysharp.Threading.Tasks;
 
 namespace Core.Acting
 {
@@ -10,8 +12,7 @@ namespace Core.Acting
 	/// <typeparam name="TTarget">The user that runs the behaviours</typeparam>
 	public interface IHavePostBehaviours<out TTarget>
 	{
-		public const string Wildcard = "";
-		bool TryAddPostBehaviour(Func<TTarget, CancellationToken, Task> behaviour, string actionId = Wildcard);
-		void RemovePostBehaviour(Func<TTarget, CancellationToken, Task> behaviour, string actionId = Wildcard);
+		bool TryAddPostBehaviour(Func<TTarget, CancellationToken, UniTask> behaviour, IIdentification actionId = default);
+		void RemovePostBehaviour(Func<TTarget, CancellationToken, UniTask> behaviour, IIdentification actionId = default);
 	}
 }

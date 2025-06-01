@@ -1,16 +1,12 @@
 using System;
 using System.Threading;
-using System.Threading.Tasks;
+using Core.Helpers;
+using Cysharp.Threading.Tasks;
 
 namespace Core.Acting
 {
 	public interface IActor
 	{
-		/// <summary>
-		/// Value used as common action id to store tasks in <see cref="PreBehavioursByAction"/> and <see cref="PostBehavioursByAction"/>.
-		/// Any behaviour stored in Wildcard will be run once anytime an action is done.
-		/// </summary>
-		public const string Wildcard = "";
 		/// <summary>
 		/// Data used by the actor.
 		/// </summary>
@@ -29,9 +25,20 @@ namespace Core.Acting
 		/// <param name="behaviour">The action task.</param>
 		/// <param name="token"></param>
 		/// <param name="actionId">Used to determine which pre- and post-behaviours should run. Default is <see cref="Wildcard"/>.</param>
-		Task Act(Func<IActor, CancellationToken, Task> behaviour,
-			CancellationToken token,
-			string actionId = Wildcard);
+		UniTask Act(Func<IActor, CancellationToken, UniTask> behaviour,
+		            CancellationToken token,
+		            IIdentification actionId = default);
+		
+		/// <summary>
+		/// Runs pre-behaviours -> Runs given behaviour -> Runs post-behaviours
+		/// </summary>
+		/// <param name="behaviour">The action task.</param>
+		/// <param name="token"></param>
+		/// <param name="actionId">Used to determine which pre- and post-behaviours should run. Default is <see cref="Wildcard"/>.</param>
+		UniTask Act<TActionData>(Func<IActor, TActionData, CancellationToken, UniTask> behaviour,
+		            TActionData actionData,
+		            CancellationToken token,
+		            IIdentification actionId = default);
 	}
 
 	public interface IActor<TData> : IActor

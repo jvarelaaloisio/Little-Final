@@ -96,9 +96,9 @@ namespace User.States
 				return;
 			}
 
-			if (!FloorTracker?.HasFloor ?? true)
+			if (!Character.FloorTracker?.HasFloor ?? true)
 			{
-				Logger.LogWarning(Name, $"{nameof(FloorTracker)} is null or doesn't have a floor");
+				Logger.LogWarning(Name, $"{nameof(Character.FloorTracker)} is null or doesn't have a floor");
 				return;
 			}
 			// var floorNormal = 
@@ -110,7 +110,7 @@ namespace User.States
 			// {
 			// 	floorNormal = hit.normal;
 			// }
-			Vector3 directionProjectedOnFloor = Vector3.ProjectOnPlane(direction, FloorTracker.CurrentFloorData.normal);
+			Vector3 directionProjectedOnFloor = Vector3.ProjectOnPlane(direction, Character.FloorTracker.CurrentFloorData.normal);
 
 			Character.Movement.direction = directionProjectedOnFloor;
 		}

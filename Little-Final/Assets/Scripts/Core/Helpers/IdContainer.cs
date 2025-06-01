@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Core.Helpers
 {
 	[CreateAssetMenu(menuName = "Models/ID", fileName = "Id", order = 0)]
-	public class IdContainer : ScriptableObject
+	public class IdContainer : ScriptableObject, IIdentification
 	{
 		[SerializeField]
 		private new string name;
@@ -12,13 +12,21 @@ namespace Core.Helpers
 		public Data Get => new Data(name, GetHashCode());
 
 		public string Name => name;
+
+		/// <inheritdoc />
+		public bool Equals(IIdentification other) => Get.Equals(other);
+
+		/// <inheritdoc />
+		public int hashCode => Get.hashCode;
+
 		public override string ToString() => name;
+
 		public static bool operator ==(IdContainer original, IdContainer other)
 			=> EqualityInternal(original, other);
 
 		public static bool operator !=(IdContainer original, IdContainer other)
 			=> !EqualityInternal(original, other);
-		
+
 		private static bool EqualityInternal(IdContainer original, IdContainer other)
 		{
 			bool noneIsNull = original && other;
@@ -30,7 +38,7 @@ namespace Core.Helpers
 		{
 			return original.Get;
 		}
-		
+
 		[Serializable]
 		public readonly struct Data : IIdentification
 		{

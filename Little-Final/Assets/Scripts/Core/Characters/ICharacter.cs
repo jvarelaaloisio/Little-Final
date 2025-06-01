@@ -11,6 +11,7 @@ namespace Characters
 		Transform transform { get; }
 		GameObject gameObject { get; }
 		IFloorTracker FloorTracker { get; set; }
+		IFallingController FallingController { get; }
 
 		/// <summary>
 		/// Adds an upwards force
