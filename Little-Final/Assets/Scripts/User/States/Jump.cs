@@ -8,14 +8,14 @@ namespace User.States
 {
 	[CreateAssetMenu(menuName = "States/Character/Jump", fileName = "Jump", order = 0)]
 	[Serializable]
-	public class Jump : CharacterState
+	public class Jump : StateSo
 	{
 		[SerializeField] private float force;
 
-		public override UniTask Enter(Hashtable transitionData, CancellationToken token)
+		public UniTask Enter(Hashtable transitionData, CancellationToken token)
 		{
 			Character.Jump(force);
-			return base.Enter(transitionData, token);
+			return UniTask.CompletedTask;
 		}
 	}
 }

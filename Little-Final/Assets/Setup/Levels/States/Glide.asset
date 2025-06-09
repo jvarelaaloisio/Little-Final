@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aef6c00dd155ef8648099c9c42db41ad, type: 3}
-  m_Name: Walk
+  m_Name: Glide
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: Walk
+  <Name>k__BackingField: Glide
   <behaviours>k__BackingField:
-  - reference: {fileID: 11400000, guid: e079b09cb97b97a4b93a3d3a2c55484a, type: 2}
+  - reference: {fileID: 11400000, guid: 7fbce3d0c5f678947a7e67757c9b58a3, type: 2}
   inputReaderProvider:
     reference: {fileID: 11400000, guid: f9ec6ddbbb5f2654486095ba9d3a333d, type: 2}
-  acceleration: 13
-  goalSpeed: 1.5
-  turnSpeed: 3
-  minSafeAngle: 3
+  acceleration: 7
+  goalSpeed: 2
+  turnSpeed: 0
+  minSafeAngle: 0
   floor:
     serializedVersion: 2
     m_Bits: 71681
-  stepUpConfig: {fileID: 11400000, guid: 0247ee27fb2e26e4380b2ceb7bf0a338, type: 2}
+  stepUpConfig: {fileID: 11400000, guid: 37c79b833ff0bea408ec35cab1381af6, type: 2}
   lastInputId: {fileID: 11400000, guid: b6aabdcce16f6e6cfa0957b728388be9, type: 2}
   cameraProvider:
     reference: {fileID: 11400000, guid: affd077a53d4b3b4e896e65492750dff, type: 2}

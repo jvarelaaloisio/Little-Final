@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Characters;
+using Core.Helpers;
 using UnityEngine;
 using User;
 
@@ -12,7 +15,7 @@ namespace Levels
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private Vector3 position = Vector3.negativeInfinity;
         [SerializeField] private Quaternion rotation = Quaternion.identity;
-        [SerializeField] private PhysicsCharacter.Data data;
+        [SerializeField] private Dictionary<Type, IDictionary<IIdentification, object>> data = new();
 
         public bool IsValid => playerPrefab != null && position != Vector3.negativeInfinity;
 

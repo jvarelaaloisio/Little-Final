@@ -9,12 +9,12 @@ namespace User.States
 {
     [CreateAssetMenu(menuName = "States/Character/Idle", fileName = "Idle", order = 0)]
     [Serializable]
-    public class Idle : CharacterState
+    public class Idle : StateSo
     {
-        public override UniTask Enter(Hashtable data, CancellationToken token)
+        public UniTask Enter(Hashtable data, CancellationToken token)
         {
             Character.Movement = MovementData.InvalidRequest;
-            return base.Enter(data, token);
+            return UniTask.CompletedTask;
         }
     }
 }

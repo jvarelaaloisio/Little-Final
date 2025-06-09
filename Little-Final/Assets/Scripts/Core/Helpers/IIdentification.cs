@@ -6,16 +6,16 @@ namespace Core.Helpers
     public interface IIdentification: IEquatable<IIdentification>
     {
         string name { get; }
-        int hashCode { get; }
-        public class Comparer : EqualityComparer<IIdentification>
+        int HashCode { get; }
+        public sealed class Comparer : EqualityComparer<IIdentification>
         {
             /// <inheritdoc />
             public override bool Equals(IIdentification x, IIdentification y)
-                => x?.Equals(y) ?? false;
+                => x?.Equals(y) ?? y is null;
 
             /// <inheritdoc />
             public override int GetHashCode(IIdentification obj)
-                => obj?.hashCode ?? -1;
+                => obj?.HashCode ?? 0;
         }
     }
 }

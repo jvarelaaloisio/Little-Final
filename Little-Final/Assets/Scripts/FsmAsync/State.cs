@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Core.Helpers;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -19,23 +20,36 @@ namespace FsmAsync
 	    public ILogger Logger { get; set; }
 
 	    /// <inheritdoc />
-	    public List<Func<(IState state, CancellationToken token), UniTask>> OnEnter { get; } = new();
+	    public List<Func<IState, IDictionary<Type, IDictionary<IIdentification, object>>, CancellationToken, UniTask>> OnEnter { get; } = new();
 
 	    /// <inheritdoc />
-	    public List<Func<(IState state, CancellationToken token), UniTask>> OnExit { get; } = new();
+	    public List<Func<IState, IDictionary<Type, IDictionary<IIdentification, object>>, CancellationToken, UniTask<bool>>> OnTryHandleInput { get; } = new();
 
 	    /// <inheritdoc />
-	    public virtual async UniTask Enter(Hashtable transitionData, CancellationToken token)
+	    public List<Func<IState, IDictionary<Type, IDictionary<IIdentification, object>>, CancellationToken, UniTask>> OnExit { get; } = new();
+
+	    /// <inheritdoc />
+	    public virtual async UniTask Enter(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
 	    {
 		    foreach (var task in OnEnter)
-			    await task((this, token));
+			    await task(this, data, token);
 	    }
 
 	    /// <inheritdoc />
-		public virtual async UniTask Exit(Hashtable transitionData, CancellationToken token)
+	    public async UniTask<bool> TryHandleInput(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
+	    {
+		    foreach (var task in OnTryHandleInput)
+			    if (await task(this, data, token))
+				    return true;
+
+		    return false;
+	    }
+
+	    /// <inheritdoc />
+		public virtual async UniTask Exit(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
 	    {
 		    foreach (var task in OnExit)
-			    await task((this, token));
+			    await task(this, data, token);
 	    }
 
 	    public static implicit operator bool(State state) => state != null;

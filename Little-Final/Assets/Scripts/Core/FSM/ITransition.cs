@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Core.Helpers;
 using Cysharp.Threading.Tasks;
 
 namespace FsmAsync
@@ -11,6 +12,6 @@ namespace FsmAsync
 		IState From { get; }
 		IState To { get; }
 		List<Func<(IState from, IState to), UniTask>> OnTransition { get; }
-		UniTask Do(CancellationToken token, Hashtable data = null);
+		UniTask Do(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token);
 	}
 }

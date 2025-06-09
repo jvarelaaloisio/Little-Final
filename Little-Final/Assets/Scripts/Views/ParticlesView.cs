@@ -54,14 +54,12 @@ namespace Views
 		private UniTask PlayParticles(IActor actor, CancellationToken token)
 		{
 			particles.Play();
-			Debug.Log("play");
 			return UniTask.CompletedTask;
 		}
 
 		private UniTask StopParticles(IActor arg1, CancellationToken arg2)
 		{
 			particles.Stop();
-			Debug.Log("stop");
 			return UniTask.CompletedTask;
 		}
 	}

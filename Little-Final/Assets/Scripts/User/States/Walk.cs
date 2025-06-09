@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using Core.Extensions;
 using Core.Gameplay;
@@ -14,7 +15,7 @@ namespace User.States
 {
 	[CreateAssetMenu(menuName = "States/Character/Walk", fileName = "Walk", order = 0)]
 	[Serializable]
-	public class Walk : CharacterState
+	public class Walk : StateSo
 	{
 		[Obsolete]
 		[SerializeField] private InterfaceRef<DataProviderAsync<IInputReader>> inputReaderProvider;
@@ -38,7 +39,7 @@ namespace User.States
 		private CancellationTokenSource _sleepCts;
 		private Transform _cameraTransform;
 
-		public override async UniTask Enter(Hashtable data, CancellationToken token)
+		public async UniTask Enter(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
 		{
 			if (Character == null)
 			{
@@ -56,12 +57,12 @@ namespace User.States
 			
 			Character.Movement.goalSpeed = goalSpeed;
 			Character.Movement.acceleration = acceleration;
-			if (lastInputId
-			    && data.ContainsKey(lastInputId.Get)
-			    && data[lastInputId.Get] is Vector2 lastInput)
-				HandleMoveInput(lastInput);
-			else
-				Logger?.LogWarning(Name,$"{nameof(data)} doesn't contain the key {lastInputId?.Get}");
+			// if (lastInputId
+			//     && data.ContainsKey(lastInputId.Get)
+			//     && data[lastInputId.Get] is Vector2 lastInput)
+			// 	HandleMoveInput(lastInput);
+			// else
+			// 	Logger?.LogWarning(Name,$"{nameof(data)} doesn't contain the key {lastInputId?.Get}");
 
 			//TODO: Remove all references to inputs in the states
 			if (inputReaderProvider.Ref)
@@ -77,7 +78,7 @@ namespace User.States
 		}
 
 
-		public override UniTask Exit(Hashtable data, CancellationToken token)
+		public UniTask Exit(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
 		{
 			if (inputReaderProvider.Ref?.TryGetValue(out var inputReader) ?? false)
 				inputReader.OnMoveInput -= HandleMoveInput;
@@ -89,7 +90,7 @@ namespace User.States
 		[Obsolete("This should be handled outside of the state")]
 		private void HandleMoveInput(Vector2 input)
 		{
-			var direction = _cameraTransform.TransformDirection(input.ToXZY()).IgnoreY();
+			var direction = _cameraTransform.TransformDirection(input.XYToXZY()).IgnoreY();
 			if (Character == null)
 			{
 				Logger.LogError(Name, $"{nameof(Character)} is null!");

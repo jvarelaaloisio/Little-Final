@@ -17,7 +17,7 @@ namespace Core.Helpers
 		public bool Equals(IIdentification other) => Get.Equals(other);
 
 		/// <inheritdoc />
-		public int hashCode => Get.hashCode;
+		public int HashCode => Get.HashCode;
 
 		public override string ToString() => name;
 
@@ -30,7 +30,7 @@ namespace Core.Helpers
 		private static bool EqualityInternal(IdContainer original, IdContainer other)
 		{
 			bool noneIsNull = original && other;
-			bool areEqual = original.Get.hashCode == other.Get.hashCode;
+			bool areEqual = original.Get.HashCode == other.Get.HashCode;
 			return noneIsNull && areEqual;
 		}
 
@@ -43,16 +43,16 @@ namespace Core.Helpers
 		public readonly struct Data : IIdentification
 		{
 			public string name { get; }
-			public int hashCode { get; }
+			public int HashCode { get; }
 
 			public Data(string name, int hashCode)
 			{
 				this.name = name;
-				this.hashCode = hashCode;
+				this.HashCode = hashCode;
 			}
 
 			public bool Equals(IIdentification other)
-				=> hashCode == other?.hashCode;
+				=> HashCode == other?.HashCode;
 
 			public override string ToString()
 				=> name;

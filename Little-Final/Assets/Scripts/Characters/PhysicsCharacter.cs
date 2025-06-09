@@ -2,17 +2,15 @@ using System;
 using System.Collections.Generic;
 using Core.Attributes;
 using Core.Extensions;
+using Core.Helpers;
 using Player;
 using UnityEngine;
 
 namespace Characters
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PhysicsCharacter : Character<PhysicsCharacter.Data>, IPhysicsCharacter
+    public class PhysicsCharacter : Character<IDictionary<Type, IDictionary<IIdentification, object>>>, IPhysicsCharacter
     {
-        [Serializable]
-        public class Data { }
-        
         private Rigidbody _rigidbody;
         public Rigidbody rigidbody => _rigidbody ??= GetComponent<Rigidbody>();
 
@@ -105,6 +103,13 @@ namespace Characters
             var acceleration = Movement.direction * Movement.acceleration;
             
             rigidbody.AddForce(acceleration, ForceMode.Force);
+            return;
+            //TODO: Enable once stateMachine works
+            var currentVelocity = rigidbody.velocity;
+            var x = Mathf.Sqrt(currentVelocity.x * currentVelocity.x + currentVelocity.z * currentVelocity.z);
+            var force = (2 - 1 / Mathf.Cos(x * Mathf.PI / (3 * Movement.goalSpeed))) * Movement.acceleration;
+            force = Mathf.Max(0, force);
+            rigidbody.AddForce(Movement.direction * force, ForceMode.Force);
         }
     }
 }

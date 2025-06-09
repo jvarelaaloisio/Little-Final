@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Core.Helpers;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -29,9 +30,8 @@ namespace FsmAsync
         public IState To { get; }
         public List<Func<(IState from, IState to), UniTask>> OnTransition { get; }
 
-        public async UniTask Do(CancellationToken token, Hashtable data = null)
+        public async UniTask Do(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
         {
-            data ??= new Hashtable();
             if (From is null)
                 _logger?.LogError(_loggerTag, $"{nameof(From)} is null");
             else

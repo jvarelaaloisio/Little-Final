@@ -1,10 +1,14 @@
+using System;
+using System.Collections.Generic;
 using Characters;
+using Core.Helpers;
 using Core.References;
 using UnityEngine;
 
 namespace Spawning {
+    [Obsolete("Use Levels.SpawnPlayerSequence")]
     public class OldPlayerSpawner : MonoBehaviour {
-        [SerializeField] private InterfaceRef<PhysicsCharacter.Data> data;
+        [SerializeField] private InterfaceRef<IDictionary<Type, IDictionary<IIdentification, object>>> data;
         
         public PhysicsCharacter characterPrefab;
         [SerializeField] private bool spawnInStart;
@@ -55,7 +59,7 @@ namespace Spawning {
         protected abstract void HandleSpawn(TSetup newBorn);
     }
 
-    public class PlayerSpawner : Spawner<PhysicsCharacter, PhysicsCharacter.Data>
+    public class PlayerSpawner : Spawner<PhysicsCharacter, IDictionary<Type, IDictionary<IIdentification, object>>>
     {
         protected override void HandleSpawn(PhysicsCharacter newBorn)
         {

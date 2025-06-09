@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Core.Helpers;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -41,10 +42,12 @@ namespace FsmAsync
 		/// Call this to start the FSM
 		/// </summary>
 		/// <param name="state">The start state</param>
-		public async UniTask Start(IState state, CancellationToken token)
+		/// <param name="token"></param>
+		/// <param name="data"></param>
+		public async UniTask Start(IState state, IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
 		{
 			Current = state;
-			await Current.Enter(new Hashtable(), token);
+			await Current.Enter(data, token);
 		}
 
 		/// <summary>
@@ -52,7 +55,7 @@ namespace FsmAsync
 		/// </summary>
 		/// <param name="key">Key identifier for the transition <see cref="AddTransition"/></param>
 		/// <param name="data"></param>
-		public async UniTask<bool> TryTransitionTo(TKey key, CancellationToken token, Hashtable data = null)
+		public async UniTask<bool> TryTransitionTo(TKey key, CancellationToken token, IDictionary<Type, IDictionary<IIdentification, object>> data = null)
 		{
 			if (!TryGetTransition(Current, key, out var transition))
 				return false;
@@ -66,7 +69,7 @@ namespace FsmAsync
 				return false;
 			}
 
-			await transition.Do(token, data);
+			await transition.Do(data, token);
 			Current = transition.To;
 			OnTransition(transition);
 			return true;
@@ -164,18 +167,26 @@ namespace FsmAsync
 				=> _finiteStateMachine;
 		}
 
-		public async UniTask HandleInput<T>(T data, InputData<TKey> customData, CancellationToken token)
+		public async UniTask HandleInput(TKey key,
+		                                 CancellationToken token,
+		                                 IDictionary<Type,IDictionary<IIdentification,object>> data,
+		                                 bool logIfError = false)
 		{
-			await TryTransitionTo(customData.stateId, token, customData.data);
+			if (await TryTransitionTo(key, token, data))
+				return;
+			if (await Current.TryHandleInput(data, token))
+				return;
+			if (logIfError)
+				Logger.LogError(Tag, $"Couldn't transition from state {Current.Name} using key {key}");
 		}
 
     }
 	public struct InputData<TKey>
 	{
 		public TKey stateId;
-		public Hashtable data;
+		public IDictionary<Type, IDictionary<IIdentification, object>> data;
 
-		public InputData(TKey stateId, Hashtable data)
+		public InputData(TKey stateId, IDictionary<Type, IDictionary<IIdentification, object>> data)
 		{
 			this.stateId = stateId;
 			this.data = data;

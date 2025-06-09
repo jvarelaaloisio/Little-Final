@@ -45,6 +45,7 @@ namespace VarelaAloisio.Editor
 			var fetchPropertySpan = stopwatch.Elapsed;
 			stopwatch.Restart();
 #endif
+			//BUG: When Collection is an array, all references are copied.
 			var fieldType = fieldInfo.FieldType;
 			_interfaceType = fieldType.IsArray
 				                 ? fieldType?.GetElementType()?.GetGenericArguments().FirstOrDefault()

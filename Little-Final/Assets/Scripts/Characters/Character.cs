@@ -47,6 +47,7 @@ namespace Characters
         public virtual void Setup(TData data)
         {
             Actor = new Actor<TData>();
+            Actor.TrySetData(data);
             IsSet = true;
         }
 
