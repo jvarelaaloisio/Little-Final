@@ -238,11 +238,12 @@ namespace User
             GUI.skin.label.fontSize = 15;
             GUI.skin.label.normal.textColor = Color.cyan;
             GUILayout.Label($"State : {_fsm?.Current?.Name}");
-            //GUILayout.Label($"Move input : {_lastInput}");
+            // GUILayout.Label($"Move input : {_lastInput} ({_lastInput.magnitude:f2})");
             var speed = _character?.Velocity.IgnoreY().magnitude;
+            GUILayout.Label($"{1.0f * speed}");
             var goalSpeed = _character?.Movement?.goalSpeed;
-            GUILayout.Label($"{1.0f * speed / goalSpeed:f2}");
-            //GUILayout.Label($"Velocity   : {GetComponent<Rigidbody>().velocity}");
+            GUILayout.Label($"{100.0f * speed / goalSpeed:f2}%");
+            GUILayout.Label($"Velocity : {_character?.Velocity}");
             GUILayout.EndArea();
 #endif
         }
