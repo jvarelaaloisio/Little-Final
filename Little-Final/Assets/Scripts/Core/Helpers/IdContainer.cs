@@ -9,30 +9,33 @@ namespace Core.Helpers
 		[SerializeField]
 		private new string name;
 
-		public Data Get => new Data(name, GetHashCode());
+		public Data Get => new Data(name, GetInstanceID());
 
 		public string Name => name;
 
 		/// <inheritdoc />
-		public bool Equals(IIdentification other) => Get.Equals(other);
-
-		/// <inheritdoc />
-		public int HashCode => Get.HashCode;
+		public int Id => Get.Id;
 
 		public override string ToString() => name;
 
+		/// <inheritdoc />
+		public override bool Equals(object obj)
+			=> obj is IIdentification otherId && Equals(otherId);
+
+		/// <inheritdoc />
+		public bool Equals(IIdentification other)
+			=> Get.Equals(other);
+
+		/// <inheritdoc />
+		//THOUGHT: Is this correct? I'm not entirely sure.
+		public override int GetHashCode()
+			=> GetInstanceID();
+
 		public static bool operator ==(IdContainer original, IdContainer other)
-			=> EqualityInternal(original, other);
+			=> original?.Equals(other) ?? false;
 
 		public static bool operator !=(IdContainer original, IdContainer other)
-			=> !EqualityInternal(original, other);
-
-		private static bool EqualityInternal(IdContainer original, IdContainer other)
-		{
-			bool noneIsNull = original && other;
-			bool areEqual = original.Get.HashCode == other.Get.HashCode;
-			return noneIsNull && areEqual;
-		}
+			=> !original?.Equals(other) ?? true;
 
 		public static implicit operator Data(IdContainer original)
 		{
@@ -43,16 +46,16 @@ namespace Core.Helpers
 		public readonly struct Data : IIdentification
 		{
 			public string name { get; }
-			public int HashCode { get; }
+			public int Id { get; }
 
 			public Data(string name, int hashCode)
 			{
 				this.name = name;
-				this.HashCode = hashCode;
+				this.Id = hashCode;
 			}
 
 			public bool Equals(IIdentification other)
-				=> HashCode == other?.HashCode;
+				=> Id == other?.Id;
 
 			public override string ToString()
 				=> name;

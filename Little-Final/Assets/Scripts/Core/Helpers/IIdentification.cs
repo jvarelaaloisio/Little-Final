@@ -6,7 +6,7 @@ namespace Core.Helpers
     public interface IIdentification: IEquatable<IIdentification>
     {
         string name { get; }
-        int HashCode { get; }
+        int Id { get; }
         public sealed class Comparer : EqualityComparer<IIdentification>
         {
             /// <inheritdoc />
@@ -15,7 +15,7 @@ namespace Core.Helpers
 
             /// <inheritdoc />
             public override int GetHashCode(IIdentification obj)
-                => obj?.HashCode ?? 0;
+                => obj?.Id ?? 0;
         }
     }
 }
