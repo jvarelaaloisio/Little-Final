@@ -1,9 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Characters;
 using Core.Acting;
+using Core.Data;
 using Core.Extensions;
 using Core.Gameplay;
 using Core.Helpers;
@@ -24,17 +24,17 @@ namespace User
         [SerializeField] private float fallingGravityMultiplier = 2.5f;
         
         [Header("States")]
-        [SerializeField] private InterfaceRef<ICharacterState> idle;
-        [SerializeField] private InterfaceRef<ICharacterState> walk;
-        [SerializeField] private InterfaceRef<ICharacterState> jump;
-        [SerializeField] private InterfaceRef<ICharacterState> fall;
-        [SerializeField] private InterfaceRef<ICharacterState> glide;
-        [SerializeField] private InterfaceRef<ICharacterState> walkWhileFalling;
+        [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> idle;
+        [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> walk;
+        [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> jump;
+        [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> fall;
+        [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> glide;
+        [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> walkWhileFalling;
         
         [Header("Ids")]
-        [SerializeField] private InterfaceRef<IIdentification> characterId;
-        [SerializeField] private InterfaceRef<IIdentification> actorId;
-        [SerializeField] private InterfaceRef<IIdentification> traversalInputId;
+        [SerializeField] private IdContainer characterId;
+        [SerializeField] private InterfaceRef<IIdentifier> actorId;
+        [SerializeField] private InterfaceRef<IIdentifier> traversalInputId;
         
         [SerializeField] private IdContainer stopId;
         [SerializeField] private IdContainer moveId;
@@ -42,7 +42,7 @@ namespace User
         [SerializeField] private IdContainer fallId;
         [SerializeField] private IdContainer landId;
         [SerializeField] private IdContainer lastInputId;
-        [SerializeField] private InterfaceRef<IIdentification> glideId;
+        [SerializeField] private InterfaceRef<IIdentifier> glideId;
         
         [SerializeField] private float secondsBeforeGlide = 1;
         
@@ -51,11 +51,11 @@ namespace User
         private float _directionMagnitude;
         private Coroutine _enableCoroutine;
         
-        private FiniteStateMachine<IIdentification> _fsm;
+        private FiniteStateMachine<IIdentifier, ReverseIndexStore> _fsm;
         private AutoMap<Texture2D> BlackTexture = new(() => new Texture2D(1, 1));
         private StateDelayedHandler _glideDelay;
 
-        public IActor<IDictionary<Type, IDictionary<IIdentification, object>>> Actor => _character.Actor;
+        public IActor<ReverseIndexStore> Actor => _character.Actor;
 
         private void Start()
         {
@@ -90,13 +90,9 @@ namespace User
         public void Setup(PhysicsCharacter data)
         {
             _character = data;
-            _character.Actor.Data.Add(typeof(ICharacter), new Dictionary<IIdentification, object>{ { characterId.Ref, _character }});
-            _character.Actor.Data.Add(typeof(IPhysicsCharacter), new Dictionary<IIdentification, object>{ { characterId.Ref, _character }});
-            _character.Actor.Data.Add(typeof(IActor), new Dictionary<IIdentification, object>{ { actorId.Ref, _character.Actor }});
-            _character.Actor.Data.Add(typeof(IActor<IDictionary<Type, IDictionary<IIdentification, object>>>), new Dictionary<IIdentification, object>{ { actorId.Ref, _character.Actor }});
-            if (!Actor.Data.TryAdd(typeof(Vector2), new Dictionary<IIdentification, object>{{traversalInputId.Ref, Vector2.zero}}))
-                if (!Actor.Data[typeof(Vector2)].TryAdd(traversalInputId.Ref, Vector2.zero))
-                    Actor.Data[typeof(Vector2)][traversalInputId.Ref] = Vector2.zero;
+            Actor.Data.Add(characterId.Get, _character);
+            Actor.Data.Add(actorId.Ref, _character.Actor);
+            Actor.Data.Add(traversalInputId.Ref, Vector2.zero);
             _character.FallingController.OnStartFalling += AddGravity;
             _character.FallingController.OnStopFalling += RestoreGravity;
             SetupFsm(_character);
@@ -132,7 +128,7 @@ namespace User
             glide.Ref.Character = character;
             glide.Ref.Logger = Debug.unityLogger;
             
-            _fsm = FiniteStateMachine<IIdentification>.Build(name)
+            _fsm = FiniteStateMachine<IIdentifier, ReverseIndexStore>.Build(name)
                                                       .ThatLogsTransitions(Debug.unityLogger)
                                                       
                                                       .ThatTransitionsBetween(stopId.Get, walk.Ref, idle.Ref)
@@ -178,10 +174,10 @@ namespace User
         private void RestoreGravity()
             => _character.RemoveContinuousForce(Physics.gravity * Mathf.Max(0, fallingGravityMultiplier - 1));
 
-        private async void TransitionToGlide(IState _)
+        private async void TransitionToGlide(IState<ReverseIndexStore> _)
         {
             Debug.Log("transitioning".Colored(C.Red));
-            await _fsm.TryTransitionTo(glideId.Ref, destroyCancellationToken);
+            await _fsm.TryTransitionTo(glideId.Ref, Actor.Data, destroyCancellationToken);
             Debug.Log("transitioned".Colored(C.Green));
         }
 
@@ -204,7 +200,7 @@ namespace User
             //THOUGHT: Should there be a Condition SO that receives an Input and returns an ID so this logic is done by that structure?
             var stateId = input.magnitude > 0.001f ? moveId : stopId;
 
-            Actor.Data[typeof(Vector2)][traversalInputId.Ref] = input;
+            Actor.Data[typeof(Vector2), traversalInputId.Ref] = input;
             
             //await _fsm.TryTransitionTo(stateId.Get, destroyCancellationToken, data);
             await _character.Actor.Act((_, data, token) => _fsm.HandleInput(data, token, Actor.Data),
@@ -253,30 +249,30 @@ namespace User
     {
         public float Seconds { get; }
         public CancellationTokenSource TokenSource { get; }
-        private readonly Action<IState> _onFinished;
+        private readonly Action<IState<ReverseIndexStore>> _onFinished;
 
         public StateDelayedHandler(float seconds,
-                                   Action<IState> onFinished)
+                                   Action<IState<ReverseIndexStore>> onFinished)
         {
             Seconds = seconds;
             _onFinished = onFinished;
             TokenSource = new CancellationTokenSource();
         }
 
-        public UniTask Handle(IState state, IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
+        public UniTask Handle(IState<ReverseIndexStore> state, ReverseIndexStore data, CancellationToken token)
         {
             Start(state, token).Forget();
             return UniTask.CompletedTask;
         }
 
-        public UniTask Cancel(IState state, IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
+        public UniTask Cancel(IState<ReverseIndexStore> state, ReverseIndexStore data, CancellationToken token)
         {
             TokenSource.Cancel();
             Debug.Log("Canceled");
             return UniTask.CompletedTask;
         }
 
-        private async UniTaskVoid Start(IState state, CancellationToken token)
+        private async UniTaskVoid Start(IState<ReverseIndexStore> state, CancellationToken token)
         {
             Debug.Log("Started");
             var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(token, TokenSource.Token).Token;

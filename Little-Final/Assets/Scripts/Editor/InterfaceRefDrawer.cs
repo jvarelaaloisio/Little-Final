@@ -37,7 +37,7 @@ namespace VarelaAloisio.Editor
 		private async UniTaskVoid Initialize(SerializedProperty property)
 		{
 #if BENCHMARK_EDITOR
-			var stopwatch = Stopwatch.StartNew();	
+			var stopwatch = Stopwatch.StartNew();
 #endif
 			_isInitializing = true;
 			_referenceProperty = property.FindPropertyRelative("reference");

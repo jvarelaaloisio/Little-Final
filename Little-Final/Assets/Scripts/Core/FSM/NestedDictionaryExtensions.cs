@@ -8,7 +8,7 @@ namespace Core.Extensions
 {
 	public static class NestedDictionaryExtensions
 	{
-		public static bool TryGetFirst<T>(this IDictionary<Type, IDictionary<IIdentification, object>> data, out T value)
+		public static bool TryGetFirst<T>(this IDictionary<Type, IDictionary<IIdentifier, object>> data, out T value)
 		{
 			if (!data.TryGetValue(typeof(T), out var dictionary))
 			{
@@ -28,8 +28,8 @@ namespace Core.Extensions
 			return true;
 		}
 
-		public static bool TryGet<T>(this IDictionary<Type, IDictionary<IIdentification, object>> data,
-		                             IIdentification id,
+		public static bool TryGet<T>(this IDictionary<Type, IDictionary<IIdentifier, object>> data,
+		                             IIdentifier id,
 		                             out T value)
 		{
 			if (!data.TryGetValue(typeof(T), out var actors))

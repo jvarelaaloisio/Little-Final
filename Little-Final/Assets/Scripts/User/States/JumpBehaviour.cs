@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Characters;
 using Core.Acting;
+using Core.Data;
 using Core.Extensions;
 using Core.Helpers;
 using Core.References;
@@ -12,13 +13,13 @@ using UnityEngine;
 namespace User.States
 {
 	[CreateAssetMenu(menuName = "States/Behaviour/Jump", fileName = "JumpBehaviour", order = 0)]
-	public class JumpBehaviour : ScriptableObject, IActorStateBehaviour<IDictionary<Type, IDictionary<IIdentification, object>>>
+	public class JumpBehaviour : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>
 	{
-		[SerializeField] private InterfaceRef<IIdentification> characterId;
+		[SerializeField] private InterfaceRef<IIdentifier> characterId;
 		[SerializeField] private float force = 5.5f;
 
 		/// <inheritdoc />
-		public UniTask Enter(IActor<IDictionary<Type, IDictionary<IIdentification, object>>> actor, CancellationToken token)
+		public UniTask Enter(IActor<ReverseIndexStore> actor, CancellationToken token)
 		{
 			
 			if (!actor.Data.TryGet(characterId.Ref, out ICharacter character))
@@ -31,11 +32,11 @@ namespace User.States
 		}
 
 		/// <inheritdoc />
-		public UniTask Exit(IActor<IDictionary<Type, IDictionary<IIdentification, object>>> actor, CancellationToken token)
+		public UniTask Exit(IActor<ReverseIndexStore> actor, CancellationToken token)
 			=> UniTask.CompletedTask;
 
 		/// <inheritdoc />
-		public UniTask<bool> TryHandleInput(IActor<IDictionary<Type, IDictionary<IIdentification, object>>> actor, CancellationToken token)
+		public UniTask<bool> TryHandleInput(IActor<ReverseIndexStore> actor, CancellationToken token)
 			=> new(false);
 	}
 }

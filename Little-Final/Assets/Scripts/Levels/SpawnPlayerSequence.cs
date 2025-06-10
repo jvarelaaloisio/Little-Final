@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Characters;
-using Core.Helpers;
+using Core.Data;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using User;
 
@@ -15,22 +13,20 @@ namespace Levels
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private Vector3 position = Vector3.negativeInfinity;
         [SerializeField] private Quaternion rotation = Quaternion.identity;
-        [SerializeField] private Dictionary<Type, IDictionary<IIdentification, object>> data = new();
 
         public bool IsValid => playerPrefab != null && position != Vector3.negativeInfinity;
 
         [ContextMenu("Play")]
-        public async Task Play()
+        public async UniTask Play()
         {
             var operation = InstantiateAsync(playerPrefab, position, rotation);
-            while (!operation.isDone)
-                await Task.Delay(1000 / 30);
+            await UniTask.WaitUntil(() => operation.isDone);
             var go = operation.Result.FirstOrDefault();
             if (go)
             {
                 if (!go.TryGetComponent(out PhysicsCharacter character))
                     character = go.AddComponent<PhysicsCharacter>();
-                character?.Setup(data);
+                character?.Setup(new ReverseIndexStore());
 
                 if (!go.TryGetComponent(out PlayerController controller))
                     controller = go.AddComponent<PlayerController>();

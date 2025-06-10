@@ -12,7 +12,7 @@ namespace Core.Acting
 	/// <typeparam name="TTarget">The user that runs the behaviours</typeparam>
 	public interface IHavePostBehaviours<out TTarget>
 	{
-		bool TryAddPostBehaviour(Func<TTarget, CancellationToken, UniTask> behaviour, IIdentification actionId = default);
-		void RemovePostBehaviour(Func<TTarget, CancellationToken, UniTask> behaviour, IIdentification actionId = default);
+		bool TryAddPostBehaviour(Func<TTarget, CancellationToken, UniTask> behaviour, IIdentifier actionId = default);
+		void RemovePostBehaviour(Func<TTarget, CancellationToken, UniTask> behaviour, IIdentifier actionId = default);
 	}
 }

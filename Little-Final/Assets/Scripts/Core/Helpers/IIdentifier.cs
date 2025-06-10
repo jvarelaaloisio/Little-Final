@@ -3,18 +3,18 @@ using System.Collections.Generic;
 
 namespace Core.Helpers
 {
-    public interface IIdentification: IEquatable<IIdentification>
+    public interface IIdentifier: IEquatable<IIdentifier>
     {
         string name { get; }
         int Id { get; }
-        public sealed class Comparer : EqualityComparer<IIdentification>
+        public sealed class Comparer : EqualityComparer<IIdentifier>
         {
             /// <inheritdoc />
-            public override bool Equals(IIdentification x, IIdentification y)
+            public override bool Equals(IIdentifier x, IIdentifier y)
                 => x?.Equals(y) ?? y is null;
 
             /// <inheritdoc />
-            public override int GetHashCode(IIdentification obj)
+            public override int GetHashCode(IIdentifier obj)
                 => obj?.Id ?? 0;
         }
     }

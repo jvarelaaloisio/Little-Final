@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Core.Data;
 using Core.Extensions;
 using Core.Gameplay;
 using Core.Helpers;
@@ -39,7 +40,7 @@ namespace User.States
 		private CancellationTokenSource _sleepCts;
 		private Transform _cameraTransform;
 
-		public async UniTask Enter(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
+		public async UniTask Enter(ReverseIndexStore data, CancellationToken token)
 		{
 			if (Character == null)
 			{
@@ -78,7 +79,7 @@ namespace User.States
 		}
 
 
-		public UniTask Exit(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
+		public UniTask Exit(ReverseIndexStore data, CancellationToken token)
 		{
 			if (inputReaderProvider.Ref?.TryGetValue(out var inputReader) ?? false)
 				inputReader.OnMoveInput -= HandleMoveInput;

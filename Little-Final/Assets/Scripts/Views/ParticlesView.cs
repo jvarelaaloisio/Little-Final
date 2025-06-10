@@ -15,8 +15,8 @@ namespace Views
 		[SerializeField] private string description;
 		[SerializeField] private InterfaceRef<ICharacter> character;
 		[SerializeField] private ParticleSystem particles;
-		[SerializeField] private List<InterfaceRef<IIdentification>> actionIdsToPlay = new();
-		[SerializeField] private List<InterfaceRef<IIdentification>> actionIdsToStop = new();
+		[SerializeField] private List<InterfaceRef<IIdentifier>> actionIdsToPlay = new();
+		[SerializeField] private List<InterfaceRef<IIdentifier>> actionIdsToStop = new();
 
 		private void Reset()
 		{

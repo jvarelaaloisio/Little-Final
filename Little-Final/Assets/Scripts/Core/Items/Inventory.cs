@@ -9,9 +9,9 @@ namespace Core.Items
 {
     public class Inventory : MonoBehaviour
     {
-        public Dictionary<IIdentification, Item> Items { get; } = new();
-        public event Action<IIdentification, Item> onItemAdded = delegate { };
-        [SerializeField] private UnityEvent<IIdentification, Item> OnItemAdded;
+        public Dictionary<IIdentifier, Item> Items { get; } = new();
+        public event Action<IIdentifier, Item> onItemAdded = delegate { };
+        [SerializeField] private UnityEvent<IIdentifier, Item> OnItemAdded;
         
         [SerializeField] private InventoryEventChannel inventoryUpdateChannel;
 
@@ -26,7 +26,7 @@ namespace Core.Items
         /// <param name="itemId">ID to filter with</param>
         /// <param name="item">The item found. May be null</param>
         /// <returns>true if has item</returns>
-        public bool TryGetItem(IIdentification itemId, out Item item)
+        public bool TryGetItem(IIdentifier itemId, out Item item)
             => Items.TryGetValue(itemId, out item);
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Core.Items
         /// <param name="itemId">ID to filter with</param>
         /// <param name="item">Item to set the new value to</param>
         /// <returns>true if added. False if already existed</returns>
-        public bool TryAddItem(IIdentification itemId, Item item)
+        public bool TryAddItem(IIdentifier itemId, Item item)
         {
             if (!Items.TryAdd(itemId, item))
                 return false;

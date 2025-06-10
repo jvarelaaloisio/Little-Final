@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Characters;
+using Core.Data;
 using Core.Helpers;
 using Core.References;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine;
 namespace Spawning {
     [Obsolete("Use Levels.SpawnPlayerSequence")]
     public class OldPlayerSpawner : MonoBehaviour {
-        [SerializeField] private InterfaceRef<IDictionary<Type, IDictionary<IIdentification, object>>> data;
+        [SerializeField] private ReverseIndexStore data;
         
         public PhysicsCharacter characterPrefab;
         [SerializeField] private bool spawnInStart;
@@ -25,7 +26,7 @@ namespace Spawning {
             //That instantiate method should expect an ISetup and return an structure with a TryAutoSetup method that fetches the references from a database  
             //------
             var character = Instantiate(characterPrefab);
-            character.Setup(data.Ref);
+            character.Setup(data);
             //------
             character.OverrideLifeCycle = true;
             character.Initialize();
@@ -59,7 +60,7 @@ namespace Spawning {
         protected abstract void HandleSpawn(TSetup newBorn);
     }
 
-    public class PlayerSpawner : Spawner<PhysicsCharacter, IDictionary<Type, IDictionary<IIdentification, object>>>
+    public class PlayerSpawner : Spawner<PhysicsCharacter, ReverseIndexStore>
     {
         protected override void HandleSpawn(PhysicsCharacter newBorn)
         {

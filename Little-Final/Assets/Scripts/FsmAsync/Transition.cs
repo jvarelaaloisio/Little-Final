@@ -9,28 +9,28 @@ using UnityEngine;
 namespace FsmAsync
 {
     [Serializable]
-    public struct Transition : ITransition
+    public struct Transition<T> : ITransition<T>
     {
         private readonly ILogger _logger;
         private readonly string _loggerTag;
 
-        public Transition(IState from,
-                          IState to,
+        public Transition(IState<T> from,
+                          IState<T> to,
                           ILogger logger = null,
                           string loggerTag = "")
         {
             From = from;
-            OnTransition = new List<Func<(IState from, IState to), UniTask>>();
+            OnTransition = new List<Func<(IState<T> from, IState<T> to), UniTask>>();
             To = to;
             _logger = logger;
             _loggerTag = loggerTag;
         }
 
-        public IState From { get; }
-        public IState To { get; }
-        public List<Func<(IState from, IState to), UniTask>> OnTransition { get; }
+        public IState<T> From { get; }
+        public IState<T> To { get; }
+        public List<Func<(IState<T> from, IState<T> to), UniTask>> OnTransition { get; }
 
-        public async UniTask Do(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
+        public async UniTask Do(T data, CancellationToken token)
         {
             if (From is null)
                 _logger?.LogError(_loggerTag, $"{nameof(From)} is null");

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Core.Attributes;
+using Core.Data;
 using Core.Extensions;
 using Core.Helpers;
 using Player;
@@ -9,7 +10,7 @@ using UnityEngine;
 namespace Characters
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PhysicsCharacter : Character<IDictionary<Type, IDictionary<IIdentification, object>>>, IPhysicsCharacter
+    public class PhysicsCharacter : Character<ReverseIndexStore>, IPhysicsCharacter
     {
         [SerializeField] private AnimationCurve movementCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
         private Rigidbody _rigidbody;
@@ -27,9 +28,10 @@ namespace Characters
             set => rigidbody.velocity = value;
         }
 
-        protected override void Awake()
+        /// <inheritdoc />
+        public override void Setup(ReverseIndexStore data)
         {
-            base.Awake();
+            base.Setup(data);
             _fallingController = new FallingController(rigidbody);
         }
 

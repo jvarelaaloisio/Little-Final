@@ -27,7 +27,7 @@ namespace Core.Acting
 		/// <param name="actionId">Used to determine which pre- and post-behaviours should run. Default is <see cref="Wildcard"/>.</param>
 		UniTask Act(Func<IActor, CancellationToken, UniTask> behaviour,
 		            CancellationToken token,
-		            IIdentification actionId = default);
+		            IIdentifier actionId = default);
 		
 		/// <summary>
 		/// Runs pre-behaviours -> Runs given behaviour -> Runs post-behaviours
@@ -38,7 +38,7 @@ namespace Core.Acting
 		UniTask Act<TActionData>(Func<IActor, TActionData, CancellationToken, UniTask> behaviour,
 		            TActionData actionData,
 		            CancellationToken token,
-		            IIdentification actionId = default);
+		            IIdentifier actionId = default);
 	}
 
 	public interface IActor<TData> : IActor

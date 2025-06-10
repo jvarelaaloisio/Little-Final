@@ -25,35 +25,35 @@ namespace Acting
 
         public abstract bool TrySetData(object data);
 
-        protected IIdentification.Comparer IDComparer;
+        protected IIdentifier.Comparer IDComparer;
         
-        protected readonly Dictionary<IIdentification, HashSet<Func <IActor, CancellationToken, UniTask>>> PreBehavioursByAction;
+        protected readonly Dictionary<IIdentifier, HashSet<Func <IActor, CancellationToken, UniTask>>> PreBehavioursByAction;
         protected readonly HashSet<Func<IActor, CancellationToken, UniTask>> PreBehaviourWildcards = new();
         
-        protected readonly Dictionary<IIdentification, HashSet<Func <IActor, CancellationToken, UniTask>>> PostBehavioursByAction;
+        protected readonly Dictionary<IIdentifier, HashSet<Func <IActor, CancellationToken, UniTask>>> PostBehavioursByAction;
         protected readonly HashSet<Func<IActor, CancellationToken, UniTask>> PostBehaviourWildcards = new();
 
         public Actor()
         {
-            IDComparer = new IIdentification.Comparer();
-            PostBehavioursByAction = new Dictionary<IIdentification, HashSet<Func<IActor, CancellationToken, UniTask>>>(IDComparer);
-            PreBehavioursByAction = new Dictionary<IIdentification, HashSet<Func<IActor, CancellationToken, UniTask>>>(IDComparer);
+            IDComparer = new IIdentifier.Comparer();
+            PostBehavioursByAction = new Dictionary<IIdentifier, HashSet<Func<IActor, CancellationToken, UniTask>>>(IDComparer);
+            PreBehavioursByAction = new Dictionary<IIdentifier, HashSet<Func<IActor, CancellationToken, UniTask>>>(IDComparer);
         }
 
-        public bool TryAddPreBehaviour(Func <IActor, CancellationToken, UniTask> behaviour, IIdentification actionId = default)
+        public bool TryAddPreBehaviour(Func <IActor, CancellationToken, UniTask> behaviour, IIdentifier actionId = default)
             => TryAddBehaviour(PreBehavioursByAction, actionId, behaviour);
 
-        public bool TryAddPostBehaviour(Func <IActor, CancellationToken, UniTask> behaviour, IIdentification actionId = default)
+        public bool TryAddPostBehaviour(Func <IActor, CancellationToken, UniTask> behaviour, IIdentifier actionId = default)
             => TryAddBehaviour(PostBehavioursByAction, actionId, behaviour);
         
-        public void RemovePreBehaviour(Func <IActor, CancellationToken, UniTask> behaviour, IIdentification actionId = default)
+        public void RemovePreBehaviour(Func <IActor, CancellationToken, UniTask> behaviour, IIdentifier actionId = default)
             => RemoveBehaviour(PreBehavioursByAction, actionId, behaviour);
 
-        public void RemovePostBehaviour(Func <IActor, CancellationToken, UniTask> behaviour, IIdentification actionId = default)
+        public void RemovePostBehaviour(Func <IActor, CancellationToken, UniTask> behaviour, IIdentifier actionId = default)
             => RemoveBehaviour(PostBehavioursByAction, actionId, behaviour);
 
-        private static bool TryAddBehaviour(Dictionary<IIdentification, HashSet<Func <IActor, CancellationToken, UniTask>>> behavioursByAction,
-                                            IIdentification actionId,
+        private static bool TryAddBehaviour(Dictionary<IIdentifier, HashSet<Func <IActor, CancellationToken, UniTask>>> behavioursByAction,
+                                            IIdentifier actionId,
                                             Func <IActor, CancellationToken, UniTask> behaviour)
         {
             if (behavioursByAction.TryGetValue(actionId, out var behaviours))
@@ -65,8 +65,8 @@ namespace Acting
             return true;
         }
         
-        private static void RemoveBehaviour(Dictionary<IIdentification, HashSet<Func <IActor, CancellationToken, UniTask>>> behavioursByAction,
-                                            IIdentification actionId,
+        private static void RemoveBehaviour(Dictionary<IIdentifier, HashSet<Func <IActor, CancellationToken, UniTask>>> behavioursByAction,
+                                            IIdentifier actionId,
                                             Func <IActor, CancellationToken, UniTask> behaviour)
         {
             if (behavioursByAction.TryGetValue(actionId, out var behaviours))
@@ -81,7 +81,7 @@ namespace Acting
         /// <param name="actionId">Used to determine which pre- and post-behaviours should run. Default is <see cref="Wildcard"/>.</param>
         public async UniTask Act(Func<IActor, CancellationToken, UniTask> behaviour,
                               CancellationToken token,
-                              IIdentification actionId = default)
+                              IIdentifier actionId = default)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace Acting
         public async UniTask Act<TActionData>(Func<IActor, TActionData, CancellationToken, UniTask> behaviour,
                                               TActionData actionData,
                                               CancellationToken token,
-                                              IIdentification actionId = default)
+                                              IIdentifier actionId = default)
         {
             try
             {
@@ -150,8 +150,8 @@ namespace Acting
         }
 
         private static async UniTask RunBehavioursWithId(IActor actor,
-                                                         IIdentification actionId,
-                                                         Dictionary<IIdentification, HashSet<Func<IActor, CancellationToken, UniTask>>> behavioursByAction,
+                                                         IIdentifier actionId,
+                                                         Dictionary<IIdentifier, HashSet<Func<IActor, CancellationToken, UniTask>>> behavioursByAction,
                                                          CancellationToken cancellationToken)
         {
             if (behavioursByAction.TryGetValue(actionId, out var behaviours))

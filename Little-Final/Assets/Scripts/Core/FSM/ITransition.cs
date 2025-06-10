@@ -7,11 +7,11 @@ using Cysharp.Threading.Tasks;
 
 namespace FsmAsync
 {
-	public interface ITransition
+	public interface ITransition<T>
 	{
-		IState From { get; }
-		IState To { get; }
-		List<Func<(IState from, IState to), UniTask>> OnTransition { get; }
-		UniTask Do(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token);
+		IState<T> From { get; }
+		IState<T> To { get; }
+		List<Func<(IState<T> from, IState<T> to), UniTask>> OnTransition { get; }
+		UniTask Do(T data, CancellationToken token);
 	}
 }

@@ -12,7 +12,7 @@ namespace FsmAsync
 	/// State used by the Finite State Machine (FSM) Class
 	/// </summary>
 	[Serializable]
-    public class State : IState
+    public class State<T> : IState<T>
     {
 	    [field: SerializeField] public string Name { get; set; }
 
@@ -20,23 +20,23 @@ namespace FsmAsync
 	    public ILogger Logger { get; set; }
 
 	    /// <inheritdoc />
-	    public List<Func<IState, IDictionary<Type, IDictionary<IIdentification, object>>, CancellationToken, UniTask>> OnEnter { get; } = new();
+	    public List<Func<IState<T>, T, CancellationToken, UniTask>> OnEnter { get; } = new();
 
 	    /// <inheritdoc />
-	    public List<Func<IState, IDictionary<Type, IDictionary<IIdentification, object>>, CancellationToken, UniTask<bool>>> OnTryHandleInput { get; } = new();
+	    public List<Func<IState<T>, T, CancellationToken, UniTask<bool>>> OnTryHandleInput { get; } = new();
 
 	    /// <inheritdoc />
-	    public List<Func<IState, IDictionary<Type, IDictionary<IIdentification, object>>, CancellationToken, UniTask>> OnExit { get; } = new();
+	    public List<Func<IState<T>, T, CancellationToken, UniTask>> OnExit { get; } = new();
 
 	    /// <inheritdoc />
-	    public virtual async UniTask Enter(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
+	    public virtual async UniTask Enter(T data, CancellationToken token)
 	    {
 		    foreach (var task in OnEnter)
 			    await task(this, data, token);
 	    }
 
 	    /// <inheritdoc />
-	    public async UniTask<bool> TryHandleInput(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
+	    public async UniTask<bool> TryHandleInput(T data, CancellationToken token)
 	    {
 		    foreach (var task in OnTryHandleInput)
 			    if (await task(this, data, token))
@@ -46,12 +46,12 @@ namespace FsmAsync
 	    }
 
 	    /// <inheritdoc />
-		public virtual async UniTask Exit(IDictionary<Type, IDictionary<IIdentification, object>> data, CancellationToken token)
+		public virtual async UniTask Exit(T data, CancellationToken token)
 	    {
 		    foreach (var task in OnExit)
 			    await task(this, data, token);
 	    }
 
-	    public static implicit operator bool(State state) => state != null;
+	    public static implicit operator bool(State<T> state) => state != null;
     }
 }

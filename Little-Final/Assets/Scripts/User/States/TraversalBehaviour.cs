@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Characters;
 using Core.Acting;
+using Core.Data;
 using Core.Extensions;
 using Core.Helpers;
 using Core.References;
@@ -13,19 +14,19 @@ using UnityEngine;
 namespace User.States
 {
 	[CreateAssetMenu(menuName = "States/Behaviour/Traversal", fileName = "TraversalBehaviour", order = 0)]
-	public class TraversalBehaviour : ScriptableObject, IActorStateBehaviour<IDictionary<Type, IDictionary<IIdentification, object>>>
+	public class TraversalBehaviour : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>
 	{
 		private const float PI = Mathf.PI;
 		[SerializeField] private float acceleration = 20f;
 		[SerializeField] private float speedGoal = 2f;
-		[SerializeField] private InterfaceRef<IIdentification> traversalInputId;
-		[SerializeField] private InterfaceRef<IIdentification> characterId;
+		[SerializeField] private InterfaceRef<IIdentifier> traversalInputId;
+		[SerializeField] private InterfaceRef<IIdentifier> characterId;
 		[SerializeField] private InterfaceRef<IDataProviderAsync<Camera>> cameraProvider;
 		private Transform _cameraTransform;
 		private Dictionary<IActor, CancellationTokenSource> _cancellationTokenSourcesByActor = new ();
 
 		/// <inheritdoc />
-		public async UniTask Enter(IActor<IDictionary<Type, IDictionary<IIdentification, object>>> actor, CancellationToken token)
+		public async UniTask Enter(IActor<ReverseIndexStore> actor, CancellationToken token)
 		{
 			if (cameraProvider.Ref == null)
 			{
@@ -44,16 +45,8 @@ namespace User.States
 			UpdateDirection(actor, CancellationTokenSource.CreateLinkedTokenSource(token, tokenSource.Token).Token).Forget();
 		}
 
-		private async UniTaskVoid UpdateDirection(IActor<IDictionary<Type,IDictionary<IIdentification,object>>> actor, CancellationToken token)
+		private async UniTaskVoid UpdateDirection(IActor<ReverseIndexStore> actor, CancellationToken token)
 		{
-			
-			if (!actor.Data.TryGetValue(typeof(Vector2), out var dictionary))
-			{
-				Debug.LogError($"{name} <color=grey>({nameof(TraversalBehaviour)})</color>: Couldn't get direction from actor's data!");
-
-				return;
-			}
-			
 			if (!actor.Data.TryGet(characterId.Ref, out IPhysicsCharacter physicsCharacter))
 			{
 				Debug.LogError($"{name} <color=grey>({nameof(TraversalBehaviour)})</color>: Couldn't get character from actor's data!");
@@ -67,13 +60,11 @@ namespace User.States
 			while (!token.IsCancellationRequested)
 			{
 				await UniTask.Yield();
-				if (!dictionary.TryGetValue(traversalInputId.Ref, out var directionObject)
-					|| directionObject is not Vector2 direction)
+				if (actor.Data[typeof(Vector2), traversalInputId.Ref] is not Vector2 direction)
 				{
 					Debug.LogError($"{name} <color=grey>({nameof(TraversalBehaviour)})</color>: Direction is not Vector2!");
 					return;
 				}
-				
 				
 				if (!physicsCharacter.FloorTracker?.HasFloor ?? true)
 				{
@@ -96,7 +87,7 @@ namespace User.States
 		}
 
 		/// <inheritdoc />
-		public UniTask Exit(IActor<IDictionary<Type, IDictionary<IIdentification, object>>> actor, CancellationToken token)
+		public UniTask Exit(IActor<ReverseIndexStore> actor, CancellationToken token)
 		{
 			if (_cancellationTokenSourcesByActor.Remove(actor, out var tokenSource))
 			{
@@ -107,7 +98,7 @@ namespace User.States
 		}
 
 		/// <inheritdoc />
-		public UniTask<bool> TryHandleInput(IActor<IDictionary<Type, IDictionary<IIdentification, object>>> actor, CancellationToken token)
+		public UniTask<bool> TryHandleInput(IActor<ReverseIndexStore> actor, CancellationToken token)
 			=> new(true);
 		//
 		// private async UniTask FixedUpdate(IPhysicsCharacter character, Vector2 direction, CancellationToken token)

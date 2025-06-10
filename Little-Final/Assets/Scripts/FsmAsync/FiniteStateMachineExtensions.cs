@@ -11,15 +11,15 @@ namespace FsmAsync
 		/// <param name="key"></param>
 		/// <param name="from"></param>
 		/// <param name="to"></param>
-		/// <param name="transition"><remarks>This transition is internally of type <see cref="Transition"/></remarks></param>
+		/// <param name="transition"><remarks>This transition is internally of type <see cref="Transition{TData}"/></remarks></param>
 		/// <returns>true if the transition was successfully added.</returns>
-		public static bool TryAddTransition<TKey>(this FiniteStateMachine<TKey> target,
+		public static bool TryAddTransition<TKey, TData>(this FiniteStateMachine<TKey, TData> target,
 		                                          TKey key,
-		                                          IState from,
-		                                          IState to,
-		                                          out ITransition transition) where TKey : IEquatable<TKey>
+		                                          IState<TData> from,
+		                                          IState<TData> to,
+		                                          out ITransition<TData> transition) where TKey : IEquatable<TKey>
 		{
-			transition = new Transition(from, to, target.Logger, target.Tag);
+			transition = new Transition<TData>(from, to, target.Logger, target.Tag);
 			return target.TryAddTransition(key, transition);
 		}
 	}
