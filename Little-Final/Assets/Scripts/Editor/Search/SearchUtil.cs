@@ -9,15 +9,9 @@ namespace VarelaAloisio.Editor
 {
 	public static class SearchUtil
 	{
-		public static readonly string[] DefaultProviderIds = { "asset", "scene", "adb" };
-
 		public static SearchContext GetContextFor(Type type)
-			=> GetContextFor(type, DefaultProviderIds);
-
-		public static SearchContext GetContextFor(Type type, string[] providerIds)
 		{
 			var typesDerivedFrom = TypeCache.GetTypesDerivedFrom(type);
-			var providers = providerIds.Select(SearchService.GetProvider);
 			if (!typesDerivedFrom.Any())
 			{
 				throw new

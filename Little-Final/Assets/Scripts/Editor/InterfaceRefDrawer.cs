@@ -1,16 +1,12 @@
 using System;
 using System.Collections;
-using System.Diagnostics;
 using System.Linq;
-using Core.Extensions;
 using Core.References;
 using Cysharp.Threading.Tasks;
 using Editor.Search;
 using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
-using UnityEngine.Search;
-using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
 namespace VarelaAloisio.Editor
@@ -18,8 +14,13 @@ namespace VarelaAloisio.Editor
 	[CustomPropertyDrawer(typeof(InterfaceRef<>), true)]
 	public class InterfaceRefDrawer : PropertyDrawer
 	{
-		private bool _isInitialized = false;
-		private bool _isInitializing = false;
+		private enum State
+		{
+			Uninitialized,
+			Initializing,
+			Initialized,
+		}
+		private State _state = State.Uninitialized;
 
 		private Type _interfaceType;
 		private SerializedProperty _referenceProperty;
@@ -27,9 +28,10 @@ namespace VarelaAloisio.Editor
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			if (!_isInitialized && !_isInitializing)
+			if (_state == State.Uninitialized)
 				Initialize(property).Forget();
-			EditorGUI.BeginDisabledGroup(_isInitializing);
+			EditorGUI.BeginDisabledGroup(_state is not State.Initialized);
+			_referenceProperty = property.FindPropertyRelative("reference");
 			ObjectField.DoObjectField(position, _referenceProperty, typeof(Object), label, _searchContext, SearchProjectSettings.SearchViewFlags);
 			EditorGUI.EndDisabledGroup();
 		}
@@ -39,8 +41,7 @@ namespace VarelaAloisio.Editor
 #if BENCHMARK_EDITOR
 			var stopwatch = Stopwatch.StartNew();
 #endif
-			_isInitializing = true;
-			_referenceProperty = property.FindPropertyRelative("reference");
+			_state = State.Initializing;
 #if BENCHMARK_EDITOR
 			var fetchPropertySpan = stopwatch.Elapsed;
 			stopwatch.Restart();
@@ -69,8 +70,7 @@ namespace VarelaAloisio.Editor
 			          $"\nGet Context: {stopwatch.Elapsed.TotalMilliseconds}ms ({stopwatch.ElapsedTicks} ticks)",
 			          property.serializedObject?.targetObject);
 #endif
-			_isInitializing = false;
-			_isInitialized = true;
+			_state = State.Initialized;
 		}
 	}
 }

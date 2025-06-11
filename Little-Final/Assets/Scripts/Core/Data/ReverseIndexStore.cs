@@ -49,20 +49,6 @@ namespace Core.Data
 			}
 			return false;
 		}
-
-		// public void Set<T>(IIdentifier id, T newValue, bool throwIfNotFound = false)
-		// {
-		// 	if (!TrySet(id, newValue) && throwIfNotFound)
-		// 		throw new ArgumentOutOfRangeException(nameof(id), id, "Id not found in collection");
-		// }
-		//
-		// public bool TrySet<T>(IIdentifier id, T newValue)
-		// {
-		// 	if (_typeIndex.TryGetValue(typeof(T), out var dictionary))
-		// 	{
-		// 		dictionary.
-		// 	}
-		// }
 		
 		public bool Remove(IIdentifier id)
 		{
@@ -88,6 +74,10 @@ namespace Core.Data
 			get => _typeIndex[type][id];
 			set => _typeIndex[type][id] = value;
 		}
+
+		public object this[Type type]
+			=> _typeIndex[type];
+
 		private static void AddToAllTypes<T>(IIdentifier id,
 		                                     T obj,
 		                                     in Dictionary<Type, Dictionary<IIdentifier, object>> typeIndex,
