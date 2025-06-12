@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
+using Core.Extensions;
 using Core.References;
-using Cysharp.Threading.Tasks;
 using Editor.Search;
 using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
 namespace VarelaAloisio.Editor
@@ -29,14 +31,14 @@ namespace VarelaAloisio.Editor
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
 			if (_state == State.Uninitialized)
-				Initialize(property).Forget();
+				Initialize(property);
 			EditorGUI.BeginDisabledGroup(_state is not State.Initialized);
 			_referenceProperty = property.FindPropertyRelative("reference");
 			ObjectField.DoObjectField(position, _referenceProperty, typeof(Object), label, _searchContext, SearchProjectSettings.SearchViewFlags);
 			EditorGUI.EndDisabledGroup();
 		}
 
-		private async UniTaskVoid Initialize(SerializedProperty property)
+		private void Initialize(SerializedProperty property)
 		{
 #if BENCHMARK_EDITOR
 			var stopwatch = Stopwatch.StartNew();
@@ -46,7 +48,6 @@ namespace VarelaAloisio.Editor
 			var fetchPropertySpan = stopwatch.Elapsed;
 			stopwatch.Restart();
 #endif
-			//BUG: When Collection is an array, all references are copied.
 			var fieldType = fieldInfo.FieldType;
 			_interfaceType = fieldType.IsArray
 				                 ? fieldType?.GetElementType()?.GetGenericArguments().FirstOrDefault()
