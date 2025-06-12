@@ -71,7 +71,7 @@ namespace FsmAsync
 				return false;
 			}
 
-			await transition.Do(data, token);
+			await transition.Do(data, ShouldLogTransitions, token);
 			Current = transition.To;
 			OnTransition(transition);
 			return true;

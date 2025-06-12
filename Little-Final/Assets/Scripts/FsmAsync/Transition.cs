@@ -30,7 +30,7 @@ namespace FsmAsync
         public IState<T> To { get; }
         public List<Func<(IState<T> from, IState<T> to), UniTask>> OnTransition { get; }
 
-        public async UniTask Do(T data, CancellationToken token)
+        public async UniTask Do(T data, bool shouldLogTransition, CancellationToken token)
         {
             if (From is null)
                 _logger?.LogError(_loggerTag, $"{nameof(From)} is null");
@@ -45,7 +45,8 @@ namespace FsmAsync
             else
             {
                 await To.Enter(data, token);
-                _logger?.Log(_loggerTag, $"transitioned: {Colored(From?.Name, "yellow")} -> {Colored(To.Name, "green")}");
+                if (shouldLogTransition)
+                    _logger?.Log(_loggerTag, $"transitioned: {Colored(From?.Name, "yellow")} -> {Colored(To.Name, "green")}");
             }
         }
         private static string Colored(object message, string color) => $"<color={color}>{message}</color>";

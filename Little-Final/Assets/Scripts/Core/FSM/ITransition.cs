@@ -12,6 +12,6 @@ namespace FsmAsync
 		IState<T> From { get; }
 		IState<T> To { get; }
 		List<Func<(IState<T> from, IState<T> to), UniTask>> OnTransition { get; }
-		UniTask Do(T data, CancellationToken token);
+		UniTask Do(T data, bool shouldLogTransition, CancellationToken token);
 	}
 }
