@@ -24,6 +24,7 @@ namespace User
         [SerializeField] private float fallingGravityMultiplier = 2.5f;
         
         [Header("States")]
+        [SerializeField] private bool logFsmTransitions = false;
         [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> idle;
         [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> walk;
         [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> jump;
@@ -129,7 +130,7 @@ namespace User
             glide.Ref.Logger = Debug.unityLogger;
             
             _fsm = FiniteStateMachine<IIdentifier, ReverseIndexStore>.Build(name)
-                                                      .ThatLogsTransitions(Debug.unityLogger)
+                                                      .ThatLogsTransitions(Debug.unityLogger, logFsmTransitions)
                                                       
                                                       .ThatTransitionsBetween(stopId.Get, walk.Ref, idle.Ref)
                                                       .ThatTransitionsBetween(stopId.Get, walkWhileFalling.Ref, fall.Ref)

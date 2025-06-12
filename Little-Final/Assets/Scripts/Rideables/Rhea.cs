@@ -25,6 +25,9 @@ namespace Rideables
 
 		[Header("Setup")]
 		[SerializeField]
+		private bool logFsmTransitions = false;
+		
+		[SerializeField]
 		private Transform mount;
 
 		[SerializeField]
@@ -239,7 +242,7 @@ namespace Rideables
 			_patrol.AddTransition(fleeFromPlayerIdContainer, _fleeFromPlayer);
 
 			_stateMachine = FiniteStateMachine<IdContainer>.Build(_idle, name)
-				.ThatLogsTransitions(Debug.unityLogger)
+				.ThatLogsTransitions(Debug.unityLogger, logFsmTransitions)
 				.Done();
 		}
 
