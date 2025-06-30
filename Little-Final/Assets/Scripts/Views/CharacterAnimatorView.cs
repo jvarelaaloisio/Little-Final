@@ -45,19 +45,19 @@ namespace Views
 
 		private UniTask PlayJumpAnimation(IActor actor, CancellationToken token)
 		{
-			animator.Play(jumpParameter.Hash);
+			jumpParameter.Play(animator);
 			return UniTask.CompletedTask;
 		}
 		public UniTask PlayRunningBlendTree(IActor actor, CancellationToken token)
 		{
-			animator.CrossFade(runningBlendTree.Hash, transitionDuration);
+			runningBlendTree.CrossFade(animator, transitionDuration);
 			return UniTask.CompletedTask;
 		}
 
 		private void Update()
 		{
 			var speed = character.Velocity.IgnoreY().magnitude;
-			animator.SetFloat(speedParameter.Hash, speed);
+			speedParameter.SetFloat(animator, speed);
 		}
 	}
 }
