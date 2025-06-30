@@ -29,27 +29,27 @@ namespace FsmAsync
 	    public List<Func<IState<T>, T, CancellationToken, UniTask>> OnExit { get; } = new();
 
 	    /// <inheritdoc />
-	    public virtual async UniTask Enter(T data, CancellationToken token)
+	    public virtual async UniTask Enter(T target, CancellationToken token)
 	    {
 		    foreach (var task in OnEnter)
-			    await task(this, data, token);
+			    await task(this, target, token);
 	    }
 
 	    /// <inheritdoc />
-	    public async UniTask<bool> TryHandleInput(T data, CancellationToken token)
+	    public async UniTask<bool> TryHandleDataChanged(T target, CancellationToken token)
 	    {
 		    foreach (var task in OnTryHandleInput)
-			    if (await task(this, data, token))
+			    if (await task(this, target, token))
 				    return true;
 
 		    return false;
 	    }
 
 	    /// <inheritdoc />
-		public virtual async UniTask Exit(T data, CancellationToken token)
+		public virtual async UniTask Exit(T target, CancellationToken token)
 	    {
 		    foreach (var task in OnExit)
-			    await task(this, data, token);
+			    await task(this, target, token);
 	    }
 
 	    public static implicit operator bool(State<T> state) => state != null;

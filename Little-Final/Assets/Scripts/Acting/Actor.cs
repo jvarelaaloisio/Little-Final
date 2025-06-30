@@ -16,7 +16,7 @@ namespace Acting
         /// <summary>
         /// Data used by the actor.
         /// </summary>
-        public object Data { get; protected set; }
+        public object Data { get; set; }
     
         /// <summary>
         /// Type for the data that this actor uses.
@@ -28,9 +28,11 @@ namespace Acting
         protected IIdentifier.Comparer IDComparer;
         
         protected readonly Dictionary<IIdentifier, HashSet<Func <IActor, CancellationToken, UniTask>>> PreBehavioursByAction;
+        //TODO: There is no method to add or remove
         protected readonly HashSet<Func<IActor, CancellationToken, UniTask>> PreBehaviourWildcards = new();
         
         protected readonly Dictionary<IIdentifier, HashSet<Func <IActor, CancellationToken, UniTask>>> PostBehavioursByAction;
+        //TODO: There is no method to add or remove
         protected readonly HashSet<Func<IActor, CancellationToken, UniTask>> PostBehaviourWildcards = new();
 
         public Actor()
@@ -79,7 +81,7 @@ namespace Acting
         /// <param name="behaviour">The action task.</param>
         /// <param name="token"></param>
         /// <param name="actionId">Used to determine which pre- and post-behaviours should run. Default is <see cref="Wildcard"/>.</param>
-        public async UniTask Act(Func<IActor, CancellationToken, UniTask> behaviour,
+        public async UniTask Act(Func<IActor, CancellationToken, UniTask<bool>> behaviour,
                               CancellationToken token,
                               IIdentifier actionId = default)
         {
@@ -100,12 +102,15 @@ namespace Acting
                 if (actionId != default)
                     await RunBehavioursWithId(this, actionId, PreBehavioursByAction, token);
 
-                await behaviour(this, token);
+                var success = await behaviour(this, token);
 
-                await RunBehaviours(this, PostBehaviourWildcards, token);
-            
-                if (actionId != default)
-                    await RunBehavioursWithId(this, actionId, PostBehavioursByAction, token);
+                if (success)
+                {
+                    await RunBehaviours(this, PostBehaviourWildcards, token);
+
+                    if (actionId != default)
+                        await RunBehavioursWithId(this, actionId, PostBehavioursByAction, token);
+                }
             }
             finally
             {
@@ -114,7 +119,7 @@ namespace Acting
         }
 
         /// <inheritdoc />
-        public async UniTask Act<TActionData>(Func<IActor, TActionData, CancellationToken, UniTask> behaviour,
+        public async UniTask Act<TActionData>(Func<TActionData, IIdentifier, CancellationToken, UniTask<bool>> behaviour,
                                               TActionData actionData,
                                               CancellationToken token,
                                               IIdentifier actionId = default)
@@ -136,12 +141,15 @@ namespace Acting
                 if (actionId != default)
                     await RunBehavioursWithId(this, actionId, PreBehavioursByAction, token);
 
-                await behaviour(this, actionData, token);
+                var success = await behaviour(actionData, actionId, token);
 
-                await RunBehaviours(this, PostBehaviourWildcards, token);
-            
-                if (actionId != default)
-                    await RunBehavioursWithId(this, actionId, PostBehavioursByAction, token);
+                if (success)
+                {
+                    await RunBehaviours(this, PostBehaviourWildcards, token);
+
+                    if (actionId != default)
+                        await RunBehavioursWithId(this, actionId, PostBehavioursByAction, token);
+                }
             }
             finally
             {
@@ -172,7 +180,7 @@ namespace Acting
         /// <summary>
         /// Data used by the actor.
         /// </summary>
-        public new TData Data { get; protected set; }
+        public new TData Data { get; set; }
 
         /// <inheritdoc />
         public override Type DataType => typeof(TData);

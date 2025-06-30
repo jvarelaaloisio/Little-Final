@@ -27,4 +27,5 @@ namespace Characters
 		/// <param name="request"></param>
 		void RemoveContinuousForce(Vector3 force, ForceMode mode = ForceMode.Force);
 	}
+	public interface IPhysicsCharacter<TData> : IPhysicsCharacter, ICharacter<TData>{}
 }

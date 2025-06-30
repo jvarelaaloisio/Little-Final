@@ -9,7 +9,7 @@ namespace Characters
     public abstract class Character<TData> : MonoBehaviour, ISetup<TData>, ICharacter<TData>
     {
         [Tooltip("If true, this component will be disabled until it's setup and initialized.")]
-        [field: SerializeField] public bool OverrideLifeCycle { get; set; }
+        [field: SerializeField] public bool DisableUntilSetup { get; set; }
 
         /// <summary>
         /// Specifies if the <see cref="Setup"/> method has been called or not.
@@ -35,7 +35,7 @@ namespace Characters
         protected virtual void Awake()
         {
             FloorTracker = GetComponent<IFloorTracker>();
-            if (OverrideLifeCycle)
+            if (DisableUntilSetup)
                 enabled = false;
         }
 
@@ -49,6 +49,7 @@ namespace Characters
             Actor = new Actor<TData>();
             Actor.TrySetData(data);
             IsSet = true;
+            enabled = true;
         }
 
         /// <summary>
@@ -61,7 +62,7 @@ namespace Characters
         {
             if (IsSet is false)
                 Debug.LogWarning($"{name}: Setup hasn't been called before initialize");
-            if (OverrideLifeCycle)
+            if (DisableUntilSetup)
                 enabled = true;
         }
 

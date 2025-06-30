@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
+using Characters;
+using Core.Acting;
 using Core.Data;
-using Core.Extensions;
 using Core.Gameplay;
 using Core.Helpers;
 using Core.References;
@@ -40,11 +39,11 @@ namespace User.States
 		private CancellationTokenSource _sleepCts;
 		private Transform _cameraTransform;
 
-		public async UniTask Enter(ReverseIndexStore data, CancellationToken token)
+		public override async UniTask Enter(IActor<ReverseIndexStore> target, CancellationToken token)
 		{
-			if (Character == null)
+			if (!target.Data.TryGetFirst(out ICharacter character))
 			{
-				Logger.LogError(Name, $"{nameof(Character)} is null!");
+				Logger.LogError(Name, $"{nameof(character)} is null!");
 				return;
 			}
 
@@ -56,8 +55,9 @@ namespace User.States
 			var camera = await cameraProvider.Ref.GetValueAsync(token);
 			_cameraTransform = camera.transform;
 			
-			Character.Movement.goalSpeed = goalSpeed;
-			Character.Movement.acceleration = acceleration;
+			character.Movement.goalSpeed = goalSpeed;
+			character.Movement.acceleration = acceleration;
+			//TODO: Remove if no longer needed
 			// if (lastInputId
 			//     && data.ContainsKey(lastInputId.Get)
 			//     && data[lastInputId.Get] is Vector2 lastInput)
@@ -75,46 +75,47 @@ namespace User.States
 			_sleepCts?.Dispose();
 			_sleepCts = new CancellationTokenSource();
 
-			await base.Enter(data, token);
+			await base.Enter(target, token);
 		}
 
 
-		public UniTask Exit(ReverseIndexStore data, CancellationToken token)
+		public override UniTask Exit(IActor<ReverseIndexStore> target, CancellationToken token)
 		{
 			if (inputReaderProvider.Ref?.TryGetValue(out var inputReader) ?? false)
 				inputReader.OnMoveInput -= HandleMoveInput;
 			_sleepCts?.Cancel();
 			_sleepCts?.Dispose();
-			return base.Exit(data, token);
+			return base.Exit(target, token);
 		}
 
 		[Obsolete("This should be handled outside of the state")]
 		private void HandleMoveInput(Vector2 input)
 		{
-			var direction = _cameraTransform.TransformDirection(input.XYToXZY()).IgnoreY();
-			if (Character == null)
-			{
-				Logger.LogError(Name, $"{nameof(Character)} is null!");
-				return;
-			}
-
-			if (!Character.FloorTracker?.HasFloor ?? true)
-			{
-				Logger.LogWarning(Name, $"{nameof(Character.FloorTracker)} is null or doesn't have a floor");
-				return;
-			}
-			// var floorNormal = 
-			// if (Physics.Raycast(Character.transform.position,
-			// 	    -Character.transform.up,
-			// 	    out var hit,
-			// 	    10,
-			// 	    floor))
+			//TODO: Remove method if no longer needed
+			// var direction = _cameraTransform.TransformDirection(input.XYToXZY()).IgnoreY();
+			// if (Character == null)
 			// {
-			// 	floorNormal = hit.normal;
+			// 	Logger.LogError(Name, $"{nameof(Character)} is null!");
+			// 	return;
 			// }
-			Vector3 directionProjectedOnFloor = Vector3.ProjectOnPlane(direction, Character.FloorTracker.CurrentFloorData.normal);
-
-			Character.Movement.direction = directionProjectedOnFloor;
+			//
+			// if (!Character.FloorTracker?.HasFloor ?? true)
+			// {
+			// 	Logger.LogWarning(Name, $"{nameof(Character.FloorTracker)} is null or doesn't have a floor");
+			// 	return;
+			// }
+			// // var floorNormal = 
+			// // if (Physics.Raycast(Character.transform.position,
+			// // 	    -Character.transform.up,
+			// // 	    out var hit,
+			// // 	    10,
+			// // 	    floor))
+			// // {
+			// // 	floorNormal = hit.normal;
+			// // }
+			// Vector3 directionProjectedOnFloor = Vector3.ProjectOnPlane(direction, Character.FloorTracker.CurrentFloorData.normal);
+			//
+			// Character.Movement.direction = directionProjectedOnFloor;
 		}
 	}
 }

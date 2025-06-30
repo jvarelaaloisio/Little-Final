@@ -4981,6 +4981,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a5acce725fb4df1bcd5b5bced5c85a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <SelfSetupCharacter>k__BackingField: 0
+  inputsToLogIfTransitionFails: 0
   inputReaderProvider:
     reference: {fileID: 11400000, guid: f9ec6ddbbb5f2654486095ba9d3a333d, type: 2}
   fallingGravityMultiplier: 1.5
@@ -5090,8 +5092,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   description: Dust Particles
-  character:
-    reference: {fileID: 0}
   particles: {fileID: 7590815695509004680}
   actionIdsToPlay:
   - reference: {fileID: 11400000, guid: 85b77a626a702954981623499f6e9f9f, type: 2}
@@ -5109,7 +5109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61e6daf86b1146e69ee3673dc7b8619a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <OverrideLifeCycle>k__BackingField: 0
+  <DisableUntilSetup>k__BackingField: 1
   movementCurve:
     serializedVersion: 2
     m_Curve:

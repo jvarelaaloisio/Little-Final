@@ -16,8 +16,24 @@ using User.States;
 
 namespace User
 {
-    public class PlayerController : MonoBehaviour, ISetup<PhysicsCharacter>
+    public class PlayerController : MonoBehaviour, ISetup<IPhysicsCharacter<ReverseIndexStore>>
     {
+        [Flags]
+        private enum LogIfError
+        {
+            None = 0,
+            Move = 1,
+            Jump = 2,
+            Fall = 4,
+            Land = 8,
+            Glide = 16,
+        }
+        [Tooltip("If true, this component will try to do an auto-setup." +
+                 "\nUseful for editor testing.")]
+        [field: SerializeField] public bool SelfSetupCharacter { get; set; }
+
+        [SerializeField] private LogIfError inputsToLogIfTransitionFails;
+
         [Header("Providers")]
         [SerializeField] private InterfaceRef<IDataProviderAsync<IInputReader>> inputReaderProvider;
         
@@ -25,12 +41,12 @@ namespace User
         
         [Header("States")]
         [SerializeField] private bool logFsmTransitions = false;
-        [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> idle;
-        [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> walk;
-        [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> jump;
-        [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> fall;
-        [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> glide;
-        [SerializeField] private InterfaceRef<ICharacterState<ReverseIndexStore>> walkWhileFalling;
+        [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> idle;
+        [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> walk;
+        [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> jump;
+        [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> fall;
+        [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> glide;
+        [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> walkWhileFalling;
         
         [Header("Ids")]
         [SerializeField] private IdContainer characterId;
@@ -47,22 +63,16 @@ namespace User
         
         [SerializeField] private float secondsBeforeGlide = 1;
         
-        private PhysicsCharacter _character;
+        private IPhysicsCharacter<ReverseIndexStore> _character;
         private Vector2 _lastInput;
         private float _directionMagnitude;
         private Coroutine _enableCoroutine;
         
-        private FiniteStateMachine<IIdentifier, ReverseIndexStore> _fsm;
+        private FiniteStateMachine<IIdentifier, IActor<ReverseIndexStore>> _fsm;
         private AutoMap<Texture2D> BlackTexture = new(() => new Texture2D(1, 1));
-        private StateDelayedHandler _glideDelay;
+        private StateDelayedHandler<IActor<ReverseIndexStore>> _glideDelay;
 
         public IActor<ReverseIndexStore> Actor => _character.Actor;
-
-        private void Start()
-        {
-            if (_character)
-                Setup(_character);
-        }
 
         private async void OnEnable()
         {
@@ -76,6 +86,26 @@ namespace User
             inputReader.OnJumpPressed += StartJump;
         }
 
+        private void Start()
+        {
+            if (SelfSetupCharacter)
+            {
+                if (!TryGetComponent(out _character))
+                {
+                    Debug.LogError($"{tag}: No character component found!", this);
+                    return;
+                }
+
+                if (_character is ISetup<ReverseIndexStore> setupable)
+                    setupable.Setup(new ReverseIndexStore());
+                var views = GetComponentsInChildren<ISetup<ICharacter>>();
+                foreach (var view in views)
+                    view.Setup(_character);
+            }
+            if (_character != null)
+                Setup(_character);
+        }
+
         private void OnDisable()
         {
             _enableCoroutine.TryStop(this);
@@ -85,10 +115,10 @@ namespace User
                 inputReader.OnJumpPressed -= StartJump;
             }
 
-            _fsm?.Current?.Exit(Actor.Data, destroyCancellationToken).Forget();
+            _fsm?.End(Actor, destroyCancellationToken).Forget();
         }
 
-        public void Setup(PhysicsCharacter data)
+        public void Setup(IPhysicsCharacter<ReverseIndexStore> data)
         {
             _character = data;
             Actor.Data.Add(characterId.Get, _character);
@@ -99,74 +129,70 @@ namespace User
             SetupFsm(_character);
         }
 
-        private async void SetupFsm(PhysicsCharacter character)
+        private async void SetupFsm(IPhysicsCharacter character)
         {
             //THOUGHT: These states should be loaded from a file in the future. And that file should be created from the FSM Editor
-            if (!character.TryGetComponent(out IFloorTracker floorTracker))
+            var floorTracker = character?.FloorTracker;
+            if (floorTracker == null)
             {
                 Debug.LogError($"{name}: {nameof(floorTracker)} component was not found in character!");
                 return;
             }
-            idle.Ref.Character = character;
             idle.Ref.Logger = Debug.unityLogger;
             
-            walk.Ref.Character = character;
             walk.Ref.Logger = Debug.unityLogger;
             
-            walkWhileFalling.Ref.Character = character;
             walkWhileFalling.Ref.Logger = Debug.unityLogger;
             
-            jump.Ref.Character = character;
             jump.Ref.Logger = Debug.unityLogger;
-            _glideDelay = new StateDelayedHandler(secondsBeforeGlide, TransitionToGlide);
+            
+            _glideDelay = new StateDelayedHandler<IActor<ReverseIndexStore>>(secondsBeforeGlide, TransitionToGlide);
             jump.Ref.OnEnter.Add(_glideDelay.Handle);
             walk.Ref.OnEnter.Add(_glideDelay.Cancel);
             idle.Ref.OnEnter.Add(_glideDelay.Cancel);
             
-            fall.Ref.Character = character;
             fall.Ref.Logger = Debug.unityLogger;
             
-            glide.Ref.Character = character;
             glide.Ref.Logger = Debug.unityLogger;
             
-            _fsm = FiniteStateMachine<IIdentifier, ReverseIndexStore>.Build(name)
-                                                      .ThatLogsTransitions(Debug.unityLogger, logFsmTransitions)
-                                                      
-                                                      .ThatTransitionsBetween(stopId.Get, walk.Ref, idle.Ref)
-                                                      .ThatTransitionsBetween(stopId.Get, walkWhileFalling.Ref, fall.Ref)
-                                                      .ThatTransitionsBetween(stopId.Get, jump.Ref, fall.Ref)
-                                                      
-                                                      .ThatTransitionsBetween(moveId.Get, idle.Ref, walk.Ref)
-                                                      .ThatTransitionsBetween(moveId.Get, fall.Ref, walkWhileFalling.Ref)
-                                                      //.ThatTransitionsBetween(moveId.Get, jump.Ref, walkWhileFalling.Ref)
-                                                      
-                                                      .ThatTransitionsBetween(jumpId.Get, idle.Ref, jump.Ref)
-                                                      .ThatTransitionsBetween(jumpId.Get, walk.Ref, jump.Ref)
-                                                      
-                                                      .ThatTransitionsBetween(fallId.Get, idle.Ref, fall.Ref)
-                                                      .ThatTransitionsBetween(fallId.Get, walk.Ref, fall.Ref)
-                                                      .ThatTransitionsBetween(fallId.Get, jump.Ref, fall.Ref)
-                                                      
-                                                      .ThatTransitionsBetween(landId.Get, fall.Ref, idle.Ref)
-                                                      .ThatTransitionsBetween(landId.Get, walkWhileFalling.Ref, walk.Ref)
-                                                      .ThatTransitionsBetween(landId.Get, glide.Ref, walk.Ref)
-                                                      
-                                                      .ThatTransitionsBetween(glideId.Ref, fall.Ref, glide.Ref)
-                                                      .ThatTransitionsBetween(glideId.Ref, walkWhileFalling.Ref, glide.Ref)
-                                                      .ThatTransitionsBetween(glideId.Ref, jump.Ref, glide.Ref)
-                                                      .Done();
-            await _fsm.Start(idle.Ref, Actor.Data, destroyCancellationToken);
-        }
-
-        private void Update()
-        {
-            if (_character?.rigidbody?.velocity.y < 0)
+            _fsm = FiniteStateMachine<IIdentifier, IActor<ReverseIndexStore>>
+                   .Build(name)
+                   .ThatLogsTransitions(Debug.unityLogger, logFsmTransitions)
+                   .ThatTransitionsBetween(stopId.Get, walk.Ref, idle.Ref)
+                   .ThatTransitionsBetween(stopId.Get, walkWhileFalling.Ref, fall.Ref)
+                   .ThatTransitionsBetween(stopId.Get, jump.Ref, fall.Ref)
+                   .ThatTransitionsBetween(moveId.Get, idle.Ref, walk.Ref)
+                   .ThatTransitionsBetween(moveId.Get, fall.Ref, walkWhileFalling.Ref)
+                   .ThatTransitionsBetween(jumpId.Get, idle.Ref, jump.Ref)
+                   .ThatTransitionsBetween(jumpId.Get, walk.Ref, jump.Ref)
+                   .ThatTransitionsBetween(fallId.Get, idle.Ref, fall.Ref)
+                   .ThatTransitionsBetween(fallId.Get, walk.Ref, fall.Ref)
+                   .ThatTransitionsBetween(fallId.Get, jump.Ref, fall.Ref)
+                   .ThatTransitionsBetween(landId.Get, fall.Ref, idle.Ref)
+                   .ThatTransitionsBetween(landId.Get, walkWhileFalling.Ref, walk.Ref)
+                   .ThatTransitionsBetween(landId.Get, glide.Ref, walk.Ref)
+                   .ThatTransitionsBetween(glideId.Ref, fall.Ref, glide.Ref)
+                   .ThatTransitionsBetween(glideId.Ref, walkWhileFalling.Ref, glide.Ref)
+                   .ThatTransitionsBetween(glideId.Ref, jump.Ref, glide.Ref)
+                   .Done();
+            await _fsm.Start(idle.Ref, Actor, destroyCancellationToken);
+            
+            var fallingController = character?.FallingController;
+            if (fallingController == null)
             {
-                _character.Actor.Act((_, data, token) => _fsm.HandleInput(data, token, Actor.Data),
-                                     fallId.Get,
-                                     destroyCancellationToken,
-                                     fallId.Get).Forget();
+                Debug.LogError($"{name}: {nameof(fallingController)} component was not found in character!");
+                return;
             }
+
+            fallingController.OnStartFalling += () => HandleDataChanged(fallId.Get).Forget();
+        }
+        
+        private UniTask HandleDataChanged(IIdentifier data)
+        {
+            return _character.Actor.Act(_fsm.HandleDataChanged,
+                                        Actor,
+                                        destroyCancellationToken,
+                                        data);
         }
 
         private void AddGravity()
@@ -175,50 +201,37 @@ namespace User
         private void RestoreGravity()
             => _character.RemoveContinuousForce(Physics.gravity * Mathf.Max(0, fallingGravityMultiplier - 1));
 
-        private async void TransitionToGlide(IState<ReverseIndexStore> _)
+        private async void TransitionToGlide(IActor<ReverseIndexStore> _)
         {
             Debug.Log("transitioning".Colored(C.Red));
-            await _fsm.TryTransitionTo(glideId.Ref, Actor.Data, destroyCancellationToken);
+            HandleDataChanged(glideId.Ref).Forget();
             Debug.Log("transitioned".Colored(C.Green));
         }
 
         private void StartJump()
         {
-            // _fsm.TryTransitionTo(jumpId.Get, destroyCancellationToken, new Hashtable()).Forget();
-            
-            _character.Actor.Act((_, data, token) => _fsm.HandleInput(data, token, Actor.Data),
-                                 jumpId.Get,
-                                 destroyCancellationToken,
-                                 jumpId.Get).Forget();
+            HandleDataChanged(jumpId.Get).Forget();
         }
 
         private async void HandleMoveInput(Vector2 input)
         {
             _lastInput = input;
             _directionMagnitude = input.magnitude;
-            if(!_character)
+            if(_character == null)
                 return;
             //THOUGHT: Should there be a Condition SO that receives an Input and returns an ID so this logic is done by that structure?
             var stateId = input.magnitude > 0.001f ? moveId : stopId;
 
             Actor.Data[typeof(Vector2), traversalInputId.Ref] = input;
             
-            //await _fsm.TryTransitionTo(stateId.Get, destroyCancellationToken, data);
-            await _character.Actor.Act((_, data, token) => _fsm.HandleInput(data, token, Actor.Data),
-                                       stateId.Get,
-                                       destroyCancellationToken,
-                                       stateId.Get);
+            await HandleDataChanged(stateId.Get);
         }
 
         private void OnCollisionEnter(Collision collision)
         {
             //THOUGHT: Quick impl for landing, not final
             if (Vector3.Angle(Vector3.up, collision.contacts[0].normal) < 45)
-                _character?.Actor?.Act((_, data, token) => _fsm.HandleInput(data, token, Actor.Data),
-                                     landId.Get,
-                                     destroyCancellationToken,
-                                     landId.Get).Forget();
-                //_fsm.TryTransitionTo(landId.Get, destroyCancellationToken, new Hashtable()).Forget();
+                HandleDataChanged(landId.Get).Forget();
         }
 
         private void OnGUI()
@@ -246,40 +259,40 @@ namespace User
         }
     }
 
-    public readonly struct StateDelayedHandler
+    public readonly struct StateDelayedHandler<T>
     {
         public float Seconds { get; }
         public CancellationTokenSource TokenSource { get; }
-        private readonly Action<IState<ReverseIndexStore>> _onFinished;
+        private readonly Action<T> _onFinished;
 
         public StateDelayedHandler(float seconds,
-                                   Action<IState<ReverseIndexStore>> onFinished)
+                                   Action<T> onFinished)
         {
             Seconds = seconds;
             _onFinished = onFinished;
             TokenSource = new CancellationTokenSource();
         }
 
-        public UniTask Handle(IState<ReverseIndexStore> state, ReverseIndexStore data, CancellationToken token)
+        public UniTask Handle(IState<T> state, T data, CancellationToken token)
         {
-            Start(state, token).Forget();
+            Start(data, token).Forget();
             return UniTask.CompletedTask;
         }
 
-        public UniTask Cancel(IState<ReverseIndexStore> state, ReverseIndexStore data, CancellationToken token)
+        public UniTask Cancel(IState<T> state, T data, CancellationToken token)
         {
             TokenSource.Cancel();
             Debug.Log("Canceled");
             return UniTask.CompletedTask;
         }
 
-        private async UniTaskVoid Start(IState<ReverseIndexStore> state, CancellationToken token)
+        private async UniTaskVoid Start(T data, CancellationToken token)
         {
             Debug.Log("Started");
             var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(token, TokenSource.Token).Token;
             await UniTask.WaitForSeconds(Seconds, cancellationToken: linkedToken);
             Debug.Log("help");
-            _onFinished(state);
+            _onFinished(data);
         }
     }
 }

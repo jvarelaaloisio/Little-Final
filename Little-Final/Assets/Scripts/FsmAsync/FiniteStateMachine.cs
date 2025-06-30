@@ -52,6 +52,14 @@ namespace FsmAsync
 		}
 
 		/// <summary>
+		/// Call this to end/disable the fsm
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="token"></param>
+		public async UniTask End(TData data, CancellationToken token)
+			=> await Current.Exit(data, token);
+
+		/// <summary>
 		/// Do a transition previously added to this FSM.
 		/// </summary>
 		/// <param name="key">Key identifier for the transition <see cref="TryAddTransition"/></param>
@@ -145,8 +153,7 @@ namespace FsmAsync
 			public Builder ThatTransitionsBetween(TKey key,
 													IState<TData> from,
 													IState<TData> to,
-													Func<(IState<TData> from, IState<TData> to),
-													UniTask> onTransition = null)
+													Func<(IState<TData> from, IState<TData> to), UniTask> onTransition = null)
 			{
 				var addedTransition = _finiteStateMachine.TryAddTransition(key, from, to, out var transition);
 				if (addedTransition)
@@ -169,29 +176,14 @@ namespace FsmAsync
 				=> _finiteStateMachine;
 		}
 
-		public async UniTask HandleInput(TKey key,
-		                                 CancellationToken token,
-		                                 TData data,
-		                                 bool logIfError = false)
+		public async UniTask<bool> HandleDataChanged(TData data,
+		                                 TKey key,
+		                                 CancellationToken token)
 		{
 			if (await TryTransitionTo(key, data, token))
-				return;
-			if (await Current.TryHandleInput(data, token))
-				return;
-			if (logIfError)
-				Logger.LogError(Tag, $"Couldn't transition from state {Current.Name} using key {key}");
+				return true;
+			return await Current.TryHandleDataChanged(data, token);
 		}
 
     }
-	public struct InputData<TKey, TData>
-	{
-		public TKey stateId;
-		public TData data;
-
-		public InputData(TKey stateId, TData data)
-		{
-			this.stateId = stateId;
-			this.data = data;
-		}
-	}
 }

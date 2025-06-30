@@ -19,37 +19,49 @@ namespace User.States
     //THOUGHT: This doesn't need to be a SO when the FSM editor is done.
     [CreateAssetMenu(menuName = "States/Character/State", fileName = "StateSo", order = 0)]
     [Serializable]
-    public class StateSo : ScriptableObject, ICharacterState<ReverseIndexStore>
+    public class StateSo : ScriptableObject, IState<IActor<ReverseIndexStore>>
     {
         /// <inheritdoc />
-        [field:SerializeField] public string Name { get; set; }
-        [field:SerializeField] public InterfaceRef<IActorStateBehaviour<ReverseIndexStore>>[] behaviours { get; set; }
-
-        public ICharacter Character { get; set; }
-
-        /// <inheritdoc />
-        public ILogger Logger { get; set; }
-
-        /// <inheritdoc />
-        public List<Func<IState<ReverseIndexStore>, ReverseIndexStore, CancellationToken, UniTask>> OnEnter { get; } = new();
-
-        /// <inheritdoc />
-        public List<Func<IState<ReverseIndexStore>, ReverseIndexStore, CancellationToken, UniTask<bool>>> OnTryHandleInput { get; }
-
-        /// <inheritdoc />
-        public List<Func<IState<ReverseIndexStore>, ReverseIndexStore, CancellationToken, UniTask>> OnExit { get; } = new();
-
-        private void Reset()
+        
+        public string Name
         {
-            Name = name;
+            get => _state.Name;
+            set => _state.Name = value;
         }
 
+        [field:SerializeField] public InterfaceRef<IActorStateBehaviour<ReverseIndexStore>>[] Behaviours { get; set; }
+
+        private IState<IActor<ReverseIndexStore>> _state;
+
         /// <inheritdoc />
-        public async UniTask Enter(ReverseIndexStore data, CancellationToken token)
+        public ILogger Logger
         {
-            if (!data.TryGetFirst(out IActor<ReverseIndexStore> actor))
+            get => _state.Logger;
+            set => _state.Logger = value;
+        }
+
+        private void Awake()
+            => _state ??= new State<IActor<ReverseIndexStore>> { Logger = Debug.unityLogger, Name = name };
+
+        /// <inheritdoc />
+        public List<Func<IState<IActor<ReverseIndexStore>>, IActor<ReverseIndexStore>, CancellationToken, UniTask>> OnEnter
+            => _state.OnEnter;
+
+        /// <inheritdoc />
+        public List<Func<IState<IActor<ReverseIndexStore>>, IActor<ReverseIndexStore>, CancellationToken, UniTask<bool>>> OnTryHandleInput
+            => _state.OnTryHandleInput;
+
+        /// <inheritdoc />
+        public List<Func<IState<IActor<ReverseIndexStore>>, IActor<ReverseIndexStore>, CancellationToken, UniTask>> OnExit
+            => _state.OnExit;
+
+        /// <inheritdoc />
+        public virtual async UniTask Enter(IActor<ReverseIndexStore> target, CancellationToken token)
+        {
+            if (!target.Data.TryGetFirst(out IActor<ReverseIndexStore> actor))
                 return;
-            foreach (var behaviour in behaviours)
+            await _state.Enter(target, token);
+            foreach (var behaviour in Behaviours)
             {
                 if (!behaviour.HasValue)
                     continue;
@@ -58,11 +70,12 @@ namespace User.States
         }
 
         /// <inheritdoc />
-        public async UniTask<bool> TryHandleInput(ReverseIndexStore data, CancellationToken token)
+        public virtual async UniTask<bool> TryHandleDataChanged(IActor<ReverseIndexStore> target, CancellationToken token)
         {
-            if (!data.TryGetFirst(out IActor<ReverseIndexStore> actor))
+            if (!target.Data.TryGetFirst(out IActor<ReverseIndexStore> actor))
                 return false;
-            foreach (var behaviour in behaviours)
+            await _state.TryHandleDataChanged(target, token);
+            foreach (var behaviour in Behaviours)
             {
                 if (!behaviour.HasValue)
                     continue;
@@ -74,11 +87,12 @@ namespace User.States
         }
 
         /// <inheritdoc />
-        public async UniTask Exit(ReverseIndexStore data, CancellationToken token)
+        public virtual async UniTask Exit(IActor<ReverseIndexStore> target, CancellationToken token)
         {
-            if (!data.TryGetFirst(out IActor<ReverseIndexStore> actor))
+            if (!target.Data.TryGetFirst(out IActor<ReverseIndexStore> actor))
                 return;
-            foreach (var behaviour in behaviours)
+            await _state.Exit(target, token);
+            foreach (var behaviour in Behaviours)
             {
                 if (!behaviour.HasValue)
                     continue;

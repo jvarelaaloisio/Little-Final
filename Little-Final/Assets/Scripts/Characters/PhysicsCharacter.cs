@@ -1,16 +1,12 @@
-using System;
 using System.Collections.Generic;
-using Core.Attributes;
 using Core.Data;
-using Core.Extensions;
-using Core.Helpers;
 using Player;
 using UnityEngine;
 
 namespace Characters
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PhysicsCharacter : Character<ReverseIndexStore>, IPhysicsCharacter
+    public class PhysicsCharacter : Character<ReverseIndexStore>, IPhysicsCharacter<ReverseIndexStore>
     {
         [SerializeField] private AnimationCurve movementCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
         private Rigidbody _rigidbody;
@@ -29,14 +25,14 @@ namespace Characters
         }
 
         /// <inheritdoc />
-        public override void Setup(ReverseIndexStore data)
+        protected override void Awake()
         {
-            base.Setup(data);
+            base.Awake();
             _fallingController = new FallingController(rigidbody);
         }
 
         private void Update()
-            => _fallingController.Update();
+            => _fallingController?.Update();
 
         private void FixedUpdate()
         {
@@ -114,7 +110,6 @@ namespace Characters
             // force = Mathf.Max(0, force);
             var force = movementCurve.Evaluate(x / Movement.goalSpeed) * Movement.acceleration;
             rigidbody.AddForce(Movement.direction * force, ForceMode.Force);
-            Debug.DrawRay(transform.position, Movement.direction, Color.blue);
         }
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Diagnostics;
 using System.Linq;
 using Core.Extensions;
 using Core.References;
@@ -8,10 +7,11 @@ using Editor.Search;
 using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
+using VarelaAloisio.Editor;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
-namespace VarelaAloisio.Editor
+namespace JVarelaAloisio.Editor.Drawers
 {
 	[CustomPropertyDrawer(typeof(InterfaceRef<>), true)]
 	public class InterfaceRefDrawer : PropertyDrawer
@@ -27,6 +27,7 @@ namespace VarelaAloisio.Editor
 		private Type _interfaceType;
 		private SerializedProperty _referenceProperty;
 		private SearchContext _searchContext;
+		private Exception _exception;
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
@@ -36,6 +37,21 @@ namespace VarelaAloisio.Editor
 			_referenceProperty = property.FindPropertyRelative("reference");
 			ObjectField.DoObjectField(position, _referenceProperty, typeof(Object), label, _searchContext, SearchProjectSettings.SearchViewFlags);
 			EditorGUI.EndDisabledGroup();
+			if (_exception != null)
+			{
+				//TODO: Encapsulate this HelpBox behaviour for reusability
+				var content = EditorGUIUtility.IconContent("console.erroricon");
+				content.text = _exception.Message;
+				content.tooltip = "Click to open source.";
+				var style = EditorStyles.helpBox;
+				style.richText = true;
+				if (GUILayout.Button(content, style))
+				{
+					var rect = GUILayoutUtility.GetLastRect();
+					rect.y = position.height + style.CalcSize(content).y + EditorGUIUtility.singleLineHeight;
+					PopupWindow.Show(rect, new StackTraceFramesPopup(_exception));
+				}
+			}
 		}
 
 		private void Initialize(SerializedProperty property)
@@ -58,7 +74,19 @@ namespace VarelaAloisio.Editor
 			var getTypeSpan = stopwatch.Elapsed;
 			stopwatch.Restart();
 #endif
-			_searchContext = SearchUtil.GetContextFor(_interfaceType);
+			try
+			{
+				_searchContext = SearchUtil.GetContextFor(_interfaceType);
+			}
+			catch (Exception e)
+			{
+				_exception = e;
+				Debug.LogException(_exception);
+#if BENCHMARK_EDITOR
+				stopwatch.Stop();
+#endif
+				return;
+			}
 #if BENCHMARK_EDITOR
 			stopwatch.Stop();
 			var totalMs = fetchPropertySpan.TotalMilliseconds + getTypeSpan.TotalMilliseconds + stopwatch.ElapsedMilliseconds;

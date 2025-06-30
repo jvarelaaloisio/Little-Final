@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace User.States
 {
-	[CreateAssetMenu(menuName = "States/Behaviour/Jump", fileName = "JumpBehaviour", order = 0)]
+	[CreateAssetMenu(menuName = "States/Behaviours/Jump", fileName = "JumpBehaviour", order = 0)]
 	public class JumpBehaviour : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>
 	{
 		[SerializeField] private InterfaceRef<IIdentifier> characterId;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using Characters;
 using Core.Acting;
@@ -13,7 +12,7 @@ using UnityEngine;
 
 namespace User.States
 {
-	[CreateAssetMenu(menuName = "States/Behaviour/Traversal", fileName = "TraversalBehaviour", order = 0)]
+	[CreateAssetMenu(menuName = "States/Behaviours/Traversal", fileName = "TraversalBehaviour", order = 0)]
 	public class TraversalBehaviour : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>
 	{
 		private const float PI = Mathf.PI;
@@ -100,20 +99,5 @@ namespace User.States
 		/// <inheritdoc />
 		public UniTask<bool> TryHandleInput(IActor<ReverseIndexStore> actor, CancellationToken token)
 			=> new(true);
-		//
-		// private async UniTask FixedUpdate(IPhysicsCharacter character, Vector2 direction, CancellationToken token)
-		// {
-		// 	while (!token.IsCancellationRequested)
-		// 	{
-		// 		await UniTask.WaitForFixedUpdate(token);
-		//
-		// 		var rigidbody = character.rigidbody;
-		// 		var currentVelocity = rigidbody.velocity;
-		// 		var x = Mathf.Sqrt(currentVelocity.x * currentVelocity.x + currentVelocity.z * currentVelocity.z);
-		// 		var force = (2 - 1 / Mathf.Cos(x * PI / (3 * speedGoal))) * acceleration;
-		// 		force = Mathf.Max(0, force);
-		// 		rigidbody.AddForce(new Vector3(direction.x, 0, direction.y) * force, ForceMode.Force);
-		// 	}
-		// }
 	}
 }

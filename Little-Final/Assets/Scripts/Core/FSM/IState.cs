@@ -6,9 +6,7 @@ using UnityEngine;
 
 namespace FsmAsync
 {
-	//using T = IDictionary<Type, IDictionary<IIdentification, object>>;
-
-	public interface IState<T>
+	public interface IState<TTarget>
 	{
 		/// <summary>
 		/// The name of the state
@@ -20,31 +18,30 @@ namespace FsmAsync
 		/// <summary>
 		/// Called once when the FSM enters the State
 		/// </summary>
-		List<Func<IState<T>, T, CancellationToken, UniTask>> OnEnter { get; }
-		List<Func<IState<T>, T, CancellationToken, UniTask<bool>>> OnTryHandleInput { get; }
+		List<Func<IState<TTarget>, TTarget, CancellationToken, UniTask>> OnEnter { get; }
+		List<Func<IState<TTarget>, TTarget, CancellationToken, UniTask<bool>>> OnTryHandleInput { get; }
 
 		/// <summary>
 		/// Called once when the FSM exits the State
 		/// </summary>
-		List<Func<IState<T>, T, CancellationToken, UniTask>> OnExit { get; }
+		List<Func<IState<TTarget>, TTarget, CancellationToken, UniTask>> OnExit { get; }
 
 		/// <summary>
 		/// Method called once when entering this state and after exiting the last one.
 		/// <remarks>Always call base method so the corresponding event is raised</remarks>
 		/// </summary>
-		//TODO: refactor to UniTask<Hashtable>
-		UniTask Enter(T data, CancellationToken token);
+		UniTask Enter(TTarget target, CancellationToken token);
 		
 		/// <summary>
 		/// Method called for every input received by the State machine.
 		/// </summary>
 		/// <returns></returns>
-		UniTask<bool> TryHandleInput(T data, CancellationToken token);
+		UniTask<bool> TryHandleDataChanged(TTarget target, CancellationToken token);
 
 		/// <summary>
 		/// Method called once when exiting this state and before entering another.
 		/// <remarks>Always call base method so the corresponding event is raised</remarks>
 		/// </summary>
-		UniTask Exit(T data, CancellationToken token);
+		UniTask Exit(TTarget target, CancellationToken token);
 	}
 }

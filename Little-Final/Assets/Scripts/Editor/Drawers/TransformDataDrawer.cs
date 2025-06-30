@@ -3,7 +3,7 @@ using Core;
 using UnityEditor;
 using UnityEngine;
 
-namespace Platforms.Editor
+namespace Editor.Drawers
 {
 	[CustomPropertyDrawer(typeof(TransformData))]
 	public class TransformDataDrawer : PropertyDrawer

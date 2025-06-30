@@ -28,7 +28,7 @@ namespace Spawning {
             var character = Instantiate(characterPrefab);
             character.Setup(data);
             //------
-            character.OverrideLifeCycle = true;
+            character.DisableUntilSetup = true;
             character.Initialize();
         }
     }
@@ -64,7 +64,7 @@ namespace Spawning {
     {
         protected override void HandleSpawn(PhysicsCharacter newBorn)
         {
-            newBorn.OverrideLifeCycle = true;
+            newBorn.DisableUntilSetup = true;
             newBorn.Initialize();
         }
     }

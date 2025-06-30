@@ -1,6 +1,7 @@
 using System.Linq;
 using Characters;
 using Core.Data;
+using Core.References;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using User;
@@ -24,9 +25,10 @@ namespace Levels
             var go = operation.Result.FirstOrDefault();
             if (go)
             {
-                if (!go.TryGetComponent(out PhysicsCharacter character))
+                if (!go.TryGetComponent(out IPhysicsCharacter<ReverseIndexStore> character))
                     character = go.AddComponent<PhysicsCharacter>();
-                character?.Setup(new ReverseIndexStore());
+                if (character is ISetup<ReverseIndexStore> setupableCharacter)
+                    setupableCharacter.Setup(new ReverseIndexStore());
 
                 if (!go.TryGetComponent(out PlayerController controller))
                     controller = go.AddComponent<PlayerController>();

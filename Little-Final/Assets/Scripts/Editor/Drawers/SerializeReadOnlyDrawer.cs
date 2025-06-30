@@ -2,7 +2,7 @@ using Core.Attributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor
+namespace Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SerializeReadOnlyAttribute))]
     public class SerializeReadOnlyDrawer : PropertyDrawer

@@ -10,7 +10,7 @@ namespace Core.Acting
 		/// <summary>
 		/// Data used by the actor.
 		/// </summary>
-		object Data { get; }
+		object Data { get; set; }
 
 		/// <summary>
 		/// Type for the data that this actor uses.
@@ -25,7 +25,7 @@ namespace Core.Acting
 		/// <param name="behaviour">The action task.</param>
 		/// <param name="token"></param>
 		/// <param name="actionId">Used to determine which pre- and post-behaviours should run. Default is <see cref="Wildcard"/>.</param>
-		UniTask Act(Func<IActor, CancellationToken, UniTask> behaviour,
+		UniTask Act(Func<IActor, CancellationToken, UniTask<bool>> behaviour,
 		            CancellationToken token,
 		            IIdentifier actionId = default);
 		
@@ -35,7 +35,7 @@ namespace Core.Acting
 		/// <param name="behaviour">The action task.</param>
 		/// <param name="token"></param>
 		/// <param name="actionId">Used to determine which pre- and post-behaviours should run. Default is <see cref="Wildcard"/>.</param>
-		UniTask Act<TActionData>(Func<IActor, TActionData, CancellationToken, UniTask> behaviour,
+		UniTask Act<TActionData>(Func<TActionData, IIdentifier, CancellationToken, UniTask<bool>> behaviour,
 		            TActionData actionData,
 		            CancellationToken token,
 		            IIdentifier actionId = default);
@@ -43,7 +43,6 @@ namespace Core.Acting
 
 	public interface IActor<TData> : IActor
 	{
-		new TData Data { get; }
-		void SetData(TData data);
+		new TData Data { get; set; }
 	}
 }

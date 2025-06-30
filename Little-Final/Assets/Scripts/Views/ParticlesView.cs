@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -10,45 +11,27 @@ using UnityEngine;
 
 namespace Views
 {
-	public class ParticlesView : MonoBehaviour
+	public class ParticlesView : CharacterView
 	{
-		[SerializeField] private string description;
-		[SerializeField] private InterfaceRef<ICharacter> character;
 		[SerializeField] private ParticleSystem particles;
 		[SerializeField] private List<InterfaceRef<IIdentifier>> actionIdsToPlay = new();
 		[SerializeField] private List<InterfaceRef<IIdentifier>> actionIdsToStop = new();
 
-		private void Reset()
+		/// <inheritdoc />
+		public override void Setup(ICharacter data)
 		{
-			character.Ref = GetComponent<ICharacter>();
-		}
-
-		private async void OnEnable()
-		{
-			var watchdog = 1000;
-			while (!character.HasValue
-			       && watchdog-- > 0)
-			{
-				await UniTask.Yield(destroyCancellationToken);
-				character.Ref = GetComponent<ICharacter>();
-			}
-			if (!character.HasValue)
-			{
-				Debug.LogError($"{name} <color=grey>({nameof(ParticlesView)})</color>: Cannot find {nameof(ICharacter)}");
-				enabled = false;
-				return;
-			}
-
+			base.Setup(data);
 			if (!particles)
 				Debug.LogWarning($"{name} <color=grey>({nameof(ParticlesView)})</color>: {nameof(particles)} not set!");
 			
-			if (character.Ref.Actor is IHavePreBehaviours<IActor> preBehaviours)
-				foreach (var actionId in actionIdsToStop.Where(action => action.HasValue))
-					preBehaviours.TryAddPreBehaviour(StopParticles, actionId.Ref);
-			
-			if (character.Ref.Actor is IHavePostBehaviours<IActor> postBehaviours)
-				foreach (var actionId in actionIdsToPlay.Where(action => action.HasValue))
-					postBehaviours.TryAddPostBehaviour(PlayParticles, actionId.Ref);
+			TryAddPreBehaviour(actionIdsToStop, StopParticles);
+			TryAddPostBehaviour(actionIdsToPlay, PlayParticles);
+		}
+
+		private void OnDisable()
+		{
+			RemovePreBehaviour(actionIdsToStop, StopParticles);
+			RemovePostBehaviour(actionIdsToPlay, PlayParticles);
 		}
 
 		private UniTask PlayParticles(IActor actor, CancellationToken token)
