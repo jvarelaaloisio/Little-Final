@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 
 namespace FsmAsync
 {
@@ -12,8 +11,6 @@ namespace FsmAsync
 		/// The name of the state
 		/// </summary>
 		string Name { get; set; }
-		
-		ILogger Logger { get; set; }
 
 		/// <summary>
 		/// Called once when the FSM enters the State

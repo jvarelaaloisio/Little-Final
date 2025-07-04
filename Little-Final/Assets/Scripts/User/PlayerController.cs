@@ -138,22 +138,11 @@ namespace User
                 Debug.LogError($"{name}: {nameof(floorTracker)} component was not found in character!");
                 return;
             }
-            idle.Ref.Logger = Debug.unityLogger;
-            
-            walk.Ref.Logger = Debug.unityLogger;
-            
-            walkWhileFalling.Ref.Logger = Debug.unityLogger;
-            
-            jump.Ref.Logger = Debug.unityLogger;
             
             _glideDelay = new StateDelayedHandler<IActor<ReverseIndexStore>>(secondsBeforeGlide, TransitionToGlide);
             jump.Ref.OnEnter.Add(_glideDelay.Handle);
             walk.Ref.OnEnter.Add(_glideDelay.Cancel);
             idle.Ref.OnEnter.Add(_glideDelay.Cancel);
-            
-            fall.Ref.Logger = Debug.unityLogger;
-            
-            glide.Ref.Logger = Debug.unityLogger;
             
             _fsm = FiniteStateMachine<IIdentifier, IActor<ReverseIndexStore>>
                    .Build(name)

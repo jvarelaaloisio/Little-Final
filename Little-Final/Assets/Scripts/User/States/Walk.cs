@@ -43,13 +43,13 @@ namespace User.States
 		{
 			if (!target.Data.TryGetFirst(out ICharacter character))
 			{
-				Logger.LogError(Name, $"{nameof(character)} is null!");
+				Debug.LogError($"{name}: {nameof(character)} is null!");
 				return;
 			}
 
 			if (cameraProvider.Ref == null)
 			{
-				Logger.LogError(Name, $"{nameof(cameraProvider)} is null!");
+				Debug.LogError($"{name}: {nameof(cameraProvider)} is null!");
 				return;
 			}
 			var camera = await cameraProvider.Ref.GetValueAsync(token);

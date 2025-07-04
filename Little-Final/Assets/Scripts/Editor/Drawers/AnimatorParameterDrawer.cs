@@ -10,8 +10,10 @@ namespace Editor.Drawers
 		/// <inheritdoc />
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			var nameProperty = property.FindPropertyRelative("name");
-			nameProperty.stringValue = EditorGUILayout.TextField(label ,nameProperty.stringValue);
+			if (property.boxedValue is AnimatorParameter animatorParameter)
+				animatorParameter.Name = EditorGUILayout.TextField(label, animatorParameter.Name);
+			else
+				EditorGUILayout.HelpBox($"{nameof(property)}'s boxed value is not of type {nameof(AnimatorParameter)}", MessageType.Error);
 			//TODO: Finish cleaning up this drawer
 			// EditorGUILayout.PropertyField(nameProperty);
 		}

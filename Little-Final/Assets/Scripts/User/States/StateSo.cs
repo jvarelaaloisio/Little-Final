@@ -33,15 +33,8 @@ namespace User.States
 
         private IState<IActor<ReverseIndexStore>> _state;
 
-        /// <inheritdoc />
-        public ILogger Logger
-        {
-            get => _state.Logger;
-            set => _state.Logger = value;
-        }
-
         private void Awake()
-            => _state ??= new State<IActor<ReverseIndexStore>> { Logger = Debug.unityLogger, Name = name };
+            => _state ??= new State<IActor<ReverseIndexStore>> { Name = name };
 
         /// <inheritdoc />
         public List<Func<IState<IActor<ReverseIndexStore>>, IActor<ReverseIndexStore>, CancellationToken, UniTask>> OnEnter

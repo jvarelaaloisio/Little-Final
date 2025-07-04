@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using Core.Helpers;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -15,9 +13,6 @@ namespace FsmAsync
     public class State<T> : IState<T>
     {
 	    [field: SerializeField] public string Name { get; set; }
-
-	    /// <inheritdoc />
-	    public ILogger Logger { get; set; }
 
 	    /// <inheritdoc />
 	    public List<Func<IState<T>, T, CancellationToken, UniTask>> OnEnter { get; } = new();
