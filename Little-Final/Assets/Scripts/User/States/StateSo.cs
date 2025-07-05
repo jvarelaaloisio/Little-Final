@@ -25,35 +25,35 @@ namespace User.States
         
         public string Name
         {
-            get => _state.Name;
-            set => _state.Name = value;
+            get => name;
+            set => _state.Value.Name = value;
         }
 
         [field:SerializeField] public InterfaceRef<IActorStateBehaviour<ReverseIndexStore>>[] Behaviours { get; set; }
 
-        private IState<IActor<ReverseIndexStore>> _state;
+        private AutoMap<IState<IActor<ReverseIndexStore>>> _state = new(() => new State<IActor<ReverseIndexStore>>());
 
         private void Awake()
-            => _state ??= new State<IActor<ReverseIndexStore>> { Name = name };
+            => _state.Value.Name = Name;
 
         /// <inheritdoc />
         public List<Func<IState<IActor<ReverseIndexStore>>, IActor<ReverseIndexStore>, CancellationToken, UniTask>> OnEnter
-            => _state.OnEnter;
+            => _state.Value.OnEnter;
 
         /// <inheritdoc />
         public List<Func<IState<IActor<ReverseIndexStore>>, IActor<ReverseIndexStore>, CancellationToken, UniTask<bool>>> OnTryHandleInput
-            => _state.OnTryHandleInput;
+            => _state.Value.OnTryHandleInput;
 
         /// <inheritdoc />
         public List<Func<IState<IActor<ReverseIndexStore>>, IActor<ReverseIndexStore>, CancellationToken, UniTask>> OnExit
-            => _state.OnExit;
+            => _state.Value.OnExit;
 
         /// <inheritdoc />
         public virtual async UniTask Enter(IActor<ReverseIndexStore> target, CancellationToken token)
         {
             if (!target.Data.TryGetFirst(out IActor<ReverseIndexStore> actor))
                 return;
-            await _state.Enter(target, token);
+            await _state.Value.Enter(target, token);
             foreach (var behaviour in Behaviours)
             {
                 if (!behaviour.HasValue)
@@ -67,7 +67,7 @@ namespace User.States
         {
             if (!target.Data.TryGetFirst(out IActor<ReverseIndexStore> actor))
                 return false;
-            await _state.TryHandleDataChanged(target, token);
+            await _state.Value.TryHandleDataChanged(target, token);
             foreach (var behaviour in Behaviours)
             {
                 if (!behaviour.HasValue)
@@ -84,7 +84,7 @@ namespace User.States
         {
             if (!target.Data.TryGetFirst(out IActor<ReverseIndexStore> actor))
                 return;
-            await _state.Exit(target, token);
+            await _state.Value.Exit(target, token);
             foreach (var behaviour in Behaviours)
             {
                 if (!behaviour.HasValue)
