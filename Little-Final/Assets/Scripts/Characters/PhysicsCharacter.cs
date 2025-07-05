@@ -95,19 +95,8 @@ namespace Characters
         {
             if(!Movement.IsValid())
                 return;
-            // if (Velocity.IgnoreY().magnitude > Movement.goalSpeed)
-            // {
-            //     return;
-            // }
-            // var acceleration = Movement.direction * Movement.acceleration;
-            
-            // rigidbody.AddForce(acceleration, ForceMode.Force);
-            // return;
-            //TODO: Enable once stateMachine works
             var currentVelocity = rigidbody.velocity;
             var x = Mathf.Sqrt(currentVelocity.x * currentVelocity.x + currentVelocity.z * currentVelocity.z);
-            // var force = (2 - 1 / Mathf.Cos(x * Mathf.PI / (3 * Movement.goalSpeed))) * Movement.acceleration;
-            // force = Mathf.Max(0, force);
             var force = movementCurve.Evaluate(x / Movement.goalSpeed) * Movement.acceleration;
             rigidbody.AddForce(Movement.direction * force, ForceMode.Force);
         }
