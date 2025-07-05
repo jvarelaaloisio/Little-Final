@@ -18,21 +18,9 @@ namespace User
 {
     public class PlayerController : MonoBehaviour, ISetup<IPhysicsCharacter<ReverseIndexStore>>
     {
-        [Flags]
-        private enum LogIfError
-        {
-            None = 0,
-            Move = 1,
-            Jump = 2,
-            Fall = 4,
-            Land = 8,
-            Glide = 16,
-        }
         [Tooltip("If true, this component will try to do an auto-setup." +
                  "\nUseful for editor testing.")]
         [field: SerializeField] public bool SelfSetupCharacter { get; set; }
-
-        [SerializeField] private LogIfError inputsToLogIfTransitionFails;
 
         [Header("Providers")]
         [SerializeField] private InterfaceRef<IDataProviderAsync<IInputReader>> inputReaderProvider;
