@@ -49,7 +49,7 @@ namespace Core.Debugging
 
 		private Dictionary<LogType, bool> _logTypesAllowed;
 
-		//TODO: Esto solo funca en un DLL
+		//TODO: This only works in a DLL
 		private static string CurrentClass
 		{
 			get

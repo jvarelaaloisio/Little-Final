@@ -46,7 +46,10 @@ namespace Input
         {
             playerInput.onControlsChanged += HandleControlChanged;
             if (moveInput?.action is { } moveAction)
+            {
                 moveAction.performed += HandleMove;
+                moveAction.canceled += HandleMove;
+            }
             if (cameraInput?.action is { } cameraAction)
             {
                 cameraAction.performed += HandleCamera;

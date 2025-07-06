@@ -90,10 +90,10 @@ namespace FSM
 			public FiniteStateMachine<T> Done()
 				=> _finiteStateMachine;
 
-			public Builder ThatLogsTransitions(ILogger logger)
+			public Builder ThatLogsTransitions(ILogger logger, bool shouldLogTransitions = true)
 			{
 				_finiteStateMachine._logger = logger;
-				_finiteStateMachine._shouldLogTransitions = true;
+				_finiteStateMachine._shouldLogTransitions = shouldLogTransitions;
 				return this;
 			}
 

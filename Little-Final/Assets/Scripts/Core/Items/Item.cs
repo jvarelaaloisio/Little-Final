@@ -5,7 +5,7 @@ namespace Core.Items
 {
     public abstract class Item
     {
-        public IIdentification ID { get; set; }
+        public IIdentifier ID { get; set; }
         public event Action<int, int> onQuantityChanged = delegate { };
         public abstract int Quantity { get; }
         public abstract void AddUnit(Item item);

@@ -1,14 +1,15 @@
 using Core.Extensions;
+using Core.References;
 using UnityEngine;
 
 namespace Core.Providers
 {
     public class PopulateDataProvider<T> : MonoBehaviour
     {
-        [SerializeField] private DataProvider<T> provider;
+        [SerializeField] private InterfaceRef<IDataProvider<T>> provider;
         protected void Populate(T value)
         {
-            if (!provider)
+            if (provider.Ref == null)
             {
                 this.LogWarning($"{nameof(provider)} is null! this component won't have any effect.");
                 return;
@@ -19,14 +20,14 @@ namespace Core.Providers
                 return;
             }
 
-            if (!provider.Value?.Equals(value) ?? false)
-                provider.Value = value;
+            if (!provider.Ref.Value?.Equals(value) ?? true)
+                provider.Ref.Value = value;
         }
         
         protected void Depopulate(T value)
         {
-            if (provider && (provider.Value?.Equals(value) ?? false))
-                provider.Value = default;
+            if (provider.Ref?.Value?.Equals(value) ?? false)
+                provider.Ref.Value = default;
         }
     }
 }

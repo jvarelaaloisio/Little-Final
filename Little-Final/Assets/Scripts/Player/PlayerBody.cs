@@ -90,6 +90,12 @@ public class PlayerBody : MonoBehaviour, IBody
 
 	public bool IsInTheAir => flags[Flag.IN_THE_AIR];
 
+	public MovementRequest NextMovement
+	{
+		get => _nextMovement;
+		set => _nextMovement = value;
+	}
+
 	#endregion
 
 	#region Flags

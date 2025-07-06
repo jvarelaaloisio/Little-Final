@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aef6c00dd155ef8648099c9c42db41ad, type: 3}
+  m_Name: Glide
+  m_EditorClassIdentifier: 
+  <Behaviours>k__BackingField:
+  - reference: {fileID: 11400000, guid: 7fbce3d0c5f678947a7e67757c9b58a3, type: 2}
+  - reference: {fileID: 11400000, guid: a9767abbb29a84d4889876aa055952d0, type: 2}
+  inputReaderProvider:
+    reference: {fileID: 11400000, guid: f9ec6ddbbb5f2654486095ba9d3a333d, type: 2}
+  acceleration: 7
+  goalSpeed: 2
+  turnSpeed: 0
+  minSafeAngle: 0
+  floor:
+    serializedVersion: 2
+    m_Bits: 71681
+  stepUpConfig: {fileID: 11400000, guid: 37c79b833ff0bea408ec35cab1381af6, type: 2}
+  lastInputId: {fileID: 11400000, guid: b6aabdcce16f6e6cfa0957b728388be9, type: 2}
+  cameraProvider:
+    reference: {fileID: 11400000, guid: affd077a53d4b3b4e896e65492750dff, type: 2}

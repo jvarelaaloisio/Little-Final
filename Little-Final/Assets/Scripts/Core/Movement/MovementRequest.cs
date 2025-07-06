@@ -35,15 +35,9 @@ namespace Player
 
 		public bool IsValid() => this != InvalidRequest;
 
-		public bool Equals(MovementRequest other)
-		{
-			return Direction.Equals(other.Direction) && GoalSpeed.Equals(other.GoalSpeed);
-		}
+		public bool Equals(MovementRequest other) => Direction.Equals(other.Direction) && GoalSpeed.Equals(other.GoalSpeed);
 
-		public override bool Equals(object obj)
-		{
-			return obj is MovementRequest other && Equals(other);
-		}
+		public override bool Equals(object obj) => obj is MovementRequest other && Equals(other);
 
 		public override int GetHashCode()
 		{
@@ -55,21 +49,13 @@ namespace Player
 			}
 		}
 
-		public override string ToString()
-		{
-			return IsValid()
-						? $"MovementRequest({Direction}, {GoalSpeed}, {Acceleration})"
-						: $"MovementRequest(Invalid)";
-		}
+		public override string ToString() =>
+			IsValid()
+				? $"Movement({Direction}, {GoalSpeed}, {Acceleration})"
+				: $"Movement(Invalid)";
 
-		public static bool operator ==(MovementRequest one, MovementRequest two)
-		{
-			return one.Equals(two);
-		}
+		public static bool operator ==(MovementRequest one, MovementRequest two) => one.Equals(two);
 
-		public static bool operator !=(MovementRequest one, MovementRequest two)
-		{
-			return !(one == two);
-		}
+		public static bool operator !=(MovementRequest one, MovementRequest two) => !(one == two);
 	}
 }

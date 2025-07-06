@@ -4,44 +4,61 @@ using UnityEngine;
 namespace Core.Helpers
 {
 	[CreateAssetMenu(menuName = "Models/ID", fileName = "Id", order = 0)]
-	public class IdContainer : ScriptableObject
+	public class IdContainer : ScriptableObject, IIdentifier
 	{
 		[SerializeField]
 		private new string name;
 
-		public Data Get => new Data(name, GetHashCode());
+		public Data Get => new Data(name, GetInstanceID());
 
 		public string Name => name;
+
+		/// <inheritdoc />
+		public int Id => Get.Id;
+
 		public override string ToString() => name;
+
+		/// <inheritdoc />
+		public override bool Equals(object obj)
+			=> obj is IIdentifier otherId && Equals(otherId);
+
+		/// <inheritdoc />
+		public bool Equals(IIdentifier other)
+			=> Get.Equals(other);
+
+		/// <inheritdoc />
+		//THOUGHT: Is this correct? I'm not entirely sure.
+		public override int GetHashCode()
+			=> GetInstanceID();
+
 		public static bool operator ==(IdContainer original, IdContainer other)
-			=> EqualityInternal(original, other);
+			=> original?.Equals(other) ?? false;
 
 		public static bool operator !=(IdContainer original, IdContainer other)
-			=> !EqualityInternal(original, other);
-		
-		private static bool EqualityInternal(IdContainer original, IdContainer other)
-		{
-			bool noneIsNull = original && other;
-			bool areEqual = original.Get.hashCode == other.Get.hashCode;
-			return noneIsNull && areEqual;
-		}
+			=> !original?.Equals(other) ?? true;
 
 		public static implicit operator Data(IdContainer original)
 		{
 			return original.Get;
 		}
-		
+
 		[Serializable]
-		public readonly struct Data : IIdentification
+		public readonly struct Data : IIdentifier
 		{
 			public string name { get; }
-			public int hashCode { get; }
+			public int Id { get; }
 
 			public Data(string name, int hashCode)
 			{
 				this.name = name;
-				this.hashCode = hashCode;
+				this.Id = hashCode;
 			}
+
+			public bool Equals(IIdentifier other)
+				=> Id == other?.Id;
+
+			public override string ToString()
+				=> name;
 		}
 	}
 }

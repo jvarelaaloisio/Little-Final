@@ -4,7 +4,7 @@ namespace Core.Providers
 {
     public static class DataProviderExtensions
     {
-        public static bool TryGetValue<T>(this DataProvider<T> provider, out T value)
+        public static bool TryGetValue<T>(this IDataProvider<T> provider, out T value)
         {
             value = default;
             if (provider == null)

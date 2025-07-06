@@ -44,6 +44,7 @@ namespace Player.States
 			Vector2 input = InputManager.GetHorInput();
 
 			Vector3 desiredDirection = MoveHelper.GetDirection(input);
+			Controller.directionMagnitude = desiredDirection.magnitude;
 
 			var floorNormal = Body.LastFloorNormal;
 			if (Physics.Raycast(MyTransform.position, -MyTransform.up, out RaycastHit hit, 10,

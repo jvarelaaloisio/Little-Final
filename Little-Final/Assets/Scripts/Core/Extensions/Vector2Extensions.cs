@@ -14,5 +14,13 @@ namespace Core.Extensions
 		/// <returns></returns>
 		public static Vector3 HorizontalPlaneToVector3(this Vector2 original, float newY = 0)
 			=> new Vector3(original.x, newY, original.y);
+		/// <summary>
+		/// Another name for <see cref="HorizontalPlaneToVector3"/>. I'm testing if it's easier to read
+		/// </summary>
+		/// <param name="original"></param>
+		/// <param name="z">The would-be original Z value, which will be used for the new Y value.</param>
+		/// <returns></returns>
+		public static Vector3 XYToXZY(this Vector2 original, float z = 0)
+			=> new Vector3(original.x, z, original.y);
 	}
 }
