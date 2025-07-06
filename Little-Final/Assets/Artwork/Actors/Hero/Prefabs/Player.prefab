@@ -5934,7 +5934,8 @@ MonoBehaviour:
   collectablePivot: {fileID: 3453220764226834838}
   AbilitiesOnLand:
   - {fileID: 11400000, guid: 32a0a36da48b09e4cb7d4449d87f6484, type: 2}
-  AbilitiesInAir: []
+  AbilitiesInAir:
+  - {fileID: 11400000, guid: cad13c8ff325433439dcc75b4ebdba42, type: 2}
   AbilitiesOnWall: []
   gameManager: {fileID: 11400000, guid: c0c945cf52106ca4c8e76034c77df292, type: 2}
   climbCheckPivot: {fileID: 7574792402906395099}
@@ -6162,6 +6163,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _buffMultiplier: 1
+  inputReaderProvider: {fileID: 0}
+  directionMagnitude: 0
 --- !u!114 &6687177953548559737
 MonoBehaviour:
   m_ObjectHideFlags: 0

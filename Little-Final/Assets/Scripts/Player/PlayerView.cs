@@ -431,7 +431,7 @@ namespace Player
 			//GUILayout.Label($"Velocity: {controller.Body.Velocity}");
 			
 			GUI.skin.label.normal.textColor = Color.white;
-			//GUILayout.Label("State: " + controller.State.GetType());
+			GUILayout.Label("State: " + controller.State.GetType());
 			GUI.skin.label.normal.textColor = controller.Stamina.IsRefillingActive ? Color.green : Color.red;
 			
 			//GUILayout.Label("Stamina: " + controller.Stamina.FillState);
