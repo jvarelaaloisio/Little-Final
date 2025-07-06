@@ -22,7 +22,6 @@ namespace User.States
     public class StateSo : ScriptableObject, IState<IActor<ReverseIndexStore>>
     {
         /// <inheritdoc />
-        
         public string Name
         {
             get => name;
@@ -32,9 +31,6 @@ namespace User.States
         [field:SerializeField] public InterfaceRef<IActorStateBehaviour<ReverseIndexStore>>[] Behaviours { get; set; }
 
         private AutoMap<IState<IActor<ReverseIndexStore>>> _state = new(() => new State<IActor<ReverseIndexStore>>());
-
-        private void Awake()
-            => _state.Value.Name = Name;
 
         /// <inheritdoc />
         public List<Func<IState<IActor<ReverseIndexStore>>, IActor<ReverseIndexStore>, CancellationToken, UniTask>> OnEnter
@@ -51,6 +47,8 @@ namespace User.States
         /// <inheritdoc />
         public virtual async UniTask Enter(IActor<ReverseIndexStore> target, CancellationToken token)
         {
+            if (string.IsNullOrEmpty(_state.Value.Name))
+                Name = name;
             if (!target.Data.TryGetFirst(out IActor<ReverseIndexStore> actor))
                 return;
             await _state.Value.Enter(target, token);

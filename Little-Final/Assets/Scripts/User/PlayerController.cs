@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using Characters;
 using Core.Acting;
@@ -12,7 +11,6 @@ using Cysharp.Threading.Tasks;
 using DataProviders.Async;
 using FsmAsync;
 using UnityEngine;
-using User.States;
 
 namespace User
 {
@@ -52,8 +50,6 @@ namespace User
         [SerializeField] private float secondsBeforeGlide = 1;
         
         private IPhysicsCharacter<ReverseIndexStore> _character;
-        private Vector2 _lastInput;
-        private float _directionMagnitude;
         private Coroutine _enableCoroutine;
         
         private FiniteStateMachine<IIdentifier, IActor<ReverseIndexStore>> _fsm;
@@ -72,6 +68,8 @@ namespace User
             var inputReader = await inputReaderProvider.Ref.GetValueAsync(destroyCancellationToken);
             inputReader.OnMoveInput += HandleMoveInput;
             inputReader.OnJumpPressed += StartJump;
+            inputReader.OnGlidePressed += SetWantsToGlide;
+            inputReader.OnGlideReleased += UnsetWantsToGlide;
         }
 
         private void Start()
@@ -101,6 +99,8 @@ namespace User
             {
                 inputReader.OnMoveInput -= HandleMoveInput;
                 inputReader.OnJumpPressed -= StartJump;
+                inputReader.OnGlidePressed -= SetWantsToGlide;
+                inputReader.OnGlideReleased -= UnsetWantsToGlide;
             }
 
             _fsm?.End(Actor, destroyCancellationToken).Forget();
@@ -109,9 +109,9 @@ namespace User
         public void Setup(IPhysicsCharacter<ReverseIndexStore> data)
         {
             _character = data;
-            Actor.Data.Add(characterId.Get, _character);
-            Actor.Data.Add(actorId.Ref, _character.Actor);
-            Actor.Data.Add(traversalInputId.Ref, Vector2.zero);
+            Actor.Data.Set(characterId.Get, _character);
+            Actor.Data.Set(actorId.Ref, _character.Actor);
+            Actor.Data.Set(traversalInputId.Ref, Vector2.zero);
             _character.FallingController.OnStartFalling += AddGravity;
             _character.FallingController.OnStopFalling += RestoreGravity;
             SetupFsm(_character);
@@ -127,10 +127,11 @@ namespace User
                 return;
             }
             
+            //TODO: Remove when finished creating the delayedHandler. We just keep these lines as an example
             _glideDelay = new StateDelayedHandler<IActor<ReverseIndexStore>>(secondsBeforeGlide, TransitionToGlide);
-            jump.Ref.OnEnter.Add(_glideDelay.Handle);
-            walk.Ref.OnEnter.Add(_glideDelay.Cancel);
-            idle.Ref.OnEnter.Add(_glideDelay.Cancel);
+            // jump.Ref.OnEnter.Add(_glideDelay.Handle);
+            // walk.Ref.OnEnter.Add(_glideDelay.Cancel);
+            // idle.Ref.OnEnter.Add(_glideDelay.Cancel);
             
             _fsm = FiniteStateMachine<IIdentifier, IActor<ReverseIndexStore>>
                    .Build(name)
@@ -138,16 +139,21 @@ namespace User
                    .ThatTransitionsBetween(stopId.Get, walk.Ref, idle.Ref)
                    .ThatTransitionsBetween(stopId.Get, walkWhileFalling.Ref, fall.Ref)
                    .ThatTransitionsBetween(stopId.Get, jump.Ref, fall.Ref)
+
                    .ThatTransitionsBetween(moveId.Get, idle.Ref, walk.Ref)
                    .ThatTransitionsBetween(moveId.Get, fall.Ref, walkWhileFalling.Ref)
+
                    .ThatTransitionsBetween(jumpId.Get, idle.Ref, jump.Ref)
                    .ThatTransitionsBetween(jumpId.Get, walk.Ref, jump.Ref)
+
                    .ThatTransitionsBetween(fallId.Get, idle.Ref, fall.Ref)
                    .ThatTransitionsBetween(fallId.Get, walk.Ref, fall.Ref)
                    .ThatTransitionsBetween(fallId.Get, jump.Ref, fall.Ref)
+
                    .ThatTransitionsBetween(landId.Get, fall.Ref, idle.Ref)
                    .ThatTransitionsBetween(landId.Get, walkWhileFalling.Ref, walk.Ref)
                    .ThatTransitionsBetween(landId.Get, glide.Ref, walk.Ref)
+
                    .ThatTransitionsBetween(glideId.Ref, fall.Ref, glide.Ref)
                    .ThatTransitionsBetween(glideId.Ref, walkWhileFalling.Ref, glide.Ref)
                    .ThatTransitionsBetween(glideId.Ref, jump.Ref, glide.Ref)
@@ -161,11 +167,23 @@ namespace User
                 return;
             }
 
-            fallingController.OnStartFalling += () => HandleDataChanged(fallId.Get).Forget();
+            fallingController.OnStartFalling += HandleStartFalling;
         }
-        
+
+        private void HandleStartFalling()
+        {
+            //TODO: Add a condition class that handles this
+            if (!Actor.Data.TryGet(glideId.Ref, out bool wantsToGlide))
+            {
+                Debug.LogWarning($"{name}: Actor doesn't contain wantToGlide value");
+                return;
+            }
+            HandleDataChanged(wantsToGlide ? glideId.Ref : fallId.Get).Forget();
+        }
+
         private UniTask HandleDataChanged(IIdentifier data)
         {
+            Debug.Log($"{name}: Handling data changed with id: {data.name}");
             return _character.Actor.Act(_fsm.HandleDataChanged,
                                         Actor,
                                         destroyCancellationToken,
@@ -178,6 +196,7 @@ namespace User
         private void RestoreGravity()
             => _character.RemoveContinuousForce(Physics.gravity * Mathf.Max(0, fallingGravityMultiplier - 1));
 
+        [Obsolete("Glide doesn't use the delayed handler anymore")]
         private async void TransitionToGlide(IActor<ReverseIndexStore> _)
         {
             Debug.Log("transitioning".Colored(C.Red));
@@ -190,12 +209,26 @@ namespace User
             HandleDataChanged(jumpId.Get).Forget();
         }
 
+        private void SetWantsToGlide()
+        {
+            //TODO: Add this behaviour to a Condition structure
+            Actor.Data.Set(glideId.Ref, true);
+            if (_fsm.Current.Name.Contains("fall", StringComparison.InvariantCultureIgnoreCase))
+                HandleDataChanged(glideId.Ref);
+        }
+
+        private void UnsetWantsToGlide()
+        {
+            //TODO: Add this behaviour to a Condition structure
+            Actor.Data.Set(glideId.Ref, false);
+            if (_fsm.Current.Name.Contains("fall", StringComparison.InvariantCultureIgnoreCase))
+                HandleDataChanged(glideId.Ref);
+            else if (_fsm.Current.Name.Contains("glide", StringComparison.InvariantCultureIgnoreCase))
+                HandleDataChanged(fallId.Get);
+        }
+        
         private async void HandleMoveInput(Vector2 input)
         {
-            _lastInput = input;
-            _directionMagnitude = input.magnitude;
-            if(_character == null)
-                return;
             //THOUGHT: Should there be a Condition SO that receives an Input and returns an ID so this logic is done by that structure?
             var stateId = input.magnitude > 0.001f ? moveId : stopId;
 
@@ -236,10 +269,10 @@ namespace User
         }
     }
 
-    public readonly struct StateDelayedHandler<T>
+    public class StateDelayedHandler<T>
     {
         public float Seconds { get; }
-        public CancellationTokenSource TokenSource { get; }
+        public CancellationTokenSource TokenSource { get; set; }
         private readonly Action<T> _onFinished;
 
         public StateDelayedHandler(float seconds,
@@ -260,16 +293,26 @@ namespace User
         {
             TokenSource.Cancel();
             Debug.Log("Canceled");
+            TokenSource.Dispose();
+            TokenSource = new CancellationTokenSource();
             return UniTask.CompletedTask;
         }
 
         private async UniTaskVoid Start(T data, CancellationToken token)
         {
-            Debug.Log("Started");
-            var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(token, TokenSource.Token).Token;
-            await UniTask.WaitForSeconds(Seconds, cancellationToken: linkedToken);
-            Debug.Log("help");
-            _onFinished(data);
+            try
+            {
+                Debug.Log($"Started. Seconds: {Seconds}");
+                var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(token, TokenSource.Token).Token;
+                await UniTask.WaitForSeconds(Seconds, cancellationToken: TokenSource.Token);
+                Debug.Log("help");
+                _onFinished(data);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+                throw;
+            }
         }
     }
 }

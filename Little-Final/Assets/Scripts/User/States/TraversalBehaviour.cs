@@ -15,7 +15,6 @@ namespace User.States
 	[CreateAssetMenu(menuName = "States/Behaviours/Traversal", fileName = "TraversalBehaviour", order = 0)]
 	public class TraversalBehaviour : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>
 	{
-		private const float PI = Mathf.PI;
 		[SerializeField] private float acceleration = 20f;
 		[SerializeField] private float speedGoal = 2f;
 		[SerializeField] private InterfaceRef<IIdentifier> traversalInputId;

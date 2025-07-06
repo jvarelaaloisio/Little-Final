@@ -11,7 +11,7 @@ namespace Core.Data
 		private readonly Dictionary<IIdentifier, object> _allObjects = new(comparer:new IIdentifier.Comparer());
 		private readonly Dictionary<Type, Dictionary<IIdentifier, object>> _typeIndex = new();
 
-		public void Add<T>(IIdentifier id, T obj, bool replaceIfDuplicate = true)
+		public void Set<T>(IIdentifier id, T obj, bool replaceIfDuplicate = true)
 		{
 #if BENCHMARK_DATA
 			var stopwatch = System.Diagnostics.Stopwatch.StartNew();
@@ -22,7 +22,7 @@ namespace Core.Data
 			stopwatch.Stop();
 			var ms = stopwatch.Elapsed.TotalMilliseconds;
 			var color = ms < 0.001f ? C.Green : ms < 1 ? C.Blue : C.Red;
-			UnityEngine.Debug.Log($"Adding object {obj} took {ms.Colored(color)}ms ({stopwatch.ElapsedTicks} ticks)");
+			UnityEngine.Debug.Log($"Set: {id.name} ({obj}) took {ms.Colored(color)}ms ({stopwatch.ElapsedTicks} ticks)");
 #endif
 		}
 
