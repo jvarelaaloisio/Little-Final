@@ -57,7 +57,7 @@ namespace JVarelaAloisio.Editor.Drawers
 		private void Initialize(SerializedProperty property)
 		{
 #if BENCHMARK_EDITOR
-			var stopwatch = Stopwatch.StartNew();
+			var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 #endif
 			_state = State.Initializing;
 #if BENCHMARK_EDITOR
