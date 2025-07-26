@@ -3,12 +3,11 @@ using System.Threading;
 using Characters;
 using Core.Acting;
 using Core.Data;
+using Core.Extensions;
 using Core.Helpers;
 using Core.References;
 using Cysharp.Threading.Tasks;
-using DataProviders.Async;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace User.States
 {
@@ -29,15 +28,15 @@ namespace User.States
 			}
 			tokenSource = new CancellationTokenSource();
 			_cancellationTokenSourcesByActor.Add(actor, tokenSource);
-			
+ 
 			if (!actor.Data.TryGet(physicsCharacterId.Ref, out IPhysicsCharacter physicsCharacter))
 			{
-				Debug.LogError($"{name} <color=grey>({nameof(TraversalBehaviour)})</color>: Couldn't get character from actor's data!");
+				this.LogError("Couldn't get character from actor's data!");
 				return;
 			}
+			if (!physicsCharacter.TryAddContinuousForce(Physics.gravity * gravityMultiplier))
+				this.LogError("Couldn't add continuous force to actor's data!");
 			physicsCharacter.rigidbody.useGravity = false;
-			   if (!physicsCharacter.TryAddContinuousForce(Physics.gravity * gravityMultiplier))
-				Debug.LogError($"{name} <color=grey>({nameof(TraversalBehaviour)})</color>: Couldn't add continuous force to actor's data!");
 		}
 		/// <inheritdoc />
 		public UniTask Exit(IActor<ReverseIndexStore> actor, CancellationToken token)
@@ -49,11 +48,11 @@ namespace User.States
 			}
 			if (!actor.Data.TryGet(physicsCharacterId.Ref, out IPhysicsCharacter physicsCharacter))
 			{
-				Debug.LogError($"{name} <color=grey>({nameof(TraversalBehaviour)})</color>: Couldn't get character from actor's data!");
+				this.LogError("Couldn't get character from actor's data!");
 				return UniTask.CompletedTask;
 			}
-			physicsCharacter.rigidbody.useGravity = true;
 			physicsCharacter.RemoveContinuousForce(Physics.gravity * gravityMultiplier);
+			physicsCharacter.rigidbody.useGravity = true;
 			return UniTask.CompletedTask;
 		}
 

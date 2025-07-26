@@ -5,26 +5,25 @@ namespace Core.Extensions
     public static class ObjectExtensions
     {
         [HideInCallstack]
-        public static void Log(this UnityEngine.Object writer, object message)
-            => Debug.Log(GetFormattedMessage(writer, message), writer);
+        public static void Log(this UnityEngine.Object writer, object message, Object context = null, bool includeType = true)
+            => Debug.Log(GetFormattedMessage(writer, writer.GetType(), message, includeType), context ?? writer);
         [HideInCallstack]
-        public static void Log(this UnityEngine.Object writer, object message, Object context)
-            => Debug.Log(GetFormattedMessage(writer, message), context);
+        public static void LogError(this UnityEngine.Object writer, object message, Object context = null, bool includeType = true)
+            => Debug.LogError(GetFormattedMessage(writer, writer.GetType(), message, includeType), context ?? writer);
         [HideInCallstack]
-        public static void LogError(this UnityEngine.Object writer, object message)
-            => Debug.LogError(GetFormattedMessage(writer, message), writer);
-        [HideInCallstack]
-        public static void LogError(this UnityEngine.Object writer, object message, Object context)
-            => Debug.LogError(GetFormattedMessage(writer, message), context);
-        [HideInCallstack]
-        public static void LogWarning(this UnityEngine.Object writer, object message)
-            => Debug.LogWarning(GetFormattedMessage(writer, message), writer);
-        [HideInCallstack]
-        public static void LogWarning(this UnityEngine.Object writer, object message, Object context)
-            => Debug.LogWarning(GetFormattedMessage(writer, message), context);
-        
-        private static string GetFormattedMessage(Object writer, object message) => $"{writer.name}: {message}";
-        
+        public static void LogWarning(this UnityEngine.Object writer, object message, Object context = null, bool includeType = true)
+            => Debug.LogWarning(GetFormattedMessage(writer, message), context ?? writer);
+
+        private static string GetFormattedMessage(Object writer, object message)
+            => $"({Time.realtimeSinceStartupAsDouble}) {writer.name}: {message}";
+
+        private static string GetFormattedMessage(Object writer, System.Type type, object message)
+            => $"({Time.realtimeSinceStartupAsDouble}) {writer.name} ({type.Name.Colored(Color.gray)}): {message}";
+        private static string GetFormattedMessage(Object writer, System.Type type, object message, bool includeType)
+            => includeType
+            ? GetFormattedMessage(writer, type, message)
+            : GetFormattedMessage(writer, message);
+
         /// <summary>
         /// Checks if target is null and logs if needed.
         /// </summary>

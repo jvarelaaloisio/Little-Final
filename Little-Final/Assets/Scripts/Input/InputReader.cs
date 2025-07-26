@@ -55,6 +55,9 @@ namespace Input
                 cameraAction.performed += HandleCamera;
                 cameraAction.canceled += HandleCamera;
             }
+            //NOTE: We use anonym functions (_=>)
+            //because just adding the delegates would result in just the original value of the delegate being subscribed,
+            //not the later one (this is because delegates are immutable) and I'm too lazy to create a method for each delegate.
             if (centerCameraInput?.action is { } centerCameraAction)
             {
                 centerCameraAction.started += _ => OnCenterCameraPressed();

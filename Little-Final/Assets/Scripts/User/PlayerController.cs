@@ -183,7 +183,7 @@ namespace User
 
         private UniTask HandleDataChanged(IIdentifier data)
         {
-            Debug.Log($"{name}: Handling data changed with id: {data.name}");
+            this.Log($"Handling data changed with id: {data.name.Colored(C.Yellow)}");
             return _character.Actor.Act(_fsm.HandleDataChanged,
                                         Actor,
                                         destroyCancellationToken,
@@ -221,9 +221,9 @@ namespace User
         {
             //TODO: Add this behaviour to a Condition structure
             Actor.Data.Set(glideId.Ref, false);
-            if (_fsm.Current.Name.Contains("fall", StringComparison.InvariantCultureIgnoreCase))
+            if (_fsm.Current == fall.Ref)
                 HandleDataChanged(glideId.Ref);
-            else if (_fsm.Current.Name.Contains("glide", StringComparison.InvariantCultureIgnoreCase))
+            else if (_fsm.Current == glide.Ref)
                 HandleDataChanged(fallId.Get);
         }
         
@@ -239,6 +239,7 @@ namespace User
 
         private void OnCollisionEnter(Collision collision)
         {
+            Debug.LogWarning($"Player collided with angle {Vector3.Angle(Vector3.up, collision.contacts[0].normal)}");
             //THOUGHT: Quick impl for landing, not final
             if (Vector3.Angle(Vector3.up, collision.contacts[0].normal) < 45)
                 HandleDataChanged(landId.Get).Forget();
