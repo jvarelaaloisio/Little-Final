@@ -28,7 +28,7 @@ namespace FsmAsync
 		/// <remarks>Always call base method so the corresponding event is raised</remarks>
 		/// </summary>
 		UniTask Enter(TTarget target, CancellationToken token);
-		
+
 		/// <summary>
 		/// Method called for every input received by the State machine.
 		/// </summary>

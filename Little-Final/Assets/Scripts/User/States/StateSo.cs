@@ -1,13 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using Characters;
 using Core.Acting;
 using Core.Data;
 using Core.Extensions;
-using Core.Helpers;
 using Core.References;
 using Cysharp.Threading.Tasks;
 using FsmAsync;
@@ -29,6 +25,8 @@ namespace User.States
         }
 
         [field:SerializeField] public InterfaceRef<IActorStateBehaviour<ReverseIndexStore>>[] Behaviours { get; set; }
+
+        [SerializeField] private bool enableLog;
 
         private AutoMap<IState<IActor<ReverseIndexStore>>> _state = new(() => new State<IActor<ReverseIndexStore>>());
 
@@ -56,6 +54,8 @@ namespace User.States
             {
                 if (!behaviour.HasValue)
                     continue;
+                if (enableLog)
+                    this.Log($"Running {GetColoredName(behaviour)}.Enter");
                 await behaviour.Ref.Enter(actor, token);
             }
         }
@@ -87,8 +87,13 @@ namespace User.States
             {
                 if (!behaviour.HasValue)
                     continue;
+                if (enableLog)
+                    this.Log($"Running {GetColoredName(behaviour)}.Exit");
                 await behaviour.Ref.Exit(actor, token);
             }
         }
+
+        private static string GetColoredName(InterfaceRef<IActorStateBehaviour<ReverseIndexStore>> behaviour)
+            => behaviour.Ref.GetType().Name.Colored("#22aa22");
     }
 }

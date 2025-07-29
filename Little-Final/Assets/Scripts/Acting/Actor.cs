@@ -122,7 +122,7 @@ namespace Acting
         public async UniTask Act<TActionData>(Func<TActionData, IIdentifier, CancellationToken, UniTask<bool>> behaviour,
                                               TActionData actionData,
                                               CancellationToken token,
-                                              IIdentifier actionId = default)
+                                              IIdentifier actionId = null)
         {
             try
             {
@@ -150,6 +150,80 @@ namespace Acting
                     if (actionId != default)
                         await RunBehavioursWithId(this, actionId, PostBehavioursByAction, token);
                 }
+            }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
+        }
+
+        ///<inheritdoc/>
+        public async UniTask Act<TActionData>(Func<TActionData, CancellationToken, UniTask<bool>> behaviour,
+                                              TActionData actionData,
+                                              CancellationToken token,
+                                              IIdentifier actionId = null)
+        {
+            try
+            {
+                await _semaphoreSlim.WaitAsync(-1, token);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                return;
+            }
+
+            try
+            {
+                await RunBehaviours(this, PreBehaviourWildcards, token);
+
+                if (actionId != null)
+                    await RunBehavioursWithId(this, actionId, PreBehavioursByAction, token);
+
+                var success = await behaviour(actionData, token);
+
+                if (success)
+                {
+                    await RunBehaviours(this, PostBehaviourWildcards, token);
+
+                    if (actionId != null)
+                        await RunBehavioursWithId(this, actionId, PostBehavioursByAction, token);
+                }
+            }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
+        }
+
+        public async UniTask Act<TActionData>(Func<TActionData, CancellationToken, UniTask> behaviour,
+                                              TActionData actionData,
+                                              CancellationToken token,
+                                              IIdentifier actionId = null)
+        {
+            try
+            {
+                await _semaphoreSlim.WaitAsync(-1, token);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                return;
+            }
+
+            try
+            {
+                await RunBehaviours(this, PreBehaviourWildcards, token);
+
+                if (actionId != null)
+                    await RunBehavioursWithId(this, actionId, PreBehavioursByAction, token);
+
+                await behaviour(actionData, token);
+
+                await RunBehaviours(this, PostBehaviourWildcards, token);
+
+                if (actionId != null)
+                    await RunBehavioursWithId(this, actionId, PostBehavioursByAction, token);
             }
             finally
             {

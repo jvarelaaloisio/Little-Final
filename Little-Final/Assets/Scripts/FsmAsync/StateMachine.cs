@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using Core.Helpers;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -13,15 +11,16 @@ namespace FsmAsync
 	/// </summary>
 	/// <typeparam name="TKey">The key Type to access the different states.</typeparam>
 	/// <typeparam name="TData">The data Type, for data storage across states.</typeparam>
-	public class FiniteStateMachine<TKey, TData> where TKey : IEquatable<TKey>
+	[Obsolete("Use ConditionalStateMachine (this class should be removed and the other one should take it's place if it's verified to work correctly.")]
+	public class StateMachine<TKey, TData> where TKey : IEquatable<TKey>
     {
-	    private readonly Dictionary<int, ITransition<TData>> _transitions = new();
+	    private readonly Dictionary<int, ITransition<TData, TKey>> _transitions = new();
 	    public string Tag { get; }
         public bool ShouldLogTransitions { get; private set; } = false;
         public ILogger Logger { get; private set; } = null;
 
 
-		private FiniteStateMachine(string ownerTag = "")
+		private StateMachine(string ownerTag = "")
 		{
 			Tag = ownerTag != "" ? $"<b>{ownerTag} (FSM)</b>" : "<b>FSM</b>";
 		}
@@ -30,7 +29,7 @@ namespace FsmAsync
 		/// Event triggered when the state changes.
 		/// </summary>
 		//TODO: Check if this should be replaced with the same UniTask list as in the ITransition<TData> struct
-		public event Action<ITransition<TData>> OnTransition = delegate { };
+		public event Action<ITransition<TData, TKey>> OnTransition = delegate { };
 
 		/// <summary>
 		/// Current state running in the FSM
@@ -85,16 +84,16 @@ namespace FsmAsync
 			return true;
 		}
 
-		public bool TryAddTransition(TKey key, ITransition<TData> transition)
+		public bool TryAddTransition(TKey key, ITransition<TData, TKey> transition)
 		{
 			var hashKey = HashCode.Combine(key, transition.From);
 			return _transitions.TryAdd(hashKey, transition);
 		}
 
-		public bool TryGetTransition(IState<TData> from, TKey key, out ITransition<TData> transition)
+		public bool TryGetTransition(IState<TData> from, TKey key, out ITransition<TData, TKey> transition)
 			=> _transitions.TryGetValue(HashCode.Combine(key, from), out transition);
 
-		public bool TryRemoveTransition(IState<TData> from, TKey key, out ITransition<TData> transition)
+		public bool TryRemoveTransition(IState<TData> from, TKey key, out ITransition<TData, TKey> transition)
 			=> _transitions.Remove(HashCode.Combine(key, from), out transition);
 
 		/// <summary>
@@ -108,36 +107,36 @@ namespace FsmAsync
 
 		public class Builder
 		{
-			private readonly FiniteStateMachine<TKey, TData> _finiteStateMachine;
+			private readonly StateMachine<TKey, TData> _stateMachine;
 
 			/// <summary>
 			/// Constructor
 			/// </summary>
 			/// <param name="ownerTag">Used for logging</param>
 			internal Builder(string ownerTag = "")
-				=> _finiteStateMachine = new FiniteStateMachine<TKey, TData>(ownerTag);
+				=> _stateMachine = new StateMachine<TKey, TData>(ownerTag);
 
 			public Builder ThatLogsTransitions(ILogger logger, bool shouldLogTransitions = true)
 			{
-				_finiteStateMachine.Logger = logger;
-				_finiteStateMachine.ShouldLogTransitions = shouldLogTransitions;
+				_stateMachine.Logger = logger;
+				_stateMachine.ShouldLogTransitions = shouldLogTransitions;
 				return this;
 			}
 
 			/// <summary>
-			/// Sets <see cref="FiniteStateMachine{TKey, TData}.AllowInvalidTransitions"/> to true.
+			/// Sets <see cref="StateMachine{TKey,TData}.AllowInvalidTransitions"/> to true.
 			/// </summary>
 			/// <param name="allowInvalidTransitions"></param>
 			/// <returns></returns>
 			public Builder ThatAllowsInvalidTransitions(bool allowInvalidTransitions = true)
 			{
-				_finiteStateMachine.AllowInvalidTransitions = allowInvalidTransitions;
+				_stateMachine.AllowInvalidTransitions = allowInvalidTransitions;
 				return this;
 			}
 
-			public Builder ThatTriggersOnTransition(Action<ITransition<TData>> eventHandler)
+			public Builder ThatTriggersOnTransition(Action<ITransition<TData, TKey>> eventHandler)
 			{
-				_finiteStateMachine.OnTransition += eventHandler;
+				_stateMachine.OnTransition += eventHandler;
 				return this;
 			}
 
@@ -155,14 +154,14 @@ namespace FsmAsync
 													IState<TData> to,
 													Func<(IState<TData> from, IState<TData> to), UniTask> onTransition = null)
 			{
-				var addedTransition = _finiteStateMachine.TryAddTransition(key, from, to, out var transition);
+				var addedTransition = _stateMachine.TryAddTransition(key, from, to, out var transition);
 				if (addedTransition)
 				{
 					if (onTransition != null)
 						transition.OnTransition.Add(onTransition);
 				}
 				else
-					_finiteStateMachine.Logger?.LogError(_finiteStateMachine.Tag, $"Couldn't add transition: {key}: ({from?.Name} - {to?.Name})");
+					_stateMachine.Logger?.LogError(_stateMachine.Tag, $"Couldn't add transition: {key}: ({from?.Name} - {to?.Name})");
 				if (addedTransition && onTransition != null)
 					transition.OnTransition.Add(onTransition);
 				return this;
@@ -172,8 +171,8 @@ namespace FsmAsync
 			/// Finishes the building process
 			/// </summary>
 			/// <returns>The resulting state machine</returns>
-			public FiniteStateMachine<TKey, TData> Done()
-				=> _finiteStateMachine;
+			public StateMachine<TKey, TData> Done()
+				=> _stateMachine;
 		}
 
 		public async UniTask<bool> HandleDataChanged(TData data,

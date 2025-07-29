@@ -9,7 +9,7 @@ using Core.References;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace User.States
+namespace User.States.Behaviours
 {
 	[CreateAssetMenu(menuName = "States/Behaviours/Feather Fall", fileName = "FeatherFallBehaviour", order = 0)]
 	public class FeatherFallBehaviour : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>
@@ -34,9 +34,10 @@ namespace User.States
 				this.LogError("Couldn't get character from actor's data!");
 				return;
 			}
-			if (!physicsCharacter.TryAddContinuousForce(Physics.gravity * gravityMultiplier))
-				this.LogError("Couldn't add continuous force to actor's data!");
 			physicsCharacter.rigidbody.useGravity = false;
+			var fakeGravity = Physics.gravity * gravityMultiplier;
+			if (!physicsCharacter.TryAddContinuousForce(fakeGravity))
+				this.LogError("Couldn't add continuous force to actor's data!");
 		}
 		/// <inheritdoc />
 		public UniTask Exit(IActor<ReverseIndexStore> actor, CancellationToken token)
@@ -51,8 +52,9 @@ namespace User.States
 				this.LogError("Couldn't get character from actor's data!");
 				return UniTask.CompletedTask;
 			}
-			physicsCharacter.RemoveContinuousForce(Physics.gravity * gravityMultiplier);
 			physicsCharacter.rigidbody.useGravity = true;
+			var fakeGravity = Physics.gravity * gravityMultiplier;
+			physicsCharacter.RemoveContinuousForce(fakeGravity);
 			return UniTask.CompletedTask;
 		}
 

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Core.Attributes;
 using Core.Data;
+using Core.Extensions;
 using Player;
 using UnityEngine;
 
@@ -9,6 +11,7 @@ namespace Characters
     public class PhysicsCharacter : Character<ReverseIndexStore>, IPhysicsCharacter<ReverseIndexStore>
     {
         [SerializeField] private AnimationCurve movementCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+        [SerializeField] private bool enableLog = false;
         private Rigidbody _rigidbody;
         public Rigidbody rigidbody => _rigidbody ??= GetComponent<Rigidbody>();
 
@@ -28,7 +31,7 @@ namespace Characters
         protected override void Awake()
         {
             base.Awake();
-            _fallingController = new FallingController(rigidbody);
+            _fallingController = new FallingController(rigidbody, FloorTracker);
         }
 
         private void Update()
@@ -67,15 +70,25 @@ namespace Characters
         /// <param name="force">The force to be applied every fixed update</param>
         /// <param name="mode"></param>
         public bool TryAddContinuousForce(Vector3 force, ForceMode mode = ForceMode.Force)
-            => _continuousForceRequests.Add(new ForceRequest(force, mode));
+        {
+            var forceRequest = new ForceRequest(force, mode);
+            var success = _continuousForceRequests.Add(forceRequest);
+            if (success && enableLog)
+                this.Log($"Added force ({force})({mode})");
+            return success;
+        }
 
         /// <summary>
         /// Removes a requests from the continuous forces List
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="force"></param>
+        /// <param name="mode"></param>
         public void RemoveContinuousForce(Vector3 force, ForceMode mode = ForceMode.Force)
         {
-            _continuousForceRequests.Remove(new ForceRequest(force, mode));
+            var forceRequest = new ForceRequest(force, mode);
+            if (_continuousForceRequests.Remove(forceRequest)
+                && enableLog)
+                this.Log($"Removed force ({force})({mode})");
         }
 
         /// <summary>

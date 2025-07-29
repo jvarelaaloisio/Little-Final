@@ -3,14 +3,13 @@ using System.Threading;
 using Characters;
 using Core.Acting;
 using Core.Data;
-using Core.Extensions;
 using Core.Helpers;
 using Core.References;
 using Cysharp.Threading.Tasks;
 using DataProviders.Async;
 using UnityEngine;
 
-namespace User.States
+namespace User.States.Behaviours
 {
 	[CreateAssetMenu(menuName = "States/Behaviours/Traversal", fileName = "TraversalBehaviour", order = 0)]
 	public class TraversalBehaviour : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>

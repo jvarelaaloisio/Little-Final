@@ -70,10 +70,7 @@ namespace Core.Data
 		}
 
 		public object this[Type type, IIdentifier id]
-		{
-			get => _typeIndex[type][id];
-			set => _typeIndex[type][id] = value;
-		}
+			=> _typeIndex[type][id];
 
 		public object this[Type type]
 			=> _typeIndex[type];

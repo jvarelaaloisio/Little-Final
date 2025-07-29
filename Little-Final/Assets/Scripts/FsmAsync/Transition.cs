@@ -1,36 +1,37 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using Core.Helpers;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace FsmAsync
 {
     [Serializable]
-    public struct Transition<T> : ITransition<T>
+    public struct Transition<TTarget, TId> : ITransition<TTarget, TId>
     {
         private readonly ILogger _logger;
         private readonly string _loggerTag;
 
-        public Transition(IState<T> from,
-                          IState<T> to,
+        public Transition(IState<TTarget> from,
+                          IState<TTarget> to,
+                          TId id,
                           ILogger logger = null,
                           string loggerTag = "")
         {
             From = from;
-            OnTransition = new List<Func<(IState<T> from, IState<T> to), UniTask>>();
+            OnTransition = new List<Func<(IState<TTarget> from, IState<TTarget> to), UniTask>>();
             To = to;
+            Id = id;
             _logger = logger;
             _loggerTag = loggerTag;
         }
 
-        public IState<T> From { get; }
-        public IState<T> To { get; }
-        public List<Func<(IState<T> from, IState<T> to), UniTask>> OnTransition { get; }
+        public TId Id { get; }
+        public IState<TTarget> From { get; }
+        public IState<TTarget> To { get; }
+        public List<Func<(IState<TTarget> from, IState<TTarget> to), UniTask>> OnTransition { get; }
 
-        public async UniTask Do(T data, bool shouldLogTransition, CancellationToken token)
+        public async UniTask Do(TTarget data, bool shouldLogTransition, CancellationToken token)
         {
             if (From is null)
                 _logger?.LogError(_loggerTag, $"{nameof(From)} is null");
@@ -49,6 +50,10 @@ namespace FsmAsync
                     _logger?.Log(_loggerTag, $"transitioned: {Colored(From?.Name, "yellow")} -> {Colored(To.Name, "green")}");
             }
         }
+
+        public UniTask Do(TTarget data, CancellationToken token)
+            => Do(data, _logger != null, token);
+
         private static string Colored(object message, string color) => $"<color={color}>{message}</color>";
     }
 }

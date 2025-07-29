@@ -437,6 +437,49 @@ MonoBehaviour:
   speed: 15
   minimumSpeedToRotate: 0.01
   drawGizmos: 0
+--- !u!114 &182667041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182667034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bab125c9a3cd762f58c19a3cea23f200, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  description: Controls the pitch of the body while falling
+  actionIdsToStart:
+  - reference: {fileID: 11400000, guid: 37a5942198a50a240afa6a8d0fabfc65, type: 2}
+  actionIdsToStop:
+  - reference: {fileID: 11400000, guid: 85b77a626a702954981623499f6e9f9f, type: 2}
+  maxYSpeed: 1
+  pitchCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 60
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  rotationSpeed: 2
 --- !u!4 &227884101 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7264249448672006688, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
@@ -623,7 +666,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 80
   orthographic: 0
   orthographic size: 2.5
   m_Depth: -1
@@ -649,13 +692,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 754151487}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 1.4, y: 2.25, z: 2.1}
+  m_LocalRotation: {x: 0.25881884, y: -0, z: -0, w: 0.9659259}
+  m_LocalPosition: {x: 1.4, y: 1.381, z: 1.148}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!114 &754151491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1146,6 +1189,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -2782182542571858041, guid: 9a3299f57c5c1da6a9b1940ca8f2f6d5,
         type: 3}
+      propertyPath: enableLog
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2782182542571858041, guid: 9a3299f57c5c1da6a9b1940ca8f2f6d5,
+        type: 3}
       propertyPath: <OverrideLifeCycle>k__BackingField
       value: 0
       objectReference: {fileID: 0}
@@ -1216,8 +1264,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8639353930731474083, guid: 9a3299f57c5c1da6a9b1940ca8f2f6d5,
         type: 3}
-      propertyPath: logFsmTransitions
+      propertyPath: enableLog
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8639353930731474083, guid: 9a3299f57c5c1da6a9b1940ca8f2f6d5,
+        type: 3}
+      propertyPath: enableStateLogs
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8639353930731474083, guid: 9a3299f57c5c1da6a9b1940ca8f2f6d5,
+        type: 3}
+      propertyPath: logFsmTransitions
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8639353930731474083, guid: 9a3299f57c5c1da6a9b1940ca8f2f6d5,
         type: 3}
@@ -1350,6 +1408,10 @@ PrefabInstance:
         type: 3}
       insertIndex: 2
       addedObject: {fileID: 182667040}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
+        type: 3}
+      insertIndex: 3
+      addedObject: {fileID: 182667041}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
         type: 3}
       insertIndex: -1

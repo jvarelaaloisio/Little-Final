@@ -1,12 +1,11 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Characters;
 using Core.Acting;
 using Core.Data;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace User.States
+namespace User.States.Behaviours
 {
 	[CreateAssetMenu(menuName = "States/Behaviours/Cancel Movement", fileName = "CancelMovement", order = 0)]
 	public class CancelMovementBehaviour : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>
@@ -23,14 +22,10 @@ namespace User.States
 
 		/// <inheritdoc />
 		public UniTask Exit(IActor<ReverseIndexStore> actor, CancellationToken token)
-		{
-			throw new NotImplementedException();
-		}
+			=> UniTask.CompletedTask;
 
 		/// <inheritdoc />
 		public UniTask<bool> TryHandleInput(IActor<ReverseIndexStore> actor, CancellationToken token)
-		{
-			throw new NotImplementedException();
-		}
+			=> UniTask.FromResult(false);
 	}
 }

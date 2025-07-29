@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 398ea42901f44bfeb36f84c2e9d2feaa, type: 3}
-  m_Name: Idle
+  m_Script: {fileID: 11500000, guid: b670060918dd457c8fea629064fa9eb9, type: 3}
+  m_Name: Behaviour_FeatherFall
   m_EditorClassIdentifier: 
-  <Behaviours>k__BackingField:
-  - reference: {fileID: 11400000, guid: 561e7dc7df7024145906b2b212b2f8bb, type: 2}
+  gravityMultiplier: 0.005
+  physicsCharacterId:
+    reference: {fileID: 11400000, guid: 18bc869d02976d0488dab5e62ef8611c, type: 2}

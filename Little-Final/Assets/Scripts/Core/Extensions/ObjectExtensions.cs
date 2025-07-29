@@ -15,10 +15,10 @@ namespace Core.Extensions
             => Debug.LogWarning(GetFormattedMessage(writer, message), context ?? writer);
 
         private static string GetFormattedMessage(Object writer, object message)
-            => $"({Time.realtimeSinceStartupAsDouble}) {writer.name}: {message}";
+            => $"{writer.name}: {message}";
 
         private static string GetFormattedMessage(Object writer, System.Type type, object message)
-            => $"({Time.realtimeSinceStartupAsDouble}) {writer.name} ({type.Name.Colored(Color.gray)}): {message}";
+            => $"{writer.name} ({type.Name.Colored(Color.gray)}): {message}";
         private static string GetFormattedMessage(Object writer, System.Type type, object message, bool includeType)
             => includeType
             ? GetFormattedMessage(writer, type, message)

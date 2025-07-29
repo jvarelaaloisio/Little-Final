@@ -1,16 +1,13 @@
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using Characters;
 using Core.Acting;
 using Core.Data;
-using Core.Extensions;
 using Core.Helpers;
 using Core.References;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace User.States
+namespace User.States.Behaviours
 {
 	[CreateAssetMenu(menuName = "States/Behaviours/Jump", fileName = "JumpBehaviour", order = 0)]
 	public class JumpBehaviour : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>

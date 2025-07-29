@@ -23,7 +23,7 @@ namespace Views
 			base.Setup(data);
 			if (!particles)
 				Debug.LogWarning($"{name} <color=grey>({nameof(ParticlesView)})</color>: {nameof(particles)} not set!");
-			
+
 			TryAddPreBehaviour(actionIdsToStop, StopParticles);
 			TryAddPostBehaviour(actionIdsToPlay, PlayParticles);
 		}

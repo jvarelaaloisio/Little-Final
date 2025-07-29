@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Interactions.EventTriggers;
 using UnityEngine;
 
 namespace Characters
@@ -6,9 +9,13 @@ namespace Characters
     public class FallingController : IFallingController
     {
         private readonly Rigidbody _rigidbody;
+        private readonly IFloorTracker _floorTracker;
 
-        public FallingController(Rigidbody rigidbody)
-            => _rigidbody = rigidbody;
+        public FallingController(Rigidbody rigidbody, IFloorTracker floorTracker)
+        {
+            _rigidbody = rigidbody;
+            _floorTracker = floorTracker;
+        }
 
         /// <summary>
         /// Event risen when <see cref="_rigidbody"/>.<see cref="Rigidbody.velocity"/>.y becomes less than 0
@@ -32,16 +39,15 @@ namespace Characters
 
             void ValidateIfFallingStateHasChanged()
             {
-                switch (IsFalling)
+                if (IsFalling && _rigidbody.velocity.y > -0.1f && _floorTracker.CurrentFloorData.distance < 0.21f)
                 {
-                    case true when _rigidbody.velocity.y > -0.1f:
-                        IsFalling = false;
-                        OnStopFalling();
-                        break;
-                    case false when _rigidbody.velocity.y < -0.1f:
-                        IsFalling = true;
-                        OnStartFalling();
-                        break;
+                    IsFalling = false;
+                    OnStopFalling();
+                }
+                else if (!IsFalling && _rigidbody.velocity.y < -0.1f && _floorTracker.CurrentFloorData.distance >= 0.21f)
+                {
+                    IsFalling = true;
+                    OnStartFalling();
                 }
             }
         }
