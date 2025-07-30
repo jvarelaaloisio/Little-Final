@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using Core.Extensions;
 using Events.Channels;
@@ -14,16 +15,17 @@ namespace Menus
 {
     public class GameSceneManager : MonobehaviourSingleton<GameSceneManager>
     {
-        private class Str
-        {
-            public static string Activating => "Activating ".Colored(C.Yellow);
-            public static string Activated => "Activated ".Colored(C.Green);
-            public static string Loading => "Loading ".Colored(C.Yellow);
-            public static string Loaded => "Loaded ".Colored(C.Green);
-            public static string Unloading => "Unloading ".Colored(C.Red);
-            public static string Unloaded => "Unloaded ".Colored(C.Green);
-            public static string Waiting => "Waiting ".Colored(C.Yellow);
-        }
+    #region Log Strings
+
+        private static readonly string ACTIVATING = "Activating ".Colored(C.Yellow);
+        private static readonly string ACTIVATED = "Activated ".Colored(C.Green);
+        private static readonly string LOADING = "Loading ".Colored(C.Yellow);
+        private static readonly string LOADED = "Loaded ".Colored(C.Green);
+        private static readonly string UNLOADING = "Unloading ".Colored(C.Red);
+        private static readonly string UNLOADED = "Unloaded ".Colored(C.Green);
+        private static readonly string WAITING = "Waiting ".Colored(C.Yellow);
+
+    #endregion
         private class LoadingState
         {
             public List<SceneAsyncOperation> LoadingOperations = new();
@@ -46,13 +48,13 @@ namespace Menus
                     if (sceneOperation.AsyncOperation != null)
                         yield return WaitForLoadToFinish(sceneOperation);
 
-                    writer?.Log(Str.Unloading + sceneOperation.Scene.name);
+                    writer?.Log(UNLOADING + sceneOperation.Scene.name);
                     var unloadOperation = SceneManager.UnloadSceneAsync(sceneOperation.Scene);
                     if (unloadOperation != null)
                         yield return new WaitUntil(() => ProgressIsOver90Percent(unloadOperation));
                     else
                         writer.Log($"Unload operation for {sceneOperation.Scene.name} failed.");
-                    writer?.Log(Str.Unloaded + sceneOperation.Scene.name);
+                    writer?.Log(UNLOADED + sceneOperation.Scene.name);
                 }
 
                 writer?.Log("Reset successful. ".Colored(Color.green) + "Clearing loading state");
@@ -68,14 +70,14 @@ namespace Menus
                 IEnumerator WaitForUnloadToFinish(SceneAsyncOperation sceneOperation)
                 {
                     var unloadOperation = UnloadingOperations.Find(op => op.Scene == sceneOperation.Scene);
-                    writer?.Log(Str.Waiting + $"for ({unloadOperation.Scene.name}) to finish unloading");
+                    writer?.Log(WAITING + $"for ({unloadOperation.Scene.name}) to finish unloading");
                     yield return unloadOperation.AsyncOperation;
                 }
 
                 IEnumerator WaitForLoadToFinish(SceneAsyncOperation sceneOperation)
                 {
                     sceneOperation.AsyncOperation.allowSceneActivation = true;
-                    writer?.Log(Str.Waiting + $"for ({sceneOperation.Scene.name}) to finish loading"
+                    writer?.Log(WAITING + $"for ({sceneOperation.Scene.name}) to finish loading"
                              + $"\nCurrent progress: {sceneOperation.AsyncOperation.progress}");
                     yield return new WaitUntil(()=> ProgressIsOver90Percent(sceneOperation.AsyncOperation));
                 }
@@ -137,7 +139,7 @@ namespace Menus
         /// <param name="newLevel">The level to change to</param>
         public void LoadLevel(LevelDataContainerViaBuildIndexes newLevel)
         {
-            this.Log(Str.Loading + $"Level [{newLevel.name}]");
+            this.Log(LOADING + $"Level [{newLevel.name}]");
             if (_currentLoadCoroutine != null)
             {
                 _LoadTokenSource?.Cancel();
@@ -175,7 +177,7 @@ namespace Menus
             if (oldLevel)
                 yield return UnloadOldLevel();
 
-            var loadReport = Str.Loaded + $"level {newLevel.name}. Report:";
+            var loadReport = LOADED + $"level {newLevel.name}. Report:";
             Application.backgroundLoadingPriority = ThreadPriority.High;
             yield return LoadImmediate();
 
@@ -215,8 +217,7 @@ namespace Menus
                     yield return unloadOperation;
                     _loadingState.UnloadingOperations.Remove(sceneOperation);
                 }
-                //TODO: Use StringBuilder
-                var unloadReport = $"<color=yellow>Unloaded</color> level {oldLevel.name}. Report:";
+                var unloadReport = new StringBuilder(UNLOADED + $"level {oldLevel.name}. Report:");
                 foreach (var unloadOperation in oldLevel.GetUnloadScenes())
                 {
                     var duration = Time.realtimeSinceStartupAsDouble;
@@ -231,7 +232,7 @@ namespace Menus
                     _loadingState.UnloadingOperations.Remove(unloadOperation);
                     
                     duration = Time.realtimeSinceStartupAsDouble - duration;
-                    unloadReport += $"\n{unloadOperation.Path} ({duration * 1000:F} ms)";
+                    unloadReport.AppendLine($"{unloadOperation.Path} ({duration * 1000:F} ms)");
                     scenesLoadedCount++;
                 }
                 this.Log(unloadReport, oldLevel);
@@ -269,7 +270,7 @@ namespace Menus
                         asyncOperation.allowSceneActivation = false;
                         //TODO: Try to make this whole block more readable. Maybe add a report, like the ones above?
                         var sceneName = loadOperation.Scene.name;
-                        this.Log(Str.Loading + sceneName);
+                        this.Log(LOADING + sceneName);
 
                         var loadStartTime = Time.realtimeSinceStartupAsDouble;
                     
@@ -284,7 +285,7 @@ namespace Menus
 
                         //TODO: Use Stopwatch in the same way as in the InterfaceRef inspector.
                         var loadMilliseconds = (int)(Time.realtimeSinceStartupAsDouble - loadStartTime) * 1000;
-                        this.Log(Str.Loaded + $"{sceneName} in {loadMilliseconds.Colored(C.Red)}ms" +
+                        this.Log(LOADED + $"{sceneName} in {loadMilliseconds.Colored(C.Red)}ms" +
                                  $"\nWaiting {delayBeforeActivatingScene} seconds before activation.".Colored(C.Black));
 
                         if (token.IsCancellationRequested)
@@ -297,11 +298,11 @@ namespace Menus
                         yield return new WaitForSeconds(delayBeforeActivatingScene);
 
                         var activationStartTime = Time.realtimeSinceStartupAsDouble;
-                        this.Log(Str.Activating + sceneName);
+                        this.Log(ACTIVATING + sceneName);
                         asyncOperation.allowSceneActivation = true;
 
                         var activationMilliseconds = (int)(Time.realtimeSinceStartupAsDouble - activationStartTime) * 1000;
-                        this.Log(Str.Activated + $"{sceneName} in {activationMilliseconds.Colored(C.Red)}ms" +
+                        this.Log(ACTIVATED + $"{sceneName} in {activationMilliseconds.Colored(C.Red)}ms" +
                                  $"\nWaiting {delayBetweenBatches * 1000}ms.".Colored(C.Black));
                         
                         //THOUGHT: Is this really necessary? Maybe just yield return null?
