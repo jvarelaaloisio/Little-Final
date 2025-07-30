@@ -7,6 +7,7 @@ using Core.Helpers;
 using Core.References;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Views
 {
@@ -14,13 +15,14 @@ namespace Views
 	{
 		[SerializeField] private List<InterfaceRef<IIdentifier>> actionIdsToStart = new();
 		[SerializeField] private List<InterfaceRef<IIdentifier>> actionIdsToStop = new();
-		[SerializeField] private float maxYSpeed;
+		[SerializeField] private float maxSpeed = 1.0f;
 		[SerializeField] private AnimationCurve pitchCurve = AnimationCurve.EaseInOut(0, 0, 1, 90);
 		[SerializeField] private float rotationSpeed = 10.0f;
 		
 		private Rigidbody _rigidbody;
 		private CancellationTokenSource _controlPitchToken;
-		private Quaternion _originalRotation;
+		private float _originalPitch;
+		private CancellationTokenSource _resetToken;
 
 		/// <inheritdoc />
 		public override void Setup(ICharacter data)
@@ -31,22 +33,24 @@ namespace Views
 			else
 				_rigidbody = physicsCharacter.rigidbody;
 
-			if (!TryAddPostBehaviour(actionIdsToStart, StartControllingYaw))
-				this.LogError($"Couldn't add behaviour {nameof(StartControllingYaw)}");
+			if (!TryAddPostBehaviour(actionIdsToStart, StartControllingPitch))
+				this.LogError($"Couldn't add behaviour {nameof(StartControllingPitch)}");
 			if (!TryAddPreBehaviour(actionIdsToStop, StopControllingPitch))
 				this.LogError($"Couldn't add behaviour {nameof(StopControllingPitch)}");
+			_originalPitch = transform.localEulerAngles.x;
 		}
 
 		private void OnDisable()
 		{
-			RemovePostBehaviour(actionIdsToStop, StartControllingYaw);
+			RemovePostBehaviour(actionIdsToStop, StartControllingPitch);
 			RemovePostBehaviour(actionIdsToStart, StopControllingPitch);
 		}
 
-		private UniTask StartControllingYaw(IActor actor, CancellationToken token)
+		private UniTask StartControllingPitch(IActor actor, CancellationToken token)
 		{
-			_originalRotation = transform.rotation;
-
+			_resetToken?.Cancel();
+			_resetToken?.Dispose();
+			_resetToken = null;
 			_controlPitchToken?.Cancel();
 			_controlPitchToken?.Dispose();
 			_controlPitchToken = new CancellationTokenSource();
@@ -60,18 +64,44 @@ namespace Views
 			_controlPitchToken?.Cancel();
 			_controlPitchToken?.Dispose();
 			_controlPitchToken = null;
-			transform.rotation = _originalRotation;
+			
+			Reset();
 			return UniTask.CompletedTask;
+
+			void Reset()
+			{
+				_controlPitchToken?.Cancel();
+				_controlPitchToken?.Dispose();
+				_resetToken = CancellationTokenSource.CreateLinkedTokenSource(token, destroyCancellationToken);
+				ResetPitch(_resetToken.Token).Forget();
+			}
+		}
+
+		private async UniTaskVoid ResetPitch(CancellationToken token)
+		{
+			var euler = transform.localEulerAngles;
+			var finalPitch = euler.x;
+			var start = Time.time;
+			float now = 0;
+			do
+			{
+				now = Time.time;
+				var lerp = (now - start) / .1f;
+				
+				euler.x = Mathf.Lerp(finalPitch, _originalPitch, lerp);
+				transform.localEulerAngles = euler;
+				await UniTask.Yield(token);
+			} while (now < start + .1f && !token.IsCancellationRequested);
 		}
 
 		private async UniTaskVoid ControlPitch(CancellationToken token)
 		{
 			while (!token.IsCancellationRequested)
 			{
-				var ySpeed = Mathf.Abs(_rigidbody.velocity.y);
-				ySpeed /= maxYSpeed;
+				var speed = transform.InverseTransformDirection(_rigidbody.velocity).IgnoreY().magnitude;
+				speed /= maxSpeed;
 				var euler = transform.localEulerAngles;
-				euler.x = Mathf.Lerp(euler.x, pitchCurve.Evaluate(ySpeed), Time.deltaTime * rotationSpeed);
+				euler.x = Mathf.Lerp(euler.x, pitchCurve.Evaluate(speed), Time.deltaTime * rotationSpeed);
 				transform.localEulerAngles = euler;
 				await UniTask.Yield();
 			}
