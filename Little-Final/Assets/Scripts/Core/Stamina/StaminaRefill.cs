@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Core.Debugging;
+using Player.Stamina;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -56,7 +57,7 @@ namespace Core.Stamina
 			debugger.Log(DebugTag, $"stopped stamina refill timer", this);
 		}
 
-		private IEnumerator RefillInternal(Player.Stamina.Stamina stamina)
+		private IEnumerator RefillInternal(IStamina stamina)
 		{
 			yield return new WaitForSeconds(refillDelay);
 			if (refillCompletely)
