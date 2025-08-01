@@ -18,12 +18,13 @@ using Events.UnityEvents;
 using HealthSystem.Runtime;
 using HealthSystem.Runtime.Components;
 using Player.Movement;
+using Player.Stamina;
 using VarelaAloisio.UpdateManagement.Runtime;
 using Void = Player.States.Void;
 
 namespace Player
 {
-    public class PlayerController : MonoBehaviour, IUpdateable, IInteractor, IStaminaContainer, IBuffable
+    public class PlayerController : MonoBehaviour, IUpdateable, IInteractor, IHaveStamina, IBuffable
     {
         public delegate void StateCallback(State state);
 
@@ -88,13 +89,7 @@ namespace Player
             get => collectableBag.OnCollectableAdded;
             set => collectableBag.OnCollectableAdded = value;
         }
-
-        public Action<float> onStaminaChange
-        {
-            get => stamina.OnStaminaChange;
-            set => stamina.OnStaminaChange = value;
-        }
-
+        
         public Action<float> OnChangeSpeed = delegate { };
         public Action<string> OnSpecificAction = delegate { };
         public SmartEvent OnJump;
@@ -134,7 +129,7 @@ namespace Player
             }
         }
 
-        public Stamina.Stamina Stamina => stamina;
+        public IStamina Stamina => stamina;
         public State State => state;
 
         public int SceneIndex => _sceneIndex;
@@ -248,7 +243,7 @@ namespace Player
                 if (!ability.ValidateTrigger(this))
                     continue;
                 ability.Use(this);
-                stamina.ConsumeStamina(ability.Stamina);
+                stamina.Consume(ability.Stamina);
             }
         }
 
@@ -257,7 +252,7 @@ namespace Player
 #if UNITY_EDITOR
             if (Input.GetKeyDown(KeyCode.O))
             {
-                stamina.UpgradeMaxStamina(400);
+                stamina.UpgradeMax(400);
                 stamina.RefillCompletely();
             }
 #endif
@@ -294,7 +289,7 @@ namespace Player
 
         private void UpgradeStamina()
         {
-            stamina.UpgradeMaxStamina(stamina.MaxStamina + PP_Stats.StaminaUpgrade);
+            stamina.UpgradeMax(stamina.Max + PP_Stats.StaminaUpgrade);
             stamina.RefillCompletely();
         }
 

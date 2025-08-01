@@ -51,7 +51,7 @@ namespace Player.Stamina
 
 		private void ConsumeStamina()
 		{
-			_target.ConsumeStamina(1);
+			_target.Consume(1);
 		}
 	}
 }

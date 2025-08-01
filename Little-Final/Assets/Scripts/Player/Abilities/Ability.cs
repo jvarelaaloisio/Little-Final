@@ -24,7 +24,7 @@ namespace Player.Abilities
 		public virtual bool ValidateTrigger(PlayerController controller)
 		{
 			return (!IsOnCoolDown
-			        && controller.Stamina.FillState >= stamina
+			        && controller.Stamina.Current >= stamina
 			        && ValidateInternal(controller));
 		}
 

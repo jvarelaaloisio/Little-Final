@@ -1,7 +1,7 @@
 using Core.Helpers;
 using Core.Interactions;
 using Core.Items;
-using Player;
+using Core.Stamina;
 using UnityEngine;
 
 public class StaminaUpgradeStatue : MonoBehaviour, IInteractable
@@ -20,10 +20,10 @@ public class StaminaUpgradeStatue : MonoBehaviour, IInteractable
         // var simpleItem = item as QuantifiedItem;
         if (!(item?.Quantity >= quantityForReward))
             return;
-        if (!interactorTransform.TryGetComponent(out PlayerController playerController))
+        if (!interactorTransform.TryGetComponent(out IHaveStamina playerController))
             return;
         var stamina = playerController.Stamina;
-        stamina.UpgradeMaxStamina(stamina.MaxStamina + upgradeSize);
+        stamina.UpgradeMax(stamina.Max + upgradeSize);
         item.RemoveUnit(new QuantifiedItem(quantityForReward));
         Debug.Log($"{name}: Stamina reward given ({upgradeSize})");
     }

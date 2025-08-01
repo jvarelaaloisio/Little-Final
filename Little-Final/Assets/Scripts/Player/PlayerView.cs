@@ -126,9 +126,9 @@ namespace Player
 			ponchoRenderer.sharedMaterial = new Material(poncho);
 			poncho = ponchoRenderer.sharedMaterial;
 #endif
-			controller.onStaminaChange += UpdateStamina;
+			controller.Stamina.OnChange += UpdateStamina;
+			controller.Stamina.OnUpgrade += _ => ShowStaminaUpgradeFeedback();
 			controller.OnPickCollectable += UpdatePonchoEffect;
-			controller.Stamina.OnMaxStaminaUpgrade += _ => ShowStaminaUpgradeFeedback();
 			controller.OnChangeSpeed += SetSpeed;
 			controller.OnSpecificAction += PlaySpecificAnimation;
 			controller.OnJump += ShowJumpFeedback;
@@ -241,7 +241,7 @@ namespace Player
 					: Color.Lerp(midStamina, maxStamina, (lastCircleLerp - .5f) * 2);
 			staminaFade.StopAction();
 			//--CUIDAO
-			if (Math.Abs(newStaminaAmount - controller.Stamina.MaxStamina)
+			if (Math.Abs(newStaminaAmount - controller.Stamina.Max)
 				< 0.05f)
 				staminaFadeTimer.StartTimer();
 #else
@@ -432,7 +432,7 @@ namespace Player
 			
 			GUI.skin.label.normal.textColor = Color.white;
 			GUILayout.Label("State: " + controller.State.GetType());
-			GUI.skin.label.normal.textColor = controller.Stamina.IsRefillingActive ? Color.green : Color.red;
+			GUI.skin.label.normal.textColor = controller.Stamina.IsRefilling ? Color.green : Color.red;
 			
 			//GUILayout.Label("Stamina: " + controller.Stamina.FillState);
 			//GUILayout.Label($"Buff: {Controller.BuffMultiplier:f2}");

@@ -77,7 +77,7 @@ namespace Player.States
 		{
 			var climbCheckPosition = Controller.ClimbCheckPivot.position;
 			if (InputManager.CheckClimbInput()
-			    && Controller.Stamina.FillState > 0
+			    && Controller.Stamina.Current > 0
 			    && ClimbHelper.CanClimb(
 				    climbCheckPosition,
 				    GetForwardDirectionBasedOnGroundAngle(),

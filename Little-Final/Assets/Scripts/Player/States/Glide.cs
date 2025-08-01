@@ -50,7 +50,7 @@ namespace Player.States
 			Move();
 
 			if (!InputManager.GetGlideInput()
-			    || Controller.Stamina.FillState < 1
+			    || Controller.Stamina.Current < 1
 			    || Body.Velocity.y > 0)
 				Controller.ChangeState<Jump>();
 

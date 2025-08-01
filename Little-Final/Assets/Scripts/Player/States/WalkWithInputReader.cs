@@ -143,7 +143,7 @@ namespace Player.States
         protected void CheckClimb()
         {
             var climbCheckPosition = Controller.ClimbCheckPivot.position;
-            if (Controller.Stamina.FillState > 0
+            if (Controller.Stamina.Current > 0
                 && ClimbHelper.CanClimb(climbCheckPosition,
                                         GetForwardDirectionBasedOnGroundAngle(),
                                         PP_Climb.MaxDistanceToTriggerClimb,

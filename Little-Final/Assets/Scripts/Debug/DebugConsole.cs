@@ -270,7 +270,7 @@ public class DebugConsole : MonoBehaviour
 		}
 		if(int.TryParse((string)args[0], out int _stamina))
 		{
-			player.Stamina.UpgradeMaxStamina(_stamina);
+			player.Stamina.UpgradeMax(_stamina);
 			player.Stamina.RefillCompletely();
 			WriteFeedback("stamina upgraded to " + _stamina);
 		}
