@@ -34,7 +34,7 @@ namespace User.States.Behaviours
 				this.LogError("Couldn't get character from actor's data!");
 				return;
 			}
-			physicsCharacter.rigidbody.useGravity = false;
+			physicsCharacter.Body.useGravity = false;
 			var fakeGravity = Physics.gravity * gravityMultiplier;
 			if (!physicsCharacter.TryAddContinuousForce(fakeGravity))
 				this.LogError("Couldn't add continuous force to actor's data!");
@@ -52,7 +52,7 @@ namespace User.States.Behaviours
 				this.LogError("Couldn't get character from actor's data!");
 				return UniTask.CompletedTask;
 			}
-			physicsCharacter.rigidbody.useGravity = true;
+			physicsCharacter.Body.useGravity = true;
 			var fakeGravity = Physics.gravity * gravityMultiplier;
 			physicsCharacter.RemoveContinuousForce(fakeGravity);
 			return UniTask.CompletedTask;

@@ -1,17 +1,18 @@
-﻿using VarelaAloisio.UpdateManagement.Runtime;
+﻿using Core.Stamina;
+using VarelaAloisio.UpdateManagement.Runtime;
 
 namespace Player.Stamina
 {
 	public class StaminaConsumer
 	{
-		private readonly Stamina _target;
+		private readonly IStamina _target;
 		private readonly ActionWithFrequency _consumingStamina;
 		private readonly CountDownTimer _waitToConsumeStamina;
 		private readonly float _consumptionDelay;
 		public bool IsConsuming => _consumingStamina.IsRunning;
 
 		public StaminaConsumer(
-			Stamina target,
+			IStamina target,
 			float staminaPerSecond,
 			int sceneIndex,
 			float consumptionDelay = 0)
@@ -51,7 +52,7 @@ namespace Player.Stamina
 
 		private void ConsumeStamina()
 		{
-			_target.ConsumeStamina(1);
+			_target.Consume(1);
 		}
 	}
 }

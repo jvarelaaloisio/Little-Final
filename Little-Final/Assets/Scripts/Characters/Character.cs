@@ -2,6 +2,8 @@ using Acting;
 using Core.Acting;
 using Core.Attributes;
 using Core.References;
+using Core.Stamina;
+using Player.Stamina;
 using UnityEngine;
 
 namespace Characters
@@ -30,6 +32,9 @@ namespace Characters
         /// <inheritdoc />
         public abstract IFallingController FallingController { get; }
 
+        /// <inheritdoc />
+        public abstract IStamina Stamina { get; }
+
         public abstract Vector3 Velocity { get; set; }
 
         protected virtual void Awake()
@@ -48,6 +53,8 @@ namespace Characters
         {
             Actor = new Actor<TData>();
             Actor.TrySetData(data);
+            if (Stamina is ISetup setupableStamina)
+                setupableStamina.Setup();
             IsSet = true;
             enabled = true;
         }

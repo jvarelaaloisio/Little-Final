@@ -31,11 +31,24 @@ namespace FsmAsync.Conditional
 			_predicateName = _predicate.Method.Name;
 			return this;
 		}
+		public TransitionBuilder<TTarget, TId> WhenNot(Predicate<TTarget> predicate)
+		{
+			_predicate = target => !predicate(target);
+			_predicateName = _predicate.Method.Name + ".Negated";
+			return this;
+		}
 
 		public TransitionBuilder<TTarget, TId> When(string name, Predicate<TTarget> predicate)
 		{
 			_predicate = predicate;
 			_predicateName = name;
+			return this;
+		}
+
+		public TransitionBuilder<TTarget, TId> WhenNot(string name, Predicate<TTarget> predicate)
+		{
+			_predicate = target => !predicate(target);
+			_predicateName = name + ".Negated";
 			return this;
 		}
 

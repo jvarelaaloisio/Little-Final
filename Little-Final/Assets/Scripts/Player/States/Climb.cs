@@ -32,7 +32,7 @@ namespace Player.States
 			if (Controller.HasItem())
 				Controller.PutDownItem();
 			
-			if (controller.Stamina.FillState < 1)
+			if (controller.Stamina.Current < 1)
 			{
 				controller.ChangeState<Jump>();
 				return;
@@ -123,7 +123,7 @@ namespace Player.States
 				_consumer.Stop();
 
 			if (!InputManager.CheckClimbInput()
-			    || Controller.Stamina.FillState < 1)
+			    || Controller.Stamina.Current < 1)
 			{
 				Controller.ChangeState<Jump>();
 				Controller.OnJump.Invoke();

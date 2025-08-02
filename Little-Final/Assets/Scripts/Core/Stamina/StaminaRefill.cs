@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Core.Debugging;
+using Player.Stamina;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -32,14 +33,14 @@ namespace Core.Stamina
 				.GetComponents<MonoBehaviour>();
 			foreach (var behaviour in myComp)
 			{
-				var asdf = behaviour as IStaminaContainer;
+				var asdf = behaviour as IHaveStamina;
 				if (( asdf) != null)
 				{
 					
 				}
 			}
-			IStaminaContainer container = target.GetComponent<IStaminaContainer>();
-			if (!target.TryGetComponent(out IStaminaContainer staminaContainer))
+			IHaveStamina container = target.GetComponent<IHaveStamina>();
+			if (!target.TryGetComponent(out IHaveStamina staminaContainer))
 			{
 				debugger.LogError(DebugTag, $"{target.name} has no component that implements IStaminaContainer");
 				return;
@@ -56,7 +57,7 @@ namespace Core.Stamina
 			debugger.Log(DebugTag, $"stopped stamina refill timer", this);
 		}
 
-		private IEnumerator RefillInternal(Player.Stamina.Stamina stamina)
+		private IEnumerator RefillInternal(IStamina stamina)
 		{
 			yield return new WaitForSeconds(refillDelay);
 			if (refillCompletely)
@@ -66,7 +67,7 @@ namespace Core.Stamina
 			}
 			else
 			{
-				stamina.ConsumeStamina(-refillAmount);
+				stamina.Consume(-refillAmount);
 				debugger.Log(DebugTag, $"Refilled target's stamina for {refillAmount} points", this);
 			}
 

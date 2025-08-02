@@ -14,6 +14,7 @@ namespace Views
 	public class ParticlesView : CharacterView
 	{
 		[SerializeField] private ParticleSystem particles;
+		[SerializeField] private bool defaultState = false;
 		[SerializeField] private List<InterfaceRef<IIdentifier>> actionIdsToPlay = new();
 		[SerializeField] private List<InterfaceRef<IIdentifier>> actionIdsToStop = new();
 
@@ -24,6 +25,10 @@ namespace Views
 			if (!particles)
 				Debug.LogWarning($"{name} <color=grey>({nameof(ParticlesView)})</color>: {nameof(particles)} not set!");
 
+			if (defaultState)
+				particles?.Play();
+			else
+				particles?.Stop();
 			TryAddPreBehaviour(actionIdsToStop, StopParticles);
 			TryAddPostBehaviour(actionIdsToPlay, PlayParticles);
 		}

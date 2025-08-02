@@ -5013,11 +5013,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   description: Leaf Particles
-  particles: {fileID: 7590815695509004680}
+  particles: {fileID: 8081058597959115482}
+  defaultState: 0
   actionIdsToPlay:
-  - reference: {fileID: 11400000, guid: 85b77a626a702954981623499f6e9f9f, type: 2}
+  - reference: {fileID: 11400000, guid: 37a5942198a50a240afa6a8d0fabfc65, type: 2}
   actionIdsToStop:
   - reference: {fileID: 11400000, guid: 85b77a626a702954981623499f6e9f9f, type: 2}
+  - reference: {fileID: 11400000, guid: 851ee6b24b2ae8d4eb1ff92ebd8811b8, type: 2}
+  - reference: {fileID: 11400000, guid: 22332e9ecb428e444b79a90a287886c7, type: 2}
 --- !u!1 &4519510609743733918
 GameObject:
   m_ObjectHideFlags: 0
@@ -9863,10 +9866,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: Dust Particles
   particles: {fileID: 7590815695509004680}
+  defaultState: 0
   actionIdsToPlay:
   - reference: {fileID: 11400000, guid: 85b77a626a702954981623499f6e9f9f, type: 2}
   actionIdsToStop:
   - reference: {fileID: 11400000, guid: 22332e9ecb428e444b79a90a287886c7, type: 2}
+  - reference: {fileID: 11400000, guid: 851ee6b24b2ae8d4eb1ff92ebd8811b8, type: 2}
 --- !u!1 &5167175153209301229
 GameObject:
   m_ObjectHideFlags: 0
@@ -10115,6 +10120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: Dust Particles
   particles: {fileID: 7590815695509004680}
+  defaultState: 0
   actionIdsToPlay:
   - reference: {fileID: 11400000, guid: 85b77a626a702954981623499f6e9f9f, type: 2}
   actionIdsToStop:
@@ -10157,6 +10163,10 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   enableLog: 0
+  stamina:
+    <Max>k__BackingField: 100
+    <RefillSpeed>k__BackingField: 60
+    <RefillDelay>k__BackingField: 1.5
 --- !u!1 &6665584989643851020
 GameObject:
   m_ObjectHideFlags: 0

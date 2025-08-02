@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Core.Helpers
 {
@@ -9,12 +8,12 @@ namespace Core.Helpers
 		[SerializeField]
 		private new string name;
 
-		public Data Get => new Data(name, GetInstanceID());
+		public Id Get => new Id(name, GetInstanceID());
 
 		public string Name => name;
 
 		/// <inheritdoc />
-		public int Id => Get.Id;
+		public int Code => Get.Code;
 
 		public override string ToString() => name;
 
@@ -37,28 +36,9 @@ namespace Core.Helpers
 		public static bool operator !=(IdContainer original, IdContainer other)
 			=> !original?.Equals(other) ?? true;
 
-		public static implicit operator Data(IdContainer original)
+		public static implicit operator Id(IdContainer original)
 		{
 			return original.Get;
-		}
-
-		[Serializable]
-		public readonly struct Data : IIdentifier
-		{
-			public string name { get; }
-			public int Id { get; }
-
-			public Data(string name, int hashCode)
-			{
-				this.name = name;
-				this.Id = hashCode;
-			}
-
-			public bool Equals(IIdentifier other)
-				=> Id == other?.Id;
-
-			public override string ToString()
-				=> name;
 		}
 	}
 }

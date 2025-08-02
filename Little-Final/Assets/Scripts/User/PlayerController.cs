@@ -16,7 +16,7 @@ using UnityEngine;
 
 namespace User
 {
-    public class PlayerController : MonoBehaviour, ISetup<IPhysicsCharacter<ReverseIndexStore>>
+    public class PlayerController : MonoBehaviour, ISetup<ICharacter<ReverseIndexStore>>
     {
         [Tooltip("If true, this component will try to do an auto-setup." +
                  "\nUseful for editor testing.")]
@@ -50,7 +50,7 @@ namespace User
 
         [SerializeField] private float secondsBeforeGlide = 1;
 
-        private IPhysicsCharacter<ReverseIndexStore> _character;
+        private ICharacter<ReverseIndexStore> _character;
         private Coroutine _enableCoroutine;
 
         private ConditionalStateMachine<IActor<ReverseIndexStore>, IIdentifier> _fsm;
@@ -140,7 +140,7 @@ namespace User
             _updateCancellationSource?.Dispose();
         }
 
-        public void Setup(IPhysicsCharacter<ReverseIndexStore> data)
+        public void Setup(ICharacter<ReverseIndexStore> data)
         {
             _character = data;
             Actor.Data.Set(characterId.Get, _character);
@@ -149,7 +149,7 @@ namespace User
             SetupFsm(_character);
         }
 
-        private async void SetupFsm(IPhysicsCharacter character)
+        private async void SetupFsm(ICharacter character)
         {
             //THOUGHT: These states should be loaded from a file in the future. And that file should be created from the FSM Editor
             var floorTracker = character?.FloorTracker;
@@ -166,8 +166,8 @@ namespace User
             // idle.Ref.OnEnter.Add(_glideDelay.Cancel);
             _fsm = new ConditionalStateMachine<IActor<ReverseIndexStore>, IIdentifier>(name)
                        .ThatLogs(Debug.unityLogger, enableStateLogs)
-                       .ThatTransitionsFrom(walk.Ref).To(idle.Ref).When(nameof(WantsToStop), WantsToStop).WithId(stopId).Apply()
-                       .ThatTransitionsFrom(walkWhileFalling.Ref).To(fall.Ref).When(nameof(WantsToStop), WantsToStop).WithId(fallId).Apply()
+                       .ThatTransitionsFrom(walk.Ref).To(idle.Ref).WhenNot(nameof(WantsToTraverse), WantsToTraverse).WithId(stopId).Apply()
+                       .ThatTransitionsFrom(walkWhileFalling.Ref).To(fall.Ref).WhenNot(nameof(WantsToTraverse), WantsToTraverse).WithId(fallId).Apply()
 
                        .ThatTransitionsFrom(idle.Ref).To(walk.Ref).When(nameof(WantsToTraverse), WantsToTraverse).WithId(moveId).Apply()
                        .ThatTransitionsFrom(fall.Ref).To(walkWhileFalling.Ref).When(nameof(WantsToTraverse), WantsToTraverse).WithId(moveId).Apply()
@@ -179,15 +179,18 @@ namespace User
                        .ThatTransitionsFrom(walk.Ref).To(fall.Ref).When(nameof(IsFalling), IsFalling).WithId(fallId).Apply()
                        .ThatTransitionsFrom(jump.Ref).To(fall.Ref).When(nameof(IsFalling), IsFalling).WithId(fallId).Apply()
 
-                       .ThatTransitionsFrom(fall.Ref).To(idle.Ref).When(nameof(IsGrounded), IsGrounded).WithId(landId).Apply()
-                       .ThatTransitionsFrom(walkWhileFalling.Ref).To(walk.Ref).When(nameof(IsGrounded), IsGrounded).WithId(landId).Apply()
-                       .ThatTransitionsFrom(glide.Ref).To(walk.Ref).When(nameof(IsGrounded), IsGrounded).WithId(landId).Apply()
+                       .ThatTransitionsFrom(fall.Ref).To(idle.Ref).WhenNot(nameof(IsFalling), IsFalling).WithId(landId).Apply()
+                       .ThatTransitionsFrom(walkWhileFalling.Ref).To(walk.Ref).WhenNot(nameof(IsFalling), IsFalling).WithId(landId).Apply()
+                       .ThatTransitionsFrom(glide.Ref).To(walk.Ref).WhenNot(nameof(IsFalling), IsFalling).WithId(landId).Apply()
 
                        .ThatTransitionsFrom(fall.Ref).To(glide.Ref).When(nameof(WantsToGlide), WantsToGlide).WithId(glideId.Ref).Apply()
                        .ThatTransitionsFrom(walkWhileFalling.Ref).To(glide.Ref).When(nameof(WantsToGlide), WantsToGlide).WithId(glideId.Ref).Apply()
 
                        .ThatTransitionsFrom(glide.Ref).To(fall.Ref).When(nameof(NeitherWantsToGlideNorTraverse), NeitherWantsToGlideNorTraverse).WithId(fallId).Apply()
-                       .ThatTransitionsFrom(glide.Ref).To(walkWhileFalling.Ref).When(nameof(DoesNotWantToGlideButWantsToTraverse), DoesNotWantToGlideButWantsToTraverse).WithId(fallId).Apply();
+                       .ThatTransitionsFrom(glide.Ref).To(walkWhileFalling.Ref).When(nameof(DoesNotWantToGlideButWantsToTraverse), DoesNotWantToGlideButWantsToTraverse).WithId(fallId).Apply()
+
+                       .ThatTransitionsFrom(glide.Ref).To(fall.Ref).When(nameof(OutOfStamina), OutOfStamina).WithId(fallId).Apply();
+
 
             await _fsm.Start(idle.Ref, Actor, destroyCancellationToken);
 
@@ -202,13 +205,9 @@ namespace User
             fallingController.OnStartFalling += HandleStartFalling;
 
             fallingController.OnStopFalling += HandleStopFalling;
-
             bool WantsToTraverse(IActor<ReverseIndexStore> actor)
                 => Actor.Data.TryGet(traversalInputId.Ref, out Vector2 input)
                    && input.magnitude > 0.001f;
-
-            bool WantsToStop(IActor<ReverseIndexStore> actor)
-                => !WantsToTraverse(actor);
 
             bool WantsToJump(IActor<ReverseIndexStore> actor)
                 => Actor.Data.TryGet(jumpId.Get, out float inputTime)
@@ -217,9 +216,6 @@ namespace User
             bool IsFalling(IActor<ReverseIndexStore> actor)
                 => actor.Data.TryGet(fallId, out bool input)
                    && input;
-
-            bool IsGrounded(IActor<ReverseIndexStore> actor)
-                => !IsFalling(actor);
 
             bool WantsToGlide(IActor<ReverseIndexStore> actor)
                 => actor.Data.TryGet(glideId.Ref, out bool input)
@@ -233,7 +229,10 @@ namespace User
             bool NeitherWantsToGlideNorTraverse(IActor<ReverseIndexStore> actor)
                 => !actor.Data.TryGet(glideId.Ref, out bool input)
                    || !input
-                   && !WantsToTraverse(actor);;
+                   && !WantsToTraverse(actor);
+
+            bool OutOfStamina(IActor<ReverseIndexStore> actor)
+                => character.Stamina.Current <= 0;
         }
 
         private void HandleStartFalling()
@@ -283,29 +282,29 @@ namespace User
             Actor.Data.Set(traversalInputId.Ref, input);
         }
 
-        private void OnGUI()
-        {
-#if UNITY_EDITOR && ENABLE_UI
-            Rect rect = new Rect(10, 50, 300, 150);
-            Color textureColor = new Color(0, 0, 0, .75f);
-
-            BlackTexture.Value.SetPixel(0, 0, textureColor);
-            BlackTexture.Value.Apply();
-            GUI.Box(rect, BlackTexture, GUIStyle.none);
-            GUI.DrawTexture(rect, BlackTexture);
-            GUILayout.BeginArea(rect);
-            GUI.skin.label.fontSize = 15;
-            GUI.skin.label.normal.textColor = Color.cyan;
-            GUILayout.Label($"State : {_fsm?.Current?.Name}");
-            // GUILayout.Label($"Move input : {_lastInput} ({_lastInput.magnitude:f2})");
-            var speed = _character?.Velocity.IgnoreY().magnitude;
-            GUILayout.Label($"{1.0f * speed}");
-            var goalSpeed = _character?.Movement?.goalSpeed;
-            GUILayout.Label($"{100.0f * speed / goalSpeed:f2}%");
-            GUILayout.Label($"Velocity : {_character?.Velocity}");
-            GUILayout.EndArea();
-#endif
-        }
+//         private void OnGUI()
+//         {
+// #if UNITY_EDITOR && ENABLE_UI
+//             Rect rect = new Rect(10, 50, 300, 150);
+//             Color textureColor = new Color(0, 0, 0, .75f);
+//
+//             BlackTexture.Value.SetPixel(0, 0, textureColor);
+//             BlackTexture.Value.Apply();
+//             GUI.Box(rect, BlackTexture, GUIStyle.none);
+//             GUI.DrawTexture(rect, BlackTexture);
+//             GUILayout.BeginArea(rect);
+//             GUI.skin.label.fontSize = 15;
+//             GUI.skin.label.normal.textColor = Color.cyan;
+//             GUILayout.Label($"State : {_fsm?.Current?.Name}");
+//             // GUILayout.Label($"Move input : {_lastInput} ({_lastInput.magnitude:f2})");
+//             var speed = _character?.Velocity.IgnoreY().magnitude;
+//             GUILayout.Label($"{1.0f * speed}");
+//             var goalSpeed = _character?.Movement?.goalSpeed;
+//             GUILayout.Label($"{100.0f * speed / goalSpeed:f2}%");
+//             GUILayout.Label($"Velocity : {_character?.Velocity}");
+//             GUILayout.EndArea();
+// #endif
+//         }
     }
 
     public class StateDelayedHandler<T>

@@ -80,7 +80,7 @@ namespace Core.Data
 		                                     in Dictionary<Type, Dictionary<IIdentifier, object>> typeIndex,
 		                                     bool replaceIfDuplicate)
 		{
-			foreach (var type in GetAllTypes(typeof(T)))
+			foreach (var type in GetAllTypes(obj.GetType()))
 			{
 				if (!typeIndex.TryGetValue(type, out var dictionary))
 				{
