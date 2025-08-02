@@ -6,7 +6,10 @@ namespace Core.Helpers
     public interface IIdentifier: IEquatable<IIdentifier>
     {
         string name { get; }
-        int Id { get; }
+        /// <summary>
+        /// The number identifier for this object
+        /// </summary>
+        int Code { get; }
         public sealed class Comparer : EqualityComparer<IIdentifier>
         {
             /// <inheritdoc />
@@ -15,7 +18,7 @@ namespace Core.Helpers
 
             /// <inheritdoc />
             public override int GetHashCode(IIdentifier obj)
-                => obj?.Id ?? 0;
+                => obj?.Code ?? 0;
         }
     }
 }

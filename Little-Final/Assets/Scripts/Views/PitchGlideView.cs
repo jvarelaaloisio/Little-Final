@@ -31,7 +31,7 @@ namespace Views
 			if (character is not IPhysicsCharacter physicsCharacter)
 				this.LogError($"character is not {nameof(IPhysicsCharacter)}.");
 			else
-				_rigidbody = physicsCharacter.rigidbody;
+				_rigidbody = physicsCharacter.Body;
 
 			if (!TryAddPostBehaviour(actionIdsToStart, StartControllingPitch))
 				this.LogError($"Couldn't add behaviour {nameof(StartControllingPitch)}");

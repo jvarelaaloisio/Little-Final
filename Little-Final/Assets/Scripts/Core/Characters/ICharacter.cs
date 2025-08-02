@@ -1,4 +1,6 @@
 using Core.Acting;
+using Core.Stamina;
+using Player.Stamina;
 using UnityEngine;
 
 namespace Characters
@@ -12,6 +14,7 @@ namespace Characters
 		GameObject gameObject { get; }
 		IFloorTracker FloorTracker { get; set; }
 		IFallingController FallingController { get; }
+		IStamina Stamina { get; }
 
 		/// <summary>
 		/// Adds an upwards force

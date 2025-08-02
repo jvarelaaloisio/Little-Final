@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Characters
 {
@@ -18,6 +17,11 @@ namespace Characters
 		private void OnDrawGizmosSelected()
 		{
 			Gizmos.color = Color.blue;
+			if (HasFloor)
+			{
+				Gizmos.DrawRay(CurrentFloorData.point, CurrentFloorData.normal * 0.2f);
+				return;
+			}
 			Gizmos.DrawRay(transform.position, -transform.up * maxFloorTrackingDistance);
 		}
 	}

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Core.Attributes;
 using Core.Data;
 using Core.Extensions;
+using Core.Stamina;
 using Player;
 using UnityEngine;
 
@@ -12,8 +12,9 @@ namespace Characters
     {
         [SerializeField] private AnimationCurve movementCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
         [SerializeField] private bool enableLog = false;
-        private Rigidbody _rigidbody;
-        public Rigidbody rigidbody => _rigidbody ??= GetComponent<Rigidbody>();
+        [SerializeField] private StaminaAsync.Stamina stamina;
+        private Rigidbody _body;
+        public Rigidbody Body => _body ??= GetComponent<Rigidbody>();
 
         private readonly HashSet<ForceRequest> _forceRequests = new ();
         private readonly HashSet<ForceRequest> _continuousForceRequests = new ();
@@ -21,17 +22,20 @@ namespace Characters
 
         public override IFallingController FallingController => _fallingController;
 
+        /// <inheritdoc />
+        public override IStamina Stamina => stamina;
+
         public override Vector3 Velocity
         {
-            get => rigidbody.velocity;
-            set => rigidbody.velocity = value;
+            get => Body.velocity;
+            set => Body.velocity = value;
         }
 
         /// <inheritdoc />
         protected override void Awake()
         {
             base.Awake();
-            _fallingController = new FallingController(rigidbody, FloorTracker);
+            _fallingController = new FallingController(Body, FloorTracker);
         }
 
         private void Update()
@@ -92,14 +96,14 @@ namespace Characters
         }
 
         /// <summary>
-        /// applies all given forces to the <see cref="rigidbody"/>
+        /// applies all given forces to the <see cref="Body"/>
         /// </summary>
         /// <param name="requests">The forces to apply</param>
         /// <param name="shouldClearRequests">If <see cref="_forceRequests"/> should be cleared once the forces have been applied.</param>
         private void ProcessForceRequests(in HashSet<ForceRequest> requests, bool shouldClearRequests = true)
         {
             foreach (var request in requests)
-                rigidbody.AddForce(request.Force, request.Mode);
+                Body.AddForce(request.Force, request.Mode);
             if (shouldClearRequests)
                 requests.Clear();
         }
@@ -108,10 +112,10 @@ namespace Characters
         {
             if(!Movement.IsValid())
                 return;
-            var currentVelocity = rigidbody.velocity;
+            var currentVelocity = Body.velocity;
             var x = Mathf.Sqrt(currentVelocity.x * currentVelocity.x + currentVelocity.z * currentVelocity.z);
             var force = movementCurve.Evaluate(x / Movement.goalSpeed) * Movement.acceleration;
-            rigidbody.AddForce(Movement.direction * force, ForceMode.Force);
+            Body.AddForce(Movement.direction * force, ForceMode.Force);
         }
     }
 }

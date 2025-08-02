@@ -1,4 +1,5 @@
-﻿using VarelaAloisio.UpdateManagement.Runtime;
+﻿using Core.Stamina;
+using VarelaAloisio.UpdateManagement.Runtime;
 
 namespace Player.Stamina
 {

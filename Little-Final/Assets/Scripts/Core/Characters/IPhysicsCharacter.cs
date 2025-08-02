@@ -4,7 +4,7 @@ namespace Characters
 {
 	public interface IPhysicsCharacter : ICharacter
 	{
-		Rigidbody rigidbody { get; }
+		Rigidbody Body { get; }
 
 		/// <summary>
 		/// Adds a force to the list of forces that will be applied in the next fixedUpdate.

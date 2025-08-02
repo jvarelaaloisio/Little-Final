@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Stamina;
 using UnityEngine;
 using VarelaAloisio.UpdateManagement.Runtime;
 
@@ -9,7 +10,7 @@ namespace Player.Stamina
 		public event Action OnRefilling;
 		public event Action OnRefilled;
 		public event Action<float> OnUpgrade; 
-		public event Action<float> OnChange;
+		public event ValueChangeEvent OnChange;
 		private readonly CountDownTimer _refillDelayTimer;
 		private readonly CountDownTimer _refillPeriod;
 		private float _current;
@@ -19,12 +20,13 @@ namespace Player.Stamina
 			get => _current;
 			private set
 			{
+				var old = _current;
 				_current = Mathf.Clamp(value, 0, Max);
-				OnChange?.Invoke(value);
+				OnChange?.Invoke(old, value, Max);
 			}
 		}
 
-		public bool IsRefilling { get; private set; } = true;
+		public bool CanRefill { get; private set; } = true;
 
 		public float Max { get; private set; }
 
@@ -51,21 +53,21 @@ namespace Player.Stamina
 				return;
 			Current -= value;
 			_refillPeriod.StopTimer();
-			if (IsRefilling)
+			if (CanRefill)
 				_refillDelayTimer.StartTimer();
 		}
 
 		public void StopRefilling()
 		{
 			_refillPeriod.StopTimer();
-			IsRefilling = false;
+			CanRefill = false;
 			OnRefilled?.Invoke();
 		}
 
 		public void ResumeRefilling()
 		{
 			_refillDelayTimer.StartTimer();
-			IsRefilling = true;
+			CanRefill = true;
 			OnRefilling?.Invoke();
 		}
 

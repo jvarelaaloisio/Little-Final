@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Core.Acting;
+using Core.Extensions;
 using Core.Helpers;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -270,5 +272,37 @@ namespace Acting
         }
 
         public virtual void SetData(TData data) => Data = data;
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            var openBracket = "{".Colored(Color.grey);
+            var closeBracket = "}".Colored(Color.grey);
+            var result = new StringBuilder();
+
+            result.AppendLine(GetType().GetFormattedGenericName() + openBracket);
+            result.AppendLine("\t" + nameof(PreBehavioursByAction) + openBracket);
+            Append(PreBehavioursByAction);
+            result.AppendLine("\t" + closeBracket);
+            result.AppendLine("\t" + nameof(PostBehavioursByAction) + openBracket);
+            Append(PostBehavioursByAction);
+            result.AppendLine("\t" + closeBracket);
+            result.AppendLine(closeBracket);
+
+            return result.ToString();
+
+            void Append(Dictionary<IIdentifier, HashSet<Func<IActor, CancellationToken, UniTask>>> dictionary)
+            {
+                foreach (var kvp in dictionary)
+                {
+                    result.AppendLine("\t\t" + kvp.Key.name + openBracket);
+                    foreach (var func in kvp.Value)
+                    {
+                        result.AppendLine("\t\t\t" + func.Method.Name);
+                    }
+                    result.AppendLine("\t\t" + closeBracket);
+                }
+            }
+        }
     }
 }

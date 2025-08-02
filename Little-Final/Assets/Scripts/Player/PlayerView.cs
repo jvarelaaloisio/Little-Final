@@ -146,7 +146,6 @@ namespace Player
 			_sceneIndex = gameObject.scene.buildIndex;
 			staminaFade = new ActionOverTime(staminaFadeTime, SetStaminaTransparency, _sceneIndex, true);
 			staminaFadeTimer = new CountDownTimer(staminaFadeDelay, staminaFade.StartAction, _sceneIndex);
-			FindObjectOfType<CameraView>();
 			staminaUI.ForEach(ui => ui.color = maxStamina);
 			SetStaminaTransparency(1);
 			_staminaOriginalScale = staminaRings.localScale;
@@ -212,11 +211,11 @@ namespace Player
 			}
 		}
 
-		public void UpdateStamina(float newStaminaAmount)
+		public void UpdateStamina(float before, float after, float max)
 		{
 #if ENABLE_UI
 			SetStaminaTransparency(0);
-			int circleQty = Mathf.FloorToInt(newStaminaAmount / staminaPerCircle);
+			int circleQty = Mathf.FloorToInt(after / staminaPerCircle);
 			for (int i = 0; i < staminaUI.Count; i++)
 			{
 				if (i < circleQty)
@@ -232,7 +231,7 @@ namespace Player
 				|| circleQty >= staminaUI.Count)
 				return;
 
-			float lastCircleFillAmount = newStaminaAmount % staminaPerCircle;
+			float lastCircleFillAmount = after % staminaPerCircle;
 			float lastCircleLerp = lastCircleFillAmount / staminaPerCircle;
 			staminaUI[circleQty].fillAmount = lastCircleLerp;
 			staminaUI[circleQty].color
@@ -241,7 +240,7 @@ namespace Player
 					: Color.Lerp(midStamina, maxStamina, (lastCircleLerp - .5f) * 2);
 			staminaFade.StopAction();
 			//--CUIDAO
-			if (Math.Abs(newStaminaAmount - controller.Stamina.Max)
+			if (Math.Abs(before - max)
 				< 0.05f)
 				staminaFadeTimer.StartTimer();
 #else
@@ -432,7 +431,7 @@ namespace Player
 			
 			GUI.skin.label.normal.textColor = Color.white;
 			GUILayout.Label("State: " + controller.State.GetType());
-			GUI.skin.label.normal.textColor = controller.Stamina.IsRefilling ? Color.green : Color.red;
+			GUI.skin.label.normal.textColor = controller.Stamina.CanRefill ? Color.green : Color.red;
 			
 			//GUILayout.Label("Stamina: " + controller.Stamina.FillState);
 			//GUILayout.Label($"Buff: {Controller.BuffMultiplier:f2}");
