@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Characters;
 using Core.Acting;
+using Core.Extensions;
 using Core.References;
 using Cysharp.Threading.Tasks;
 using DataProviders.Async;
@@ -28,6 +29,10 @@ namespace Debugging.Acting
 				var indexStoreProperty = new AsyncReactiveProperty<IActor>(_character.Actor);
 				indexStoreProperty.BindTo(text);
 				_character.FallingController.OnStopFalling += HandleStopFalling;
+			}
+			catch (OperationCanceledException) {
+                Debug.LogWarning($"{nameof(RuntimeAnimatorController)}: Character was never provided during enable.");
+                return;
 			}
 			catch (Exception e)
 			{

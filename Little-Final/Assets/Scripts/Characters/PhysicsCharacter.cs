@@ -4,6 +4,7 @@ using Core.Extensions;
 using Core.Stamina;
 using Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Characters
 {
@@ -13,14 +14,14 @@ namespace Characters
         [SerializeField] private AnimationCurve movementCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
         [SerializeField] private bool enableLog = false;
         [SerializeField] private StaminaAsync.Stamina stamina;
+        [SerializeField] private FallingController fallingController;
         private Rigidbody _body;
         public Rigidbody Body => _body ??= GetComponent<Rigidbody>();
 
         private readonly HashSet<ForceRequest> _forceRequests = new ();
         private readonly HashSet<ForceRequest> _continuousForceRequests = new ();
-        private FallingController _fallingController;
 
-        public override IFallingController FallingController => _fallingController;
+        public override IFallingController FallingController => fallingController;
 
         /// <inheritdoc />
         public override IStamina Stamina => stamina;
@@ -35,11 +36,11 @@ namespace Characters
         protected override void Awake()
         {
             base.Awake();
-            _fallingController = new FallingController(Body, FloorTracker);
+            fallingController.Setup(Body, FloorTracker);
         }
 
         private void Update()
-            => _fallingController?.Update();
+            => fallingController?.Update();
 
         private void FixedUpdate()
         {

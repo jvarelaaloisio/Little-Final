@@ -1,5 +1,4 @@
 using System.Threading;
-using Core.Providers;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -7,11 +6,17 @@ namespace DataProviders.Async
 {
 	public abstract class DataProviderAsync<T> : ScriptableObject, IDataProviderAsync<T>
 	{
-		public virtual T Value { get; set; }
+		private T _value;
+
+		public virtual T Value
+		{
+			get => _value;
+			set => _value = value;
+		}
 
 		public virtual async UniTask<T> GetValueAsync(CancellationToken cancellationToken)
 		{
-			await UniTask.WaitWhile(() => Value == null, cancellationToken: cancellationToken);
+			await UniTask.WaitWhile(() => _value is null, cancellationToken: cancellationToken);
 			return Value;
 		}
         

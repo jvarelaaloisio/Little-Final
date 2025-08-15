@@ -13,6 +13,7 @@ using UnityEngine;
 
 namespace User.States
 {
+	[Obsolete("I think this state is no longer necessary, we can just customize StateSo with behaviours")]
 	[CreateAssetMenu(menuName = "States/Character/Walk", fileName = "Walk", order = 0)]
 	[Serializable]
 	public class Walk : StateSo
@@ -54,23 +55,8 @@ namespace User.States
 			}
 			var camera = await cameraProvider.Ref.GetValueAsync(token);
 			_cameraTransform = camera.transform;
-			
-			character.Movement.goalSpeed = goalSpeed;
-			character.Movement.acceleration = acceleration;
-			//TODO: Remove if no longer needed
-			// if (lastInputId
-			//     && data.ContainsKey(lastInputId.Get)
-			//     && data[lastInputId.Get] is Vector2 lastInput)
-			// 	HandleMoveInput(lastInput);
-			// else
-			// 	Logger?.LogWarning(Name,$"{nameof(data)} doesn't contain the key {lastInputId?.Get}");
 
-			//TODO: Remove all references to inputs in the states
-			if (inputReaderProvider.Ref)
-			{
-				var inputReader = await inputReaderProvider.Ref.GetValueAsync(token);
-				inputReader.OnMoveInput += HandleMoveInput;
-			}
+			character.Movement = new MovementData(character.Movement.direction, goalSpeed, acceleration);
 
 			_sleepCts?.Dispose();
 			_sleepCts = new CancellationTokenSource();
@@ -81,41 +67,9 @@ namespace User.States
 
 		public override UniTask Exit(IActor<ReverseIndexStore> target, CancellationToken token)
 		{
-			if (inputReaderProvider.Ref?.TryGetValue(out var inputReader) ?? false)
-				inputReader.OnMoveInput -= HandleMoveInput;
 			_sleepCts?.Cancel();
 			_sleepCts?.Dispose();
 			return base.Exit(target, token);
-		}
-
-		[Obsolete("This should be handled outside of the state")]
-		private void HandleMoveInput(Vector2 input)
-		{
-			//TODO: Remove method if no longer needed
-			// var direction = _cameraTransform.TransformDirection(input.XYToXZY()).IgnoreY();
-			// if (Character == null)
-			// {
-			// 	Logger.LogError(Name, $"{nameof(Character)} is null!");
-			// 	return;
-			// }
-			//
-			// if (!Character.FloorTracker?.HasFloor ?? true)
-			// {
-			// 	Logger.LogWarning(Name, $"{nameof(Character.FloorTracker)} is null or doesn't have a floor");
-			// 	return;
-			// }
-			// // var floorNormal = 
-			// // if (Physics.Raycast(Character.transform.position,
-			// // 	    -Character.transform.up,
-			// // 	    out var hit,
-			// // 	    10,
-			// // 	    floor))
-			// // {
-			// // 	floorNormal = hit.normal;
-			// // }
-			// Vector3 directionProjectedOnFloor = Vector3.ProjectOnPlane(direction, Character.FloorTracker.CurrentFloorData.normal);
-			//
-			// Character.Movement.direction = directionProjectedOnFloor;
 		}
 	}
 }

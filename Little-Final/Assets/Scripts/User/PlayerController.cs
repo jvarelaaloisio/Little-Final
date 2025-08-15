@@ -70,12 +70,25 @@ namespace User
                 Debug.LogError($"{name} <color=grey>({nameof(PlayerController)})</color>: {nameof(inputReaderProvider)} is null!");
                 return;
             }
-            var inputReader = await inputReaderProvider.Ref.GetValueAsync(destroyCancellationToken);
-            inputReader.OnMoveInput += HandleMoveInput;
-            inputReader.OnJumpPressed += StartJump;
-            inputReader.OnJumpReleased += StopJump;
-            inputReader.OnGlidePressed += SetWantsToGlide;
-            inputReader.OnGlideReleased += UnsetWantsToGlide;
+
+            try
+            {
+                var inputReader = await inputReaderProvider.Ref.GetValueAsync(destroyCancellationToken);
+                inputReader.OnMoveInput += HandleMoveInput;
+                inputReader.OnJumpPressed += StartJump;
+                inputReader.OnJumpReleased += StopJump;
+                inputReader.OnGlidePressed += SetWantsToGlide;
+                inputReader.OnGlideReleased += UnsetWantsToGlide;
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.LogWarning($"{nameof(PlayerController)} Input reader was never provided during enable.");
+                return;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e, this);
+            }
             _updateCancellationSource = new CancellationTokenSource();
             var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(_updateCancellationSource.Token, destroyCancellationToken);
             UpdateFsm(combinedToken.Token).Forget();
@@ -214,8 +227,8 @@ namespace User
                    && Time.time - inputTime < 0.1f;
 
             bool IsFalling(IActor<ReverseIndexStore> actor)
-                => actor.Data.TryGet(fallId, out bool input)
-                   && input;
+                => actor.Data.TryGet(fallId, out bool isFalling)
+                   && isFalling;
 
             bool WantsToGlide(IActor<ReverseIndexStore> actor)
                 => actor.Data.TryGet(glideId.Ref, out bool input)
@@ -282,29 +295,29 @@ namespace User
             Actor.Data.Set(traversalInputId.Ref, input);
         }
 
-//         private void OnGUI()
-//         {
-// #if UNITY_EDITOR && ENABLE_UI
-//             Rect rect = new Rect(10, 50, 300, 150);
-//             Color textureColor = new Color(0, 0, 0, .75f);
-//
-//             BlackTexture.Value.SetPixel(0, 0, textureColor);
-//             BlackTexture.Value.Apply();
-//             GUI.Box(rect, BlackTexture, GUIStyle.none);
-//             GUI.DrawTexture(rect, BlackTexture);
-//             GUILayout.BeginArea(rect);
-//             GUI.skin.label.fontSize = 15;
-//             GUI.skin.label.normal.textColor = Color.cyan;
-//             GUILayout.Label($"State : {_fsm?.Current?.Name}");
-//             // GUILayout.Label($"Move input : {_lastInput} ({_lastInput.magnitude:f2})");
-//             var speed = _character?.Velocity.IgnoreY().magnitude;
-//             GUILayout.Label($"{1.0f * speed}");
-//             var goalSpeed = _character?.Movement?.goalSpeed;
-//             GUILayout.Label($"{100.0f * speed / goalSpeed:f2}%");
-//             GUILayout.Label($"Velocity : {_character?.Velocity}");
-//             GUILayout.EndArea();
-// #endif
-//         }
+        private void OnGUI()
+        {
+#if UNITY_EDITOR && ENABLE_UI
+            Rect rect = new Rect(10, 50, 300, 150);
+            Color textureColor = new Color(0, 0, 0, .75f);
+
+            BlackTexture.Value.SetPixel(0, 0, textureColor);
+            BlackTexture.Value.Apply();
+            GUI.Box(rect, BlackTexture, GUIStyle.none);
+            GUI.DrawTexture(rect, BlackTexture);
+            GUILayout.BeginArea(rect);
+            GUI.skin.label.fontSize = 15;
+            GUI.skin.label.normal.textColor = Color.cyan;
+            GUILayout.Label($"State : {_fsm?.Current?.Name}");
+            // GUILayout.Label($"Move input : {_lastInput} ({_lastInput.magnitude:f2})");
+            var speed = _character?.Velocity.IgnoreY().magnitude;
+            GUILayout.Label($"{1.0f * speed}");
+            var goalSpeed = _character?.Movement.goalSpeed;
+            GUILayout.Label($"{100.0f * speed / goalSpeed:f2}%");
+            GUILayout.Label($"Velocity : {_character?.Velocity}");
+            GUILayout.EndArea();
+#endif
+        }
     }
 
     public class StateDelayedHandler<T>

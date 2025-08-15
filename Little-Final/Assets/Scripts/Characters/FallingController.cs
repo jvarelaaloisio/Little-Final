@@ -1,19 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Attributes;
+using Core.References;
 using Interactions.EventTriggers;
 using UnityEngine;
 
 namespace Characters
 {
-    public class FallingController : IFallingController
+    [Serializable]
+    public class FallingController : IFallingController, ISetup<Rigidbody, IFloorTracker>
     {
-        private readonly Rigidbody _rigidbody;
-        private readonly IFloorTracker _floorTracker;
+        [NonSerialized] private Rigidbody _rigidbody;
+        [NonSerialized] private IFloorTracker _floorTracker;
+        [SerializeField] private float landingDistanceToFloor = 0.21f;
+        [SerializeField] private float minYSpeedForFalling = -0.1f;
 
-        public FallingController(Rigidbody rigidbody, IFloorTracker floorTracker)
+        public void Setup(Rigidbody body, IFloorTracker floorTracker)
         {
-            _rigidbody = rigidbody;
+            _rigidbody = body;
             _floorTracker = floorTracker;
         }
 
@@ -27,7 +32,7 @@ namespace Characters
         /// </summary>
         public event Action OnStopFalling = delegate { };
 
-        public bool IsFalling { get; private set; }
+        [field:SerializeField][field:SerializeReadOnly]public bool IsFalling { get; private set; }
 
         /// <summary>
         /// Call this method to check if any events should be risen
@@ -39,12 +44,12 @@ namespace Characters
 
             void ValidateIfFallingStateHasChanged()
             {
-                if (IsFalling && _rigidbody.velocity.y > -0.1f && _floorTracker.CurrentFloorData.distance < 0.21f)
+                if (IsFalling && _rigidbody.velocity.y > minYSpeedForFalling && _floorTracker.CurrentFloorData.distance < landingDistanceToFloor)
                 {
                     IsFalling = false;
                     OnStopFalling();
                 }
-                else if (!IsFalling && _rigidbody.velocity.y < -0.1f && _floorTracker.CurrentFloorData.distance >= 0.21f)
+                else if (!IsFalling && _rigidbody.velocity.y < minYSpeedForFalling && _floorTracker.CurrentFloorData.distance >= landingDistanceToFloor)
                 {
                     IsFalling = true;
                     OnStartFalling();

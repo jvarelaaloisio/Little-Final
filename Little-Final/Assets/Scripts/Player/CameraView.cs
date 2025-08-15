@@ -62,8 +62,11 @@ namespace Player
 			pauseChannel.SubscribeSafely(SetPause);
 			UpdateManager.Subscribe(this);
 			cameraProvider.TrySetValue(GetComponent<Camera>());
-			view.Controller.OnStateChanges += HandleStateChange;
-			view.Controller.onBuffed.AddListener(HandleBuffChanged);
+			if (view?.Controller)
+			{
+				view.Controller.OnStateChanges += HandleStateChange;
+				view.Controller.onBuffed.AddListener(HandleBuffChanged);
+			}
 		}
 
 		private void OnDisable()
@@ -71,8 +74,11 @@ namespace Player
 			pauseChannel.Unsubscribe(SetPause);
 			UpdateManager.UnSubscribe(this);
 			cameraProvider.TrySetValue(null);
-			view.Controller.OnStateChanges -= HandleStateChange;
-			view.Controller.onBuffed.RemoveListener(HandleBuffChanged);
+			if (view?.Controller)
+			{
+				view.Controller.OnStateChanges -= HandleStateChange;
+				view.Controller.onBuffed.RemoveListener(HandleBuffChanged);
+			}
 		}
 
 		private void HandleStateChange(State state)

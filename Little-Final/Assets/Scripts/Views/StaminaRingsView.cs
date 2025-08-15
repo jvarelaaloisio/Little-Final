@@ -41,6 +41,7 @@ namespace Views
 				this.LogError($"{nameof(characterProvider)} is null!");
 				return;
 			}
+
 			try
 			{
 				_enableToken = new CancellationTokenSource();
@@ -50,6 +51,10 @@ namespace Views
 				_character.Stamina.OnChange += HandleStaminaChanged;
 				_character.Stamina.OnRefilled += StartFade;
 				SetRingsAlpha(0);
+			}
+			catch (OperationCanceledException)
+			{
+				Debug.LogWarning($"{nameof(StaminaRingsView)}: Camera was never provided during enable.");
 			}
 			catch (Exception e)
 			{

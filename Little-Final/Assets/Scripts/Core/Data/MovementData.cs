@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Characters
 {
     [Serializable]
-    public class MovementData : IEquatable<MovementData>
+    public struct MovementData : IEquatable<MovementData>
     {
         /// <summary>
         /// Direction of the movement
@@ -36,7 +36,7 @@ namespace Characters
 
         public bool IsValid() => this != InvalidRequest;
 
-        public bool Equals(MovementData other) => other is not null && direction.Equals(other.direction) && goalSpeed.Equals(other.goalSpeed);
+        public bool Equals(MovementData other) => direction.Equals(other.direction) && goalSpeed.Equals(other.goalSpeed);
 
         public override bool Equals(object obj) => obj is MovementData other && Equals(other);
 
@@ -50,10 +50,10 @@ namespace Characters
             }
         }
 
-        public override string ToString() =>
-            IsValid()
-                ? $"Movement({direction}, {goalSpeed}, {acceleration})"
-                : $"Movement(Invalid)";
+        public override string ToString()
+            => IsValid()
+                   ? $"Movement({direction}, {goalSpeed}, {acceleration})"
+                   : $"Movement(Invalid)";
 
         public static bool operator ==(MovementData one, MovementData two) => one.Equals(two);
 
