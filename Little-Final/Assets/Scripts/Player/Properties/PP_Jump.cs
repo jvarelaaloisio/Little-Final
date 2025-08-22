@@ -1,4 +1,5 @@
-﻿using Player.Movement;
+﻿using Movement;
+using Player.Movement;
 using Player.Properties;
 using UnityEngine;
 using UnityEngine.Serialization;

@@ -58,9 +58,9 @@ namespace Player.States
 
 			if (Controller.StepUp != null && Controller.StepUp.Can(out var stepPosition, MyTransform.forward, PP_Glide.StepUpConfig))
 			{
-				Controller.StepUp.StepUp(PP_Glide.StepUpConfig,
-				                         stepPosition,
-				                         () => Controller.ChangeState<Walk_OLD>());
+				Controller.StepUp.Do(stepPosition,
+				                     PP_Glide.StepUpConfig,
+				                     () => Controller.ChangeState<Walk_OLD>());
 				Controller.ChangeState<Void>();
 			}
 			

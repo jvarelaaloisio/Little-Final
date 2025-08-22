@@ -15,16 +15,16 @@ namespace Debugging.Acting
 	{
 		[SerializeField] private InterfaceRef<IDataProviderAsync<ICharacter>> characterProvider;
 		[SerializeField] private TMP_Text text;
-		private CancellationTokenSource _enableToken;
+		private CancellationTokenSource _enableTokenSource;
 		private ICharacter _character;
 
 		private async void OnEnable()
 		{
 			try
 			{
-				_enableToken = new CancellationTokenSource();
+				_enableTokenSource = new CancellationTokenSource();
 				var linkedSource = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken,
-				                                                                   _enableToken.Token);
+				                                                                   _enableTokenSource.Token);
 				_character = await characterProvider.Ref.GetValueAsync(linkedSource.Token);
 				var indexStoreProperty = new AsyncReactiveProperty<IActor>(_character.Actor);
 				indexStoreProperty.BindTo(text);
@@ -42,9 +42,9 @@ namespace Debugging.Acting
 
 		private void OnDisable()
 		{
-			_enableToken?.Cancel();
-			_enableToken?.Dispose();
-			_enableToken = null;
+			_enableTokenSource?.Cancel();
+			_enableTokenSource?.Dispose();
+			_enableTokenSource = null;
 			if (_character is { FallingController: not null })
 				_character.FallingController.OnStopFalling -= HandleStopFalling;
 		}

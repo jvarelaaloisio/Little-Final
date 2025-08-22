@@ -20,7 +20,7 @@ namespace Core.Extensions
 		/// <param name="original"></param>
 		/// <param name="z">The would-be original Z value, which will be used for the new Y value.</param>
 		/// <returns></returns>
-		public static Vector3 XYToXZY(this Vector2 original, float z = 0)
+		public static Vector3 XYtoXZY(this Vector2 original, float z = 0)
 			=> new Vector3(original.x, z, original.y);
 	}
 }

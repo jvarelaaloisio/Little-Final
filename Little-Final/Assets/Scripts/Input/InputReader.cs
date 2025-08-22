@@ -14,6 +14,7 @@ namespace Input
         [SerializeField] private string[] gamepadSchemes = { "Gamepad" };
         [Header("Actions")]
         [SerializeField] private InputActionReference moveInput;
+        [SerializeField] private InputActionReference runInput;
         [SerializeField] private InputActionReference cameraInput;
         [SerializeField] private InputActionReference centerCameraInput;
         [SerializeField] private InputActionReference jumpInput;
@@ -29,6 +30,7 @@ namespace Input
 
         public event Action<Vector2> OnMoveInput = delegate { };
         public event Action<Vector2> OnCameraInput = delegate { };
+        public event Action<bool> OnRunInput = delegate { };
         public event Action OnCenterCameraPressed = delegate { };
         public event Action OnJumpPressed = delegate { };
         public event Action OnJumpReleased = delegate { };
@@ -49,6 +51,11 @@ namespace Input
             {
                 moveAction.performed += HandleMove;
                 moveAction.canceled += HandleMove;
+            }
+            if (runInput?.action is { } runAction)
+            {
+                runAction.started += HandleRun;
+                runAction.canceled += HandleRun;
             }
             if (cameraInput?.action is { } cameraAction)
             {
@@ -129,5 +136,8 @@ namespace Input
 
         private void HandleMove(InputAction.CallbackContext ctx)
             => OnMoveInput(ctx.ReadValue<Vector2>());
+
+        private void HandleRun(InputAction.CallbackContext ctx)
+            => OnRunInput(ctx.started);
     }
 }

@@ -5,9 +5,11 @@ using Characters;
 using Core.Acting;
 using Core.Data;
 using Core.Extensions;
+using Core.FSM;
 using Core.Gameplay;
 using Core.Helpers;
 using Core.References;
+using Core.Utils;
 using Cysharp.Threading.Tasks;
 using DataProviders.Async;
 using FsmAsync;
@@ -30,6 +32,7 @@ namespace User
         [SerializeField] private bool enableStateLogs = false;
         [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> idle;
         [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> walk;
+        [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> run;
         [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> jump;
         [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> fall;
         [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> glide;
@@ -39,6 +42,7 @@ namespace User
         [SerializeField] private IdContainer characterId;
         [SerializeField] private InterfaceRef<IIdentifier> actorId;
         [SerializeField] private InterfaceRef<IIdentifier> traversalInputId;
+        [SerializeField] private InterfaceRef<IIdentifier> runInputId;
         
         [SerializeField] private IdContainer stopId;
         [SerializeField] private IdContainer moveId;
@@ -46,12 +50,12 @@ namespace User
         [SerializeField] private IdContainer fallId;
         [SerializeField] private IdContainer landId;
         [SerializeField] private IdContainer lastInputId;
+        [SerializeField] private InterfaceRef<IIdentifier> runId;
         [SerializeField] private InterfaceRef<IIdentifier> glideId;
 
         [SerializeField] private float secondsBeforeGlide = 1;
 
         private ICharacter<ReverseIndexStore> _character;
-        private Coroutine _enableCoroutine;
 
         private ConditionalStateMachine<IActor<ReverseIndexStore>, IIdentifier> _fsm;
         private AutoMap<Texture2D> BlackTexture = new(() => new Texture2D(1, 1));
@@ -59,22 +63,28 @@ namespace User
 
         private UniTask _handlingData;
         private readonly Queue<IIdentifier> _dataQueue = new();
-        private CancellationTokenSource _updateCancellationSource;
+        private CancellationTokenSource _updateTokenSource;
+        private CancellationTokenSource _enableTokenSource;
 
         public IActor<ReverseIndexStore> Actor => _character.Actor;
 
         private async void OnEnable()
         {
-            if (inputReaderProvider.Ref == null)
+            if (!inputReaderProvider.HasValue)
             {
-                Debug.LogError($"{name} <color=grey>({nameof(PlayerController)})</color>: {nameof(inputReaderProvider)} is null!");
+                this.LogError($"{nameof(inputReaderProvider)} is null!");
                 return;
             }
 
             try
             {
-                var inputReader = await inputReaderProvider.Ref.GetValueAsync(destroyCancellationToken);
+                _enableTokenSource = new CancellationTokenSource();
+                var linkedSource = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken,
+                                                                                   _enableTokenSource.Token);
+
+                var inputReader = await inputReaderProvider.Ref.GetValueAsync(linkedSource.Token);
                 inputReader.OnMoveInput += HandleMoveInput;
+                inputReader.OnRunInput += HandleRunInput;
                 inputReader.OnJumpPressed += StartJump;
                 inputReader.OnJumpReleased += StopJump;
                 inputReader.OnGlidePressed += SetWantsToGlide;
@@ -89,8 +99,8 @@ namespace User
             {
                 Debug.LogException(e, this);
             }
-            _updateCancellationSource = new CancellationTokenSource();
-            var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(_updateCancellationSource.Token, destroyCancellationToken);
+            _updateTokenSource = new CancellationTokenSource();
+            var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(_updateTokenSource.Token, destroyCancellationToken);
             UpdateFsm(combinedToken.Token).Forget();
         }
 
@@ -137,7 +147,12 @@ namespace User
 
         private void OnDisable()
         {
-            _enableCoroutine.TryStop(this);
+            _enableTokenSource?.Cancel();
+            _enableTokenSource?.Dispose();
+            _enableTokenSource = null;
+            _updateTokenSource?.Cancel();
+            _updateTokenSource?.Dispose();
+            _updateTokenSource = null;
             if (inputReaderProvider.Ref.TryGetValue(out var inputReader))
             {
                 inputReader.OnMoveInput -= HandleMoveInput;
@@ -149,8 +164,6 @@ namespace User
 
             _fsm?.End(Actor, destroyCancellationToken).Forget();
             _handlingData.Forget();
-            _updateCancellationSource?.Cancel();
-            _updateCancellationSource?.Dispose();
         }
 
         public void Setup(ICharacter<ReverseIndexStore> data)
@@ -158,7 +171,7 @@ namespace User
             _character = data;
             Actor.Data.Set(characterId.Get, _character);
             Actor.Data.Set(actorId.Ref, _character.Actor);
-            Actor.Data.Set(traversalInputId.Ref, Vector2.zero);
+            Actor.Data.Set(traversalInputId.Ref, Vector3.zero);
             SetupFsm(_character);
         }
 
@@ -185,11 +198,16 @@ namespace User
                        .ThatTransitionsFrom(idle.Ref).To(walk.Ref).When(nameof(WantsToTraverse), WantsToTraverse).WithId(moveId).Apply()
                        .ThatTransitionsFrom(fall.Ref).To(walkWhileFalling.Ref).When(nameof(WantsToTraverse), WantsToTraverse).WithId(moveId).Apply()
 
+                       .ThatTransitionsFrom(walk.Ref).To(run.Ref).When(nameof(WantsToRunAndHasStamina), WantsToRunAndHasStamina).WithId(runId.Ref).Apply()
+                       .ThatTransitionsFrom(run.Ref).To(walk.Ref).WhenNot(nameof(WantsToRunAndHasStamina), WantsToRunAndHasStamina).WithId(moveId).Apply()
+
                        .ThatTransitionsFrom(idle.Ref).To(jump.Ref).When(nameof(WantsToJump), WantsToJump).WithId(jumpId).Apply()
                        .ThatTransitionsFrom(walk.Ref).To(jump.Ref).When(nameof(WantsToJump), WantsToJump).WithId(jumpId).Apply()
+                       .ThatTransitionsFrom(run.Ref).To(jump.Ref).When(nameof(WantsToJump), WantsToJump).WithId(jumpId).Apply()
 
                        .ThatTransitionsFrom(idle.Ref).To(fall.Ref).When(nameof(IsFalling), IsFalling).WithId(fallId).Apply()
                        .ThatTransitionsFrom(walk.Ref).To(fall.Ref).When(nameof(IsFalling), IsFalling).WithId(fallId).Apply()
+                       .ThatTransitionsFrom(run.Ref).To(fall.Ref).When(nameof(IsFalling), IsFalling).WithId(fallId).Apply()
                        .ThatTransitionsFrom(jump.Ref).To(fall.Ref).When(nameof(IsFalling), IsFalling).WithId(fallId).Apply()
 
                        .ThatTransitionsFrom(fall.Ref).To(idle.Ref).WhenNot(nameof(IsFalling), IsFalling).WithId(landId).Apply()
@@ -219,11 +237,15 @@ namespace User
 
             fallingController.OnStopFalling += HandleStopFalling;
             bool WantsToTraverse(IActor<ReverseIndexStore> actor)
-                => Actor.Data.TryGet(traversalInputId.Ref, out Vector2 input)
-                   && input.magnitude > 0.001f;
+                => actor.Data[typeof(Vector3), traversalInputId.Ref] is Vector3 { magnitude: > 0.001f };
+
+            bool WantsToRunAndHasStamina(IActor<ReverseIndexStore> actor)
+                => actor.Data.TryGet(runInputId.Ref, out bool input)
+                   && input
+                   && !OutOfStamina(actor);
 
             bool WantsToJump(IActor<ReverseIndexStore> actor)
-                => Actor.Data.TryGet(jumpId.Get, out float inputTime)
+                => actor.Data.TryGet(jumpId.Get, out float inputTime)
                    && Time.time - inputTime < 0.1f;
 
             bool IsFalling(IActor<ReverseIndexStore> actor)
@@ -288,12 +310,9 @@ namespace User
         }
         
         private void HandleMoveInput(Vector2 input)
-        {
-            //THOUGHT: Should there be a Condition SO that receives an Input and returns an ID so this logic is done by that structure?
-            var stateId = input.magnitude > 0.001f ? moveId : stopId;
-
-            Actor.Data.Set(traversalInputId.Ref, input);
-        }
+            => Actor.Data.Set(traversalInputId.Ref, input.XYtoXZY());
+        private void HandleRunInput(bool input)
+            => Actor.Data.Set(runInputId.Ref, input);
 
         private void OnGUI()
         {

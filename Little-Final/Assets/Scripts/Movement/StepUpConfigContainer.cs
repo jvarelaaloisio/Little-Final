@@ -1,7 +1,7 @@
 ﻿using Core.Movement;
 using UnityEngine;
 
-namespace Player.Movement
+namespace Movement
 {
     [CreateAssetMenu(menuName = "Models/Movement/Step Up Config", fileName = "StepUpConfig", order = 0)]
     public class StepUpConfigContainer : ScriptableObject

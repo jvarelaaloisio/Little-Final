@@ -95,9 +95,9 @@ namespace Player.States
                 && Controller.StepUp.Should(directionProjectedOnFloor, PP_Walk.StepUpConfig)
                 && Controller.StepUp.Can(out var stepPosition, MyTransform.forward, PP_Walk.StepUpConfig))
             {
-                Controller.StepUp.StepUp(PP_Walk.StepUpConfig,
-                                         stepPosition,
-                                         () => Controller.ChangeState<WalkWithInputReader>());
+                Controller.StepUp.Do(stepPosition,
+                                     PP_Walk.StepUpConfig,
+                                     () => Controller.ChangeState<WalkWithInputReader>());
                 Controller.ChangeState<Void>();
             }
 

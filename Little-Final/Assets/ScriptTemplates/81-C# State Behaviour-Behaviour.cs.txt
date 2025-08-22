@@ -1,0 +1,28 @@
+using System.Threading;
+using UnityEngine;
+using Cysharp.Threading.Tasks;
+using Core.Acting;
+using Core.Data;
+using User.States;
+
+[CreateAssetMenu(menuName = "States/Behaviours/#SCRIPTNAME#", fileName = "#SCRIPTNAME#", order = 0)]
+public class #SCRIPTNAME# : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>
+{
+	/// <inheritdoc />
+	public UniTask Enter(IActor<ReverseIndexStore> actor, CancellationToken token)
+	{
+		throw new System.NotImplementedException();
+	}
+
+	/// <inheritdoc />
+	public UniTask Exit(IActor<ReverseIndexStore> actor, CancellationToken token)
+	{
+		throw new System.NotImplementedException();
+	}
+
+	/// <inheritdoc />
+	public UniTask<bool> TryHandleInput(IActor<ReverseIndexStore> actor, CancellationToken token)
+	{
+		throw new System.NotImplementedException();
+	}
+}

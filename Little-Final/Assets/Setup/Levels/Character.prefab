@@ -1,5 +1,39 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &336080027529562943
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8300554460770565166}
+  m_Layer: 0
+  m_Name: Particles
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8300554460770565166
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336080027529562943}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children:
+  - {fileID: 2850419649061995806}
+  - {fileID: 7553123277617934084}
+  - {fileID: 1946313869032824092}
+  m_Father: {fileID: 335042604340918724}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2925345711502918349
 GameObject:
   m_ObjectHideFlags: 0
@@ -64,7 +98,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 335042604340918724}
+  m_Father: {fileID: 8300554460770565166}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &8081058597959115482
 ParticleSystem:
@@ -83,7 +117,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -5053,7 +5087,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 335042604340918724}
+  m_Father: {fileID: 8300554460770565166}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &7590815695509004680
 ParticleSystem:
@@ -9968,8 +10002,8 @@ GameObject:
   - component: {fileID: 4968763546092149725}
   - component: {fileID: 5954322368455738055}
   - component: {fileID: -8857404774138357859}
-  - component: {fileID: -2062926891172008439}
   - component: {fileID: -2782182542571858041}
+  - component: {fileID: 1224112811647375518}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -9990,11 +10024,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2850419649061995806}
-  - {fileID: 7553123277617934084}
+  - {fileID: 8300554460770565166}
+  - {fileID: 5325100572854092939}
   - {fileID: 990981709098697123}
   - {fileID: 3141152933974347311}
-  - {fileID: 1946313869032824092}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8639353930731474083
@@ -10009,8 +10042,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a5acce725fb4df1bcd5b5bced5c85a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <SelfSetupCharacter>k__BackingField: 0
-  enableLog: 0
+  <SelfSetupCharacter>k__BackingField: 1
+  enableLog: 1
   inputReaderProvider:
     reference: {fileID: 11400000, guid: f9ec6ddbbb5f2654486095ba9d3a333d, type: 2}
   enableStateLogs: 0
@@ -10018,6 +10051,8 @@ MonoBehaviour:
     reference: {fileID: 11400000, guid: 8883deab33b5ad742974f391bf41e8cc, type: 2}
   walk:
     reference: {fileID: 11400000, guid: 5b42414015b01b647aeba31d0cdc59c0, type: 2}
+  run:
+    reference: {fileID: 11400000, guid: cf558550e7cdcab4e8f318327b0c2dc4, type: 2}
   jump:
     reference: {fileID: 11400000, guid: 932412a9f832fcb4fb04b51b26697835, type: 2}
   fall:
@@ -10031,12 +10066,16 @@ MonoBehaviour:
     reference: {fileID: 11400000, guid: 9634137f6f5ddfd4387696835f4f800e, type: 2}
   traversalInputId:
     reference: {fileID: 11400000, guid: c63887a800c240c5a8e156f8b93b9bf7, type: 2}
+  runInputId:
+    reference: {fileID: 11400000, guid: dc7d31085e5b19045b8990b9078c4dad, type: 2}
   stopId: {fileID: 11400000, guid: 5d8f5c8ef68e5ff2c9fbe10de3b1721c, type: 2}
   moveId: {fileID: 11400000, guid: c63887a800c240c5a8e156f8b93b9bf7, type: 2}
   jumpId: {fileID: 11400000, guid: 22332e9ecb428e444b79a90a287886c7, type: 2}
   fallId: {fileID: 11400000, guid: 851ee6b24b2ae8d4eb1ff92ebd8811b8, type: 2}
   landId: {fileID: 11400000, guid: 85b77a626a702954981623499f6e9f9f, type: 2}
   lastInputId: {fileID: 11400000, guid: b6aabdcce16f6e6cfa0957b728388be9, type: 2}
+  runId:
+    reference: {fileID: 11400000, guid: 9c90f4ac3cb2c5f45a3f0e2c8a8c0bb4, type: 2}
   glideId:
     reference: {fileID: 11400000, guid: 37a5942198a50a240afa6a8d0fabfc65, type: 2}
   secondsBeforeGlide: 0.4
@@ -10106,25 +10145,6 @@ MonoBehaviour:
   floor:
     serializedVersion: 2
     m_Bits: 71681
---- !u!114 &-2062926891172008439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6359899068279565172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4741bc6c0408aae47b42cb90ba3759d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  description: Dust Particles
-  particles: {fileID: 7590815695509004680}
-  defaultState: 0
-  actionIdsToPlay:
-  - reference: {fileID: 11400000, guid: 85b77a626a702954981623499f6e9f9f, type: 2}
-  actionIdsToStop:
-  - reference: {fileID: 11400000, guid: 22332e9ecb428e444b79a90a287886c7, type: 2}
 --- !u!114 &-2782182542571858041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10167,6 +10187,24 @@ MonoBehaviour:
     <Max>k__BackingField: 100
     <RefillSpeed>k__BackingField: 60
     <RefillDelay>k__BackingField: 1.5
+  fallingController:
+    landingDistanceToFloor: 0.25
+    minYSpeedForFalling: -0.1
+    <IsFalling>k__BackingField: 0
+--- !u!114 &1224112811647375518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6359899068279565172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77db2cb5d1008744b9caeb934bf2aa5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  provider:
+    reference: {fileID: 11400000, guid: 6a781dce49be3f64abc646921732aed7, type: 2}
 --- !u!1 &6665584989643851020
 GameObject:
   m_ObjectHideFlags: 0
@@ -10272,6 +10310,37 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &7329717360054305049
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5325100572854092939}
+  m_Layer: 0
+  m_Name: Interests Look Constraint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5325100572854092939
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7329717360054305049}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 335042604340918724}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &741429141865342536
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10645,7 +10714,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 335042604340918724}
+    m_TransformParent: {fileID: 8300554460770565166}
     m_Modifications:
     - target: {fileID: 1655446913604319416, guid: 97e8cc617f2022341aff1aa48c3b9869,
         type: 3}

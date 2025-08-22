@@ -1,5 +1,6 @@
 ﻿using System;
 using Characters;
+using Core.FSM;
 using FsmAsync;
 
 namespace User.States

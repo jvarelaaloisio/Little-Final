@@ -73,9 +73,9 @@ namespace Player.States
 			    && Controller.StepUp.Should(directionProjectedOnFloor, PP_Walk.StepUpConfig)
 			    && Controller.StepUp.Can(out var stepPosition, MyTransform.forward, PP_Walk.StepUpConfig))
 			{
-				Controller.StepUp.StepUp(PP_Walk.StepUpConfig,
-				                         stepPosition,
-				                         () => Controller.ChangeState<Walk_OLD>());
+				Controller.StepUp.Do(stepPosition,
+				                     PP_Walk.StepUpConfig,
+				                     () => Controller.ChangeState<Walk_OLD>());
 				Controller.ChangeState<Void>();
 			}
 

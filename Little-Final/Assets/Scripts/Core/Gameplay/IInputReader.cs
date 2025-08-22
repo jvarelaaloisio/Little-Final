@@ -7,6 +7,7 @@ namespace Core.Gameplay
     {
         event Action<Vector2> OnMoveInput;
         event Action<Vector2> OnCameraInput;
+        event Action<bool> OnRunInput;
         event Action OnCenterCameraPressed;
         event Action OnJumpPressed;
         event Action OnJumpReleased;

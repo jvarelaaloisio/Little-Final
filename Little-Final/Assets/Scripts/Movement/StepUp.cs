@@ -1,0 +1,112 @@
+using System;
+using System.Collections;
+using Core.Debugging;
+using Core.Movement;
+using UnityEngine;
+
+namespace Player.Movement
+{
+    public class StepUp : MonoBehaviour, IStepUp
+    {
+        [SerializeField] private IStepUp.Config config;
+        [SerializeField] private Vector3 offset;
+        [SerializeField] private float distanceToFeet = 0.2f;
+        [SerializeField] private float minStepHeight = .1f;
+        [SerializeField] private float maxStepFloorNormalAngle = 30;
+
+        [Header("Debugging")]
+        [SerializeField] private Debugger debugger;
+
+        [SerializeField] private string debugTag = "StepUp";
+
+        private Rigidbody _rigidbody;
+
+        /// <inheritdoc/>
+        public bool Should(Vector3 direction, IStepUp.Config configOverride = null)
+        {
+            configOverride ??= config;
+            return Physics.Raycast(GetFeetPosition(), direction, configOverride.StepDistance, configOverride.StepMask);
+        }
+
+        /// <inheritdoc/>
+        public bool Can(out Vector3 stepPosition, Vector3 direction, IStepUp.Config configOverride = null)
+        {
+            stepPosition = Vector3.negativeInfinity;
+            configOverride ??= config;
+            var upScaled = transform.up * configOverride.MaxStepHeight;
+            var directionScaled = direction * configOverride.StepDistance;
+            var origin = GetStepOrigin(configOverride.MaxStepHeight);
+            
+            debugger.DrawRay(debugTag, origin, directionScaled, Color.gray);
+            if (Physics.Raycast(origin, direction, configOverride.StepDistance, configOverride.StepMask))
+                return false;
+            
+            var targetPosition = origin + directionScaled;
+            if (Physics.Raycast(targetPosition, -transform.up, out var hit, configOverride.MaxStepHeight, configOverride.StepMask))
+            {
+                debugger.DrawLine(debugTag, targetPosition, hit.point, Color.green);
+                stepPosition = hit.point + transform.up * distanceToFeet;
+                
+                var floorIsNotTooSteep = Vector3.Angle(transform.up, hit.normal) < maxStepFloorNormalAngle;
+                var stepFloorIsHigherThanPlayer = hit.point.y > transform.position.y - distanceToFeet + minStepHeight;
+                return stepFloorIsHigherThanPlayer && floorIsNotTooSteep;
+            }
+            
+            debugger.DrawRay(debugTag, targetPosition, -upScaled, Color.gray);
+            return false;
+        }
+
+        /// <inheritdoc/>
+        public void Do(Vector3 point, IStepUp.Config configOverride, Action callback = null)
+            => StartCoroutine(DoCoroutine(point, configOverride, callback));
+
+        /// <inheritdoc/>
+        public IEnumerator DoCoroutine(Vector3 destination, IStepUp.Config configOverride = null, Action callback = null)
+        {
+            configOverride ??= config;
+            var origin = transform.position;
+            var beginning = Time.time;
+            float now = 0;
+            do
+            {
+                now = Time.time;
+                var lerp = (now - beginning) / configOverride.Duration;
+                transform.position = Vector3.Lerp(origin, destination, configOverride.StepCurve.Evaluate(lerp));
+
+                yield return null;
+            } while (now < beginning + configOverride.Duration);
+
+            transform.position = destination;
+            callback?.Invoke();
+        }
+
+        private Vector3 GetStepOrigin(float maxStepHeight)
+            => transform.position + transform.up * (-distanceToFeet + maxStepHeight);
+
+        private Vector3 GetFeetPosition()
+        {
+            var feetPosition = transform.position;
+            feetPosition.y -= distanceToFeet;
+            return feetPosition;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            _rigidbody ??= GetComponent<Rigidbody>();
+            if (!_rigidbody)
+                return;
+            var origin = GetStepOrigin(config.MaxStepHeight);
+            var upScaled = transform.up * config.MaxStepHeight;
+            var forwardScaled = _rigidbody.velocity.normalized * config.StepDistance;
+            Gizmos.color = Color.green;
+            Gizmos.DrawRay(origin, forwardScaled);
+            Gizmos.color = Color.red;
+            Vector3 targetPosition = origin + forwardScaled;
+            Gizmos.DrawRay(targetPosition, -upScaled);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(transform.position, -transform.up * distanceToFeet);
+            Gizmos.color = Color.gray;
+            Gizmos.DrawRay(GetFeetPosition(), forwardScaled);
+        }
+    }
+}

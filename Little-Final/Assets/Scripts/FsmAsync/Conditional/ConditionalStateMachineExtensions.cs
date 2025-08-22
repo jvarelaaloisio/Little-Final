@@ -1,3 +1,5 @@
+using Core.FSM;
+
 namespace FsmAsync.Conditional
 {
 	public static class ConditionalStateMachineExtensions
