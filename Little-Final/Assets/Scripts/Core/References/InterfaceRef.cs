@@ -9,9 +9,7 @@ namespace Core.References
         [SerializeField] private UnityEngine.Object reference;
         private UnityEngine.Object _oldReference;
 
-        /// <summary>
-        /// true if there is a reference assigned.
-        /// </summary>
+        /// <summary/> true if there is a reference assigned.
         public bool HasValue => reference;
         
         /// <summary>
@@ -27,18 +25,14 @@ namespace Core.References
             }
         }
 
-        /// <summary>
-        /// Called on EditorApplication.update, used before serializing the object from memory to text.
-        /// </summary>
+        /// <summary/> Called on EditorApplication.update, used before serializing the object from memory to text.
         public void OnBeforeSerialize()
         {
-            if (_oldReference != reference)
+            if (_oldReference != reference || reference is not T)
                 Validate();
         }
 
-        /// <summary>
-        /// Called when unity loads the object and deserializes it.
-        /// </summary>
+        /// <summary/> Called when unity loads the object and deserializes it.
         public void OnAfterDeserialize()
             => _oldReference = reference;
 
@@ -54,9 +48,7 @@ namespace Core.References
                 reference = _oldReference;
             }
             else
-            {
                 _oldReference = reference;
-            }
         }
 
         /// <summary>

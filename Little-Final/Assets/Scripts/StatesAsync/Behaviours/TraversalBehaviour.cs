@@ -33,18 +33,9 @@ namespace StatesAsync.Behaviours
 		[Header("Debug")]
 		[SerializeField] private bool drawDebugLines;
 
-		private readonly Dictionary<IActor, CancellationTokenSource> _cancellationTokenSourcesByActor = new ();
-
 		/// <inheritdoc />
 		public async UniTask Enter(IActor<ReverseIndexStore> actor, CancellationToken token)
 		{
-			if (_cancellationTokenSourcesByActor.Remove(actor, out var tokenSource))
-			{
-				tokenSource.Cancel();
-				tokenSource.Dispose();
-			}
-			tokenSource = new CancellationTokenSource();
-			_cancellationTokenSourcesByActor.Add(actor, tokenSource);
 			await TryHandleInput(actor, token);
 
 			if (!actor.Data.TryGet(characterId.Ref, out IPhysicsCharacter physicsCharacter))
@@ -57,14 +48,7 @@ namespace StatesAsync.Behaviours
 
 		/// <inheritdoc />
 		public UniTask Exit(IActor<ReverseIndexStore> actor, CancellationToken token)
-		{
-			if (!_cancellationTokenSourcesByActor.Remove(actor, out var tokenSource))
-				return UniTask.CompletedTask;
-
-			tokenSource.Cancel();
-			tokenSource.Dispose();
-			return UniTask.CompletedTask;
-		}
+			=> UniTask.CompletedTask;
 
 		/// <inheritdoc />
 		public UniTask<bool> TryHandleInput(IActor<ReverseIndexStore> actor, CancellationToken token)

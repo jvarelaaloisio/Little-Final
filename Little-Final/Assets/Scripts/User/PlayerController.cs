@@ -8,6 +8,8 @@ using Core.Extensions;
 using Core.FSM;
 using Core.Gameplay;
 using Core.Helpers;
+using Core.Helpers.Movement;
+using Core.Movement;
 using Core.References;
 using Core.Utils;
 using Cysharp.Threading.Tasks;
@@ -15,6 +17,7 @@ using DataProviders.Async;
 using FsmAsync;
 using FsmAsync.Conditional;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace User
 {
@@ -24,6 +27,7 @@ namespace User
                  "\nUseful for editor testing.")]
         [field: SerializeField] public bool SelfSetupCharacter { get; set; }
         [SerializeField] private bool enableLog;
+        [SerializeField] private InterfaceRef<IClimber> climber;
 
         [Header("Providers")]
         [SerializeField] private InterfaceRef<IDataProviderAsync<IInputReader>> inputReaderProvider;
@@ -37,6 +41,7 @@ namespace User
         [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> fall;
         [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> glide;
         [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> walkWhileFalling;
+        [SerializeField] private InterfaceRef<IState<IActor<ReverseIndexStore>>> climb;
         
         [Header("Ids")]
         [SerializeField] private IdContainer characterId;
@@ -52,6 +57,8 @@ namespace User
         [SerializeField] private IdContainer lastInputId;
         [SerializeField] private InterfaceRef<IIdentifier> runId;
         [SerializeField] private InterfaceRef<IIdentifier> glideId;
+        [SerializeField] private InterfaceRef<IIdentifier> climbId;
+        [SerializeField] private InterfaceRef<IIdentifier> climbRaycastHitId;
 
         [SerializeField] private float secondsBeforeGlide = 1;
 
@@ -65,6 +72,7 @@ namespace User
         private readonly Queue<IIdentifier> _dataQueue = new();
         private CancellationTokenSource _updateTokenSource;
         private CancellationTokenSource _enableTokenSource;
+        private bool _canClimb;
 
         public IActor<ReverseIndexStore> Actor => _character.Actor;
 
@@ -89,19 +97,43 @@ namespace User
                 inputReader.OnJumpReleased += StopJump;
                 inputReader.OnGlidePressed += SetWantsToGlide;
                 inputReader.OnGlideReleased += UnsetWantsToGlide;
+                inputReader.OnClimbPressed += SetWantsToClimb;
+                inputReader.OnClimbReleased += UnsetWantsToClimb;
             }
             catch (OperationCanceledException)
             {
-                Debug.LogWarning($"{nameof(PlayerController)} Input reader was never provided during enable.");
+                this.LogWarning("Input reader was never provided during enable.");
                 return;
             }
             catch (Exception e)
             {
                 Debug.LogException(e, this);
             }
+
+            if (!climber.HasValue)
+            {
+                if (!TryGetComponent(out IClimber climberComponent))
+                {
+                    this.LogError("No climber component found!");
+                    return;
+                }
+                climber.Ref = climberComponent;
+            }
             _updateTokenSource = new CancellationTokenSource();
             var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(_updateTokenSource.Token, destroyCancellationToken);
+            UpdateClimberData(Actor, combinedToken.Token).Forget();
             UpdateFsm(combinedToken.Token).Forget();
+        }
+
+        private async UniTaskVoid UpdateClimberData(IActor<ReverseIndexStore> actor, CancellationToken token)
+        {
+            var myTransform = transform;
+            while (!token.IsCancellationRequested)
+            {
+                await UniTask.NextFrame(token);
+                _canClimb = climber.Ref.CanClimb(myTransform.forward, out var hit);
+                actor.Data.Set(climbRaycastHitId.Ref, hit);
+            }
         }
 
         private void Start()
@@ -110,7 +142,7 @@ namespace User
             {
                 if (!TryGetComponent(out _character))
                 {
-                    Debug.LogError($"{tag}: No character component found!", this);
+                    this.LogError("No character component found!");
                     return;
                 }
 
@@ -132,7 +164,7 @@ namespace User
         {
             while (!token.IsCancellationRequested)
             {
-                await UniTask.Yield(token);
+                await UniTask.NextFrame(token);
                 if (_fsm == null)
                     continue;
 
@@ -160,6 +192,8 @@ namespace User
                 inputReader.OnJumpReleased -= StopJump;
                 inputReader.OnGlidePressed -= SetWantsToGlide;
                 inputReader.OnGlideReleased -= UnsetWantsToGlide;
+                inputReader.OnClimbPressed -= SetWantsToClimb;
+                inputReader.OnClimbReleased -= UnsetWantsToClimb;
             }
 
             _fsm?.End(Actor, destroyCancellationToken).Forget();
@@ -172,6 +206,7 @@ namespace User
             Actor.Data.Set(characterId.Get, _character);
             Actor.Data.Set(actorId.Ref, _character.Actor);
             Actor.Data.Set(traversalInputId.Ref, Vector3.zero);
+            Actor.Data.Set(new Id(nameof(Transform), transform.GetHashCode()), transform);
             SetupFsm(_character);
         }
 
@@ -184,12 +219,6 @@ namespace User
                 Debug.LogError($"{name}: {nameof(floorTracker)} component was not found in character!");
                 return;
             }
-            
-            //TODO: Remove when finished creating the delayedHandler. We just keep these lines as an example
-            // _glideDelay = new StateDelayedHandler<IActor<ReverseIndexStore>>(secondsBeforeGlide, TransitionToGlide);
-            // jump.Ref.OnEnter.Add(_glideDelay.Handle);
-            // walk.Ref.OnEnter.Add(_glideDelay.Cancel);
-            // idle.Ref.OnEnter.Add(_glideDelay.Cancel);
             _fsm = new ConditionalStateMachine<IActor<ReverseIndexStore>, IIdentifier>(name)
                        .ThatLogs(Debug.unityLogger, enableStateLogs)
                        .ThatTransitionsFrom(walk.Ref).To(idle.Ref).WhenNot(nameof(WantsToTraverse), WantsToTraverse).WithId(stopId).Apply()
@@ -220,7 +249,12 @@ namespace User
                        .ThatTransitionsFrom(glide.Ref).To(fall.Ref).When(nameof(NeitherWantsToGlideNorTraverse), NeitherWantsToGlideNorTraverse).WithId(fallId).Apply()
                        .ThatTransitionsFrom(glide.Ref).To(walkWhileFalling.Ref).When(nameof(DoesNotWantToGlideButWantsToTraverse), DoesNotWantToGlideButWantsToTraverse).WithId(fallId).Apply()
 
-                       .ThatTransitionsFrom(glide.Ref).To(fall.Ref).When(nameof(OutOfStamina), OutOfStamina).WithId(fallId).Apply();
+                       .ThatTransitionsFrom(glide.Ref).To(fall.Ref).When(nameof(OutOfStamina), OutOfStamina).WithId(fallId).Apply()
+
+                       //TODO: Add the rest of the transitions
+                       .ThatTransitionsFrom(idle.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
+                       .ThatTransitionsFrom(climb.Ref).To(fall.Ref).WhenNot(WantsToAndCanClimb).Apply()
+                       ;
 
 
             await _fsm.Start(idle.Ref, Actor, destroyCancellationToken);
@@ -266,19 +300,25 @@ namespace User
                    || !input
                    && !WantsToTraverse(actor);
 
+            bool WantsToAndCanClimb(IActor<ReverseIndexStore> actor)
+                => actor.Data.TryGet(climbId.Ref, out bool input)
+                   && input
+                   && !OutOfStamina(actor)
+                   && actor.Data.TryGet(climbRaycastHitId.Ref, out RaycastHit hit)
+                   && _canClimb;
+
+            bool DoesntWantOrCannotClimb(IActor<ReverseIndexStore> actor)
+                => !actor.Data.TryGet(climbId.Ref, out bool input)
+                   || !input
+                   || OutOfStamina(actor)
+                   || !_canClimb;
+
             bool OutOfStamina(IActor<ReverseIndexStore> actor)
                 => character.Stamina.Current <= 0;
         }
 
         private void HandleStartFalling()
         {
-            //TODO: Add a condition class that handles this
-            // if (!Actor.Data.TryGet(glideId.Ref, out bool wantsToGlide))
-            // {
-            //     Debug.LogWarning($"{name}: Actor doesn't contain wantToGlide value");
-            //     return;
-            // }
-            // AddData(wantsToGlide ? glideId.Ref : fallId.Get);
             Actor.Data.Set(fallId, true);
         }
 
@@ -307,6 +347,18 @@ namespace User
         {
             //TODO: Add this behaviour to a Condition structure
             Actor.Data.Set(glideId.Ref, false);
+        }
+
+        private void SetWantsToClimb()
+        {
+            //TODO: Add this behaviour to a Condition structure
+            Actor.Data.Set(climbId.Ref, true);
+        }
+
+        private void UnsetWantsToClimb()
+        {
+            //TODO: Add this behaviour to a Condition structure
+            Actor.Data.Set(climbId.Ref, false);
         }
         
         private void HandleMoveInput(Vector2 input)

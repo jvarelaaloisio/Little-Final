@@ -20,10 +20,12 @@ namespace Player.Movement
         [SerializeField] private string debugTag = "StepUp";
 
         private Rigidbody _rigidbody;
+        private Vector3 _lastDirection;
 
         /// <inheritdoc/>
         public bool Should(Vector3 direction, IStepUp.Config configOverride = null)
         {
+            _lastDirection = direction;
             configOverride ??= config;
             return Physics.Raycast(GetFeetPosition(), direction, configOverride.StepDistance, configOverride.StepMask);
         }
@@ -37,7 +39,7 @@ namespace Player.Movement
             var directionScaled = direction * configOverride.StepDistance;
             var origin = GetStepOrigin(configOverride.MaxStepHeight);
             
-            debugger.DrawRay(debugTag, origin, directionScaled, Color.gray);
+            debugger.DrawRay(debugTag, origin, directionScaled, Color.black);
             if (Physics.Raycast(origin, direction, configOverride.StepDistance, configOverride.StepMask))
                 return false;
             
@@ -52,7 +54,7 @@ namespace Player.Movement
                 return stepFloorIsHigherThanPlayer && floorIsNotTooSteep;
             }
             
-            debugger.DrawRay(debugTag, targetPosition, -upScaled, Color.gray);
+            debugger.DrawRay(debugTag, targetPosition, -upScaled, Color.black);
             return false;
         }
 
@@ -92,12 +94,9 @@ namespace Player.Movement
 
         private void OnDrawGizmosSelected()
         {
-            _rigidbody ??= GetComponent<Rigidbody>();
-            if (!_rigidbody)
-                return;
             var origin = GetStepOrigin(config.MaxStepHeight);
             var upScaled = transform.up * config.MaxStepHeight;
-            var forwardScaled = _rigidbody.velocity.normalized * config.StepDistance;
+            var forwardScaled = _lastDirection * config.StepDistance;
             Gizmos.color = Color.green;
             Gizmos.DrawRay(origin, forwardScaled);
             Gizmos.color = Color.red;

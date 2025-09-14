@@ -20,6 +20,9 @@ namespace Views
 		[SerializeField] private AnimatorParameter jumpParameter = new("Jump");
 		[SerializeField] private List<InterfaceRef<IIdentifier>> jumpActionIds;
 		[Space]
+		[SerializeField] private AnimatorParameter fallParameter = new("Fall");
+		[SerializeField] private List<InterfaceRef<IIdentifier>> fallActionIds;
+		[Space]
 		[SerializeField] private AnimatorParameter runningBlendTree = new ("Running BlendTree");
 		[SerializeField] private List<InterfaceRef<IIdentifier>> landActionIds;
 		[SerializeField] private float transitionDuration = 0.2f;
@@ -34,12 +37,14 @@ namespace Views
 		{
 			base.Setup(data);
 			TryAddPostBehaviour(jumpActionIds, PlayJumpAnimation);
+			TryAddPostBehaviour(fallActionIds, PlayFallAnimation);
 			TryAddPostBehaviour(landActionIds, PlayRunningBlendTree);
 		}
 
 		private void OnDisable()
 		{
 			RemovePostBehaviour(jumpActionIds, PlayJumpAnimation);
+			RemovePostBehaviour(fallActionIds, PlayFallAnimation);
 			RemovePostBehaviour(landActionIds, PlayRunningBlendTree);
 		}
 
@@ -48,6 +53,13 @@ namespace Views
 			jumpParameter.Play(animator);
 			return UniTask.CompletedTask;
 		}
+
+		private UniTask PlayFallAnimation(IActor actor, CancellationToken token)
+		{
+			fallParameter.Play(animator);
+			return UniTask.CompletedTask;
+		}
+
 		public UniTask PlayRunningBlendTree(IActor actor, CancellationToken token)
 		{
 			runningBlendTree.CrossFade(animator, transitionDuration);

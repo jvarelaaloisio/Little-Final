@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Reflection;
 using Core.Extensions;
 using Core.References;
 using Editor.Search;
@@ -35,7 +36,22 @@ namespace JVarelaAloisio.Editor.Drawers
 				Initialize(property);
 			EditorGUI.BeginDisabledGroup(_state is not State.Initialized);
 			_referenceProperty = property.FindPropertyRelative("reference");
+			EditorGUI.BeginChangeCheck();
 			ObjectField.DoObjectField(position, _referenceProperty, typeof(Object), label, _searchContext, SearchProjectSettings.SearchViewFlags);
+			if (EditorGUI.EndChangeCheck())
+			{
+				var target = property.serializedObject.targetObject;
+				var field = target.GetType().GetField(property.name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+				if (field != null)
+				{
+					var value = field.GetValue(target);
+					var validateMethod = field.FieldType.GetMethod("Validate", BindingFlags.Instance | BindingFlags.NonPublic);
+					if (validateMethod != null)
+						validateMethod.Invoke(value, new object[] { });
+					else
+						Debug.LogError($"Validate method not found in type {field.FieldType}", target);
+				}
+			}
 			EditorGUI.EndDisabledGroup();
 			if (_exception != null)
 			{

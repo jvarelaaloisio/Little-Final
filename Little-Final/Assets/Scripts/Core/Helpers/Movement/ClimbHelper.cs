@@ -57,6 +57,7 @@ namespace Core.Helpers.Movement
 		}
 
 		//TODO: Move to another class. This is now being used by more than the climb related classes
+		//Update on this, we now have the StepUp component
 		public static bool CanStepUp(Vector3 actualPosition,
 		                              Vector3 up,
 		                              Vector3 forward,

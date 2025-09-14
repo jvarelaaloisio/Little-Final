@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using Core.Gameplay;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEditor.Search;
 using UnityEngine;
 using VarelaAloisio.Editor;
@@ -9,8 +11,13 @@ namespace Input.Editor
 {
     public class InputReaderDebuggerWindow : UnityEditor.EditorWindow
     {
+        [SerializeField] private UnityEngine.Object _lastSelection;
         private IInputReader _reader;
         private Vector2 _moveInput = Vector2.zero;
+        private bool _climbInput = false;
+        private bool _runInput = false;
+
+        private bool IsFocused => focusedWindow == this;
 
         [MenuItem("Tools/Input/Debugger")]
         public static void OpenWindow()
@@ -46,30 +53,68 @@ namespace Input.Editor
                 }
                 var w = GetWindow<InputReaderDebuggerWindow>();
                 w._reader = reader;
+                w._lastSelection = item.ToObject();
                 if (EditorApplication.isPlaying)
                     w.HandlePlayModeChanged(PlayModeStateChange.EnteredPlayMode);
                 EditorApplication.playModeStateChanged += w.HandlePlayModeChanged;
-                w.titleContent = new GUIContent($"Input Debugger", item.label);
+                string readerLabel = item.label;
+                w.titleContent = new GUIContent($"Input Debugger", readerLabel);
+                
+            }
+        }
+
+        [DidReloadScripts]
+        private static void HandleReloadedScripts()
+        {
+            var window = Resources.FindObjectsOfTypeAll<InputReaderDebuggerWindow>().FirstOrDefault();
+            if (!window)
+                return;
+            if (window._lastSelection)
+            {
+                EditorApplication.playModeStateChanged -= window.HandlePlayModeChanged;
+                EditorApplication.playModeStateChanged += window.HandlePlayModeChanged;
+            }
+            else
+            {
+                window.Close();
+                OpenWindow();
             }
         }
 
         private void HandlePlayModeChanged(PlayModeStateChange state)
         {
-            if (_reader == null)
+            if (state is PlayModeStateChange.EnteredEditMode or PlayModeStateChange.ExitingEditMode)
                 return;
-            if (state == PlayModeStateChange.EnteredPlayMode)
+
+            if (_lastSelection is GameObject gameObject
+                && gameObject.TryGetComponent(out IInputReader candidate))
+                _reader = candidate;
+
+            switch (state)
             {
-                _reader.OnMoveInput += HandleMoveInput;
-            }
-            else if (state == PlayModeStateChange.ExitingPlayMode)
-            {
-                _reader.OnMoveInput -= HandleMoveInput;
+                case PlayModeStateChange.EnteredPlayMode:
+                    Debug.Log("Entered PlayMode");
+                    _reader.OnMoveInput += HandleMoveInput;
+                    _reader.OnClimbPressed += HandleClimbPressed;
+                    _reader.OnClimbReleased += HandleClimbReleased;
+                    _reader.OnRunInput += HandleRunInput;
+                    break;
+                case PlayModeStateChange.ExitingPlayMode:
+                    _reader.OnMoveInput -= HandleMoveInput;
+                    _reader.OnClimbPressed -= HandleClimbPressed;
+                    _reader.OnClimbReleased -= HandleClimbReleased;
+                    _reader.OnRunInput -= HandleRunInput;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
             }
         }
 
         private void OnGUI()
         {
             EditorGUILayout.LabelField("Movement", _moveInput.ToString());
+            EditorGUILayout.LabelField("Climb", _climbInput.ToString());
+            EditorGUILayout.LabelField("Run", _runInput.ToString());
         }
 
         private void OnDestroy()
@@ -78,12 +123,39 @@ namespace Input.Editor
             if (_reader == null)
                 return;
             _reader.OnMoveInput -= HandleMoveInput;
+            _reader.OnClimbPressed -= HandleClimbPressed;
+            _reader.OnClimbReleased -= HandleClimbReleased;
+            _reader.OnRunInput -= HandleRunInput;
         }
 
         private void HandleMoveInput(Vector2 input)
         {
             _moveInput = input;
             Repaint();
+        }
+
+        private void HandleClimbPressed()
+        {
+            _climbInput = true;
+            ForceRepaintNotFocused();
+        }
+
+        private void HandleClimbReleased()
+        {
+            _climbInput = false;
+            ForceRepaintNotFocused();
+        }
+
+        private void HandleRunInput(bool value)
+        {
+            _runInput = value;
+            ForceRepaintNotFocused();
+        }
+
+        private void ForceRepaintNotFocused()
+        {
+            if (!IsFocused)
+                Repaint();
         }
     }
 }

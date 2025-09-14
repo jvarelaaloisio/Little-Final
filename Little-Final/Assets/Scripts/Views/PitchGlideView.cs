@@ -90,7 +90,7 @@ namespace Views
 				
 				euler.x = Mathf.Lerp(finalPitch, _originalPitch, lerp);
 				transform.localEulerAngles = euler;
-				await UniTask.Yield(token);
+				await UniTask.NextFrame(token);
 			} while (now < start + .1f && !token.IsCancellationRequested);
 		}
 
@@ -103,7 +103,7 @@ namespace Views
 				var euler = transform.localEulerAngles;
 				euler.x = Mathf.Lerp(euler.x, pitchCurve.Evaluate(speed), Time.deltaTime * rotationSpeed);
 				transform.localEulerAngles = euler;
-				await UniTask.Yield();
+				await UniTask.NextFrame(token);
 			}
 		}
 	}

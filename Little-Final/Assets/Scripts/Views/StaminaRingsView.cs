@@ -134,7 +134,7 @@ namespace Views
 				now = Time.time;
 				var lerp = (now - start) / duration;
 				SetRingsAlpha(fadeCurve.Evaluate(lerp));
-				await UniTask.Yield(token);
+				await UniTask.NextFrame(token);
 			} while (now < start + duration);
 		}
 
