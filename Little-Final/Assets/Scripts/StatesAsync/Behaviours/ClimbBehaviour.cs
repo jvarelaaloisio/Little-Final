@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Characters;
 using Core.Acting;
 using Core.Data;
@@ -16,10 +17,12 @@ namespace StatesAsync.Behaviours
 	[CreateAssetMenu(menuName = "States/Behaviours/Climb", fileName = "ClimbBehaviour", order = 0)]
 	public class ClimbBehaviour : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>
 	{
+		private const string CurrentWallName = "current wall";
 		[SerializeField] private float positioningDuration = 0.18f;
-		[SerializeField] private float climbingPositionOffset = 0.2f;
+		[SerializeField] private float positionOffset = 0.2f;
 		[SerializeField] private float rotationResetDuration = 0.18f;
 		[SerializeField] private float speed = 1.5f;
+		[SerializeField] private float rotationSpeed = 150f;
 
 		[Header("References")]
 		[SerializeField] private InterfaceRef<IIdentifier> directionId;
@@ -29,6 +32,7 @@ namespace StatesAsync.Behaviours
 		[SerializeField] private InterfaceRef<IIdentifier> climbRaycastHitId;
 
 		private readonly Dictionary<IActor, CancellationTokenSource> _cancellationTokenSourcesByActor = new();
+		private readonly Id _currentWallId = new Id(CurrentWallName, CurrentWallName.GetHashCode());
 
 		/// <inheritdoc />
 		public async UniTask Enter(IActor<ReverseIndexStore> actor, CancellationToken token)
@@ -60,8 +64,9 @@ namespace StatesAsync.Behaviours
 				this.LogError("Couldn't get RaycastHit from actor's data!");
 				return;
 			}
+			actor.Data.Set(_currentWallId, hit.transform);
 
-			var targetPosition = hit.point + hit.normal * climbingPositionOffset;
+			var targetPosition = hit.point + hit.normal * positionOffset;
 
 			var targetRotation = Quaternion.LookRotation(-hit.normal, Vector3.up);
 			if (drawDebugLines)
@@ -70,6 +75,61 @@ namespace StatesAsync.Behaviours
 				Debug.DrawRay(hit.point, -hit.normal, Color.green, 10f);
 				Debug.DrawRay(hit.point, targetRotation.normalized.eulerAngles, Color.blue, 10f);
 			}
+			await GetInPosition(transform, targetPosition, targetRotation, token);
+		}
+
+		/// <inheritdoc />
+		public async UniTask<bool> TryConsumeTick(IActor<ReverseIndexStore> actor, CancellationToken token)
+		{
+			if (!actor.Data.TryGetFirst(out Transform transform))
+			{
+				this.LogError("Couldn't get transform from actor's data!");
+				return false;
+			}
+			if (actor.Data[typeof(Vector3), directionId.Ref] is not Vector3 direction)
+			{
+				this.LogError("Direction is not Vector3!");
+				return false;
+			}
+
+			if (!transform.TryGetComponent(out IClimber climber))
+			{
+				this.LogError("Climber component not found!");
+				return false;
+			}
+
+			if (!actor.Data.TryGet(climbRaycastHitId.Ref, out RaycastHit hit))
+			{
+				this.LogError("Couldn't get RaycastHit from actor's data!");
+				return false;
+			}
+			
+			if (WillChangeWall())
+			{
+				await ResetPosition(transform, hit, token);
+				actor.Data.Set(_currentWallId, hit.transform);
+				return true;
+			}
+
+			var world2dDirection = transform.TransformDirection(direction.XZtoXY());
+			if (climber.CanMove(world2dDirection, out _))
+				transform.Translate(direction.XZtoXY() * (speed * Time.deltaTime), Space.Self);
+			var targetRotation = Quaternion.LookRotation(-hit.normal, Vector3.up);
+			transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+			return true;
+
+			bool WillChangeWall()
+			{
+				return actor.Data.TryGet(_currentWallId, out Transform currentWall)
+				       && !hit.transform.Equals(currentWall);
+			}
+		}
+
+		private async UniTask ResetPosition(Transform transform, RaycastHit hit, CancellationToken token)
+		{
+			var targetPosition = hit.point - transform.forward * positionOffset;
+			var targetRotation = Quaternion.LookRotation(-hit.normal);
+
 			await GetInPosition(transform, targetPosition, targetRotation, token);
 		}
 
@@ -90,32 +150,6 @@ namespace StatesAsync.Behaviours
 				transform.rotation = Quaternion.Slerp(originRotation, rotation, lerp);
 				await UniTask.NextFrame(token);
 			} while (now < start + positioningDuration && !token.IsCancellationRequested);
-		}
-
-		/// <inheritdoc />
-		public UniTask<bool> TryConsumeTick(IActor<ReverseIndexStore> actor, CancellationToken token)
-		{
-			if (!actor.Data.TryGetFirst(out Transform transform))
-			{
-				this.LogError("Couldn't get transform from actor's data!");
-				return UniTask.FromResult(false);
-			}
-			if (actor.Data[typeof(Vector3), directionId.Ref] is not Vector3 direction)
-			{
-				this.LogError("Direction is not Vector3!");
-				return UniTask.FromResult(false);
-			}
-
-			if (!transform.TryGetComponent(out IClimber climber))
-			{
-				this.LogError("Climber component not found!");
-				return UniTask.FromResult(false);
-			}
-
-			var world2dDirection = transform.TransformDirection(direction.XZtoXY());
-			if (climber.CanMove(world2dDirection, out _))
-				transform.Translate(direction.XZtoXY() * (speed * Time.deltaTime), Space.Self);
-			return UniTask.FromResult(false);
 		}
 
 		/// <inheritdoc />
