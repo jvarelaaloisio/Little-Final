@@ -46,6 +46,7 @@ namespace Core.Movement
 		{
 			[field: SerializeField, Min(0)] public float MaxDistance { get; private set; } = 0.5f;
 			[field: SerializeField, Range(0, 360)] public float MaxDegrees { get; private set; } = 60;
+			[field: SerializeField, Range(0, 3, 0.05f)] public float MaxDistanceToCorners { get; private set; } = 0.35f;
 			[field: SerializeField] public LayerMask Mask { get; set; }
 		}
 	}

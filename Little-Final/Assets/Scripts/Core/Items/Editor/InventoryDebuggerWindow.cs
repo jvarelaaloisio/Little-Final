@@ -21,7 +21,7 @@ public class InventoryDebuggerWindow : EditorWindow
 
     private int _unitsToAddToNewItem;
 
-    [MenuItem("Game Design/Inventory Debugger")]
+    [MenuItem("Tools/Debuggers/Inventory")]
     public static void OpenWindow()
     {
         var w = GetWindow<InventoryDebuggerWindow>();

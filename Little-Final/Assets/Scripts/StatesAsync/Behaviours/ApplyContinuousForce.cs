@@ -35,7 +35,7 @@ namespace User.States.Behaviours
 		}
 
 		/// <inheritdoc />
-		public UniTask<bool> TryHandleInput(IActor<ReverseIndexStore> actor, CancellationToken token)
+		public UniTask<bool> TryConsumeTick(IActor<ReverseIndexStore> actor, CancellationToken token)
 			=> UniTask.FromResult(false);
 	}
 }

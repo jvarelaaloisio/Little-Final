@@ -12,5 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 398ea42901f44bfeb36f84c2e9d2feaa, type: 3}
   m_Name: Climb
   m_EditorClassIdentifier: 
-  <Behaviours>k__BackingField: []
+  <Behaviours>k__BackingField:
+  - reference: {fileID: 11400000, guid: ce6b7ce9f0ae8934eb3b71e50dd16d33, type: 2}
+  onEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11400000, guid: 97b7cad158e114341a5f4e5dcb35825e, type: 2}
+        m_TargetAssemblyTypeName: Events.Channels.VoidChannelSo, VarelaAloisio.Common.Events.Runtime
+        m_MethodName: RaiseEvent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
   enableLog: 0

@@ -33,7 +33,7 @@ namespace Core.FSM
 		/// Method called for every input received by the State machine.
 		/// </summary>
 		/// <returns></returns>
-		UniTask<bool> TryHandleDataChanged(TTarget target, CancellationToken token);
+		UniTask<bool> Tick(TTarget target, CancellationToken token);
 
 		/// <summary>
 		/// Method called once when exiting this state and before entering another.

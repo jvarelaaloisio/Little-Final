@@ -5,6 +5,7 @@ using Core.Acting;
 using Core.Data;
 using Core.Extensions;
 using Core.Helpers;
+using Core.Movement;
 using Core.References;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -18,6 +19,10 @@ namespace StatesAsync.Behaviours
 		[SerializeField] private float positioningDuration = 0.18f;
 		[SerializeField] private float climbingPositionOffset = 0.2f;
 		[SerializeField] private float rotationResetDuration = 0.18f;
+		[SerializeField] private float speed = 1.5f;
+
+		[Header("References")]
+		[SerializeField] private InterfaceRef<IIdentifier> directionId;
 
 		[Header("Debug")]
 		[SerializeField] private bool drawDebugLines;
@@ -58,8 +63,7 @@ namespace StatesAsync.Behaviours
 
 			var targetPosition = hit.point + hit.normal * climbingPositionOffset;
 
-			var targetRotation = Quaternion.FromToRotation(Vector3.forward, -hit.normal);
-			targetRotation = Quaternion.LookRotation(-hit.normal, Vector3.up);
+			var targetRotation = Quaternion.LookRotation(-hit.normal, Vector3.up);
 			if (drawDebugLines)
 			{
 				Debug.DrawRay(hit.point, hit.normal, Color.red, 10f);
@@ -89,19 +93,40 @@ namespace StatesAsync.Behaviours
 		}
 
 		/// <inheritdoc />
-		public async UniTask Exit(IActor<ReverseIndexStore> actor, CancellationToken token)
+		public UniTask<bool> TryConsumeTick(IActor<ReverseIndexStore> actor, CancellationToken token)
 		{
 			if (!actor.Data.TryGetFirst(out Transform transform))
 			{
 				this.LogError("Couldn't get transform from actor's data!");
-				return;
+				return UniTask.FromResult(false);
+			}
+			if (actor.Data[typeof(Vector3), directionId.Ref] is not Vector3 direction)
+			{
+				this.LogError("Direction is not Vector3!");
+				return UniTask.FromResult(false);
 			}
 
+			if (!transform.TryGetComponent(out IClimber climber))
+			{
+				this.LogError("Climber component not found!");
+				return UniTask.FromResult(false);
+			}
+
+			var world2dDirection = transform.TransformDirection(direction.XZtoXY());
+			if (climber.CanMove(world2dDirection, out _))
+				transform.Translate(direction.XZtoXY() * (speed * Time.deltaTime), Space.Self);
+			return UniTask.FromResult(false);
+		}
+
+		/// <inheritdoc />
+		public async UniTask Exit(IActor<ReverseIndexStore> actor, CancellationToken token)
+		{
 			if (actor.Data.TryGetFirst(out IPhysicsCharacter character))
 				character.Body.isKinematic = false;
 			else
 				this.LogError("Couldn't get character from actor's data!");
 
+			var transform = character.transform;
 			var originRotation = transform.rotation;
 			var rotation = GetHorizontalForward();
 			float start = Time.time;
@@ -123,12 +148,6 @@ namespace StatesAsync.Behaviours
 					                 : Quaternion.LookRotation(forward.normalized, Vector3.up);
 				return quaternion;
 			}
-		}
-
-		/// <inheritdoc />
-		public UniTask<bool> TryHandleInput(IActor<ReverseIndexStore> actor, CancellationToken token)
-		{
-			return UniTask.FromResult(false);
 		}
 	}
 }

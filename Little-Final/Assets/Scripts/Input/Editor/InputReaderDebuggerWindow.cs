@@ -19,7 +19,7 @@ namespace Input.Editor
 
         private bool IsFocused => focusedWindow == this;
 
-        [MenuItem("Tools/Input/Debugger")]
+        [MenuItem("Tools/Debugger/Input")]
         public static void OpenWindow()
         {
             var context = SearchUtil.GetContextFor(typeof(IInputReader));
@@ -93,7 +93,6 @@ namespace Input.Editor
             switch (state)
             {
                 case PlayModeStateChange.EnteredPlayMode:
-                    Debug.Log("Entered PlayMode");
                     _reader.OnMoveInput += HandleMoveInput;
                     _reader.OnClimbPressed += HandleClimbPressed;
                     _reader.OnClimbReleased += HandleClimbReleased;

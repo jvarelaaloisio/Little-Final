@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Core.Movement
 {
@@ -36,22 +35,24 @@ namespace Core.Movement
 		/// <inheritdoc />
 		public bool CanMove(Vector3 direction, out RaycastHit hit, IClimber.Config configOverride = null)
 		{
+			var cfg = configOverride ?? DefaultConfig;
 			//Check Direction, drawn in red
-			Debug.DrawRay(transform.position, direction, Color.red);
+			var clampedDirection = direction * cfg.MaxDistanceToCorners;
+			Debug.DrawRay(transform.position, clampedDirection, Color.red);
 			if (Physics.Raycast(transform.position,
 			                    direction,
 			                    out hit,
-			                    direction.magnitude,
-			                    DefaultConfig.Mask))
+			                    direction.magnitude * cfg.MaxDistanceToCorners,
+			                    cfg.Mask))
 				return false;
 
 			//Check if there is still a wall, drawn in green
-			Debug.DrawRay(transform.position + direction,
-			              transform.forward * DefaultConfig.MaxDistance, Color.green);
-			return CanClimb(transform.position + direction,
+			Debug.DrawRay(transform.position + clampedDirection,
+			              transform.forward * cfg.MaxDistance, Color.green);
+			return CanClimb(transform.position + clampedDirection,
 			                transform.forward,
 			                out hit,
-			                configOverride);
+			                cfg);
 		}
 	}
 }

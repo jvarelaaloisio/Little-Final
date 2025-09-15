@@ -8,6 +8,7 @@ using Core.Helpers;
 using Core.References;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 using User.States;
 
 namespace StatesAsync.Behaviours
@@ -23,8 +24,9 @@ namespace StatesAsync.Behaviours
 		[Header("Slopes and walls")]
 		[SerializeField] private AnimationCurve decelerationCurveWhenApproachingWall;
 		[SerializeField] private float maxSlopeAngle = 45;
+		[FormerlySerializedAs("traversalInputId")]
 		[Header("References")]
-		[SerializeField] private InterfaceRef<IIdentifier> traversalInputId;
+		[SerializeField] private InterfaceRef<IIdentifier> directionId;
 		[SerializeField] private InterfaceRef<IIdentifier> characterId;
 
 		[Header("Optional")]
@@ -36,7 +38,7 @@ namespace StatesAsync.Behaviours
 		/// <inheritdoc />
 		public async UniTask Enter(IActor<ReverseIndexStore> actor, CancellationToken token)
 		{
-			await TryHandleInput(actor, token);
+			await TryConsumeTick(actor, token);
 
 			if (!actor.Data.TryGet(characterId.Ref, out IPhysicsCharacter physicsCharacter))
 			{
@@ -51,14 +53,14 @@ namespace StatesAsync.Behaviours
 			=> UniTask.CompletedTask;
 
 		/// <inheritdoc />
-		public UniTask<bool> TryHandleInput(IActor<ReverseIndexStore> actor, CancellationToken token)
+		public UniTask<bool> TryConsumeTick(IActor<ReverseIndexStore> actor, CancellationToken token)
 		{
 			if (!actor.Data.TryGet(characterId.Ref, out IPhysicsCharacter character))
 			{
 				this.LogError("Couldn't get character from actor's data!");
 				return new(false);
 			}
-			if (actor.Data[typeof(Vector3), traversalInputId.Ref] is not Vector3 direction)
+			if (actor.Data[typeof(Vector3), directionId.Ref] is not Vector3 direction)
 			{
 				this.LogError("Direction is not Vector3!");
 				return new(false);

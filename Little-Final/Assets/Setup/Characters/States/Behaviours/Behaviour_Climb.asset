@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: Behaviour_Climb
   m_EditorClassIdentifier: 
   positioningDuration: 0.18
-  climbingPositionOffset: 0
+  climbingPositionOffset: 0.2
+  rotationResetDuration: 0.18
+  speed: 1.5
+  directionId:
+    reference: {fileID: 11400000, guid: c63887a800c240c5a8e156f8b93b9bf7, type: 2}
   drawDebugLines: 0
   climbRaycastHitId:
-    reference: {fileID: 0}
+    reference: {fileID: 11400000, guid: d31925226727a0542b02321f773d6d87, type: 2}

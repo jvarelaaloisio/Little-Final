@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using Characters;
 using Core.Acting;
@@ -8,16 +7,13 @@ using Core.Extensions;
 using Core.FSM;
 using Core.Gameplay;
 using Core.Helpers;
-using Core.Helpers.Movement;
 using Core.Movement;
 using Core.References;
-using Core.Utils;
 using Cysharp.Threading.Tasks;
 using DataProviders.Async;
 using FsmAsync;
 using FsmAsync.Conditional;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace User
 {
@@ -69,7 +65,6 @@ namespace User
         private StateDelayedHandler<IActor<ReverseIndexStore>> _glideDelay;
 
         private UniTask _handlingData;
-        private readonly Queue<IIdentifier> _dataQueue = new();
         private CancellationTokenSource _updateTokenSource;
         private CancellationTokenSource _enableTokenSource;
         private bool _canClimb;
@@ -173,7 +168,7 @@ namespace User
                     await Actor.Act<(IActor<ReverseIndexStore> actor, ITransition<IActor<ReverseIndexStore>, IIdentifier> transition)>
                         (_fsm.DoTransition, (Actor, transition), token, transition.Id);
                 else
-                    await _fsm.Current.TryHandleDataChanged(Actor, token);
+                    await _fsm.Current.Tick(Actor, token);
             }
         }
 

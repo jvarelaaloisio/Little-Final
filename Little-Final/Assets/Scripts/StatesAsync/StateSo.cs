@@ -9,6 +9,7 @@ using Core.References;
 using Cysharp.Threading.Tasks;
 using FsmAsync;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace User.States
 {
@@ -27,6 +28,8 @@ namespace User.States
 
         [field:SerializeField] public InterfaceRef<IActorStateBehaviour<ReverseIndexStore>>[] Behaviours { get; set; }
 
+        [SerializeField] private UnityEvent onEnter = new();
+        [SerializeField] private UnityEvent onExit = new();
         [SerializeField] private bool enableLog;
 
         private AutoMap<IState<IActor<ReverseIndexStore>>> _state = new(() => new State<IActor<ReverseIndexStore>>());
@@ -48,8 +51,7 @@ namespace User.States
         {
             if (string.IsNullOrEmpty(_state.Value.Name))
                 Name = name;
-            if (!target.Data.TryGetFirst(out IActor<ReverseIndexStore> actor))
-                return;
+            onEnter.Invoke();
             await _state.Value.Enter(target, token);
             foreach (var behaviour in Behaviours)
             {
@@ -57,21 +59,19 @@ namespace User.States
                     continue;
                 if (enableLog)
                     this.Log($"Running {GetColoredName(behaviour)}.Enter");
-                await behaviour.Ref.Enter(actor, token);
+                await behaviour.Ref.Enter(target, token);
             }
         }
 
         /// <inheritdoc />
-        public virtual async UniTask<bool> TryHandleDataChanged(IActor<ReverseIndexStore> target, CancellationToken token)
+        public virtual async UniTask<bool> Tick(IActor<ReverseIndexStore> target, CancellationToken token)
         {
-            if (!target.Data.TryGetFirst(out IActor<ReverseIndexStore> actor))
-                return false;
-            await _state.Value.TryHandleDataChanged(target, token);
+            await _state.Value.Tick(target, token);
             foreach (var behaviour in Behaviours)
             {
                 if (!behaviour.HasValue)
                     continue;
-                if (await behaviour.Ref.TryHandleInput(actor, token))
+                if (await behaviour.Ref.TryConsumeTick(target, token))
                     return true;
             }
 
@@ -81,8 +81,7 @@ namespace User.States
         /// <inheritdoc />
         public virtual async UniTask Exit(IActor<ReverseIndexStore> target, CancellationToken token)
         {
-            if (!target.Data.TryGetFirst(out IActor<ReverseIndexStore> actor))
-                return;
+            onExit.Invoke();
             await _state.Value.Exit(target, token);
             foreach (var behaviour in Behaviours)
             {
@@ -90,7 +89,7 @@ namespace User.States
                     continue;
                 if (enableLog)
                     this.Log($"Running {GetColoredName(behaviour)}.Exit");
-                await behaviour.Ref.Exit(actor, token);
+                await behaviour.Ref.Exit(target, token);
             }
         }
 

@@ -31,7 +31,7 @@ namespace User.States.Behaviours
 			=> UniTask.CompletedTask;
 
 		/// <inheritdoc />
-		public async UniTask<bool> TryHandleInput(IActor<ReverseIndexStore> actor, CancellationToken token)
+		public async UniTask<bool> TryConsumeTick(IActor<ReverseIndexStore> actor, CancellationToken token)
 		{
 			if (!actor.Data.TryGet(characterId.Ref, out IPhysicsCharacter character))
 			{

@@ -182,7 +182,7 @@ namespace FsmAsync
 		{
 			if (await TryTransitionTo(key, data, token))
 				return true;
-			return await Current.TryHandleDataChanged(data, token);
+			return await Current.Tick(data, token);
 		}
 
     }

@@ -10003,9 +10003,8 @@ GameObject:
   - component: {fileID: 5954322368455738055}
   - component: {fileID: -8857404774138357859}
   - component: {fileID: -2782182542571858041}
+  - component: {fileID: 5716599558588632636}
   - component: {fileID: 1224112811647375518}
-  - component: {fileID: 1675975492904625731}
-  - component: {fileID: 1677063497606032625}
   - component: {fileID: 960104844254788616}
   - component: {fileID: 1126122160678954587}
   m_Layer: 0
@@ -10049,7 +10048,7 @@ MonoBehaviour:
   <SelfSetupCharacter>k__BackingField: 1
   enableLog: 0
   climber:
-    reference: {fileID: 1677063497606032625}
+    reference: {fileID: 1126122160678954587}
   inputReaderProvider:
     reference: {fileID: 11400000, guid: f9ec6ddbbb5f2654486095ba9d3a333d, type: 2}
   enableStateLogs: 0
@@ -10203,6 +10202,23 @@ MonoBehaviour:
     landingDistanceToFloor: 0.25
     minYSpeedForFalling: -0.1
     <IsFalling>k__BackingField: 0
+--- !u!114 &5716599558588632636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6359899068279565172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8416d8a6104040fdb4bac3d068974a06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  description: Controls rotation
+  ignoreY: 1
+  speed: 15
+  minimumSpeedToRotate: 0.01
+  drawGizmos: 0
 --- !u!114 &1224112811647375518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10217,73 +10233,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   provider:
     reference: {fileID: 11400000, guid: 6a781dce49be3f64abc646921732aed7, type: 2}
---- !u!114 &1675975492904625731
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6359899068279565172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a98d1bae7a715fd4d9a31af747c14d4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  config:
-    <MaxStepHeight>k__BackingField: 0.1
-    <StepDistance>k__BackingField: 0.2
-    <Duration>k__BackingField: 0.1
-    <StepMask>k__BackingField:
-      serializedVersion: 2
-      m_Bits: 71681
-    <StepCurve>k__BackingField:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-  offset: {x: 0, y: -0.09, z: 0}
-  distanceToFeet: 0.2
-  minStepHeight: 0.05
-  maxStepFloorNormalAngle: 20
-  debugger: {fileID: 11400000, guid: a778cf4fa9fa8dc458175c1ad3a0c3f6, type: 2}
-  debugTag: StepUp
---- !u!114 &1677063497606032625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6359899068279565172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9698ef3909d44ea897d17fb271c4267, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <DefaultConfig>k__BackingField:
-    <MaxDistance>k__BackingField: 0.5
-    <MaxDegrees>k__BackingField: 60
-    <Mask>k__BackingField:
-      serializedVersion: 2
-      m_Bits: 4292595711
 --- !u!114 &960104844254788616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10348,6 +10297,7 @@ MonoBehaviour:
   <DefaultConfig>k__BackingField:
     <MaxDistance>k__BackingField: 0.5
     <MaxDegrees>k__BackingField: 60
+    <MaxDistanceToCorners>k__BackingField: 0.35
     <Mask>k__BackingField:
       serializedVersion: 2
       m_Bits: 67585
@@ -10593,10 +10543,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
         type: 3}
       insertIndex: 2
-      addedObject: {fileID: 3315062832241218234}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
-        type: 3}
-      insertIndex: 3
       addedObject: {fileID: 1422759214297187012}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9a3d8f15efa1ca44e997d847eb633fe0,
         type: 3}
@@ -10642,23 +10588,6 @@ MonoBehaviour:
   landActionIds:
   - reference: {fileID: 11400000, guid: 85b77a626a702954981623499f6e9f9f, type: 2}
   transitionDuration: 0.2
---- !u!114 &3315062832241218234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 471607138956647193}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8416d8a6104040fdb4bac3d068974a06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  description: Controls rotation
-  ignoreY: 1
-  speed: 15
-  minimumSpeedToRotate: 0.01
-  drawGizmos: 0
 --- !u!114 &1422759214297187012
 MonoBehaviour:
   m_ObjectHideFlags: 0

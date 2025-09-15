@@ -32,7 +32,7 @@ namespace FsmAsync
 	    }
 
 	    /// <inheritdoc />
-	    public async UniTask<bool> TryHandleDataChanged(T target, CancellationToken token)
+	    public async UniTask<bool> Tick(T target, CancellationToken token)
 	    {
 		    foreach (var task in OnTryHandleInput)
 			    if (await task(this, target, token))
