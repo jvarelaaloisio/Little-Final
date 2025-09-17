@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Player_Traverse_Cheat
   m_EditorClassIdentifier: 
   acceleration: 40
-  speedGoal: 4
+  speedGoal: 8
   projectDirectionOnFloor: 1
   brakeSpeed: 0.25
   brakeAcceleration: 0.25
@@ -52,10 +52,11 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   maxSlopeAngle: 40
+  wallDetectionDistanceMultiplier: 0.1
   directionId:
     reference: {fileID: 11400000, guid: c63887a800c240c5a8e156f8b93b9bf7, type: 2}
   characterId:
     reference: {fileID: 11400000, guid: 18bc869d02976d0488dab5e62ef8611c, type: 2}
   directionPreprocessor:
     reference: {fileID: 11400000, guid: 3c0a0d7f5082dd94e8d7439900ab4cf0, type: 2}
-  drawDebugLines: 0
+  drawDebugLines: 1

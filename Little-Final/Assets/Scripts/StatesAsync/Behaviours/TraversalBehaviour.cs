@@ -30,6 +30,9 @@ namespace StatesAsync.Behaviours
 		[Header("Slopes and walls")]
 		[SerializeField] private AnimationCurve decelerationCurveWhenApproachingWall;
 		[SerializeField] private float maxSlopeAngle = 45;
+		[Tooltip("Used for raycast towards direction to detect walls." +
+		         "\nThe max distance is goal speed multiplied by this value.")]
+		[SerializeField] private float wallDetectionDistanceMultiplier = 0.35f;
 		[FormerlySerializedAs("traversalInputId")]
 		[Header("References")]
 		[SerializeField] private InterfaceRef<IIdentifier> directionId;
@@ -40,6 +43,8 @@ namespace StatesAsync.Behaviours
 
 		[Header("Debug")]
 		[SerializeField] private bool drawDebugLines;
+
+
 
 		/// <inheritdoc />
 		public async UniTask Enter(IActor<ReverseIndexStore> actor, CancellationToken token)
@@ -99,7 +104,7 @@ namespace StatesAsync.Behaviours
 				return UniTask.FromResult(true);
 			}
 
-			if (IsApproachingWall(character.transform.position, direction * 0.35f, out var hit)
+			if (IsApproachingWall(character.transform.position, movementDirection, out var hit)
 			    && !IsSlope(hit, maxSlopeAngle))
 			{
 				var speed = hit.distance;
@@ -114,7 +119,7 @@ namespace StatesAsync.Behaviours
 			}
 
 			if (drawDebugLines)
-				Debug.DrawRay(character.transform.position, movementDirection * 0.35f, Color.green);
+				Debug.DrawRay(character.transform.position, movementDirection, Color.green);
 			character.Movement = new MovementData(movementDirection, speedGoal, acceleration);
 			return new(true);
 
@@ -129,8 +134,9 @@ namespace StatesAsync.Behaviours
 		}
 
 		private bool IsApproachingWall(Vector3 position, Vector3 direction, out RaycastHit hit)
-		{
-			return Physics.Raycast(position, direction, out hit, speedGoal);
-		}
+			=> Physics.Raycast(position,
+			                   direction,
+			                   out hit,
+			                   speedGoal * wallDetectionDistanceMultiplier);
 	}
 }
