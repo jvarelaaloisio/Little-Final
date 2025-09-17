@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acceleration: 20
   speedGoal: 2
+  projectDirectionOnFloor: 1
   brakeSpeed: 0.25
   brakeAcceleration: 0.25
+  validateCurrentFloor: 1
   decelerationCurveWhenApproachingWall:
     serializedVersion: 2
     m_Curve:
@@ -50,7 +52,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   maxSlopeAngle: 40
-  traversalInputId:
+  directionId:
     reference: {fileID: 11400000, guid: c63887a800c240c5a8e156f8b93b9bf7, type: 2}
   characterId:
     reference: {fileID: 11400000, guid: 18bc869d02976d0488dab5e62ef8611c, type: 2}

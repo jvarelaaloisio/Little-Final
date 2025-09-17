@@ -14,33 +14,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acceleration: 10
   speedGoal: 3
+  projectDirectionOnFloor: 0
   brakeSpeed: 0.25
   brakeAcceleration: 0.25
+  validateCurrentFloor: 0
   decelerationCurveWhenApproachingWall:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0
       inSlope: 0
       outSlope: 0
-      tangentMode: 34
+      tangentMode: 0
       weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.1
+      value: 0
+      inSlope: -Infinity
+      outSlope: -Infinity
+      tangentMode: 0
+      weightedMode: 2
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
+      inSlope: 0.00032711486
+      outSlope: 0.00032711486
+      tangentMode: 0
+      weightedMode: 1
+      inWeight: 1
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  maxSlopeAngle: 45
+  maxSlopeAngle: 30
   directionId:
     reference: {fileID: 11400000, guid: c63887a800c240c5a8e156f8b93b9bf7, type: 2}
   characterId:
