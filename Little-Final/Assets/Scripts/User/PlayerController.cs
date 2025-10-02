@@ -248,6 +248,12 @@ namespace User
 
                        //TODO: Add the rest of the transitions
                        .ThatTransitionsFrom(idle.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
+                       .ThatTransitionsFrom(walk.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
+                       .ThatTransitionsFrom(run.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
+                       .ThatTransitionsFrom(fall.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
+                       .ThatTransitionsFrom(jump.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
+                       .ThatTransitionsFrom(walkWhileFalling.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
+
                        .ThatTransitionsFrom(climb.Ref).To(fall.Ref).WhenNot(WantsToAndCanClimb).Apply()
                        ;
 

@@ -7,6 +7,9 @@ namespace Core.Movement
 		/// <inheritdoc />
 		[field: SerializeField] public IClimber.Config DefaultConfig { get; private set; }
 
+		[Header("Debug")]
+		[SerializeField] private bool drawDebugLines;
+
 		private void Reset()
 			=> DefaultConfig.Mask = LayerMask.GetMask("Default", "Floor", "Collider");
 
@@ -24,11 +27,13 @@ namespace Core.Movement
 			                    cfg.MaxDistance,
 			                    cfg.Mask))
 			{
-				Debug.DrawLine(position, hit.point, Color.white);
+				if (drawDebugLines)
+					Debug.DrawRay(hit.point, hit.normal / 3, Color.blue);
 				return IClimber.CanClimb(hit, cfg.MaxDegrees);
 			}
 
-			Debug.DrawRay(position, direction * cfg.MaxDistance, Color.black);
+			if (drawDebugLines)
+				Debug.DrawRay(position, direction * cfg.MaxDistance, Color.red);
 			return false;
 		}
 
@@ -38,17 +43,20 @@ namespace Core.Movement
 			var cfg = configOverride ?? DefaultConfig;
 			//Check Direction, drawn in red
 			var clampedDirection = direction * cfg.MaxDistanceToCorners;
-			Debug.DrawRay(transform.position, clampedDirection, Color.red);
 			if (Physics.Raycast(transform.position,
 			                    direction,
 			                    out hit,
 			                    direction.magnitude * cfg.MaxDistanceToCorners,
 			                    cfg.Mask))
+			{
+				if (drawDebugLines)
+					Debug.DrawRay(transform.position, clampedDirection, Color.red);
 				return false;
+			}
 
 			//Check if there is still a wall, drawn in green
-			Debug.DrawRay(transform.position + clampedDirection,
-			              transform.forward * cfg.MaxDistance, Color.green);
+			if (drawDebugLines)
+				Debug.DrawRay(transform.position, clampedDirection, Color.green);
 			return CanClimb(transform.position + clampedDirection,
 			                transform.forward,
 			                out hit,

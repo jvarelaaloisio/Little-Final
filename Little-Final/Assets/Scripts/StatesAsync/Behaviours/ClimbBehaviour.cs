@@ -26,10 +26,11 @@ namespace StatesAsync.Behaviours
 
 		[Header("References")]
 		[SerializeField] private InterfaceRef<IIdentifier> directionId;
+		[SerializeField] private InterfaceRef<IIdentifier> climbRaycastHitId;
 
 		[Header("Debug")]
 		[SerializeField] private bool drawDebugLines;
-		[SerializeField] private InterfaceRef<IIdentifier> climbRaycastHitId;
+		[SerializeField] private bool logWallcheckResults;
 
 		private readonly Dictionary<IActor, CancellationTokenSource> _cancellationTokenSourcesByActor = new();
 		private readonly Id _currentWallId = new Id(CurrentWallName, CurrentWallName.GetHashCode());
@@ -64,7 +65,7 @@ namespace StatesAsync.Behaviours
 				this.LogError("Couldn't get RaycastHit from actor's data!");
 				return;
 			}
-			actor.Data.Set(_currentWallId, hit.transform);
+			actor.Data.Set(_currentWallId, hit);
 
 			var targetPosition = hit.point + hit.normal * positionOffset;
 
@@ -107,27 +108,44 @@ namespace StatesAsync.Behaviours
 			if (WillChangeWall())
 			{
 				await ResetPosition(transform, hit, token);
-				actor.Data.Set(_currentWallId, hit.transform);
+				actor.Data.Set(_currentWallId, hit);
 				return true;
 			}
 
-			var world2dDirection = transform.TransformDirection(direction.XZtoXY());
-			if (climber.CanMove(world2dDirection, out _))
-				transform.Translate(direction.XZtoXY() * (speed * Time.deltaTime), Space.Self);
+			var transformDirection = transform.TransformDirection(direction.XZY());
+			if (!climber.CanMove(transformDirection, out _))
+				return false;
+
+			transform.Translate(transformDirection * (speed * Time.deltaTime), Space.World);
 			var targetRotation = Quaternion.LookRotation(-hit.normal, Vector3.up);
 			transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 			return true;
 
 			bool WillChangeWall()
 			{
-				return actor.Data.TryGet(_currentWallId, out Transform currentWall)
-				       && !hit.transform.Equals(currentWall);
+				bool hasWall = !actor.Data.TryGet(_currentWallId, out RaycastHit currentWall);
+				bool wallChangedTransform = !hit.transform.Equals(currentWall.transform);
+				bool wallChangedNormal = Vector3.Distance(hit.normal, currentWall.normal) > 0.05f;
+
+				bool willChangeWall = hasWall
+				                      || wallChangedTransform
+				                      || wallChangedNormal;
+				if (logWallcheckResults
+				    && willChangeWall)
+				{
+					this.Log($"{"Wall has changed".Colored("#00aaaa")}" +
+					         $"\nHasWall: {hasWall}" +
+					         $"\nWallChangedTransform: {wallChangedTransform}" +
+					         $"\nWallChangedNormal: {wallChangedNormal} (from {currentWall.normal} to {hit.normal})");
+				}
+
+				return willChangeWall;
 			}
 		}
 
 		private async UniTask ResetPosition(Transform transform, RaycastHit hit, CancellationToken token)
 		{
-			var targetPosition = hit.point - transform.forward * positionOffset;
+			var targetPosition = hit.point + hit.normal * positionOffset;
 			var targetRotation = Quaternion.LookRotation(-hit.normal);
 
 			await GetInPosition(transform, targetPosition, targetRotation, token);
