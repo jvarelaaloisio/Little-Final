@@ -18,7 +18,7 @@ namespace Processors
 		[SerializeField] private bool enableLog;
 
 		/// <inheritdoc />
-		public Vector3 Process(Vector3 input)
+		public Vector3 Process(Vector3 input, Transform transform)
 		{
 			if (!cameraProvider.HasValue)
 			{

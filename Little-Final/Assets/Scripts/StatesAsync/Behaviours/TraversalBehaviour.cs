@@ -86,7 +86,7 @@ namespace StatesAsync.Behaviours
 			var floor = character.FloorTracker.CurrentFloorData;
 
 			if (directionPreprocessor.HasValue)
-				direction = directionPreprocessor.Ref.Process(direction);
+				direction = directionPreprocessor.Ref.Process(direction, character.transform);
 
 			var movementDirection = projectDirectionOnFloor
 				                        ? Vector3.ProjectOnPlane(direction, floor.normal)

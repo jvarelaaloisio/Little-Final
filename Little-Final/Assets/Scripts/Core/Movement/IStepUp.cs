@@ -44,6 +44,8 @@ namespace Core.Movement
         
             [field: SerializeField]
             public AnimationCurve StepCurve { get; set; } = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+            [field: SerializeField] public bool UseWorldUp { get; private set; } = false;
         }
     }
 }

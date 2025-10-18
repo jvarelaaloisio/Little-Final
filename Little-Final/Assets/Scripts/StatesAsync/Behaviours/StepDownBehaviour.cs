@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using Characters;
 using Core.Acting;
 using Core.Attributes;
@@ -14,8 +14,8 @@ using User.States;
 
 namespace StatesAsync.Behaviours
 {
-	[CreateAssetMenu(menuName = "States/Behaviours/Step-Up", fileName = "StepUpBehaviour", order = 1)]
-	public class StepUpBehaviour : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>
+	[CreateAssetMenu(menuName = "States/Behaviours/Step-Down", fileName = "StepDownBehaviour", order = 1)]
+	public class StepDownBehaviour : ScriptableObject, IActorStateBehaviour<ReverseIndexStore>
 	{
 		[Header("References")]
 		[SerializeField] private InterfaceRef<IIdentifier> traversalInputId;
@@ -60,7 +60,7 @@ namespace StatesAsync.Behaviours
 			if (directionPreprocessor.HasValue)
 				direction = directionPreprocessor.Ref.Process(direction, character.transform);
 
-			if (ShouldNot() || Cannot(out var destination))
+			if (Cannot(out var destination))
 				return false;
 
 			if (enableLog)

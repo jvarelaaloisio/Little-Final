@@ -260,7 +260,9 @@ namespace FoliageRenderer.Scripts
             var viewProjectionMatrix = projectionMatrix * worldToLocalMatrix;
 
             GenerateWind();
-            if(dynamicObjectsDataProvider && dynamicObjectsDataProvider.Value.Count != _dynamicPositionBuffer?.count)
+            if(dynamicObjectsDataProvider
+               && dynamicObjectsDataProvider.Value.Any()
+               && dynamicObjectsDataProvider.Value.Count != _dynamicPositionBuffer?.count)
                 InitializeDynamicPositionsBuffer(dynamicObjectsDataProvider.Value.Count);
 
             for (var i = 0; i < numChunks * numChunks; ++i)

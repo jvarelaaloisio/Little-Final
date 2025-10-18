@@ -6531,12 +6531,18 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  offset: {x: 0, y: -0.09, z: 0}
+    <UseWorldUp>k__BackingField: 0
   distanceToFeet: 0.2
   minStepHeight: 0.05
   maxStepFloorNormalAngle: 30
+  ignoreFloorHeight: 0
   debugger: {fileID: 11400000, guid: a778cf4fa9fa8dc458175c1ad3a0c3f6, type: 2}
   debugTag: StepUp
+  enableGizmos: 0
+  floorIsNotTooSteep_lastValue: 0
+  stepFloorIsHigherThanPlayer_lastValue: 0
+  shouldStepUpLastValue: 0
+  shouldStepDownLastValue: 0
 --- !u!114 &4090090675012073260
 MonoBehaviour:
   m_ObjectHideFlags: 0

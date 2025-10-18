@@ -122,11 +122,10 @@ namespace User
 
         private async UniTaskVoid UpdateClimberData(IActor<ReverseIndexStore> actor, CancellationToken token)
         {
-            var myTransform = transform;
             while (!token.IsCancellationRequested)
             {
                 await UniTask.NextFrame(token);
-                _canClimb = climber.Ref.CanClimb(myTransform.forward, out var hit);
+                _canClimb = climber.Ref.CanClimb(transform.forward.IgnoreY(), out var hit);
                 actor.Data.Set(climbRaycastHitId.Ref, hit);
             }
         }
