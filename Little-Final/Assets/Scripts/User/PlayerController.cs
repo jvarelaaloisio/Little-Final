@@ -1,8 +1,11 @@
 using System;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using Characters;
 using Core.Acting;
 using Core.Data;
+using Core.Debugging;
 using Core.Extensions;
 using Core.FSM;
 using Core.Gameplay;
@@ -22,7 +25,7 @@ namespace User
         [Tooltip("If true, this component will try to do an auto-setup." +
                  "\nUseful for editor testing.")]
         [field: SerializeField] public bool SelfSetupCharacter { get; set; }
-        [SerializeField] private bool enableLog;
+
         [SerializeField] private InterfaceRef<IClimber> climber;
 
         [Header("Providers")]
@@ -57,6 +60,9 @@ namespace User
         [SerializeField] private InterfaceRef<IIdentifier> climbRaycastHitId;
 
         [SerializeField] private float secondsBeforeGlide = 1;
+        [Header("Debug")]
+        [SerializeField] private Debugger debugger;
+        [SerializeField] private string debugTag;
 
         private ICharacter<ReverseIndexStore> _character;
 
@@ -70,6 +76,11 @@ namespace User
         private bool _canClimb;
 
         public IActor<ReverseIndexStore> Actor => _character.Actor;
+
+        private void Reset()
+        {
+            debugTag = name;
+        }
 
         private async void OnEnable()
         {
@@ -145,8 +156,7 @@ namespace User
                 var views = GetComponentsInChildren<ISetup<ICharacter>>();
                 foreach (var view in views)
                 {
-                    if (enableLog)
-                        this.Log($"Setting up view ({view})");
+                    debugger?.Log(debugTag, $"Setting up view ({view})", this);
                     view.Setup(_character);
                 }
             }
@@ -319,21 +329,25 @@ namespace User
 
         private void HandleStartFalling()
         {
+            debugger?.Log(debugTag, $"Setting falling to {true}", this);
             Actor.Data.Set(fallId, true);
         }
 
         private void HandleStopFalling()
         {
+            debugger?.Log(debugTag, $"Setting falling to {false}", this);
             Actor.Data.Set(fallId, false);
         }
 
         private void StartJump()
         {
+            debugger?.Log(debugTag, $"Setting jumping input time to {Time.time}", this);
             Actor.Data.Set(jumpId.Get, Time.time);
         }
 
         private void StopJump()
         {
+            debugger?.Log(debugTag, $"Setting jumping input time to {float.NegativeInfinity}", this);
             Actor.Data.Set(jumpId.Get, float.NegativeInfinity);
         }
 
@@ -388,6 +402,15 @@ namespace User
             GUILayout.Label($"Velocity : {_character?.Velocity}");
             GUILayout.EndArea();
 #endif
+        }
+        
+        [ContextMenu("Log Actor Data")]
+        private void LogActorData()
+        {
+            this.Log(new StringBuilder("Actor Data")
+                     .AppendJoin(Environment.NewLine,
+                                 Actor.Data.Select(pair => $"{pair.Key}: {pair.Value}"))
+                     .ToString());
         }
     }
 

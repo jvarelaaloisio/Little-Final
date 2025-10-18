@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Extensions;
@@ -6,7 +7,7 @@ using Core.Helpers;
 
 namespace Core.Data
 {
-	public class ReverseIndexStore
+	public class ReverseIndexStore : IEnumerable<KeyValuePair<IIdentifier, object>>
 	{
 		private readonly Dictionary<IIdentifier, object> _allObjects = new(comparer:new IIdentifier.Comparer());
 		private readonly Dictionary<Type, Dictionary<IIdentifier, object>> _typeIndex = new();
@@ -74,6 +75,14 @@ namespace Core.Data
 
 		public object this[Type type]
 			=> _typeIndex[type];
+
+		/// <inheritdoc />
+		public IEnumerator<KeyValuePair<IIdentifier, object>> GetEnumerator()
+			=> _allObjects.GetEnumerator();
+
+		/// <inheritdoc />
+		IEnumerator IEnumerable.GetEnumerator()
+			=> GetEnumerator();
 
 		private static void AddToAllTypes<T>(IIdentifier id,
 		                                     T obj,

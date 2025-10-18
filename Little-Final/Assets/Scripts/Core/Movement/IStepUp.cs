@@ -28,8 +28,12 @@ namespace Core.Movement
         public class Config
         {
             [field: SerializeField]
-            [field: Range(0, 2, .05f)]
+            [field: Range(-0.05f, 2, .05f)]
             public float MaxStepHeight { get; set; } = .05f;
+
+            [field: SerializeField]
+            [field: Range(0, 2, .05f)]
+            public float MaxDepth { get; set; } = 2f;
 
             [field: SerializeField]
             [field: Range(0, 5, .05f)]
@@ -44,8 +48,6 @@ namespace Core.Movement
         
             [field: SerializeField]
             public AnimationCurve StepCurve { get; set; } = AnimationCurve.EaseInOut(0, 0, 1, 1);
-
-            [field: SerializeField] public bool UseWorldUp { get; private set; } = false;
         }
     }
 }

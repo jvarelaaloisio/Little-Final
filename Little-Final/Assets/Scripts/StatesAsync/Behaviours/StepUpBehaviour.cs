@@ -1,8 +1,10 @@
+using System;
 using System.Threading;
 using Characters;
 using Core.Acting;
 using Core.Attributes;
 using Core.Data;
+using Core.Debugging;
 using Core.Extensions;
 using Core.Helpers;
 using Core.Movement;
@@ -26,7 +28,15 @@ namespace StatesAsync.Behaviours
 		[SerializeField, Tooltip("Can be null"), ExposeScriptableObject] private StepUpConfigContainer config;
 
 		[Header("Debug")]
-		[SerializeField] private bool enableLog = false;
+		[SerializeField] private Debugger debugger;
+		[ContextMenuItem("Reset Debug Tag", "ResetDebugTag")]
+		[SerializeField] private string debugTag;
+
+		private void Reset()
+			=> ResetDebugTag();
+
+		private void ResetDebugTag()
+			=> debugTag = name;
 
 		/// <inheritdoc />
 		public UniTask Enter(IActor<ReverseIndexStore> actor, CancellationToken token)
@@ -63,10 +73,23 @@ namespace StatesAsync.Behaviours
 			if (ShouldNot() || Cannot(out var destination))
 				return false;
 
-			if (enableLog)
-				this.Log("Stepping up!");
+			bool hasFloorTracker = character.gameObject.TryGetComponent(out IFloorTracker floorTracker)
+			                       && floorTracker is Behaviour;
+			if(hasFloorTracker)
+			{
+				debugger?.Log(debugTag, "Disabling floor tracker in character", this);
+				((Behaviour)floorTracker).enabled = false;
+			}
 
+			debugger?.Log(debugTag, "Stepping up!", this);
 			await stepUp.DoCoroutine(destination, config).ToUniTask(cancellationToken: token);
+
+			if(hasFloorTracker)
+			{
+				debugger?.Log(debugTag, "Enabling floor tracker in character", this);
+				((Behaviour)floorTracker).enabled = true;
+			}
+
 			return true;
 
 			bool ShouldNot()

@@ -21508,7 +21508,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1501286678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22499,6 +22499,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 960104844254788616, guid: 9a3299f57c5c1da6a9b1940ca8f2f6d5,
+        type: 3}
+      propertyPath: distanceToFeet
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 1126122160678954587, guid: 9a3299f57c5c1da6a9b1940ca8f2f6d5,
         type: 3}
       propertyPath: drawDebugLines
@@ -22508,6 +22513,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 8639353930731474083, guid: 9a3299f57c5c1da6a9b1940ca8f2f6d5,
+        type: 3}
+      propertyPath: debugger
+      value: 
+      objectReference: {fileID: 11400000, guid: a778cf4fa9fa8dc458175c1ad3a0c3f6,
+        type: 2}
+    - target: {fileID: 8639353930731474083, guid: 9a3299f57c5c1da6a9b1940ca8f2f6d5,
+        type: 3}
+      propertyPath: enableLog
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

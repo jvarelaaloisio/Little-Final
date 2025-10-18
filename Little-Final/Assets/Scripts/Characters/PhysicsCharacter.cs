@@ -4,7 +4,6 @@ using Core.Extensions;
 using Core.Stamina;
 using Player;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Characters
 {

@@ -10046,7 +10046,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <SelfSetupCharacter>k__BackingField: 1
-  enableLog: 0
   climber:
     reference: {fileID: 1126122160678954587}
   inputReaderProvider:
@@ -10090,6 +10089,8 @@ MonoBehaviour:
   climbRaycastHitId:
     reference: {fileID: 11400000, guid: d31925226727a0542b02321f773d6d87, type: 2}
   secondsBeforeGlide: 0.4
+  debugger: {fileID: 0}
+  debugTag: Character
 --- !u!54 &4968763546092149725
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10247,6 +10248,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   config:
     <MaxStepHeight>k__BackingField: 0.1
+    <MaxDepth>k__BackingField: 2
     <StepDistance>k__BackingField: 0.2
     <Duration>k__BackingField: 0.1
     <StepMask>k__BackingField:
@@ -10276,12 +10278,15 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  offset: {x: 0, y: -0.09, z: 0}
-  distanceToFeet: 0.2
+  distanceToFeet: 0.19
   minStepHeight: 0.05
-  maxStepFloorNormalAngle: 20
+  maxStepFloorNormalAngle: 2
   debugger: {fileID: 11400000, guid: a778cf4fa9fa8dc458175c1ad3a0c3f6, type: 2}
   debugTag: StepUp
+  enableGizmos: 0
+  floorIsNotTooSteep_lastValue: 0
+  heightDifferential_lastValue: 0
+  isNotSameHeight_lastValue: 0
 --- !u!114 &1126122160678954587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10301,6 +10306,7 @@ MonoBehaviour:
     <Mask>k__BackingField:
       serializedVersion: 2
       m_Bits: 67585
+  drawDebugLines: 0
 --- !u!1 &6665584989643851020
 GameObject:
   m_ObjectHideFlags: 0
@@ -10579,6 +10585,7 @@ MonoBehaviour:
     <Name>k__BackingField: Jump
   jumpActionIds:
   - reference: {fileID: 11400000, guid: 22332e9ecb428e444b79a90a287886c7, type: 2}
+  stepActionIds: []
   fallParameter:
     <Name>k__BackingField: Fall
   fallActionIds:

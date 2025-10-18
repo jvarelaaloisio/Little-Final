@@ -13,17 +13,14 @@ namespace Movement
         [SerializeField] private float distanceToFeet = 0.2f;
         [SerializeField] private float minStepHeight = .1f;
         [SerializeField] private float maxStepFloorNormalAngle = 30;
-        [SerializeField] private bool ignoreFloorHeight = false;
 
         [Header("Debugging")]
         [SerializeField] private Debugger debugger;
-
         [SerializeField] private string debugTag = "StepUp";
         [SerializeField] private bool enableGizmos;
         [SerializeField, SerializeReadOnly] private bool floorIsNotTooSteep_lastValue;
-        [SerializeField, SerializeReadOnly] private bool stepFloorIsHigherThanPlayer_lastValue;
-        [SerializeField, SerializeReadOnly] private bool shouldStepUpLastValue;
-        [SerializeField, SerializeReadOnly] private bool shouldStepDownLastValue;
+        [SerializeField, SerializeReadOnly] private float heightDifferential_lastValue;
+        [SerializeField, SerializeReadOnly] private bool isNotSameHeight_lastValue;
 
         private Rigidbody Rigidbody;
         private Vector3 _lastDirection;
@@ -33,7 +30,13 @@ namespace Movement
         {
             _lastDirection = direction;
             configOverride ??= config;
-            return Physics.Raycast(GetFeetPosition(), direction, configOverride.StepDistance, configOverride.StepMask);
+            var feetPosition = GetFeetPosition();
+            bool should = Physics.Raycast(feetPosition, direction, out var hit, configOverride.StepDistance, configOverride.StepMask);
+            if (should)
+                debugger.DrawLine(debugTag, feetPosition, hit.point, new Color(0.2f, 1f, 0.2f));
+            else
+                debugger.DrawRay(debugTag, feetPosition, direction, new Color(1, 0.2f, 0.2f));
+            return should;
         }
 
         /// <inheritdoc/>
@@ -41,26 +44,32 @@ namespace Movement
         {
             stepPosition = Vector3.negativeInfinity;
             configOverride ??= config;
-            var upScaled = transform.up * configOverride.MaxStepHeight;
+            var upScaled = transform.up * Mathf.Abs(configOverride.MaxStepHeight);
             var directionScaled = direction * configOverride.StepDistance;
             var origin = GetStepOrigin(configOverride.MaxStepHeight);
             
-            debugger.DrawRay(debugTag, origin, directionScaled, Color.black, 2f);
-            if (Physics.Raycast(origin, direction, configOverride.StepDistance, configOverride.StepMask))
+            if (StepUtils.HasWall(direction,
+                                  origin,
+                                  directionScaled,
+                                  configOverride.StepDistance,
+                                  configOverride.StepMask,
+                                  debugger,
+                                  debugTag))
                 return false;
-            
+
             var targetPosition = origin + directionScaled;
-            if (Physics.Raycast(targetPosition, -transform.up, out var hit, 10, configOverride.StepMask))
+            if (Physics.Raycast(targetPosition, -transform.up, out var hit, configOverride.MaxDepth, configOverride.StepMask))
             {
-                debugger.DrawLine(debugTag, targetPosition, hit.point, Color.green, 2f);
+                debugger.DrawLine(debugTag, targetPosition, hit.point, Color.green);
                 stepPosition = hit.point + transform.up * distanceToFeet;
                 
-                var floorIsNotTooSteep = Vector3.Angle(transform.up, hit.normal) < maxStepFloorNormalAngle;
-                var stepFloorIsHigherThanPlayer = hit.point.y > transform.position.y - distanceToFeet + minStepHeight;
-                return (stepFloorIsHigherThanPlayer || ignoreFloorHeight) && floorIsNotTooSteep;
+                bool floorIsNotTooSteep = floorIsNotTooSteep_lastValue = Vector3.Angle(transform.up, hit.normal) < maxStepFloorNormalAngle;
+                float heightDifferential = heightDifferential_lastValue = Math.Abs(hit.point.y - transform.position.y + distanceToFeet);
+                bool isNotSameHeight = isNotSameHeight_lastValue = heightDifferential > 0.001f;
+                return isNotSameHeight && floorIsNotTooSteep;
             }
             
-            debugger.DrawRay(debugTag, targetPosition, -upScaled, Color.black, 2f);
+            debugger.DrawRay(debugTag, targetPosition, -upScaled, Color.red);
             return false;
         }
 
@@ -72,29 +81,18 @@ namespace Movement
         public IEnumerator DoCoroutine(Vector3 destination, IStepUp.Config configOverride = null, Action callback = null)
         {
             configOverride ??= config;
-            var origin = transform.position;
-            var beginning = Time.time;
-            float now = 0;
-            do
-            {
-                now = Time.time;
-                var lerp = (now - beginning) / configOverride.Duration;
-                transform.position = Vector3.Lerp(origin, destination, configOverride.StepCurve.Evaluate(lerp));
-
-                yield return null;
-            } while (now < beginning + configOverride.Duration);
-
-            transform.position = destination;
-            callback?.Invoke();
+            yield return StepUtils.Do(transform, destination, configOverride.Duration, configOverride.StepCurve, callback);
         }
-
+        
         private Vector3 GetStepOrigin(float maxStepHeight)
             => transform.position + transform.up * (-distanceToFeet + maxStepHeight);
 
         private Vector3 GetFeetPosition()
         {
+            const float error = 0.01f;
             var feetPosition = transform.position;
             feetPosition.y -= distanceToFeet;
+            feetPosition.y += error;
             return feetPosition;
         }
 

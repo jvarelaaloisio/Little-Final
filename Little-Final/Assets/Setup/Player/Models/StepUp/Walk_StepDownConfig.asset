@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Walk_StepDownConfig
   m_EditorClassIdentifier: 
   <Config>k__BackingField:
-    <MaxStepHeight>k__BackingField: 0.2
-    <StepDistance>k__BackingField: 0.25
+    <MaxStepHeight>k__BackingField: 0.05
+    <MaxDepth>k__BackingField: 2
+    <StepDistance>k__BackingField: 0.15
     <Duration>k__BackingField: 0.25
     <StepMask>k__BackingField:
       serializedVersion: 2
@@ -34,8 +35,8 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 1
         value: 1
-        inSlope: 2
-        outSlope: 2
+        inSlope: 0
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -43,4 +44,3 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    <UseWorldUp>k__BackingField: 0

@@ -20,6 +20,9 @@ namespace Views
 		[SerializeField] private AnimatorParameter jumpParameter = new("Jump");
 		[SerializeField] private List<InterfaceRef<IIdentifier>> jumpActionIds;
 		[Space]
+		[SerializeField] private List<InterfaceRef<IIdentifier>> stepActionIds;
+		private bool _isStepping;
+		[Space]
 		[SerializeField] private AnimatorParameter fallParameter = new("Fall");
 		[SerializeField] private List<InterfaceRef<IIdentifier>> fallActionIds;
 		[Space]
@@ -39,6 +42,20 @@ namespace Views
 			TryAddPostBehaviour(jumpActionIds, PlayJumpAnimation);
 			TryAddPostBehaviour(fallActionIds, PlayFallAnimation);
 			TryAddPostBehaviour(landActionIds, PlayRunningBlendTree);
+			TryAddPreBehaviour(stepActionIds, SetIsStepping);
+			TryAddPostBehaviour(stepActionIds, UnsetIsStepping);
+		}
+
+		private UniTask UnsetIsStepping(IActor arg1, CancellationToken arg2)
+		{
+			_isStepping = false;
+			return UniTask.CompletedTask;
+		}
+
+		private UniTask SetIsStepping(IActor arg1, CancellationToken arg2)
+		{
+			_isStepping = true;
+			return UniTask.CompletedTask;
 		}
 
 		private void OnDisable()
