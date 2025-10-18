@@ -1,9 +1,7 @@
 using CharacterMovement;
 using Core.Extensions;
 using Core.Gameplay;
-using Core.Helpers.Movement;
 using Core.Interactions;
-using Player.Movement;
 using Player.PlayerInput;
 using Player.Properties;
 using Player.Stamina;

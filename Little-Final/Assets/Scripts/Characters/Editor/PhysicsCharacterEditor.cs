@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -16,7 +15,7 @@ namespace Characters.Editor
     public class PhysicsCharacterEditor : UnityEditor.Editor
     {
         private Vector2 _scrollPosition = new();
-        private float cachedHeight;
+        private float _cachedHeight;
 
         /// <inheritdoc />
         public override bool HasPreviewGUI()
@@ -26,7 +25,7 @@ namespace Characters.Editor
         public override void OnPreviewGUI(Rect r, GUIStyle background)
         {
             float initialHeight = r.y;
-            _scrollPosition = GUI.BeginScrollView(r, _scrollPosition, new Rect(r.x, r.y, 1000, cachedHeight));
+            _scrollPosition = GUI.BeginScrollView(r, _scrollPosition, new Rect(r.x, r.y, 1000, _cachedHeight));
             var fields = typeof(PhysicsCharacter).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
             RenderFields(fields, target, ref r);
             ReverseIndexStore reverseIndexStore = ((PhysicsCharacter)target).Actor?.Data;
@@ -37,7 +36,7 @@ namespace Characters.Editor
             }
             GUI.EndScrollView();
 
-            cachedHeight = r.y - initialHeight;
+            _cachedHeight = r.y - initialHeight;
         }
         
         private static void RenderFields(FieldInfo[] fields, object target, ref Rect r)

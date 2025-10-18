@@ -13,16 +13,11 @@ namespace Acting
 {
     public abstract class Actor : IActor, IHavePreBehaviours<IActor>, IHavePostBehaviours<IActor>
     {
-        
         private readonly SemaphoreSlim _semaphoreSlim = new(1, 1);
-        /// <summary>
-        /// Data used by the actor.
-        /// </summary>
+        /// <summary /> Data used by the actor.
         public object Data { get; set; }
     
-        /// <summary>
-        /// Type for the data that this actor uses.
-        /// </summary>
+        /// <summary /> Type for the data that this actor uses.
         public abstract Type DataType { get; }
 
         public abstract bool TrySetData(object data);

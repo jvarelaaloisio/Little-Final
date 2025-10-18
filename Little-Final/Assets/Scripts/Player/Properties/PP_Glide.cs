@@ -1,7 +1,5 @@
 ﻿using Movement;
-using Player.Movement;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Player.Properties
 {

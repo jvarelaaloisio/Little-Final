@@ -17,8 +17,6 @@ using UnityEngine.Events;
 using Events.UnityEvents;
 using HealthSystem.Runtime;
 using HealthSystem.Runtime.Components;
-using Player.Movement;
-using Player.Stamina;
 using VarelaAloisio.UpdateManagement.Runtime;
 using Void = Player.States.Void;
 

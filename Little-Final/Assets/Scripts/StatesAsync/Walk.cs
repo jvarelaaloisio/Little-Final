@@ -9,7 +9,6 @@ using Core.References;
 using Cysharp.Threading.Tasks;
 using DataProviders.Async;
 using Movement;
-using Player.Movement;
 using UnityEngine;
 
 namespace User.States

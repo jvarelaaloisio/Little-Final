@@ -7,21 +7,15 @@ namespace Core.Acting
 {
 	public interface IActor
 	{
-		/// <summary>
-		/// Data used by the actor.
-		/// </summary>
+		/// <summary /> Data used by the actor.
 		object Data { get; set; }
 
-		/// <summary>
-		/// Type for the data that this actor uses.
-		/// </summary>
+		/// <summary /> Type for the data that this actor uses.
 		Type DataType { get; }
 
 		bool TrySetData(object data);
 
-		/// <summary>
-		/// Runs pre-behaviours -> Runs given behaviour -> Runs post-behaviours
-		/// </summary>
+		/// <summary /> Runs pre-behaviours -> Runs given behaviour -> Runs post-behaviours
 		/// <param name="behaviour">The action task.</param>
 		/// <param name="token"></param>
 		/// <param name="actionId">Used to determine which pre- and post-behaviours should run. Default is <see cref="Wildcard"/>.</param>
@@ -29,9 +23,7 @@ namespace Core.Acting
 		            CancellationToken token,
 		            IIdentifier actionId = null);
 
-		/// <summary>
-		/// Runs pre-behaviours -> Runs given behaviour -> Runs post-behaviours
-		/// </summary>
+		/// <summary /> Runs pre-behaviours -> Runs given behaviour -> Runs post-behaviours
 		/// <param name="behaviour">The action task.</param>
 		/// <param name="actionData"></param>
 		/// <param name="token"></param>
@@ -41,9 +33,7 @@ namespace Core.Acting
 								 CancellationToken token,
 								 IIdentifier actionId = null);
 
-		/// <summary>
-		/// Runs pre-behaviours -> Runs given behaviour -> Runs post-behaviours
-		/// </summary>
+		/// <summary /> Runs pre-behaviours -> Runs given behaviour -> Runs post-behaviours
 		/// <param name="behaviour">The action task.</param>
 		/// <param name="actionData"></param>
 		/// <param name="token"></param>
@@ -52,9 +42,7 @@ namespace Core.Acting
 								 TActionData actionData,
 								 CancellationToken token,
 								 IIdentifier actionId = null);
-		/// <summary>
-		/// Runs pre-behaviours -> Runs given behaviour -> Runs post-behaviours
-		/// </summary>
+		/// <summary /> Runs pre-behaviours -> Runs given behaviour -> Runs post-behaviours
 		/// <param name="behaviour">The action task.</param>
 		/// <param name="actionData"></param>
 		/// <param name="token"></param>

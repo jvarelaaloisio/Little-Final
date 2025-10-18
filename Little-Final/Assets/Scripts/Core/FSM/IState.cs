@@ -7,20 +7,14 @@ namespace Core.FSM
 {
 	public interface IState<TTarget>
 	{
-		/// <summary>
-		/// The name of the state
-		/// </summary>
+		/// <summary /> The name of the state
 		string Name { get; set; }
 
-		/// <summary>
-		/// Called once when the FSM enters the State
-		/// </summary>
+		/// <summary /> Called once when the FSM enters the State
 		List<Func<IState<TTarget>, TTarget, CancellationToken, UniTask>> OnEnter { get; }
 		List<Func<IState<TTarget>, TTarget, CancellationToken, UniTask<bool>>> OnTryHandleInput { get; }
 
-		/// <summary>
-		/// Called once when the FSM exits the State
-		/// </summary>
+		/// <summary /> Called once when the FSM exits the State
 		List<Func<IState<TTarget>, TTarget, CancellationToken, UniTask>> OnExit { get; }
 
 		/// <summary>
@@ -29,10 +23,7 @@ namespace Core.FSM
 		/// </summary>
 		UniTask Enter(TTarget target, CancellationToken token);
 
-		/// <summary>
-		/// Method called for every input received by the State machine.
-		/// </summary>
-		/// <returns></returns>
+		/// <summary /> Method called for every input received by the State machine.
 		UniTask<bool> Tick(TTarget target, CancellationToken token);
 
 		/// <summary>

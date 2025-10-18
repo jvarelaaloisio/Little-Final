@@ -12,27 +12,26 @@ namespace VarelaAloisio.Editor
 		{
 			// Draw label
 			EditorGUI.PropertyField(position, property, label, true);
-     
-			// Draw foldout arrow
-			if (property.objectReferenceValue != null)
+			
+			if (property.objectReferenceValue)
 			{
-				property.isExpanded = EditorGUI.Foldout(position, property.isExpanded, GUIContent.none);
+				var rect = position;
+				rect.y += EditorGUIUtility.singleLineHeight;
+				property.isExpanded = EditorGUI.Foldout(rect, property.isExpanded, GUIContent.none);
 			}
  
-			// Draw foldout properties
 			if (property.isExpanded)
 			{
-				// Make child fields be indented
 				EditorGUI.indentLevel++;
          
-				// Draw object properties
 				if (!_editor)
 					UnityEditor.Editor.CreateCachedEditor(property.objectReferenceValue, null, ref _editor);
 				_editor.OnInspectorGUI();
          
-				// Set indent back to what it was
 				EditorGUI.indentLevel--;
 			}
+			else
+				EditorGUILayout.Space(EditorGUIUtility.singleLineHeight);
 		}
 	}
 }

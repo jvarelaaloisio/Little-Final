@@ -1,25 +1,31 @@
 using System;
 using System.Collections;
+using Core.Attributes;
 using Core.Debugging;
 using Core.Movement;
 using UnityEngine;
 
-namespace Player.Movement
+namespace Movement
 {
     public class StepUp : MonoBehaviour, IStepUp
     {
         [SerializeField] private IStepUp.Config config;
-        [SerializeField] private Vector3 offset;
         [SerializeField] private float distanceToFeet = 0.2f;
         [SerializeField] private float minStepHeight = .1f;
         [SerializeField] private float maxStepFloorNormalAngle = 30;
+        [SerializeField] private bool ignoreFloorHeight = false;
 
         [Header("Debugging")]
         [SerializeField] private Debugger debugger;
 
         [SerializeField] private string debugTag = "StepUp";
+        [SerializeField] private bool enableGizmos;
+        [SerializeField, SerializeReadOnly] private bool floorIsNotTooSteep_lastValue;
+        [SerializeField, SerializeReadOnly] private bool stepFloorIsHigherThanPlayer_lastValue;
+        [SerializeField, SerializeReadOnly] private bool shouldStepUpLastValue;
+        [SerializeField, SerializeReadOnly] private bool shouldStepDownLastValue;
 
-        private Rigidbody _rigidbody;
+        private Rigidbody Rigidbody;
         private Vector3 _lastDirection;
 
         /// <inheritdoc/>
@@ -39,22 +45,22 @@ namespace Player.Movement
             var directionScaled = direction * configOverride.StepDistance;
             var origin = GetStepOrigin(configOverride.MaxStepHeight);
             
-            debugger.DrawRay(debugTag, origin, directionScaled, Color.black);
+            debugger.DrawRay(debugTag, origin, directionScaled, Color.black, 2f);
             if (Physics.Raycast(origin, direction, configOverride.StepDistance, configOverride.StepMask))
                 return false;
             
             var targetPosition = origin + directionScaled;
-            if (Physics.Raycast(targetPosition, -transform.up, out var hit, configOverride.MaxStepHeight, configOverride.StepMask))
+            if (Physics.Raycast(targetPosition, -transform.up, out var hit, 10, configOverride.StepMask))
             {
-                debugger.DrawLine(debugTag, targetPosition, hit.point, Color.green);
+                debugger.DrawLine(debugTag, targetPosition, hit.point, Color.green, 2f);
                 stepPosition = hit.point + transform.up * distanceToFeet;
                 
                 var floorIsNotTooSteep = Vector3.Angle(transform.up, hit.normal) < maxStepFloorNormalAngle;
                 var stepFloorIsHigherThanPlayer = hit.point.y > transform.position.y - distanceToFeet + minStepHeight;
-                return stepFloorIsHigherThanPlayer && floorIsNotTooSteep;
+                return (stepFloorIsHigherThanPlayer || ignoreFloorHeight) && floorIsNotTooSteep;
             }
             
-            debugger.DrawRay(debugTag, targetPosition, -upScaled, Color.black);
+            debugger.DrawRay(debugTag, targetPosition, -upScaled, Color.black, 2f);
             return false;
         }
 
@@ -94,6 +100,8 @@ namespace Player.Movement
 
         private void OnDrawGizmosSelected()
         {
+            if (!enableGizmos)
+                return;
             var origin = GetStepOrigin(config.MaxStepHeight);
             var upScaled = transform.up * config.MaxStepHeight;
             var forwardScaled = _lastDirection * config.StepDistance;

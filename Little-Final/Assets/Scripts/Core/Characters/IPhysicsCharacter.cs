@@ -14,16 +14,12 @@ namespace Characters
 		/// <param name="forceMode">Default: <see cref="ForceMode"/>.<see cref="ForceMode.Impulse"/></param>
 		void AddForce(Vector3 force, ForceMode forceMode = ForceMode.Impulse);
 
-		/// <summary>
-		/// Adds a request to the continuous forces List
-		/// </summary>
+		/// <summary /> Adds a request to the continuous forces List
 		/// <param name="force">The force to be applied every fixed update</param>
 		/// <param name="mode"></param>
 		bool TryAddContinuousForce(Vector3 force, ForceMode mode = ForceMode.Force);
 
-		/// <summary>
-		/// Removes a requests from the continuous forces List
-		/// </summary>
+		/// <summary /> Removes a requests from the continuous forces List
 		/// <param name="request"></param>
 		void RemoveContinuousForce(Vector3 force, ForceMode mode = ForceMode.Force);
 	}
