@@ -20,6 +20,9 @@ namespace Views
 		[SerializeField] private AnimatorParameter jumpParameter = new("Jump");
 		[SerializeField] private List<InterfaceRef<IIdentifier>> jumpActionIds;
 		[Space]
+		[SerializeField] private AnimatorParameter climbParameter = new("Climb");
+		[SerializeField] private List<InterfaceRef<IIdentifier>> climbActionIds;
+		[Space]
 		[SerializeField] private List<InterfaceRef<IIdentifier>> stepActionIds;
 		private bool _isStepping;
 		[Space]
@@ -42,20 +45,9 @@ namespace Views
 			TryAddPostBehaviour(jumpActionIds, PlayJumpAnimation);
 			TryAddPostBehaviour(fallActionIds, PlayFallAnimation);
 			TryAddPostBehaviour(landActionIds, PlayRunningBlendTree);
+			TryAddPostBehaviour(climbActionIds, PlayClimbAnimation);
 			TryAddPreBehaviour(stepActionIds, SetIsStepping);
 			TryAddPostBehaviour(stepActionIds, UnsetIsStepping);
-		}
-
-		private UniTask UnsetIsStepping(IActor arg1, CancellationToken arg2)
-		{
-			_isStepping = false;
-			return UniTask.CompletedTask;
-		}
-
-		private UniTask SetIsStepping(IActor arg1, CancellationToken arg2)
-		{
-			_isStepping = true;
-			return UniTask.CompletedTask;
 		}
 
 		private void OnDisable()
@@ -63,6 +55,9 @@ namespace Views
 			RemovePostBehaviour(jumpActionIds, PlayJumpAnimation);
 			RemovePostBehaviour(fallActionIds, PlayFallAnimation);
 			RemovePostBehaviour(landActionIds, PlayRunningBlendTree);
+			RemovePostBehaviour(climbActionIds, PlayClimbAnimation);
+			RemovePreBehaviour(stepActionIds, SetIsStepping);
+			RemovePostBehaviour(stepActionIds, UnsetIsStepping);
 		}
 
 		private UniTask PlayJumpAnimation(IActor actor, CancellationToken token)
@@ -80,6 +75,24 @@ namespace Views
 		public UniTask PlayRunningBlendTree(IActor actor, CancellationToken token)
 		{
 			runningBlendTree.CrossFade(animator, transitionDuration);
+			return UniTask.CompletedTask;
+		}
+
+		private UniTask PlayClimbAnimation(IActor arg1, CancellationToken arg2)
+		{
+			climbParameter.Play(animator);
+			return UniTask.CompletedTask;
+		}
+
+		private UniTask UnsetIsStepping(IActor arg1, CancellationToken arg2)
+		{
+			_isStepping = false;
+			return UniTask.CompletedTask;
+		}
+
+		private UniTask SetIsStepping(IActor arg1, CancellationToken arg2)
+		{
+			_isStepping = true;
 			return UniTask.CompletedTask;
 		}
 

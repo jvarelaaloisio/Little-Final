@@ -16,7 +16,9 @@ namespace DataProviders.Async
 
 		public virtual async UniTask<T> GetValueAsync(CancellationToken cancellationToken)
 		{
-			await UniTask.WaitWhile(() => _value is null, cancellationToken: cancellationToken);
+			if (!_value.Equals(null))
+				return Value;
+			await UniTask.WaitWhile(() => _value.Equals(null), cancellationToken: cancellationToken);
 			return Value;
 		}
         

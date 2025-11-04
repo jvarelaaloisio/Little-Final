@@ -82,6 +82,29 @@ namespace User
             debugTag = name;
         }
 
+        private void Awake()
+        {
+            if (!SelfSetupCharacter)
+                return;
+
+            if (!TryGetComponent(out _character))
+            {
+                this.LogError("No character component found!");
+                return;
+            }
+
+            if (_character is ISetup<ReverseIndexStore> setupable)
+                setupable.Setup(new ReverseIndexStore());
+            var views = GetComponentsInChildren<ISetup<ICharacter>>();
+            foreach (var view in views)
+            {
+                debugger?.Log(debugTag, $"Setting up view ({view})", this);
+                view.Setup(_character);
+            }
+            if (_character != null)
+                Setup(_character);
+        }
+
         private async void OnEnable()
         {
             if (!inputReaderProvider.HasValue)
@@ -139,29 +162,6 @@ namespace User
                 _canClimb = climber.Ref.CanClimb(transform.forward.IgnoreY(), out var hit);
                 actor.Data.Set(climbRaycastHitId.Ref, hit);
             }
-        }
-
-        private void Start()
-        {
-            if (SelfSetupCharacter)
-            {
-                if (!TryGetComponent(out _character))
-                {
-                    this.LogError("No character component found!");
-                    return;
-                }
-
-                if (_character is ISetup<ReverseIndexStore> setupable)
-                    setupable.Setup(new ReverseIndexStore());
-                var views = GetComponentsInChildren<ISetup<ICharacter>>();
-                foreach (var view in views)
-                {
-                    debugger?.Log(debugTag, $"Setting up view ({view})", this);
-                    view.Setup(_character);
-                }
-            }
-            if (_character != null)
-                Setup(_character);
         }
 
         private async UniTaskVoid UpdateFsm(CancellationToken token)
@@ -256,12 +256,12 @@ namespace User
                        .ThatTransitionsFrom(glide.Ref).To(fall.Ref).When(nameof(OutOfStamina), OutOfStamina).WithId(fallId).Apply()
 
                        //TODO: Add the rest of the transitions
-                       .ThatTransitionsFrom(idle.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
-                       .ThatTransitionsFrom(walk.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
-                       .ThatTransitionsFrom(run.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
-                       .ThatTransitionsFrom(fall.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
-                       .ThatTransitionsFrom(jump.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
-                       .ThatTransitionsFrom(walkWhileFalling.Ref).To(climb.Ref).When(WantsToAndCanClimb).Apply()
+                       .ThatTransitionsFrom(idle.Ref).To(climb.Ref).When(WantsToAndCanClimb).WithId(climbId.Ref).Apply()
+                       .ThatTransitionsFrom(walk.Ref).To(climb.Ref).When(WantsToAndCanClimb).WithId(climbId.Ref).Apply()
+                       .ThatTransitionsFrom(run.Ref).To(climb.Ref).When(WantsToAndCanClimb).WithId(climbId.Ref).Apply()
+                       .ThatTransitionsFrom(fall.Ref).To(climb.Ref).When(WantsToAndCanClimb).WithId(climbId.Ref).Apply()
+                       .ThatTransitionsFrom(jump.Ref).To(climb.Ref).When(WantsToAndCanClimb).WithId(climbId.Ref).Apply()
+                       .ThatTransitionsFrom(walkWhileFalling.Ref).To(climb.Ref).When(WantsToAndCanClimb).WithId(climbId.Ref).Apply()
 
                        .ThatTransitionsFrom(climb.Ref).To(fall.Ref).WhenNot(WantsToAndCanClimb).Apply()
                        ;

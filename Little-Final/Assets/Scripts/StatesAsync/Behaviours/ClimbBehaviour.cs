@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Characters;
 using Core.Acting;
 using Core.Data;
+using Core.Debugging;
 using Core.Extensions;
 using Core.Helpers;
 using Core.Movement;
@@ -29,8 +30,8 @@ namespace StatesAsync.Behaviours
 		[SerializeField] private InterfaceRef<IIdentifier> climbRaycastHitId;
 
 		[Header("Debug")]
-		[SerializeField] private bool drawDebugLines;
-		[SerializeField] private bool logWallcheckResults;
+		[SerializeField] private Debugger debugger;
+		[SerializeField] private string debugTag;
 
 		private readonly Dictionary<IActor, CancellationTokenSource> _cancellationTokenSourcesByActor = new();
 		private readonly Id _currentWallId = new Id(CurrentWallName, CurrentWallName.GetHashCode());
@@ -70,12 +71,11 @@ namespace StatesAsync.Behaviours
 			var targetPosition = hit.point + hit.normal * positionOffset;
 
 			var targetRotation = Quaternion.LookRotation(-hit.normal, Vector3.up);
-			if (drawDebugLines)
-			{
-				Debug.DrawRay(hit.point, hit.normal, Color.red, 10f);
-				Debug.DrawRay(hit.point, -hit.normal, Color.green, 10f);
-				Debug.DrawRay(hit.point, targetRotation.normalized.eulerAngles, Color.blue, 10f);
-			}
+
+			debugger?.DrawRay(debugTag, hit.point, hit.normal, Color.red, 10f);
+			debugger?.DrawRay(debugTag, hit.point, -hit.normal, Color.green, 10f);
+			debugger?.DrawRay(debugTag, hit.point, targetRotation.normalized.eulerAngles, Color.blue, 10f);
+
 			await GetInPosition(transform, targetPosition, targetRotation, token);
 		}
 
@@ -130,13 +130,13 @@ namespace StatesAsync.Behaviours
 				bool willChangeWall = hasWall
 				                      || wallChangedTransform
 				                      || wallChangedNormal;
-				if (logWallcheckResults
-				    && willChangeWall)
+				if (willChangeWall)
 				{
-					this.Log($"{"Wall has changed".Colored("#00aaaa")}" +
-					         $"\nHasWall: {hasWall}" +
-					         $"\nWallChangedTransform: {wallChangedTransform}" +
-					         $"\nWallChangedNormal: {wallChangedNormal} (from {currentWall.normal} to {hit.normal})");
+					debugger.Log(debugTag,
+					             $"{"Wall has changed".Colored("#00aaaa")}"
+					             + $"\nHasWall: {hasWall}"
+					             + $"\nWallChangedTransform: {wallChangedTransform}"
+					             + $"\nWallChangedNormal: {wallChangedNormal} (from {currentWall.normal} to {hit.normal})");
 				}
 
 				return willChangeWall;

@@ -24,6 +24,10 @@ namespace Movement
 
         private Rigidbody Rigidbody;
         private Vector3 _lastDirection;
+        [SerializeField] private Color shouldLineColor = new(0.2f, 1f, 0.2f);
+        [SerializeField] private Color shouldntRayColor = new(1, 0.2f, 0.2f);
+        [SerializeField] private Color canLineColor = new(0.2f, 0.2f, 1.0f);
+        [SerializeField] private Color cantLineColor = new(1, 0.2f, 0.2f);
 
         /// <inheritdoc/>
         public bool Should(Vector3 direction, IStepUp.Config configOverride = null)
@@ -33,9 +37,9 @@ namespace Movement
             var feetPosition = GetFeetPosition();
             bool should = Physics.Raycast(feetPosition, direction, out var hit, configOverride.StepDistance, configOverride.StepMask);
             if (should)
-                debugger.DrawLine(debugTag, feetPosition, hit.point, new Color(0.2f, 1f, 0.2f));
+                debugger.DrawLine(debugTag, feetPosition, hit.point, shouldLineColor);
             else
-                debugger.DrawRay(debugTag, feetPosition, direction, new Color(1, 0.2f, 0.2f));
+                debugger.DrawRay(debugTag, feetPosition, direction, shouldntRayColor);
             return should;
         }
 
@@ -60,7 +64,7 @@ namespace Movement
             var targetPosition = origin + directionScaled;
             if (Physics.Raycast(targetPosition, -transform.up, out var hit, configOverride.MaxDepth, configOverride.StepMask))
             {
-                debugger.DrawLine(debugTag, targetPosition, hit.point, Color.green);
+                debugger.DrawLine(debugTag, targetPosition, hit.point, canLineColor);
                 stepPosition = hit.point + transform.up * distanceToFeet;
                 
                 bool floorIsNotTooSteep = floorIsNotTooSteep_lastValue = Vector3.Angle(transform.up, hit.normal) < maxStepFloorNormalAngle;
@@ -69,7 +73,7 @@ namespace Movement
                 return isNotSameHeight && floorIsNotTooSteep;
             }
             
-            debugger.DrawRay(debugTag, targetPosition, -upScaled, Color.red);
+            debugger.DrawRay(debugTag, targetPosition, -upScaled, cantLineColor);
             return false;
         }
 

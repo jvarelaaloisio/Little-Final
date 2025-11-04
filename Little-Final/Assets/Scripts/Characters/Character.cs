@@ -37,10 +37,9 @@ namespace Characters
 
         public abstract Vector3 Velocity { get; set; }
 
-        protected virtual void Awake()
+        private void Awake()
         {
-            FloorTracker = GetComponent<IFloorTracker>();
-            if (DisableUntilSetup)
+            if (!IsSet && DisableUntilSetup)
                 enabled = false;
         }
 
@@ -51,6 +50,7 @@ namespace Characters
         /// <param name="data">Data to give to <see cref="Actor"/></param>
         public virtual void Setup(TData data)
         {
+            FloorTracker ??= GetComponent<IFloorTracker>();
             Actor = new Actor<TData>();
             Actor.TrySetData(data);
             if (Stamina is ISetup setupableStamina)
@@ -67,7 +67,7 @@ namespace Characters
 
         public virtual void Initialize()
         {
-            if (IsSet is false)
+            if (!IsSet)
                 Debug.LogWarning($"{name}: Setup hasn't been called before initialize");
             if (DisableUntilSetup)
                 enabled = true;

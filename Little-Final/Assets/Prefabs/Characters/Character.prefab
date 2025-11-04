@@ -9999,14 +9999,14 @@ GameObject:
   m_Component:
   - component: {fileID: 335042604340918724}
   - component: {fileID: 8639353930731474083}
-  - component: {fileID: 4968763546092149725}
-  - component: {fileID: 5954322368455738055}
   - component: {fileID: -8857404774138357859}
   - component: {fileID: -2782182542571858041}
-  - component: {fileID: 5716599558588632636}
+  - component: {fileID: 1436017036541383170}
   - component: {fileID: 1224112811647375518}
   - component: {fileID: 960104844254788616}
   - component: {fileID: 1126122160678954587}
+  - component: {fileID: 4968763546092149725}
+  - component: {fileID: 5954322368455738055}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -10050,7 +10050,7 @@ MonoBehaviour:
     reference: {fileID: 1126122160678954587}
   inputReaderProvider:
     reference: {fileID: 11400000, guid: f9ec6ddbbb5f2654486095ba9d3a333d, type: 2}
-  enableStateLogs: 0
+  enableStateLogs: 1
   idle:
     reference: {fileID: 11400000, guid: 8883deab33b5ad742974f391bf41e8cc, type: 2}
   walk:
@@ -10091,56 +10091,6 @@ MonoBehaviour:
   secondsBeforeGlide: 0.4
   debugger: {fileID: 11400000, guid: a778cf4fa9fa8dc458175c1ad3a0c3f6, type: 2}
   debugTag: Character
---- !u!54 &4968763546092149725
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6359899068279565172}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 1
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
---- !u!136 &5954322368455738055
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6359899068279565172}
-  m_Material: {fileID: 13400000, guid: c548a2b088782a5428993b15313aec29, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 512
-  m_LayerOverridePriority: 100
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.06
-  m_Height: 0.4
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-8857404774138357859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10203,7 +10153,7 @@ MonoBehaviour:
     landingDistanceToFloor: 0.25
     minYSpeedForFalling: -0.1
     <IsFalling>k__BackingField: 0
---- !u!114 &5716599558588632636
+--- !u!114 &1436017036541383170
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10212,14 +10162,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 6359899068279565172}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8416d8a6104040fdb4bac3d068974a06, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cd927d5b1bc462eb93c5c09ebb88a18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   description: Controls rotation
-  ignoreY: 1
   speed: 15
-  minimumSpeedToRotate: 0.01
-  drawGizmos: 0
+  directionId:
+    reference: {fileID: 11400000, guid: c63887a800c240c5a8e156f8b93b9bf7, type: 2}
+  actionIdsToDisable:
+  - reference: {fileID: 11400000, guid: 9a0408f6f1b9e8b419da323edd492ec1, type: 2}
+  actionIdsToEnable:
+  - reference: {fileID: 11400000, guid: 851ee6b24b2ae8d4eb1ff92ebd8811b8, type: 2}
+  - reference: {fileID: 11400000, guid: c63887a800c240c5a8e156f8b93b9bf7, type: 2}
+  - reference: {fileID: 11400000, guid: 5d8f5c8ef68e5ff2c9fbe10de3b1721c, type: 2}
+  directionPreprocessor:
+    reference: {fileID: 11400000, guid: 3c0a0d7f5082dd94e8d7439900ab4cf0, type: 2}
+  debugger: {fileID: 11400000, guid: da7a71e83552d9842825121f621d162b, type: 2}
+  debugTag: Rotate towards desired direction view
+  currentForwardColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+  desiredDirectionColor: {r: 1, g: 1, b: 1, a: 0.5}
 --- !u!114 &1224112811647375518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10287,6 +10248,10 @@ MonoBehaviour:
   floorIsNotTooSteep_lastValue: 0
   heightDifferential_lastValue: 0
   isNotSameHeight_lastValue: 0
+  shouldLineColor: {r: 0.2, g: 1, b: 0.2, a: 1}
+  shouldntRayColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  canLineColor: {r: 0.2, g: 0.2, b: 1, a: 1}
+  cantLineColor: {r: 1, g: 0.5560284, b: 0.19999999, a: 1}
 --- !u!114 &1126122160678954587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10307,6 +10272,56 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 67585
   drawDebugLines: 1
+--- !u!54 &4968763546092149725
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6359899068279565172}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 1
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!136 &5954322368455738055
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6359899068279565172}
+  m_Material: {fileID: 13400000, guid: c548a2b088782a5428993b15313aec29, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 512
+  m_LayerOverridePriority: 100
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.06
+  m_Height: 0.4
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6665584989643851020
 GameObject:
   m_ObjectHideFlags: 0
@@ -10585,6 +10600,10 @@ MonoBehaviour:
     <Name>k__BackingField: Jump
   jumpActionIds:
   - reference: {fileID: 11400000, guid: 22332e9ecb428e444b79a90a287886c7, type: 2}
+  climbParameter:
+    <Name>k__BackingField: Climb
+  climbActionIds:
+  - reference: {fileID: 11400000, guid: 9a0408f6f1b9e8b419da323edd492ec1, type: 2}
   stepActionIds: []
   fallParameter:
     <Name>k__BackingField: Fall

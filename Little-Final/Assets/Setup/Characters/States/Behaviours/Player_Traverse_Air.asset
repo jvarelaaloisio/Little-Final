@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cd0fc1c7e774a8b866a025580afbcd5, type: 3}
   m_Name: Player_Traverse_Air
   m_EditorClassIdentifier: 
-  acceleration: 8
-  speedGoal: 2
+  acceleration: 10
+  speedGoal: 3
   projectDirectionOnFloor: 0
   brakeSpeed: 0.25
   brakeAcceleration: 0.25
@@ -52,6 +52,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   maxSlopeAngle: 30
+  wallDetectionDistanceMultiplier: 0.35
   directionId:
     reference: {fileID: 11400000, guid: c63887a800c240c5a8e156f8b93b9bf7, type: 2}
   characterId:

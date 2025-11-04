@@ -15,11 +15,13 @@ namespace Characters
         [NonSerialized] private IFloorTracker _floorTracker;
         [SerializeField] private float landingDistanceToFloor = 0.21f;
         [SerializeField] private float minYSpeedForFalling = -0.1f;
+        private bool _isSet = false;
 
         public void Setup(Rigidbody body, IFloorTracker floorTracker)
         {
             _rigidbody = body;
             _floorTracker = floorTracker;
+            _isSet = true;
         }
 
         /// <summary>
@@ -39,6 +41,11 @@ namespace Characters
         /// </summary>
         public void Update()
         {
+            if (!_isSet)
+            {
+                Debug.LogError($"{nameof(FallingController)} not set up. Call {nameof(Setup)} before using {nameof(Update)}.");
+                return;
+            }
             ValidateIfFallingStateHasChanged();
             return;
 

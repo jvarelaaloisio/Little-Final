@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Core.Data;
 using Core.Extensions;
@@ -32,9 +33,9 @@ namespace Characters
         }
 
         /// <inheritdoc />
-        protected override void Awake()
+        public override void Setup(ReverseIndexStore data)
         {
-            base.Awake();
+            base.Setup(data);
             fallingController.Setup(Body, FloorTracker);
         }
 

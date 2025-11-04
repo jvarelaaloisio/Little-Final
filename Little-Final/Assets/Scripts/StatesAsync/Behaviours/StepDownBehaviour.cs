@@ -80,7 +80,7 @@ namespace StatesAsync.Behaviours
 				((Behaviour)floorTracker).enabled = false;
 			}
 
-			debugger?.Log(debugTag, "Stepping up!", this);
+			debugger?.Log(debugTag, "Stepping down!", this);
 			await stepUp.DoCoroutine(destination, config).ToUniTask(cancellationToken: token);
 
 			if(hasFloorTracker)
